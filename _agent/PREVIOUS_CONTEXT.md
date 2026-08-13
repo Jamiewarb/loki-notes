@@ -4,25 +4,25 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR16 — Wiki-links and backlinks
+## PR17 — Tags
 
-**Branch:** `cursor/pr16-wikilinks-d2c1`  
-**Based on:** `cursor/pr15-para-d2c1` @ `7a9367c`
+**Branch:** `cursor/pr17-tags-d2c1`  
+**Based on:** `cursor/pr16-wikilinks-d2c1` @ `ef6dd39`
 
 ### What landed
 
-- **`LinkResolver`** (Index): ObjectID → path/slug → title; `preferredTarget` = ObjectID
-- **`IndexQuerying`:** `resolve`, `backlinks(to:)`, `outgoingLinks(from:)`, `linkCandidates`
-- **`@` / `[[` picker** in BlockEditor → inserts `[[id|title]]`; Linux-testable `EditorSession.insertWikiLink`
-- **`Features/Links/`:** `LinkPickerView`, `BacklinksPanel`, `WikiLinkStatusView`
-- **Inspector:** object route shows Properties + Backlinks
-- **Broken-link styling:** `wiki-link is-broken` (danger + dash) vs `is-resolved` (accent)
-- **Demo:** `loci-links-demo` / `scripts/demo-links.sh` → `DevHarness/public/demo-links/`
-- **Harness:** Studio → Links (`?panel=links`)
-- **Tests:** **139** package tests (was 127)
-- Evidence: `evidence/pr16/`
-- Version: Index / Markdown / Vault → `*-pr16`
-- **Skipped:** Project `area` object-select promotion (optional; avoid scope creep)
+- **Object-level tags** in YAML frontmatter (inspector `ObjectTagsEditorView`) + body `#tag` via editor completer
+- **`TagTriggerDetector` / `EditorSession.insertTag`** — `#` completer mirrors `@` / `[[` picker
+- **`IndexQuerying`:** `allTags`, `objects(tagged:)`, `tagCandidates` (+ `TagsQuery`)
+- **`TagNormalization` / `TagAliasTable` / `TagFilter`** in Core; aliases on `SpaceSettings.tagAliases`
+- **`Features/Tags/`:** `TagBrowseView`, `TagCompleterView`, `ObjectTagsEditorView`, `TagsFeature`
+- **Route.tags** (Studio) + type-dashboard **filter by #tag**
+- **Demo:** `loci-tags-demo` / `scripts/demo-tags.sh` → `DevHarness/public/demo-tags/`
+- **Harness:** Studio → Tags (`?panel=tags`)
+- **Tests:** **152** package tests (was 139)
+- Evidence: `evidence/pr17/`
+- Version: Index / Markdown → `*-pr17`; Vault → `0.17.0-pr17`
+- **AST `#tag` case preserved** in markdown; index lowercases via `TagNormalization`
 
 ### How to run checks
 
@@ -30,37 +30,37 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-links.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=links
+./scripts/demo-tags.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=tags
 ```
 
-### Pitfalls for PR17 (tags)
+### Pitfalls for PR18 (search)
 
-- `#tag` already in Loci MD AST + `tags` index table — UI/browse/aliases next
-- Object-level tags live in frontmatter; body `#tags` also indexed
-- Do not auto-write derived tag lists into markdown
+- FTS already exists (`blocks_fts` + `IndexQuerying.search`) — PR18 is ⌘K / Search UI polish
+- Do not block typing on index; search reads `IndexQuerying` only
 - Do not put SQLite / index inside the vault
-- Template ids remain `<type>.<slug>`
+- Tag browse is Studio (`Route.tags`); Search remains primary for FTS
+- Alias expansion lives on queries, not rewritten into markdown
 
-### Next: PR17 — Tags
+### Next: PR18 — Global search
 
-- Branch: `cursor/pr17-tags-d2c1`
-- `#tag` in editor + object-level tags; tag index browse; aliases; dashboard filter
-- Demo: tag two types with `#health`; tag page lists both
+- Branch: `cursor/pr18-search-d2c1`
+- ⌘K / SearchView over existing FTS; filters; never blocks typing
+- Depends on: PR07 (index FTS already present)
 
 ---
 
-## PR15 — PARA starter pack
+## PR16 — Wiki-links and backlinks
 
-**Branch:** `cursor/pr15-para-d2c1`
+**Branch:** `cursor/pr16-wikilinks-d2c1`
 
-PARA Project/Area pack, `#resource` / `#archive`, ArchiveFilter. See `evidence/pr15/`.
+LinkResolver, `@`/`[[` picker, backlinks panel. See `evidence/pr16/`.
 
 ### Still relevant
 
-- Project `area` property remains **text** — can become object-select using LinkResolver
-- Resource = tag approach; Archive = tag/status filter (no folder move)
+- Preferred wiki target = ObjectID
+- Broken-link styling `is-broken` / `is-resolved`
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR16 done · next PR17
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR17 done · next PR18

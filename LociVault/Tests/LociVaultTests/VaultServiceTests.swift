@@ -199,7 +199,7 @@ final class ModuleVersionTests: XCTestCase {
             LociVaultModule.version.contains("pr13")
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
-                || LociVaultModule.version.contains("pr16")
+                || LociVaultModule.version.contains("pr17")
         )
     }
 }

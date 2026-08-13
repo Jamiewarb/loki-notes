@@ -44,6 +44,15 @@ struct DetailHostView: View {
                 }
             case .designGallery:
                 DesignGalleryView()
+            case .tags:
+                if let services {
+                    TagsFeature.browse(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .tags,
+                        message: "Cross-type #tags browse (PR17). Index projection only."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -69,6 +78,7 @@ struct DetailHostView: View {
         case .types: return "types"
         case .settings: return "settings"
         case .designGallery: return "designGallery"
+        case .tags: return "tags-\(services?.focusedTag ?? "all")"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

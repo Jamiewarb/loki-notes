@@ -19,9 +19,10 @@ enum ObjectIndexer {
         }
         let meta = fm.toMeta(relativePath: relativePath)
         let walk = ASTWalker.walk(doc.blocks)
-        var tags = Set(fm.tags.map { $0.lowercased() })
+        var tags = Set(fm.tags.map { TagNormalization.normalize($0) }.filter { !$0.isEmpty })
         for t in walk.tags {
-            tags.insert(t.lowercased())
+            let n = TagNormalization.normalize(t)
+            if !n.isEmpty { tags.insert(n) }
         }
         return IndexedDocument(
             meta: LociObjectMeta(

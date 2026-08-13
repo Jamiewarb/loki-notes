@@ -35,6 +35,25 @@ public protocol IndexQuerying: Sendable {
         excluding excludeID: ObjectID?,
         limit: Int
     ) async throws -> [LociObjectMeta]
+
+    // MARK: - Tags (PR17)
+
+    /// Distinct tags with object counts (optionally collapsed via aliases).
+    func allTags(aliases: TagAliasTable, limit: Int) async throws -> [TagSummary]
+
+    /// Objects carrying `tag` (or any of its aliases). Optional `typeID` restricts to one type.
+    func objects(
+        tagged tag: String,
+        typeID: ObjectTypeID?,
+        aliases: TagAliasTable
+    ) async throws -> [LociObjectMeta]
+
+    /// `#` completer candidates. Empty query → most-used tags.
+    func tagCandidates(
+        matching query: String,
+        aliases: TagAliasTable,
+        limit: Int
+    ) async throws -> [TagSummary]
 }
 
 /// One row from the disposable `properties_idx` projection.

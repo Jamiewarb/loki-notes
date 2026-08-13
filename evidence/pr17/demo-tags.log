@@ -1,0 +1,8 @@
+==> loci-tags-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-tags-demo' complete! (0.28s)
+health=2 types=['book', 'page'] aliasOK=True indexOutsideVault=True
+==> wrote /agent/DevHarness/public/demo-tags/tags.json
+==> demo-tags complete

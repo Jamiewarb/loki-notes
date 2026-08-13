@@ -15,7 +15,8 @@ export type PanelId =
   | "gallery"
   | "markdown"
   | "editor"
-  | "links";
+  | "links"
+  | "tags";
 
 export interface NavItem {
   id: PanelId;
@@ -54,6 +55,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "markdown", label: "Markdown", subtitle: "AST round-trip", section: "studio" },
   { id: "editor", label: "Editor", subtitle: "Block session + slash", section: "studio" },
   { id: "links", label: "Links", subtitle: "Wiki-links + backlinks", section: "studio" },
+  { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
 ];
 
 /** Flat list for click wiring (primary + studio). */
@@ -107,5 +109,11 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Links",
     body: "Wiki-links [[id|title]] + @ picker (PR16). LinkResolver prefers ObjectID; backlinks from links table.",
     inspector: "Backlinks panel · broken-link styling (is-broken) · index never in vault.",
+  },
+  tags: {
+    id: "tags",
+    title: "Tags",
+    body: "Object-level + body #tags (PR17). Tag browse is cross-type; aliases in space.json; dashboard filter.",
+    inspector: "Object tags editor · aliases · index never in vault.",
   },
 };

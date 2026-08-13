@@ -1,0 +1,77 @@
+{
+  "aliases" : {
+    "health" : [
+      "wellness"
+    ]
+  },
+  "book" : {
+    "bodyMarkdown" : "Building systems #health ",
+    "id" : "8cf87e8e-492f-4abd-955b-3ddb7b6bdc33",
+    "relativePath" : "objects\/book\/atomic-habits.md",
+    "title" : "Atomic Habits",
+    "type" : "book"
+  },
+  "completer" : [
+    {
+      "count" : 0,
+      "tag" : "hea"
+    },
+    {
+      "count" : 2,
+      "tag" : "health"
+    }
+  ],
+  "healthObjects" : [
+    {
+      "id" : "8cf87e8e-492f-4abd-955b-3ddb7b6bdc33",
+      "tags" : [
+        "health"
+      ],
+      "title" : "Atomic Habits",
+      "type" : "book"
+    },
+    {
+      "id" : "3080b1d0-23ca-4db7-9068-4344eb6642a4",
+      "tags" : [
+        "health"
+      ],
+      "title" : "Morning walk",
+      "type" : "page"
+    }
+  ],
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-tags-demo-db-2026-08-13T11-50-14Z\/vb94040c95c1d8415\/index.sqlite",
+  "markdownModuleVersion" : "0.2.0-pr17",
+  "moduleVersion" : "0.2.0-pr17",
+  "note" : "PR17: Page (frontmatter tags) + Book (body #health) both appear on #health tag page. Aliases expand wellness→health.",
+  "page" : {
+    "id" : "3080b1d0-23ca-4db7-9068-4344eb6642a4",
+    "relativePath" : "objects\/page\/morning-walk.md",
+    "tags" : [
+      "health"
+    ],
+    "title" : "Morning walk",
+    "type" : "page"
+  },
+  "proof" : {
+    "aliasWellnessMatches" : true,
+    "bodyHasHashHealth" : true,
+    "completerHasHealth" : true,
+    "crossType" : true,
+    "healthCount" : 2,
+    "types" : [
+      "book",
+      "page"
+    ]
+  },
+  "tagSummaries" : [
+    {
+      "canonical" : "health",
+      "count" : 2,
+      "display" : "#health",
+      "tag" : "health"
+    }
+  ],
+  "vaultModuleVersion" : "0.17.0-pr17",
+  "vaultRoot" : "\/tmp\/loci-tags-demo-vault-2026-08-13T11-50-14Z\/LociVault"
+}

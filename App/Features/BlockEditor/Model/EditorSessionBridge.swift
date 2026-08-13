@@ -19,6 +19,8 @@ final class EditorSessionBridge {
     var focusedBlockIndex: Int = 0
     var slashQuery: String?
     var linkTrigger: WikiLinkTrigger?
+    /// Incomplete `#tag` trigger (PR17).
+    var tagTrigger: TagTrigger?
     /// Per-block resolved/broken wiki-link styles (PR16).
     var wikiLinkStylesByBlock: [Int: [WikiLinkStyle]] = [:]
     /// Bumped on each local edit so SwiftUI re-reads block text.
@@ -34,11 +36,13 @@ final class EditorSessionBridge {
     private var saveGeneration: UInt64 = 0
     private var firstDirtyDate: Date?
     private var propertiesDirty = false
+    private var tagsDirty = false
     private let objects: any ObjectServing
 
-    var isDirty: Bool { editor.isDirty || title != meta.title || propertiesDirty }
+    var isDirty: Bool { editor.isDirty || title != meta.title || propertiesDirty || tagsDirty }
     var blocks: [BlockNode] { editor.blocks }
     var currentProperties: [String: PropertyValue] { meta.properties }
+    var currentTags: [String] { meta.tags }
 
     init(opened: OpenedObject, objects: any ObjectServing) throws {
         self.objectID = opened.meta.id
@@ -65,6 +69,13 @@ final class EditorSessionBridge {
         scheduleSave()
     }
 
+    /// Update object-level frontmatter tags (inspector). Values persist on next flush.
+    func applyTags(_ values: [String]) {
+        meta.tags = TagNormalization.uniquing(values)
+        tagsDirty = true
+        scheduleSave()
+    }
+
     func applyEdit(_ edit: BlockEdit) {
         editor.applyLocalEdit(edit)
         editEpoch &+= 1
@@ -72,6 +83,7 @@ final class EditorSessionBridge {
         scheduleSave()
         updateSlashQueryIfNeeded()
         updateLinkTriggerIfNeeded()
+        updateTagTriggerIfNeeded()
     }
 
     func applySlash(kind: SlashBlockKind) {
@@ -82,6 +94,7 @@ final class EditorSessionBridge {
         )
         slashQuery = nil
         linkTrigger = nil
+        tagTrigger = nil
         editEpoch &+= 1
         noteDirtyClock()
         scheduleSave()
@@ -99,6 +112,22 @@ final class EditorSessionBridge {
         )
         slashQuery = nil
         linkTrigger = nil
+        tagTrigger = nil
+        editEpoch &+= 1
+        noteDirtyClock()
+        scheduleSave()
+    }
+
+    /// Insert `#tag` replacing the active `#` trigger.
+    func insertTag(_ summary: TagSummary) {
+        _ = editor.insertTag(
+            blockIndex: focusedBlockIndex,
+            tag: summary.tag,
+            trigger: tagTrigger
+        )
+        slashQuery = nil
+        linkTrigger = nil
+        tagTrigger = nil
         editEpoch &+= 1
         noteDirtyClock()
         scheduleSave()
@@ -173,6 +202,7 @@ final class EditorSessionBridge {
             meta = next
             editor.markSaved()
             propertiesDirty = false
+            tagsDirty = false
             firstDirtyDate = nil
             lastError = nil
         } catch {
@@ -197,8 +227,11 @@ final class EditorSessionBridge {
 
     private func updateSlashQueryIfNeeded() {
         let text = plainText(at: focusedBlockIndex)
-        // Slash menu only when `/` leads the block (link triggers take `@` / `[[`).
-        if text.hasPrefix("/"), WikiLinkTriggerDetector.detect(in: text) == nil {
+        // Slash menu only when `/` leads the block (link / tag triggers take precedence otherwise).
+        if text.hasPrefix("/"),
+            WikiLinkTriggerDetector.detect(in: text) == nil,
+            TagTriggerDetector.detect(in: text) == nil
+        {
             slashQuery = String(text.dropFirst())
         } else {
             slashQuery = nil
@@ -212,6 +245,16 @@ final class EditorSessionBridge {
             return
         }
         linkTrigger = WikiLinkTriggerDetector.detect(in: text)
+    }
+
+    private func updateTagTriggerIfNeeded() {
+        let text = plainText(at: focusedBlockIndex)
+        // Prefer wiki-link / slash over tag when both could match.
+        if text.hasPrefix("/") || WikiLinkTriggerDetector.detect(in: text) != nil {
+            tagTrigger = nil
+            return
+        }
+        tagTrigger = TagTriggerDetector.detect(in: text)
     }
 }
 #endif
