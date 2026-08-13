@@ -1,0 +1,14 @@
+==> DevHarness at http://127.0.0.1:5173
+    Future PRs: add a panel under DevHarness/src/panels/ and register in src/shell.ts
+error when starting dev server:
+Error: Port 5173 is already in use
+    at Server.onError (file:///agent/DevHarness/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:25119:18)
+    at Server.emit (node:events:519:28)
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+---
+Existing DevHarness already bound to :5173; curl evidence captured against live server.
+GET /?panel=graph → 200
+GET /demo-graph/graph.json → 200
+GET /src/panels/GraphPanel.ts → 200

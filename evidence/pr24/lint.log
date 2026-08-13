@@ -1,0 +1,867 @@
+==> lint: Package.swift present
+OK: Package.swift exists
+==> lint: reject fatal TODO crash stubs in production Sources
+OK: no TODO crash stubs in Sources
+==> lint: index must not be configured inside vault paths
+OK: index/vault boundary docs present (Application Support convention)
+==> lint: swift build
+[0/1] Planning build
+Building for debugging...
+[0/31] Write sources
+[5/71] Write swift-version--166437D737243488.txt
+[7/74] Compiling LociCore IndexQuerying.swift
+[8/74] Compiling LociCore Route.swift
+[9/75] Compiling LociCore Navigating.swift
+[10/75] Compiling LociCore GraphModels.swift
+/agent/LociCore/Sources/LociCore/Models/GraphModels.swift:202:25: warning: variable 'dy' was never mutated; consider changing to 'let' constant
+200 |                     guard let pa = pos[a], let pb = pos[b] else { continue }
+201 |                     var dx = pa.x - pb.x
+202 |                     var dy = pa.y - pb.y
+    |                         `- warning: variable 'dy' was never mutated; consider changing to 'let' constant
+203 |                     var distSq = dx * dx + dy * dy
+204 |                     if distSq < 0.01 {
+[11/75] Emitting module LociCore
+[12/76] Wrapping AST for LociCore for debugging
+[14/86] Emitting module LociMarkdown
+[15/88] Compiling LociMarkdown TaskBodyEdits.swift
+[16/88] Compiling LociMarkdown TemplateCodec.swift
+[17/88] Compiling LociMarkdown MarkdownParser.swift
+[18/88] Compiling LociMarkdown MarkdownSerializer.swift
+[19/88] Compiling LociMarkdown PropertyValueYAML.swift
+[20/88] Compiling LociMarkdown BlockEdit.swift
+[21/88] Compiling LociMarkdown EditorSession.swift
+[22/88] Compiling LociMarkdown FrontMatter.swift
+[23/88] Compiling LociMarkdown FrontMatterCodec.swift
+[24/88] Compiling LociMarkdown LociDocument.swift
+[25/88] Compiling LociMarkdown LociMarkdownModule.swift
+[27/105] Emitting module loci_markdown_demo
+[28/117] Emitting module loci_editor_demo
+[29/117] Compiling loci_editor_demo main.swift
+[31/117] Compiling loci_markdown_demo main.swift
+[31/118] Wrapping AST for LociMarkdown for debugging
+[32/118] Write Objects.LinkFileList
+[36/117] Compiling LociIndex ObjectRowDecoder.swift
+[37/117] Compiling LociIndex PropertiesQuery.swift
+[38/117] Compiling LociIndex QueryEngine.swift
+[42/120] Compiling LociIndex CreatedOnQuery.swift
+[42/123] Linking loci-editor-demo
+[43/123] Linking loci-markdown-demo
+[46/123] Compiling LociIndex GraphBuilder.swift
+[47/123] Compiling LociIndex LinkResolver.swift
+[48/123] Compiling LociIndex LinksQuery.swift
+[49/123] Emitting module LociVault
+[53/123] Compiling LociIndex IndexService.swift
+[54/123] Compiling LociIndex LinkIndexer.swift
+[55/123] Compiling LociIndex ObjectIndexer.swift
+[56/123] Compiling LociIndex LociIndexModule.swift
+[57/123] Compiling LociVault VaultLayout.swift
+[58/123] Compiling LociVault VaultRoot.swift
+[59/123] Compiling LociVault VaultService.swift
+[60/124] Wrapping AST for LociVault for debugging
+[65/126] Emitting module LociIndex
+[70/127] Compiling loci_vault_demo LociVaultDemo.swift
+[71/127] Emitting module loci_vault_demo
+[72/127] Write Objects.LinkFileList
+[74/127] Compiling LociIndex IndexDatabase.swift
+[75/128] Linking loci-vault-demo
+[77/134] Emitting module loci_types_demo
+[78/136] Emitting module loci_tags_demo
+[79/136] Compiling loci_types_demo main.swift
+[81/136] Emitting module loci_templates_demo
+[82/136] Compiling loci_templates_demo main.swift
+[84/137] Compiling loci_tags_demo main.swift
+[85/137] Compiling loci_tasks_demo main.swift
+[86/138] Emitting module loci_tasks_demo
+[89/144] Emitting module loci_sync_demo
+[90/144] Compiling loci_sync_demo main.swift
+[92/144] Emitting module loci_search_demo
+[93/144] Compiling loci_search_demo main.swift
+[95/147] Compiling loci_properties_demo main.swift
+[96/147] Emitting module loci_properties_demo
+[97/148] Emitting module loci_queries_demo
+[98/148] Compiling loci_queries_demo main.swift
+[101/152] Compiling loci_para_demo main.swift
+[102/152] Emitting module loci_para_demo
+[104/152] Compiling loci_objects_demo main.swift
+[105/152] Emitting module loci_objects_demo
+[107/152] Emitting module loci_media_demo
+[108/152] Compiling loci_media_demo main.swift
+[110/157] Emitting module loci_index_demo
+[111/158] Compiling loci_index_demo main.swift
+[113/160] Emitting module loci_daily_demo
+[114/160] Compiling loci_daily_demo main.swift
+/agent/LociVault/Sources/LociDailyDemo/main.swift:39:13: warning: variable 'meta' was never mutated; consider changing to 'let' constant
+ 37 | 
+ 38 |         let objects = ObjectService(vault: vault, index: index)
+ 39 |         var meta = todayNote.meta
+    |             `- warning: variable 'meta' was never mutated; consider changing to 'let' constant
+ 40 |         try await objects.save(
+ 41 |             meta: meta,
+[116/160] Compiling loci_links_demo main.swift
+[117/160] Emitting module loci_links_demo
+[119/162] Compiling loci_graph_demo main.swift
+[120/162] Compiling loci_created_today_demo main.swift
+[121/162] Emitting module loci_created_today_demo
+[122/163] Emitting module loci_graph_demo
+[122/163] Wrapping AST for LociIndex for debugging
+[123/163] Write Objects.LinkFileList
+[140/163] Compiling loci_collections_demo main.swift
+[141/163] Emitting module loci_collections_demo
+[142/163] Linking loci-types-demo
+[143/163] Linking loci-templates-demo
+[144/163] Linking loci-tasks-demo
+[145/163] Linking loci-tags-demo
+[146/163] Linking loci-sync-demo
+[147/163] Linking loci-search-demo
+[148/163] Linking loci-queries-demo
+[149/163] Linking loci-properties-demo
+[150/163] Linking loci-objects-demo
+[150/163] Linking loci-para-demo
+[152/163] Linking loci-media-demo
+[153/163] Wrapping AST for loci-graph-demo for debugging
+[153/163] Write Objects.LinkFileList
+[156/163] Linking loci-links-demo
+[157/163] Linking loci-index-demo
+[158/163] Write Objects.LinkFileList
+[159/163] Linking loci-daily-demo
+[160/163] Linking loci-created-today-demo
+[161/163] Linking loci-collections-demo
+[162/163] Linking loci-graph-demo
+Build complete! (4.77s)
+OK: swift build
+==> lint: swift-format lint
+LociCore/Sources/LociCore/Models/PARAPack.swift:242:12: warning: [UseExplicitNilCheckInConditions] compare this value using `!= nil` instead of binding and discarding it
+LociCore/Sources/LociCore/Models/PARAPack.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:152:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:154:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:156:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:157:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:160:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:162:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:164:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/PARAPack.swift:165:1: warning: [Indentation] indent by 4 spaces
+LociCore/Sources/LociCore/Models/GraphModels.swift:284:28: warning: [GroupNumericLiterals] group every 3 digits in this decimal literal using a '_' separator
+LociCore/Sources/LociCore/Models/GraphModels.swift:287:22: warning: [GroupNumericLiterals] group every 3 digits in this decimal literal using a '_' separator
+LociCore/Sources/LociCore/Models/GraphModels.swift:174:24: warning: [AddLines] add 1 line break
+LociCore/Tests/LociCoreTests/DomainModelTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociCore/Tests/LociCoreTests/MediaModelsTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociCore/Tests/LociCoreTests/TagModelsTests.swift:16:42: warning: [TrailingComma] remove trailing comma from the last element in single line collection literal
+LociCore/Tests/LociCoreTests/SearchModelsTests.swift:96:30: warning: [Spacing] add 1 space
+LociCore/Tests/LociCoreTests/SyncStatusDerivationTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociCollectionsDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociCollectionsDemo/main.swift:37:18: warning: [TrailingComma] remove trailing comma from the last element in single line collection literal
+LociVault/Sources/LociCollectionsDemo/main.swift:79:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociDailyDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociDailyDemo/main.swift:57:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociMediaDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociMediaDemo/main.swift:72:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociVault/VaultRoot.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:53:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:58:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:65:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:66:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:68:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:68:14: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/VaultRoot.swift:69:1: warning: [Indentation] indent by 8 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:70:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:72:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:73:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultRoot.swift:74:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/ObjectService.swift:124:1: warning: [Indentation] indent by 1 spaces
+LociVault/Sources/LociVault/ObjectService.swift:125:1: warning: [Indentation] indent by 1 spaces
+LociVault/Sources/LociVault/ObjectService.swift:126:1: warning: [Indentation] indent by 1 spaces
+LociVault/Sources/LociVault/ObjectService.swift:127:1: warning: [Indentation] indent by 1 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:162:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:163:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:164:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:165:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:166:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:167:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:168:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:169:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:170:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:172:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:173:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:174:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:175:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:176:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:177:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:178:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:179:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:180:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:181:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:182:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:183:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:184:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:185:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:186:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:187:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:188:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:189:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:190:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:191:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:193:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:194:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:195:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:196:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:198:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:199:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:200:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:201:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:202:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:203:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:204:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:205:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:206:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MetadataQueryMonitor.swift:207:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:31:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/DownloadOnDemand.swift:42:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:40:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:42:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:44:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:52:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:53:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:58:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:60:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:61:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:62:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:63:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:66:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:68:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:69:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:70:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:86:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:87:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:88:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:89:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:90:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:91:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:92:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:93:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:94:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:95:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:96:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:97:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:98:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:99:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:100:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:101:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:102:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:103:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:104:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:105:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:106:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:108:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:117:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:118:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:119:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:120:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:121:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:122:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:123:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:124:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:125:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:126:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:127:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:128:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:129:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:130:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:131:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:132:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/FileCoordinatorClient.swift:134:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/MediaService.swift:27:19: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/SchemaStore.swift:224:39: warning: [Spacing] add 1 space
+LociVault/Sources/LociVault/SchemaStore.swift:619:15: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/SchemaStore.swift:639:15: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/SchemaStore.swift:659:15: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/SchemaStore.swift:679:15: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/TombstoneStore.swift:27:18: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/TombstoneStore.swift:47:15: warning: [AddLines] add 1 line break
+LociVault/Sources/LociVault/VaultPathRevealer.swift:11:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultPathRevealer.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultPathRevealer.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultPathRevealer.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultPathRevealer.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/VaultPathRevealer.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociCreatedTodayDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociCreatedTodayDemo/main.swift:70:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociSyncDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociGraphDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociGraphDemo/main.swift:85:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociPropertiesDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociPropertiesDemo/main.swift:81:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociTemplatesDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociTemplatesDemo/main.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:66:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociTemplatesDemo/main.swift:97:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociTagsDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociTagsDemo/main.swift:53:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociTypesDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociTypesDemo/main.swift:83:44: warning: [TrailingComma] remove trailing comma from the last element in single line collection literal
+LociVault/Sources/LociTypesDemo/main.swift:50:23: warning: [AddLines] add 1 line break
+LociVault/Sources/LociTypesDemo/main.swift:54:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociLinksDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociLinksDemo/main.swift:70:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociPARADemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociPARADemo/main.swift:24:58: warning: [Spacing] add 1 space
+LociVault/Sources/LociPARADemo/main.swift:51:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociObjectsDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociObjectsDemo/main.swift:43:107: warning: [RemoveLine] remove line break
+LociVault/Sources/LociQueriesDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Sources/LociQueriesDemo/main.swift:37:18: warning: [TrailingComma] remove trailing comma from the last element in single line collection literal
+LociVault/Sources/LociQueriesDemo/main.swift:95:107: warning: [RemoveLine] remove line break
+LociVault/Tests/LociVaultTests/ObjectServiceTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/CollectionsSystemTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/DailyNoteServiceTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/TemplatesSystemTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/TemplatesSystemTests.swift:66:18: warning: [TrailingComma] remove trailing comma from the last element in single line collection literal
+LociVault/Tests/LociVaultTests/TemplatesSystemTests.swift:228:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/TemplatesSystemTests.swift:229:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/SchemaStoreTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/SchemaStoreTests.swift:273:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/MediaSystemTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/MediaSystemTests.swift:108:107: warning: [RemoveLine] remove line break
+LociVault/Tests/LociVaultTests/MediaSystemTests.swift:154:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/MediaSystemTests.swift:155:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/MediaSystemTests.swift:156:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/PARAPackTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/PARAPackTests.swift:149:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/PARAPackTests.swift:150:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/PropertiesSystemTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/PropertiesSystemTests.swift:169:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/PropertiesSystemTests.swift:170:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/VaultServiceTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/VaultServiceTests.swift:207:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/SyncUXTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/SyncUXTests.swift:89:1: warning: [LineLength] line is too long
+LociVault/Tests/LociVaultTests/CreatedTodayNonMutationTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/QueriesSystemTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociVault/Tests/LociVaultTests/QueriesSystemTests.swift:172:51: warning: [Spacing] add 1 space
+LociMarkdown/Sources/LociMarkdown/SimpleYAML.swift:256:23: warning: [AddLines] add 1 line break
+LociMarkdown/Sources/LociMarkdown/SimpleYAML.swift:280:26: warning: [AddLines] add 1 line break
+LociMarkdown/Tests/LociMarkdownTests/FrontMatterCodecTests.swift:3:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/TagTriggerAndInsertTests.swift:3:1: warning: [OrderedImports] place regular imports before testable imports
+LociMarkdown/Tests/LociMarkdownTests/TagTriggerAndInsertTests.swift:3:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/TaskBodyEditsTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/EditorSessionTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/EditorSessionTests.swift:75:24: warning: [AddLines] add 1 line break
+LociMarkdown/Tests/LociMarkdownTests/EditorSessionTests.swift:76:1: warning: [Indentation] unindent by 11 spaces
+LociMarkdown/Tests/LociMarkdownTests/QueryEmbedMarkdownTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/QueryEmbedMarkdownTests.swift:25:50: warning: [Spacing] add 1 space
+LociMarkdown/Tests/LociMarkdownTests/MarkdownRoundTripTests.swift:3:1: warning: [OrderedImports] sort import statements lexicographically
+LociMarkdown/Tests/LociMarkdownTests/TemplateCodecTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Sources/LociIndexDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Sources/LociTasksDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Sources/LociSearchDemo/main.swift:4:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Sources/LociSearchDemo/main.swift:90:107: warning: [RemoveLine] remove line break
+LociIndex/Sources/LociIndex/IndexService.swift:286:18: warning: [AddLines] add 1 line break
+LociIndex/Sources/LociIndex/IndexService.swift:287:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:288:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:289:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:290:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:290:14: warning: [AddLines] add 1 line break
+LociIndex/Sources/LociIndex/IndexService.swift:347:14: warning: [AddLines] add 1 line break
+LociIndex/Sources/LociIndex/IndexService.swift:348:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:349:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:350:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:351:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/IndexService.swift:351:10: warning: [AddLines] add 1 line break
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:53:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:58:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:60:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:61:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:62:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:63:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Database/IndexDatabase.swift:65:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Sources/LociIndex/Queries/TagsQuery.swift:32:15: warning: [AddLines] add 1 line break
+LociIndex/Sources/LociIndex/Queries/SearchQuery.swift:31:21: warning: [AddLines] add 1 line break
+LociIndex/Tests/LociIndexTests/GraphBuilderTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:68:24: warning: [AddLines] add 1 line break
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:68:72: warning: [AddLines] add 1 line break
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:69:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:70:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Tests/LociIndexTests/SearchQueryTests.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociIndex/Tests/LociIndexTests/TagsCrossTypeTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Tests/LociIndexTests/WikiLinksAndBacklinksTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Tests/LociIndexTests/IndexServiceTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociIndex/Tests/LociIndexTests/TasksIndexTests.swift:2:1: warning: [OrderedImports] sort import statements lexicographically
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:11:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:21:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:23:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:30:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:32:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:39:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:40:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:42:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:53:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:58:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:60:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:62:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:63:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:65:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:68:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:69:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:70:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:72:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:73:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:74:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:75:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Motion/Transitions.swift:76:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Radius.swift:13:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Radius.swift:15:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Radius.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Radius.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Radius.swift:18:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Spacing.swift:34:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Spacing.swift:36:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Spacing.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Spacing.swift:38:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:12:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:14:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:17:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:19:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:31:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:39:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:40:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:42:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:44:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Elevation.swift:46:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:56:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:58:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:60:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:61:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:62:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:63:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:65:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:66:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:68:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:69:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:70:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:72:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:73:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:74:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:75:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:76:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:77:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Typography.swift:78:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:72:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:74:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:75:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:76:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:77:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:78:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:79:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:80:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:81:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:82:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:83:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:84:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:85:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:86:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:87:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:88:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:90:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:91:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:92:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:93:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:94:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:95:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:96:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:97:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:98:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:99:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:100:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:101:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:102:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Tokens/Colors.swift:103:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:9:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociDivider.swift:25:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:11:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:31:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociTextField.swift:36:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:11:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociIcon.swift:21:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:9:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:39:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:40:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:44:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociEmptyState.swift:51:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:9:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:12:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:17:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:29:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:31:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:39:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:40:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:42:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:44:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:52:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:53:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociListRow.swift:58:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:2:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:4:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:5:1: warning: [Indentation] replace leading whitespace with 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:6:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:7:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:8:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:9:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:10:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:11:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:13:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:14:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:15:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:16:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:18:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:19:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:20:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:21:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:22:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:23:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:24:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:25:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:26:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:27:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:28:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:30:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:31:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:32:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:33:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:34:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:35:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:36:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:37:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:38:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:39:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:40:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:41:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:42:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:43:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:44:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:45:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:46:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:47:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:48:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:49:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:50:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:51:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:52:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:54:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:55:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:56:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:57:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:58:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:59:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:60:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:61:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:63:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:64:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:65:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:66:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:67:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:68:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:69:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:71:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:72:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:73:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:74:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:75:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:76:1: warning: [Indentation] indent by 4 spaces
+LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:77:1: warning: [Indentation] replace leading whitespace with 4 spaces
+OK: swift-format
+OK: App/Features/AppShell present
+OK: App/Features/Search present
+OK: App/Features/Tasks present
+OK: App/Features/Media present
+OK: App/Features/SyncStatus present
+OK: App/Features/Collections present
+OK: App/Features/Queries present
+==> lint passed
