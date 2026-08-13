@@ -8,7 +8,7 @@
  * 4. Document the panel in evidence/<prXX>/ and PREVIOUS_CONTEXT.md.
  */
 
-export type PanelId = "daily" | "search" | "types" | "settings";
+export type PanelId = "gallery" | "daily" | "search" | "types" | "settings";
 
 export interface NavItem {
   id: PanelId;
@@ -20,9 +20,12 @@ export interface Panel {
   title: string;
   body: string;
   inspector: string;
+  /** When set, main.ts calls this instead of the generic placeholder body. */
+  render?: (root: HTMLElement) => void;
 }
 
 export const NAV_ITEMS: NavItem[] = [
+  { id: "gallery", label: "Design" },
   { id: "daily", label: "Daily" },
   { id: "search", label: "Search" },
   { id: "types", label: "Types" },
@@ -30,6 +33,12 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const PANELS: Record<PanelId, Panel> = {
+  gallery: {
+    id: "gallery",
+    title: "Design gallery",
+    body: "Tokens + primitives mirrored from LociDesignSystem (PR02).",
+    inspector: "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent.",
+  },
   daily: {
     id: "daily",
     title: "Daily",
