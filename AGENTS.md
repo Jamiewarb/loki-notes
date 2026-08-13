@@ -43,6 +43,8 @@ curl -L -o /tmp/swift.tar.gz \
 sudo tar -xzf /tmp/swift.tar.gz -C /opt
 sudo ln -sfn /opt/swift-6.2-RELEASE-ubuntu24.04 /opt/swift
 export PATH=/opt/swift/usr/bin:$PATH
+# LociIndex (GRDB) needs SQLite headers on Linux:
+sudo apt-get install -y libsqlite3-dev
 ```
 
 On **macOS**, use Xcode’s Swift toolchain. Do not expect the `App/` SwiftUI target to build on Linux — only SPM packages in `Package.swift` are Linux-tested.

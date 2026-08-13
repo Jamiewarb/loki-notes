@@ -44,4 +44,6 @@ API: `IndexDatabase(vaultID:directory:)` → `…/<vaultID>/index.sqlite`
 
 ## SQLite choice
 
-Tried GRDB on Linux first — **compiles and FTS5 works**. Pinned via SPM `from: "7.0.0"` (resolved ~7.11.1).
+Tried GRDB on Linux first — **compiles and FTS5 works**. Pinned via SPM `from: "7.0.0"` (resolved **7.11.1** in `Package.resolved`).
+
+**System package:** `libsqlite3-dev` required on Ubuntu for GRDB link (headers + `.so`). Runtime `libsqlite3-0` alone is not enough for builds.
