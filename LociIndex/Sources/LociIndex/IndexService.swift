@@ -172,6 +172,12 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func graph(options: GraphBuildOptions) async throws -> GraphSnapshot {
+        try await dbQueue.read { db in
+            try GraphBuilder.build(db: db, options: options)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {

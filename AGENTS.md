@@ -87,6 +87,15 @@ Queries (PR23) extras:
 
 Saved definitions live under `.loci/queries/<slug>.json`; results are derived from the index.
 
+Graph (PR24) extras:
+
+```bash
+./scripts/demo-graph.sh
+# harness: http://127.0.0.1:5173/?panel=graph
+```
+
+Graph topology comes from the index `links` table (`IndexQuerying.graph`); type filter + node/edge caps apply.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

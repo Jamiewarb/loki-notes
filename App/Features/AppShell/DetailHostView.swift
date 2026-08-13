@@ -66,6 +66,15 @@ struct DetailHostView: View {
                         message: "Cross-type #tags browse (PR17). Index projection only."
                     )
                 }
+            case .graph:
+                if let services {
+                    GraphFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .graph,
+                        message: "Link graph from IndexQuerying.graph (PR24). Cap + type filter."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -93,6 +102,7 @@ struct DetailHostView: View {
         case .settings: return "settings"
         case .designGallery: return "designGallery"
         case .tags: return "tags-\(services?.focusedTag ?? "all")"
+        case .graph: return "graph"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

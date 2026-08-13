@@ -80,7 +80,7 @@ todos:
     status: completed
   - id: pr24-graph
     content: 'PR24: Graph view'
-    status: pending
+    status: completed
   - id: pr25-calendar
     content: 'PR25: Calendar UI around daily notes'
     status: pending

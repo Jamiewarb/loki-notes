@@ -146,7 +146,7 @@ final class PARAPackTests: XCTestCase {
     }
 
     func testModuleVersionPR15() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr17") || LociIndexModule.version.contains("pr18") || LociIndexModule.version.contains("pr19") || LociIndexModule.version.contains("pr20") || LociIndexModule.version.contains("pr21") || LociIndexModule.version.contains("pr22") || LociIndexModule.version.contains("pr23"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr17") || LociIndexModule.version.contains("pr18") || LociIndexModule.version.contains("pr19") || LociIndexModule.version.contains("pr20") || LociIndexModule.version.contains("pr21") || LociIndexModule.version.contains("pr22") || LociIndexModule.version.contains("pr23") || LociIndexModule.version.contains("pr24"))
     }
 }
