@@ -158,6 +158,7 @@ final class DomainModelTests: XCTestCase {
         XCTAssertNil(dash.defaultGroupBy)
         XCTAssertNil(dash.defaultFilterKey)
         XCTAssertNil(dash.defaultFilterText)
+        XCTAssertEqual(dash.defaultView, TypeDashboardConfig.listView)
     }
 
     func testTypeDashboardConfigDecodesLegacyJSON() throws {
@@ -172,6 +173,15 @@ final class DomainModelTests: XCTestCase {
         XCTAssertNil(dash.defaultGroupBy)
         XCTAssertNil(dash.defaultFilterKey)
         XCTAssertNil(dash.defaultFilterText)
+        XCTAssertEqual(dash.defaultView, TypeDashboardConfig.listView)
+    }
+
+    func testTypeDashboardConfigDecodesBoardView() throws {
+        let data = Data(#"{"defaultView":"board"}"#.utf8)
+        let dash = try JSONDecoder().decode(TypeDashboardConfig.self, from: data)
+        XCTAssertEqual(dash.defaultView, TypeDashboardConfig.boardView)
+        XCTAssertEqual(TypeDashboardConfig.normalizedView("BOARD"), "board")
+        XCTAssertEqual(TypeDashboardConfig.normalizedView("weird"), "list")
     }
 
     func testTypeSlugFromName() throws {

@@ -2,7 +2,7 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Type dashboard: QueryEngine list + collection tabs (PR12 / PR22 / PR41).
+/// Type dashboard: QueryEngine list + collection tabs + Board (PR12 / PR22 / PR41 / PR42).
 struct TypeDashboardView: View {
     var services: AppServices
     let typeID: ObjectTypeID
@@ -11,6 +11,7 @@ struct TypeDashboardView: View {
     @State private var type: ObjectType?
     @State private var objects: [LociObjectMeta] = []
     @State private var sections: [DashboardSection] = []
+    @State private var columns: [DashboardSection] = []
     @State private var renameDraft: String = ""
     @State private var errorMessage: String?
     @State private var isBusy = false
@@ -26,6 +27,7 @@ struct TypeDashboardView: View {
     @State private var groupByKey: String = "none"
     @State private var filterKey: String = ""
     @State private var filterText: String = ""
+    @State private var dashboardView: String = TypeDashboardConfig.listView
     @State private var didLoad = false
 
     private var store: TypeDashboardStore { TypeDashboardStore(services: services) }
@@ -60,6 +62,7 @@ struct TypeDashboardView: View {
                 groupByKey: $groupByKey,
                 filterKey: $filterKey,
                 filterText: $filterText,
+                dashboardView: $dashboardView,
                 onApplyFilter: { Task { await persistAndReload() } },
                 onClearFilter: {
                     filterKey = ""
@@ -68,18 +71,29 @@ struct TypeDashboardView: View {
                 }
             )
             featureFacades
-            TypeDashboardList(
-                type: type,
-                typeID: typeID,
-                sections: sections,
-                activeCollection: activeCollection,
-                selectedCollectionID: selectedCollectionID,
-                isBusy: isBusy,
-                onOpen: { id in await services.open(objectID: id) },
-                onRemoveFromCollection: { collectionID, objectID in
-                    await removeFromCollection(collectionID, objectID: objectID)
-                }
-            )
+            if dashboardView == TypeDashboardConfig.boardView {
+                TypeDashboardBoard(
+                    type: type,
+                    columns: columns,
+                    groupBy: groupByKey == "none" ? nil : groupByKey,
+                    isBusy: isBusy,
+                    onOpen: { id in await services.open(objectID: id) },
+                    onMove: { id, key in await moveCard(id, destinationKey: key) }
+                )
+            } else {
+                TypeDashboardList(
+                    type: type,
+                    typeID: typeID,
+                    sections: sections,
+                    activeCollection: activeCollection,
+                    selectedCollectionID: selectedCollectionID,
+                    isBusy: isBusy,
+                    onOpen: { id in await services.open(objectID: id) },
+                    onRemoveFromCollection: { collectionID, objectID in
+                        await removeFromCollection(collectionID, objectID: objectID)
+                    }
+                )
+            }
             LociButton("Refresh", style: .secondary) { Task { await reload() } }
                 .disabled(isBusy)
             if let errorMessage {
@@ -99,6 +113,10 @@ struct TypeDashboardView: View {
             Task { await persistAndReload() }
         }
         .onChange(of: groupByKey) { _, _ in
+            guard didLoad else { return }
+            Task { await persistAndReload() }
+        }
+        .onChange(of: dashboardView) { _, _ in
             guard didLoad else { return }
             Task { await persistAndReload() }
         }
@@ -154,6 +172,7 @@ struct TypeDashboardView: View {
         if let stored = type.dashboard.defaultFilterText {
             filterText = stored
         }
+        dashboardView = TypeDashboardConfig.normalizedView(type.dashboard.defaultView)
     }
 
     private func reload() async {
@@ -173,6 +192,7 @@ struct TypeDashboardView: View {
             type = snap.type
             objects = snap.allObjects
             sections = snap.sections
+            columns = snap.columns
             hideArchived = snap.hideArchived
             archivedHiddenCount = snap.archivedHiddenCount
             if activeTagFilter != nil {
@@ -209,12 +229,29 @@ struct TypeDashboardView: View {
                 sortKey: sortKey,
                 groupBy: groupByKey == "none" ? nil : groupByKey,
                 filterKey: filterKey.isEmpty ? nil : filterKey,
-                filterText: filterText
+                filterText: filterText,
+                defaultView: dashboardView
             )
         } catch {
             errorMessage = error.localizedDescription
         }
         await reload()
+    }
+
+    private func moveCard(_ objectID: ObjectID, destinationKey: String) async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            try await store.moveCard(
+                objectID: objectID,
+                groupBy: groupByKey == "none" ? nil : groupByKey,
+                destinationKey: destinationKey,
+                properties: type?.properties ?? []
+            )
+            await reload()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private func removeFromCollection(_ collectionID: String, objectID: ObjectID) async {

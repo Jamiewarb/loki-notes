@@ -235,7 +235,16 @@ Type dashboard filter / sort / group (PR41) extras:
 # harness: http://127.0.0.1:5173/?panel=types
 ```
 
-The type dashboard list uses `IndexQuerying.execute(QueryDefinition)` for type + property equals + sort. Group-by is derived UI (`DashboardGrouping`) — never written into object markdown. Collection tabs stay a post-filter on vault `memberIDs`. User defaults persist only to `.loci/types/<slug>.json` (`TypeDashboardConfig`). Proof flags `filterApplied` / `sortApplied` / `groupApplied` / `resultsNotWrittenToMarkdown` / `indexInsideVault: false`. **Kanban is PR42.**
+The type dashboard list uses `IndexQuerying.execute(QueryDefinition)` for type + property equals + sort. Group-by is derived UI (`DashboardGrouping`) — never written into object markdown. Collection tabs stay a post-filter on vault `memberIDs`. User defaults persist only to `.loci/types/<slug>.json` (`TypeDashboardConfig`). Proof flags `filterApplied` / `sortApplied` / `groupApplied` / `resultsNotWrittenToMarkdown` / `indexInsideVault: false`.
+
+Kanban by label (PR42) extras:
+
+```bash
+./scripts/demo-kanban.sh
+# harness: http://127.0.0.1:5173/?panel=types
+```
+
+Board view lives in `App/Features/ObjectTypes/UI/TypeDashboardBoard.swift` (not a new feature module). Columns come from `DashboardGrouping` / `KanbanMove.columns` (select option order, or observed tags + Untagged). Moving a card updates YAML via `KanbanMove` + `ObjectServing.open`/`save` — body unchanged; layout is never written into markdown. `TypeDashboardConfig.defaultView` is `"list"` | `"board"` (decode default `"list"`). Proof flags `boardColumnsFromGroup` / `moveUpdatesVaultYAML` / `layoutNotWrittenToMarkdown` / `indexInsideVault: false`. **Weblink preview cache is PR43.**
 
 Object-select picker (PR40) extras:
 

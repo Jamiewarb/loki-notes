@@ -14,8 +14,9 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <code>objects/&lt;slug&gt;/</code>. Built-in Page/Daily are protected from casual delete.
         Type dashboards list All objects, manual <strong>collection tabs</strong>,
         <strong>pinned queries</strong> (defs in <code>.loci/queries/&lt;slug&gt;.json</code>;
-        results live from the index), and <strong>filter / sort / group</strong>
-        (QueryEngine — results are not written into markdown).
+        results live from the index), <strong>filter / sort / group</strong>
+        (QueryEngine — results are not written into markdown), and a <strong>Board</strong>
+        view (kanban by select / tag — moving a card updates YAML, not layout in notes).
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
         <p class="vault-kicker">PR15 · SchemaServing + PARA + templates</p>
@@ -68,6 +69,14 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <dl class="vault-meta capture-proof-grid" data-harness="dashboard-meta" hidden></dl>
         <p class="vault-note" data-harness="dashboard-note" hidden></p>
       </section>
+      <section class="vault-card" data-harness="kanban-status" aria-label="Kanban board">
+        <p class="vault-kicker">PR42 · Kanban by label</p>
+        <h3 class="vault-card-title">Board</h3>
+        <p class="vault-card-body" data-harness="kanban-loading">Loading demo-kanban…</p>
+        <div data-harness="kanban-board" hidden></div>
+        <dl class="vault-meta capture-proof-grid" data-harness="kanban-meta" hidden></dl>
+        <p class="vault-note" data-harness="kanban-note" hidden></p>
+      </section>
       <section class="vault-card" data-harness="object-select-status" aria-label="Object-select picker">
         <p class="vault-kicker">PR40 · Object-select picker</p>
         <h3 class="vault-card-title">Object-select</h3>
@@ -101,6 +110,7 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   await renderCollectionsSection(root);
   await renderQueriesSection(root);
   await renderDashboardSection(root);
+  await renderKanbanSection(root);
   await renderObjectSelectSection(root);
   await renderPagesSection(root);
 }
@@ -773,6 +783,91 @@ async function renderDashboardSection(root: HTMLElement): Promise<void> {
       err instanceof Error ? err.message : "Failed to load demo-dashboard fixture";
     note.hidden = false;
     note.textContent = "Run: ./scripts/demo-dashboard.sh then refresh (?panel=types).";
+  }
+}
+
+async function renderKanbanSection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='kanban-loading']");
+  const board = root.querySelector<HTMLElement>("[data-harness='kanban-board']");
+  const meta = root.querySelector<HTMLElement>("[data-harness='kanban-meta']");
+  const note = root.querySelector<HTMLElement>("[data-harness='kanban-note']");
+  if (!loading || !board || !meta || !note) return;
+
+  try {
+    const res = await fetch("/demo-kanban/kanban.json", { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} — run ./scripts/demo-kanban.sh`);
+    }
+    const data = (await res.json()) as {
+      movedTitle?: string;
+      movedFrom?: string;
+      movedTo?: string;
+      yamlStatusDone?: boolean;
+      columns?: Array<{ key?: string; titles?: string[] }>;
+      dashboard?: { defaultView?: string; defaultGroupBy?: string };
+      proof?: Record<string, boolean>;
+      dailyUnchanged?: boolean;
+      objectMarkdownUnchanged?: boolean;
+      note?: string;
+    };
+
+    const columns = data.columns ?? [];
+    const proof = data.proof ?? {};
+    const dash = data.dashboard ?? {};
+    loading.textContent = `Board view ${dash.defaultView ?? "board"} · group ${
+      dash.defaultGroupBy ?? "status"
+    } · ${data.movedTitle ?? "Deep Work"} ${data.movedFrom ?? "Reading"}→${data.movedTo ?? "Done"}`;
+
+    board.hidden = false;
+    board.innerHTML = columns
+      .map((column) => {
+        const key = column.key ?? "All";
+        const titles = column.titles ?? [];
+        return `
+          <div data-harness="kanban-column" data-column-key="${escapeHtml(key)}">
+            <p class="vault-kicker">${escapeHtml(key)}</p>
+            <ul class="schema-type-list">
+              ${titles
+                .map(
+                  (title) => `
+                <li class="schema-type-row" data-harness="kanban-card">
+                  <span class="schema-type-name">${escapeHtml(title)}</span>
+                  <span class="schema-type-meta">${escapeHtml(key)}</span>
+                </li>`,
+                )
+                .join("")}
+            </ul>
+          </div>`;
+      })
+      .join("");
+
+    meta.hidden = false;
+    meta.innerHTML = Object.entries(proof)
+      .map(
+        ([k, v]) => `
+          <div>
+            <dt>${escapeHtml(k)}</dt>
+            <dd data-harness="kanban-proof-${escapeHtml(k)}">${v ? "yes ✓" : "NO"}</dd>
+          </div>`,
+      )
+      .join("");
+
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      "Board columns from group-by. Moving a card updates YAML; layout is not written into markdown.";
+    note.dataset.dailyUnchanged = String(data.dailyUnchanged === true);
+    note.dataset.objectMarkdownUnchanged = String(data.objectMarkdownUnchanged === true);
+    note.dataset.yamlStatusDone = String(data.yamlStatusDone === true);
+    note.dataset.indexInsideVault = String(proof.indexInsideVault === true);
+    note.dataset.boardColumnsFromGroup = String(proof.boardColumnsFromGroup === true);
+    note.dataset.moveUpdatesVaultYaml = String(proof.moveUpdatesVaultYAML === true);
+    note.dataset.layoutNotWrittenToMarkdown = String(proof.layoutNotWrittenToMarkdown === true);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load demo-kanban fixture";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-kanban.sh then refresh (?panel=types).";
   }
 }
 

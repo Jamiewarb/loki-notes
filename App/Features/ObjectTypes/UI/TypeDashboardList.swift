@@ -2,7 +2,7 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Grouped object rows for a type dashboard (PR41). Kanban is a later PR.
+/// Grouped object rows for a type dashboard (PR41). Board view: `TypeDashboardBoard`.
 struct TypeDashboardList: View {
     let type: ObjectType?
     let typeID: ObjectTypeID
