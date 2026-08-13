@@ -29,6 +29,11 @@ struct ObjectEditorView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task(id: objectID.uuidString) { await load() }
+        .onDisappear {
+            if services.activeEditorSession?.objectID == objectID {
+                services.activeEditorSession = nil
+            }
+        }
     }
 
     @ViewBuilder
@@ -93,10 +98,13 @@ struct ObjectEditorView: View {
         do {
             let objects = try await services.ensureObjectService()
             let opened = try await objects.open(id: objectID)
-            session = try EditorSessionBridge(opened: opened, objects: objects)
+            let bridge = try EditorSessionBridge(opened: opened, objects: objects)
+            session = bridge
+            services.activeEditorSession = bridge
             errorMessage = nil
         } catch {
             session = nil
+            services.activeEditorSession = nil
             errorMessage = error.localizedDescription
         }
     }

@@ -259,6 +259,6 @@ final class SchemaStoreTests: XCTestCase {
     }
 
     func testModuleVersionIsPR12() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr12"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr13"))
     }
 }

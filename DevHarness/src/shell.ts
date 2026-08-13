@@ -73,8 +73,8 @@ export const PANELS: Record<PanelId, Panel> = {
   types: {
     id: "types",
     title: "Types",
-    body: "Object types + Page list (PR05/PR08). Create via ObjectService → objects/page/ → index list.",
-    inspector: "Tap a page to open the block editor host. Slash menu + autosave in PR09.",
+    body: "Custom types + property defs (PR12/PR13). Book status/rating values in frontmatter; properties_idx for filter/sort.",
+    inspector: "Property defs for the focused type; object inspector edits values (YAML).",
   },
   settings: {
     id: "settings",

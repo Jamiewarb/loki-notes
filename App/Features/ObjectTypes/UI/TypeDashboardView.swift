@@ -52,6 +52,11 @@ struct TypeDashboardView: View {
                 .foregroundStyle(LociColors.inkSoft)
                 .frame(maxWidth: 520, alignment: .leading)
 
+            if let type {
+                PropertiesFeature.defsEditor(services: services, typeID: type.id)
+                    .padding(.vertical, LociSpacing.stack(.sm))
+            }
+
             if showRename {
                 HStack(spacing: LociSpacing.stack(.md)) {
                     TextField("Type name", text: $renameDraft)
@@ -120,6 +125,9 @@ struct TypeDashboardView: View {
                     Text(item.title.isEmpty ? "Untitled" : item.title)
                         .font(LociTypography.font(.headline))
                         .foregroundStyle(LociColors.ink)
+                    Text(propertyPreview(item))
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.inkSoft)
                     Text(item.relativePath)
                         .font(LociTypography.font(.caption))
                         .foregroundStyle(LociColors.inkSoft)
@@ -130,6 +138,17 @@ struct TypeDashboardView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("type-object-\(item.id.uuidString.lowercased())")
+    }
+
+    private func propertyPreview(_ item: LociObjectMeta) -> String {
+        guard let type, !type.properties.isEmpty else { return "" }
+        let bits = type.properties.prefix(3).compactMap { def -> String? in
+            guard let value = item.properties[def.id] else { return nil }
+            let shown = PropertyValueFormatting.displayString(value)
+            guard !shown.isEmpty else { return nil }
+            return "\(def.name): \(shown)"
+        }
+        return bits.joined(separator: " · ")
     }
 
     private func reload() async {

@@ -15,14 +15,14 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         Type dashboards list All objects; recently opened is a stub until navigation polish.
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
-        <p class="vault-kicker">PR12 · SchemaServing</p>
+        <p class="vault-kicker">PR13 · SchemaServing + properties</p>
         <h3 class="vault-card-title">Object types</h3>
         <p class="vault-card-body" data-harness="types-loading">Loading demo fixtures…</p>
         <ul class="schema-type-list" data-harness="type-list" hidden></ul>
         <p class="vault-note" data-harness="types-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
-        <p class="vault-kicker">PR12 · Type dashboard</p>
+        <p class="vault-kicker">PR13 · Type dashboard + properties</p>
         <h3 class="vault-card-title">Books</h3>
         <p class="vault-card-body" data-harness="books-loading">Loading demo-types fixture…</p>
         <ul class="schema-type-list" data-harness="books-list" hidden></ul>
@@ -58,7 +58,7 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
   if (!loading || !list || !note) return;
 
   try {
-    // Prefer PR12 demo-types; fall back to demo-schema manifest.
+    // Prefer PR13 demo-properties / demo-types; fall back to demo-schema manifest.
     let manifest: {
       space?: { name?: string; schemaVersion?: number };
       types?: Array<{
@@ -67,11 +67,12 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
         icon?: string;
         color?: string;
         isBuiltIn?: boolean;
-        properties?: unknown[];
+        properties?: Array<{ id?: string; name?: string; kind?: string }>;
       }>;
       note?: string;
       pageDeleteBlocked?: boolean;
       appearsOnlyUnderBooks?: boolean;
+      survivedReload?: boolean;
     } | null = null;
 
     const typesRes = await fetch("/demo-types/types.json", { cache: "no-store" });
@@ -79,13 +80,14 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
       const data = (await typesRes.json()) as typeof manifest & {
         pageDeleteBlocked?: boolean;
         appearsOnlyUnderBooks?: boolean;
+        survivedReload?: boolean;
       };
       manifest = data;
     } else {
       const res = await fetch("/demo-schema/manifest.json", { cache: "no-store" });
       if (!res.ok) {
         throw new Error(
-          `HTTP ${res.status} — run ./scripts/demo-types.sh (or demo-schema.sh)`,
+          `HTTP ${res.status} — run ./scripts/demo-properties.sh (or demo-types.sh)`,
         );
       }
       manifest = (await res.json()) as typeof manifest;
@@ -99,12 +101,18 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
     list.hidden = false;
     list.innerHTML = types
       .map((t) => {
-        const props = Array.isArray(t.properties) ? t.properties.length : 0;
+        const props = Array.isArray(t.properties) ? t.properties : [];
+        const propLabel =
+          props.length === 0
+            ? "0 properties"
+            : `${props.length} properties (${props
+                .map((p) => p.id ?? p.name ?? "?")
+                .join(", ")})`;
         const builtIn = t.isBuiltIn ? " · built-in" : "";
         return `
           <li class="schema-type-row" data-harness="type-row" data-type-id="${t.id ?? ""}">
             <span class="schema-type-name">${escapeHtml(t.name ?? t.id ?? "Unknown")}</span>
-            <span class="schema-type-meta">.${t.id ?? "?"} · ${props} properties${builtIn}${
+            <span class="schema-type-meta">.${t.id ?? "?"} · ${propLabel}${builtIn}${
               t.color ? ` · ${escapeHtml(t.color)}` : ""
             }</span>
           </li>
@@ -116,16 +124,21 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
     const bits: string[] = [];
     if (page) bits.push("Page seeded");
     if (book) bits.push("Books custom type present");
+    if ((book?.properties?.length ?? 0) > 0) {
+      bits.push(`Book defs: ${(book?.properties ?? []).map((p) => p.id).join(", ")}`);
+    }
     if (manifest?.pageDeleteBlocked) bits.push("Page delete guarded ✓");
     if (manifest?.appearsOnlyUnderBooks) bits.push("Deep Work only under Books ✓");
+    if (manifest?.survivedReload) bits.push("Properties survive reload ✓");
     note.textContent = bits.join(" · ") || (manifest?.note ?? "");
     note.dataset.pagePresent = page ? "true" : "false";
     note.dataset.bookPresent = book ? "true" : "false";
+    note.dataset.bookPropCount = String(book?.properties?.length ?? 0);
   } catch (err) {
     loading.textContent =
       err instanceof Error ? err.message : "Failed to load type fixtures";
     note.hidden = false;
-    note.textContent = "Run: ./scripts/demo-types.sh then refresh (?panel=types).";
+    note.textContent = "Run: ./scripts/demo-properties.sh then refresh (?panel=types).";
   }
 }
 
@@ -148,6 +161,7 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
         title?: string;
         relativePath?: string;
         tags?: string[];
+        properties?: Record<string, string | number | boolean>;
       };
       booksCount?: number;
       pagesCount?: number;
@@ -155,6 +169,11 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
       objectsFolder?: string;
       objectsFolderExists?: boolean;
       pageDeleteBlocked?: boolean;
+      survivedReload?: boolean;
+      statusIndexed?: boolean;
+      ratingIndexed?: boolean;
+      propertiesIdx?: Array<{ key?: string; valueText?: string; valueNumber?: number }>;
+      frontmatterSnippet?: string;
       moduleVersion?: string;
       note?: string;
     };
@@ -166,24 +185,82 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
 
     list.hidden = false;
     if (book) {
+      const propBits = Object.entries(book.properties ?? {})
+        .map(([k, v]) => `${k}=${v}`)
+        .join(" · ");
       list.innerHTML = `
         <li class="schema-type-row" data-harness="book-row" data-object-id="${escapeHtml(
           book.id ?? "",
         )}" role="button" tabindex="0">
           <span class="schema-type-name">${escapeHtml(book.title ?? "Untitled")}</span>
-          <span class="schema-type-meta">${escapeHtml(book.relativePath ?? "")}</span>
+          <span class="schema-type-meta">${escapeHtml(
+            propBits || book.relativePath || "",
+          )}</span>
         </li>`;
     } else {
       list.innerHTML = `<li class="schema-type-row"><span class="schema-type-meta">No books yet</span></li>`;
+    }
+
+    // Object detail — properties survive reload (PR13).
+    let detail = root.querySelector<HTMLElement>("[data-harness='book-detail']");
+    if (!detail) {
+      detail = document.createElement("div");
+      detail.className = "page-detail";
+      detail.dataset.harness = "book-detail";
+      detail.hidden = true;
+      recent.insertAdjacentElement("beforebegin", detail);
+    }
+    if (book) {
+      const props = book.properties ?? {};
+      const propRows = Object.entries(props)
+        .map(
+          ([k, v]) =>
+            `<div><dt>${escapeHtml(k)}</dt><dd data-harness="prop-${escapeHtml(k)}">${escapeHtml(
+              String(v),
+            )}</dd></div>`,
+        )
+        .join("");
+      const idxBits = (data.propertiesIdx ?? [])
+        .map((r) => {
+          const val =
+            r.valueText ??
+            (r.valueNumber !== undefined ? String(r.valueNumber) : "?");
+          return `${r.key}=${val}`;
+        })
+        .join(", ");
+      detail.hidden = false;
+      detail.innerHTML = `
+        <p class="vault-kicker">PR13 · Object properties</p>
+        <p class="vault-card-body" data-harness="book-detail-title">${escapeHtml(
+          book.title ?? "Untitled",
+        )} · ${escapeHtml(book.relativePath ?? "")}</p>
+        <dl class="vault-meta" data-harness="book-properties">${
+          propRows || "<div><dt>—</dt><dd>none</dd></div>"
+        }</dl>
+        <p class="vault-note" data-harness="book-props-proof">
+          survivedReload=${data.survivedReload === true ? "yes" : "no"} ·
+          statusIndexed=${data.statusIndexed === true ? "yes" : "no"} ·
+          ratingIndexed=${data.ratingIndexed === true ? "yes" : "no"} ·
+          idx=[${escapeHtml(idxBits)}]
+        </p>
+        ${
+          data.frontmatterSnippet
+            ? `<pre class="md-pre" data-harness="book-frontmatter" style="max-height:12rem;overflow:auto">${escapeHtml(
+                data.frontmatterSnippet,
+              )}</pre>`
+            : ""
+        }
+      `;
     }
 
     recent.hidden = false;
     note.hidden = false;
     note.textContent =
       data.note ??
-      "Create Books → Deep Work. Appears only under Books (not Pages).";
+      "Book status + rating in YAML frontmatter; properties_idx on save (PR13).";
     note.dataset.appearsOnlyUnderBooks = String(data.appearsOnlyUnderBooks === true);
     note.dataset.pageDeleteBlocked = String(data.pageDeleteBlocked === true);
+    note.dataset.survivedReload = String(data.survivedReload === true);
   } catch (err) {
     loading.textContent =
       err instanceof Error ? err.message : "Failed to load demo-types fixture";

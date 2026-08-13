@@ -16,6 +16,9 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var inspectedDailyDay: Date
     /// Type dashboard focus inside Types destination (`nil` = type list). PR12.
     public var focusedTypeID: ObjectTypeID?
+    /// Live editor session for the open object — property inspector shares saves (PR13).
+    @ObservationIgnored
+    public weak var activeEditorSession: EditorSessionBridge?
     /// Concrete vault I/O (local Documents fallback always available).
     public let vault: VaultService
     /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).

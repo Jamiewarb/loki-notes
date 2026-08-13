@@ -67,6 +67,27 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func objects(
+        typeID: ObjectTypeID?,
+        propertyKey: String,
+        equalsText: String
+    ) async throws -> [LociObjectMeta] {
+        try await dbQueue.read { db in
+            try PropertiesQuery.objects(
+                db: db,
+                typeID: typeID,
+                propertyKey: propertyKey,
+                equalsText: equalsText
+            )
+        }
+    }
+
+    public func propertyIndex(objectID: ObjectID) async throws -> [PropertyIndexRow] {
+        try await dbQueue.read { db in
+            try PropertiesQuery.propertyIndex(db: db, objectID: objectID)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {

@@ -30,10 +30,12 @@ final class EditorSessionBridge {
     private var meta: LociObjectMeta
     private var saveGeneration: UInt64 = 0
     private var firstDirtyDate: Date?
+    private var propertiesDirty = false
     private let objects: any ObjectServing
 
-    var isDirty: Bool { editor.isDirty || title != meta.title }
+    var isDirty: Bool { editor.isDirty || title != meta.title || propertiesDirty }
     var blocks: [BlockNode] { editor.blocks }
+    var currentProperties: [String: PropertyValue] { meta.properties }
 
     init(opened: OpenedObject, objects: any ObjectServing) throws {
         self.objectID = opened.meta.id
@@ -50,6 +52,13 @@ final class EditorSessionBridge {
 
     func applyTitle(_ value: String) {
         title = value
+        scheduleSave()
+    }
+
+    /// Update frontmatter properties (inspector). Values persist on next flush.
+    func applyProperties(_ values: [String: PropertyValue]) {
+        meta.properties = values
+        propertiesDirty = true
         scheduleSave()
     }
 
@@ -113,6 +122,7 @@ final class EditorSessionBridge {
             try await objects.save(meta: next, bodyMarkdown: body)
             meta = next
             editor.markSaved()
+            propertiesDirty = false
             firstDirtyDate = nil
             lastError = nil
         } catch {

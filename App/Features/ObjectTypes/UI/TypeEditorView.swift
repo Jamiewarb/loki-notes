@@ -32,7 +32,7 @@ struct TypeEditorView: View {
             }
             .lociAppear(.soft)
 
-            Text("Writes `.loci/types/<slug>.json` and creates `objects/<slug>/`. Property defs arrive in PR13.")
+            Text("Writes `.loci/types/<slug>.json` and creates `objects/<slug>/`. Add property defs after create.")
                 .font(LociTypography.font(.body))
                 .foregroundStyle(LociColors.inkSoft)
                 .frame(maxWidth: 520, alignment: .leading)

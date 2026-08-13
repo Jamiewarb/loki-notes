@@ -29,4 +29,18 @@ public protocol SchemaServing: Sendable {
     /// Delete a custom type. Refuses built-in Page/Daily. Refuses non-empty
     /// `objects/<slug>/` unless `force` (then schema JSON only is removed).
     func deleteType(_ id: ObjectTypeID, force: Bool) async throws
+
+    // MARK: - Properties (PR13)
+
+    /// Replace the full property-def list for a type (merge-friendly single-file write).
+    @discardableResult
+    func setProperties(_ typeID: ObjectTypeID, properties: [PropertyDef]) async throws -> ObjectType
+
+    /// Insert or replace one property definition by id.
+    @discardableResult
+    func upsertProperty(_ typeID: ObjectTypeID, def: PropertyDef) async throws -> ObjectType
+
+    /// Remove a property definition by id. No-op id → `propertyNotFound`.
+    @discardableResult
+    func removeProperty(_ typeID: ObjectTypeID, propertyID: String) async throws -> ObjectType
 }

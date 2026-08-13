@@ -2,6 +2,18 @@ import XCTest
 import LociCore
 
 final class DomainModelTests: XCTestCase {
+    func testPropertyValueFormattingAndKeys() {
+        XCTAssertEqual(PropertyKey.fromName("Status"), "status")
+        XCTAssertEqual(PropertyKey.fromName("Page URL"), "page-url")
+        XCTAssertEqual(
+            PropertyValueFormatting.coerce(draft: "Reading", kind: .select),
+            .select("Reading")
+        )
+        XCTAssertEqual(PropertyValueFormatting.coerce(draft: "4.5", kind: .number), .number(4.5))
+        XCTAssertEqual(PropertyValueFormatting.displayString(.number(5)), "5")
+        XCTAssertEqual(PropertyValueFormatting.displayString(.bool(true)), "true")
+    }
+
     func testObjectTypePageBuiltInCodableRoundTrip() throws {
         let original = ObjectType.builtInPage
         let data = try JSONEncoder().encode(original)
