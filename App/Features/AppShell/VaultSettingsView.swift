@@ -71,6 +71,9 @@ struct VaultSettingsView: View {
             AppleIntegrationsFeature.settingsSection(services: services)
                 .padding(.top, LociSpacing.stack(.md))
 
+            SafariClipperFeature.settingsNote(services: services)
+                .padding(.top, LociSpacing.stack(.md))
+
             if let statusMessage {
                 Text(statusMessage)
                     .font(LociTypography.font(.caption))

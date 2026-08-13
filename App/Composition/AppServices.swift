@@ -54,6 +54,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let aiCredentials: AICredentialStore
     /// Apple Calendar / Reminders (PR31) — always available; settings outside vault.
     public let apple: AppleIntegrationService
+    /// Safari web clipper (PR32). Nil until CaptureServing + ObjectServing are ready.
+    public private(set) var safariClipper: SafariClipService?
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
 
@@ -75,7 +77,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         importer: ImportService? = nil,
         ai: AIService? = nil,
         aiCredentials: AICredentialStore? = nil,
-        apple: AppleIntegrationService? = nil
+        apple: AppleIntegrationService? = nil,
+        safariClipper: SafariClipService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -158,6 +161,17 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
                 )
         }()
         self.apple = apple ?? AppleIntegrationService(settingsDirectory: appleDir)
+        if let safariClipper {
+            self.safariClipper = safariClipper
+        } else if let capture = self.capture, let objects = self.objects {
+            self.safariClipper = SafariClipService(
+                vault: resolvedVault,
+                capture: capture,
+                objects: objects
+            )
+        } else {
+            self.safariClipper = nil
+        }
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
@@ -172,6 +186,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
                 dailyNotes = DailyNoteService(vault: vault, index: index, schema: schema)
             }
             wireCaptureIfPossible()
+            wireSafariClipperIfPossible()
             wireImporterIfPossible()
             return index
         }
@@ -186,6 +201,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.objects = ObjectService(vault: vault, index: service, schema: schema)
         self.dailyNotes = DailyNoteService(vault: vault, index: service, schema: schema)
         wireCaptureIfPossible()
+        wireSafariClipperIfPossible()
         wireImporterIfPossible()
         return service
     }
@@ -364,6 +380,14 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         apple
     }
 
+    public func ensureSafariClipperService() async throws -> SafariClipService {
+        if let safariClipper { return safariClipper }
+        _ = try await ensureCaptureService()
+        wireSafariClipperIfPossible()
+        guard let safariClipper else { throw LociError.indexUnavailable }
+        return safariClipper
+    }
+
     /// Drain extension inbox staging files into today / typed objects (PR26).
     @discardableResult
     public func drainCaptureInbox(calendar: Calendar = .current) async throws -> [CaptureResult] {
@@ -374,6 +398,12 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     private func wireCaptureIfPossible() {
         guard capture == nil, let objects, let dailyNotes else { return }
         capture = CaptureService(vault: vault, objects: objects, dailyNotes: dailyNotes)
+        wireSafariClipperIfPossible()
+    }
+
+    private func wireSafariClipperIfPossible() {
+        guard safariClipper == nil, let capture, let objects else { return }
+        safariClipper = SafariClipService(vault: vault, capture: capture, objects: objects)
     }
 
     private func wireImporterIfPossible() {

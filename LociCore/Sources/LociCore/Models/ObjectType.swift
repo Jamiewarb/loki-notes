@@ -129,4 +129,20 @@ public struct ObjectType: Hashable, Sendable, Codable, Equatable {
             isDaily: false
         )
     }
+
+    /// Built-in Weblink type — Safari clipper / web captures (PR32).
+    public static var builtInWeblink: ObjectType {
+        ObjectType(
+            id: .weblink,
+            name: "Weblink",
+            icon: "link",
+            color: "#0F6B5C",
+            properties: [
+                PropertyDef(id: "url", name: "URL", kind: .url, required: true),
+                PropertyDef(id: "clipped-from", name: "Clipped from", kind: .text, required: false),
+            ],
+            isBuiltIn: true,
+            isDaily: false
+        )
+    }
 }

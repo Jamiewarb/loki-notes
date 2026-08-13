@@ -129,6 +129,15 @@ struct DetailHostView: View {
                         message: "Apple Calendar / Reminders (PR31). Event chrome · Meeting objects · optional Reminders sync."
                     )
                 }
+            case .safari:
+                if let services {
+                    SafariClipperFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .safari,
+                        message: "Safari clipper (PR32). Selection/page → today or Weblink via .loci/inbox/."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -163,6 +172,7 @@ struct DetailHostView: View {
         case .typeConvert: return "typeConvert"
         case .ai: return "ai"
         case .apple: return "apple"
+        case .safari: return "safari"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

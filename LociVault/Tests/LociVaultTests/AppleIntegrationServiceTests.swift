@@ -168,6 +168,6 @@ final class AppleIntegrationServiceTests: XCTestCase {
             }
         }
         XCTAssertFalse(sqliteInVault)
-        XCTAssertTrue(LociVaultModule.version.contains("pr31"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32"))
     }
 }

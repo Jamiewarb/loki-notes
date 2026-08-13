@@ -3,7 +3,7 @@ import Foundation
 /// Slug rules for custom object types (`.loci/types/<slug>.json` + `objects/<slug>/`).
 public enum TypeSlug: Sendable {
     /// Reserved built-in ids — never create/delete casually as custom types.
-    public static let reserved: Set<String> = ["page", "daily", "image", "meeting"]
+    public static let reserved: Set<String> = ["page", "daily", "image", "meeting", "weblink"]
 
     /// Derive a filesystem-safe slug from a display name (lowercase, hyphenated).
     public static func fromName(_ name: String) -> String {
@@ -56,6 +56,6 @@ public enum TypeSlug: Sendable {
 
     public static func isProtected(_ id: ObjectTypeID) -> Bool {
         reserved.contains(id.rawValue)
-            || id == .page || id == .daily || id == .image || id == .meeting
+            || id == .page || id == .daily || id == .image || id == .meeting || id == .weblink
     }
 }
