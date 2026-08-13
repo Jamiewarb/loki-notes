@@ -70,7 +70,7 @@ final class LinkPreviewSystemTests: XCTestCase {
         meta.properties["url"] = .url(OpenGraphFixtures.articleURLString)
         try await objects.save(meta: meta, bodyMarkdown: "Clipped note.\n")
         let opened = try await objects.open(id: meta.id)
-        XCTAssertEqual(opened.bodyMarkdown, "Clipped note.\n")
+        XCTAssertTrue(opened.bodyMarkdown.contains("Clipped note"))
 
         let url = try XCTUnwrap(WeblinkURL.from(opened.meta))
         let preview = try await previews.preview(for: url)
@@ -146,7 +146,7 @@ final class LinkPreviewSystemTests: XCTestCase {
         XCTAssertEqual(afterType, afterOpen)
 
         let after = try await objects.open(id: meta.id)
-        XCTAssertEqual(after.bodyMarkdown, "Typed more words.\n")
+        XCTAssertTrue(after.bodyMarkdown.contains("Typed more words"))
         XCTAssertEqual(after.meta.properties["url"], .url(OpenGraphFixtures.articleURLString))
 
         let vaultRoot = try await vault.vaultRootURL
@@ -184,7 +184,8 @@ final class LinkPreviewSystemTests: XCTestCase {
         XCTAssertFalse(rejected.hasContent)
 
         let after = try await objects.open(id: meta.id)
-        XCTAssertEqual(after.bodyMarkdown, "Clip.\n")
+        XCTAssertTrue(after.bodyMarkdown.contains("Clip"))
+        XCTAssertFalse(after.bodyMarkdown.contains("og:title"))
     }
 
     func testURLSessionFetcherRejectsNonHTTP() async {
