@@ -48,6 +48,10 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public private(set) var capture: CaptureService?
     /// Import markdown / Obsidian / Capacities (PR27). Nil until index is ready.
     public private(set) var importer: ImportService?
+    /// AI assist (PR30) — always available; settings/credentials outside vault.
+    public let ai: AIService
+    /// BYOK credential store (Application Support / Keychain) — never vault.
+    public let aiCredentials: AICredentialStore
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
 
@@ -66,7 +70,9 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         media: MediaService? = nil,
         sync: SyncStatusService? = nil,
         capture: CaptureService? = nil,
-        importer: ImportService? = nil
+        importer: ImportService? = nil,
+        ai: AIService? = nil,
+        aiCredentials: AICredentialStore? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -123,6 +129,23 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         } else {
             self.importer = nil
         }
+        let aiDir: URL = {
+            if let ai { return ai.settingsFileURL.deletingLastPathComponent() }
+            return (try? AICredentialStore.defaultDirectory())
+                ?? FileManager.default.temporaryDirectory.appendingPathComponent(
+                    "Loci/ai",
+                    isDirectory: true
+                )
+        }()
+        let resolvedCredentials = aiCredentials ?? AICredentialStore(directory: aiDir)
+        self.aiCredentials = resolvedCredentials
+        self.ai =
+            ai
+            ?? AIService(
+                settingsDirectory: aiDir,
+                credentials: resolvedCredentials,
+                remote: nil
+            )
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
@@ -315,6 +338,12 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         wireImporterIfPossible()
         guard let importer else { throw LociError.indexUnavailable }
         return importer
+    }
+
+    /// AI service is always wired; helper for symmetry with other ensure* APIs.
+    @discardableResult
+    public func ensureAIService() -> AIService {
+        ai
     }
 
     /// Drain extension inbox staging files into today / typed objects (PR26).

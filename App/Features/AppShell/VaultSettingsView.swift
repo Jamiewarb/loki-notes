@@ -65,6 +65,9 @@ struct VaultSettingsView: View {
             SyncStatusFeature.settingsSection(services: services)
                 .padding(.top, LociSpacing.stack(.md))
 
+            AIFeature.settingsSection(services: services)
+                .padding(.top, LociSpacing.stack(.md))
+
             if let statusMessage {
                 Text(statusMessage)
                     .font(LociTypography.font(.caption))

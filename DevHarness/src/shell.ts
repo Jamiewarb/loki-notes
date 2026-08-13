@@ -23,7 +23,8 @@ export type PanelId =
   | "calendar"
   | "capture"
   | "import"
-  | "type-convert";
+  | "type-convert"
+  | "ai";
 
 export interface NavItem {
   id: PanelId;
@@ -73,6 +74,7 @@ export const STUDIO_NAV: NavItem[] = [
     subtitle: "Type · property map",
     section: "studio",
   },
+  { id: "ai", label: "AI", subtitle: "Assist · BYOK", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -164,6 +166,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Convert",
     body: "Type conversion (PR28). Property mapping UI · move objects/<type>/ · ObjectID stable · index via ObjectServing / IndexUpdating.",
     inspector: "Map PropertyDefs · refuse daily · index never in vault.",
+  },
+  ai: {
+    id: "ai",
+    title: "AI",
+    body: "AI assist (PR30). Summarize · rewrite · translate · property autofill. On-device heuristics / BYOK with explicit upload opt-in. Apply via ObjectServing only.",
+    inspector: "Credentials in Application Support · never vault · never upload without opt-in.",
   },
   tags: {
     id: "tags",

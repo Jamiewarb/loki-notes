@@ -239,11 +239,11 @@ final class TypeConversionSystemTests: XCTestCase {
 
     func testModuleVersionIsPR28() {
         XCTAssertTrue(
-            LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29"),
+            LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30"),
             LociVaultModule.version
         )
         XCTAssertTrue(
-            LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29"),
+            LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29") || LociIndexModule.version.contains("pr30"),
             LociIndexModule.version
         )
     }

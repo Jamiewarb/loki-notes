@@ -141,6 +141,15 @@ Richer editor (PR29) extras:
 
 Tables / toggles / callouts / mermaid fences round-trip in LociMarkdown; slash menu + “Turn into…” uses ObjectServing.create + wiki-link. Syntax highlight is harness/CSS on Linux.
 
+AI assist (PR30) extras:
+
+```bash
+./scripts/demo-ai.sh
+# harness: http://127.0.0.1:5173/?panel=ai
+```
+
+Side-panel summarize / rewrite / translate / property autofill. On-device heuristics by default; BYOK never uploads without opt-in. Credentials in Application Support — never the vault. Apply via ObjectServing / EditorSession only.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

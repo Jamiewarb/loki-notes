@@ -69,6 +69,14 @@ final class EditorSessionBridge {
         scheduleSave()
     }
 
+    /// Apply an accepted AI body proposal (PR30). Marks dirty and schedules save.
+    func applyProposedBody(_ markdown: String) throws {
+        try editor.applyProposedBody(markdown)
+        editEpoch &+= 1
+        noteDirtyClock()
+        scheduleSave()
+    }
+
     /// Update object-level frontmatter tags (inspector). Values persist on next flush.
     func applyTags(_ values: [String]) {
         meta.tags = TagNormalization.uniquing(values)

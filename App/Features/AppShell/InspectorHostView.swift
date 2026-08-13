@@ -51,6 +51,7 @@ struct InspectorHostView: View {
                         TagsFeature.objectTags(services: services, objectID: id)
                         LinksFeature.backlinks(services: services, objectID: id)
                         TypeConversionFeature.sheet(services: services, objectID: id)
+                        AIFeature.panel(services: services, objectID: id)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -66,6 +67,8 @@ struct InspectorHostView: View {
                 ImportExportFeature.inspector(services: services)
             } else if case .typeConvert = route {
                 TypeConversionFeature.inspector(services: services)
+            } else if case .ai = route {
+                AIFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -145,6 +148,7 @@ struct InspectorHostView: View {
         case .capture: return "Inbox · surfaces"
         case .importExport: return "Dry-run · apply"
         case .typeConvert: return "Property map · move"
+        case .ai: return "Assist · BYOK"
         case .object: return "Properties"
         }
     }
@@ -175,8 +179,10 @@ struct InspectorHostView: View {
             return "Markdown folder · Obsidian · Capacities — dry-run summary, then vault writes + index."
         case .typeConvert:
             return "Map PropertyDefs, move objects/<type>/, keep ObjectID; index via ObjectServing."
+        case .ai:
+            return "Summarize / rewrite / translate / autofill — on-device by default; BYOK never uploads without opt-in."
         case .object:
-            return "Properties, object tags, backlinks, and type conversion from the local index."
+            return "Properties, object tags, backlinks, type conversion, and AI assist from the local index."
         }
     }
 

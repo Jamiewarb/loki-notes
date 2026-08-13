@@ -91,6 +91,22 @@ final class EditorSessionTests: XCTestCase {
         }
     }
 
+    func testApplyProposedBodyWorksWhenDirty() throws {
+        let session = try EditorSession(bodyMarkdown: "Original draft\n")
+        session.applyLocalEdit(.setPlainText(blockIndex: 0, text: "Dirty local"))
+        XCTAssertTrue(session.isDirty)
+
+        try session.applyProposedBody("## AI rewrite\n\nAccepted body\n")
+        XCTAssertTrue(session.isDirty)
+        guard case .heading(let level, _) = session.blocks[0] else {
+            return XCTFail("expected heading from AI proposal")
+        }
+        XCTAssertEqual(level, 2)
+        let body = session.serializeBody()
+        XCTAssertTrue(body.contains("AI rewrite"))
+        XCTAssertTrue(body.contains("Accepted body"))
+    }
+
     func testSlashKindFiltering() {
         let hits = SlashBlockKind.allCases.filter { $0.matches(query: "ta") }
         XCTAssertTrue(hits.contains(.taskList))

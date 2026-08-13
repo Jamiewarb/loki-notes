@@ -131,6 +131,11 @@ if [[ -d "$ROOT/App/Features/TypeConversion" ]]; then
 else
   fail "App/Features/TypeConversion missing"
 fi
+if [[ -d "$ROOT/App/Features/AI" ]]; then
+  pass "App/Features/AI present"
+else
+  fail "App/Features/AI missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

@@ -111,6 +111,15 @@ struct DetailHostView: View {
                         message: "Type conversion (PR28). Property map · move objects/<type>/ · ObjectID stable."
                     )
                 }
+            case .ai:
+                if let services {
+                    AIFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .ai,
+                        message: "AI assist (PR30). Summarize · rewrite · translate · autofill — on-device / BYOK opt-in."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -143,6 +152,7 @@ struct DetailHostView: View {
         case .capture: return "capture"
         case .importExport: return "importExport"
         case .typeConvert: return "typeConvert"
+        case .ai: return "ai"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }
