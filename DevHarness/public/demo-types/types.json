@@ -1,5 +1,5 @@
 {
-  "moduleVersion": "0.15.0-pr15",
+  "moduleVersion": "0.22.0-pr22",
   "space": {
     "archiveApproach": "tag:#archive",
     "hideArchived": true,
@@ -137,5 +137,85 @@
     "idempotent": true,
     "resourceTypeExists": false
   },
-  "note": "Fresh vault \u2192 Apply PARA \u2192 Project/Area ready with templates; Resource=#resource; Archive=#archive filter (PR15)."
+  "note": "Fresh vault \u2192 Apply PARA \u2192 Project/Area ready with templates; Resource=#resource; Archive=#archive filter (PR15).",
+  "collections": [
+    {
+      "id": "book.favorites",
+      "memberCount": 2,
+      "memberIDs": [
+        "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+        "cb92f223-af29-4b6f-85b7-4678aa9ed7eb"
+      ],
+      "name": "Favorites",
+      "relativePath": ".loci/collections/book.favorites.json",
+      "typeID": "book"
+    },
+    {
+      "id": "book.reading-list",
+      "memberCount": 2,
+      "memberIDs": [
+        "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+        "b5f5ffba-bf9e-4f11-90a2-8b3df3d7751c"
+      ],
+      "name": "Reading List",
+      "relativePath": ".loci/collections/book.reading-list.json",
+      "typeID": "book"
+    }
+  ],
+  "favorites": {
+    "exists": true,
+    "id": "book.favorites",
+    "memberCount": 2,
+    "memberTitles": [
+      "Deep Work",
+      "Atomic Habits"
+    ],
+    "name": "Favorites",
+    "relativePath": ".loci/collections/book.favorites.json"
+  },
+  "readingList": {
+    "id": "book.reading-list",
+    "memberCount": 2,
+    "name": "Reading List"
+  },
+  "collectionTabs": [
+    "All",
+    "Favorites",
+    "Reading List"
+  ],
+  "books": [
+    {
+      "id": "cb92f223-af29-4b6f-85b7-4678aa9ed7eb",
+      "inFavorites": true,
+      "inReadingList": false,
+      "relativePath": "objects/book/atomic-habits.md",
+      "title": "Atomic Habits"
+    },
+    {
+      "id": "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+      "inFavorites": true,
+      "inReadingList": true,
+      "relativePath": "objects/book/deep-work.md",
+      "title": "Deep Work"
+    },
+    {
+      "id": "b5f5ffba-bf9e-4f11-90a2-8b3df3d7751c",
+      "inFavorites": false,
+      "inReadingList": true,
+      "relativePath": "objects/book/range.md",
+      "title": "Range"
+    }
+  ],
+  "allBooksCount": 3,
+  "membershipIsVaultFile": true,
+  "collectionsNote": "PR22: Manual collections per type; membership in .loci/collections/<type>.<slug>.json; type dashboard tabs.",
+  "booksCount": 3,
+  "objectsFolder": "objects/book",
+  "objectsFolderExists": true,
+  "bookObject": {
+    "id": "cb92f223-af29-4b6f-85b7-4678aa9ed7eb",
+    "type": "book",
+    "title": "Atomic Habits",
+    "relativePath": "objects/book/atomic-habits.md"
+  }
 }

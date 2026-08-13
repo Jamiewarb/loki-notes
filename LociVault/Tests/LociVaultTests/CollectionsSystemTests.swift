@@ -74,7 +74,8 @@ final class CollectionsSystemTests: XCTestCase {
         try await schema.deleteCollection("book.favorites")
         let gone = try await vault.fileExists(atRelativePath: path)
         XCTAssertFalse(gone)
-        XCTAssertTrue(try await schema.listCollections(typeID: book.id).isEmpty)
+        let afterDelete = try await schema.listCollections(typeID: book.id)
+        XCTAssertTrue(afterDelete.isEmpty)
     }
 
     func testAddRemoveMembershipPreservesOrder() async throws {

@@ -4,32 +4,31 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## Wave B MVP complete (PR09–PR21)
+## Wave C start (PR22+)
 
-**Milestone:** Capacities-core daily loop + types + templates + links + search + tasks + media + sync UX usable on Mac/iPhone via iCloud directory (local Documents fallback always).
+**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth begins at Collections.
 
-Next stack: **Wave C** starting at **PR22 Collections**.
+Next stack: **PR23 Saved queries + embeds**.
 
 ---
 
-## PR21 — Sync UX and resilience
+## PR22 — Collections
 
-**Branch:** `cursor/pr21-sync-ux-d2c1`  
-**Based on:** `cursor/pr20-media-d2c1` @ `6d513cc`  
-**Tip:** see `git rev-parse HEAD` on branch (evidence at `evidence/pr21/`)
+**Branch:** `cursor/pr22-collections-d2c1`  
+**Based on:** `cursor/pr21-sync-ux-d2c1` @ `8970e4d`  
+**Tip:** see `git rev-parse HEAD` on branch (evidence at `evidence/pr22/`)
 
 ### What landed
 
-- **`Features/SyncStatus/`:** `SyncStatusFeature`, `SyncChip`, `ConflictList`, `SyncSettingsSection`
-- **Core:** expanded `SyncStatusProviding` (path, conflicts, ensureDownloaded, rebuildIndex, reveal); `SyncStatusDerivation`; `SyncConflictItem`
-- **Vault:** `SyncStatusService`, `DownloadOnDemand` (Apple stub / Linux no-op), `ConflictScanner` (markdown + media), `VaultPathRevealer`
-- **`VaultServing.ensureDownloaded` + `listConflictedCopies`**; `ObjectService.open` ensures note + media refs
-- **Settings:** rebuild index, reveal vault path, conflict list; sidebar sync chip
-- **Demo:** `loci-sync-demo` / `scripts/demo-sync.sh` → `DevHarness/public/demo-sync/`
-- **Harness:** Settings sync status panel (`?panel=settings`)
-- **Tests:** status derivation + conflict listing (Core + Vault)
-- Evidence: `evidence/pr21/`
-- Version: Index / Markdown → `*-pr21`; Vault → `0.21.0-pr21`
+- **`Features/Collections/`:** `CollectionsFeature`, `CollectionStore`, `CollectionTabsView`
+- **Core:** `ObjectCollection`, `CollectionID`; `SchemaServing` collection CRUD + add/remove; `LociError` collection cases
+- **Vault:** `.loci/collections/` in `VaultLayout`; `SchemaStore` membership JSON (`<type>.<slug>.json`); merge-friendly per-file truth
+- **Type dashboard:** All / collection tabs; create/delete collection; add/remove objects (ordered membership)
+- **Demo:** `loci-collections-demo` / `scripts/demo-collections.sh` → `DevHarness/public/demo-collections/`
+- **Harness:** Types panel collection tabs + Collections section (`?panel=types`)
+- **Tests:** collection CRUD, membership order, skeleton dir, Core Codable (+5 → **194** total)
+- Evidence: `evidence/pr22/`
+- Version: Index / Markdown → `*-pr22`; Vault → `0.22.0-pr22`
 
 ### How to run checks
 
@@ -37,37 +36,36 @@ Next stack: **Wave C** starting at **PR22 Collections**.
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-sync.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=settings
+./scripts/demo-collections.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
 ```
 
-### Pitfalls for PR22 (Collections)
+### Pitfalls for PR23 (Queries)
 
-- Collections membership must be vault files (not index-only); pick a merge-friendly format
-- Do not import SyncStatus / Media / Types features into Collections — protocols only
-- Type dashboard tabs: wire through SchemaServing / ObjectServing / IndexQuerying
-- Pinned sidebar stub may later surface collections — keep AppShell chrome thin
+- Queries are rule-based / dynamic — do not confuse with manual collection membership files
+- Query results are derived (index); do not write live results into markdown unless user inserts `/query` embed
+- QueryEngine belongs with Index (filter DSL); Features/Queries talks protocols only
+- Embed blocks need Markdown kit + editor slash — keep Collections untouched
+- Pin-to-dashboard may share type-dashboard chrome with collection tabs — extend carefully, no feature→feature imports beyond existing TypeDashboard composition pattern
 
-### Next: PR22 — Collections
+### Next: PR23 — Saved queries + embeds
 
-- Branch: `cursor/pr22-collections-d2c1`
-- Manual collections per type; membership file; collection tabs on type dashboard; add/remove
-- Depends on: PR12
-- Wave C depth begins
+- Branch: `cursor/pr23-queries-d2c1`
+- QueryEngine DSL (type, tags, property ops, created/updated ranges); save query objects; pin to dashboard; `/query` embed
+- Depends on: PR13
 
 ---
 
-## PR20 — Media
+## PR21 — Sync UX and resilience
 
-**Branch:** `cursor/pr20-media-d2c1`
+**Branch:** `cursor/pr21-sync-ux-d2c1`
 
-Media attach into `media/` + Image type. See `evidence/pr20/`.
+Sync chip, conflicts, ensure-downloaded, rebuild index. See `evidence/pr21/`.
 
 ### Still relevant
 
-- Media blobs vault-only; Sync conflict list includes media conflicted copies
-- Photos picker / drag-drop remain Apple stubs
+- Collections membership is vault JSON; Sync conflict scanner may later list `.loci/collections/*.json` conflicted copies (not required in PR22)
 
 ---
 
-## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · next Wave C PR22
+## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22 done · next PR23

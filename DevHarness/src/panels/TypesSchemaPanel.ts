@@ -265,7 +265,17 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
         bodyMarkdown?: string;
         prefilledHeadings?: boolean;
       };
+      books?: Array<{
+        id?: string;
+        title?: string;
+        relativePath?: string;
+        inFavorites?: boolean;
+        inReadingList?: boolean;
+      }>;
       booksCount?: number;
+      allBooksCount?: number;
+      collectionTabs?: string[];
+      favorites?: { id?: string; memberCount?: number; relativePath?: string };
       pagesCount?: number;
       appearsOnlyUnderBooks?: boolean;
       objectsFolder?: string;
@@ -283,15 +293,30 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
       frontmatterSnippet?: string;
       moduleVersion?: string;
       note?: string;
+      collectionsNote?: string;
     };
 
     const book = data.bookObject;
-    loading.textContent = `All · ${data.booksCount ?? 0} book(s) · folder ${
+    const booksFromCollections = data.books ?? [];
+    const booksCount = data.booksCount ?? data.allBooksCount ?? booksFromCollections.length;
+    loading.textContent = `All · ${booksCount} book(s) · folder ${
       data.objectsFolder ?? "objects/book"
     } exists=${data.objectsFolderExists ?? "?"} · ${data.moduleVersion ?? ""}`;
 
     list.hidden = false;
-    if (book) {
+    if (booksFromCollections.length > 0) {
+      list.innerHTML = booksFromCollections
+        .map(
+          (b) => `
+        <li class="schema-type-row">
+          <span class="schema-type-name">${escapeHtml(b.title ?? "Untitled")}</span>
+          <span class="schema-type-meta">${escapeHtml(b.relativePath ?? "")}${
+            b.inFavorites ? " · ★ Favorites" : ""
+          }</span>
+        </li>`,
+        )
+        .join("");
+    } else if (book) {
       const propBits = Object.entries(book.properties ?? {})
         .map(([k, v]) => `${k}=${v}`)
         .join(" · ");

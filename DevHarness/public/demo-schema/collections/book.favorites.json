@@ -1,0 +1,9 @@
+{
+  "id": "book.favorites",
+  "typeID": "book",
+  "name": "Favorites",
+  "memberIDs": [
+    "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+    "cb92f223-af29-4b6f-85b7-4678aa9ed7eb"
+  ]
+}

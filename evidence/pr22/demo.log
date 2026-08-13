@@ -1,0 +1,20 @@
+==> loci-collections-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-collections-demo' complete! (0.34s)
+favorites=book.favorites members=2 all=3 vault=.loci/collections/book.favorites.json
+wrote DevHarness/public/demo-types/types.json (with collections)
+wrote DevHarness/public/demo-schema/collections and updated manifest
+==> wrote /agent/DevHarness/public/demo-collections/collections.json
+==> demo-collections complete
+==> loci-collections-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-collections-demo' complete! (0.36s)
+favorites=book.favorites members=2 all=3 vault=.loci/collections/book.favorites.json
+wrote DevHarness/public/demo-types/types.json (with collections)
+wrote DevHarness/public/demo-schema/collections and updated manifest
+==> wrote /agent/DevHarness/public/demo-collections/collections.json
+==> demo-collections complete

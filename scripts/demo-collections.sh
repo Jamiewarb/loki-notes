@@ -58,8 +58,19 @@ out["readingList"] = col.get("readingList")
 out["collectionTabs"] = col.get("tabs")
 out["books"] = col.get("books")
 out["allBooksCount"] = col.get("allBooksCount")
+out["booksCount"] = col.get("allBooksCount")
+out["objectsFolder"] = "objects/book"
+out["objectsFolderExists"] = True
 out["membershipIsVaultFile"] = col.get("membershipIsVaultFile")
 out["collectionsNote"] = col.get("note")
+if not out.get("bookObject") and (col.get("books") or []):
+    first = (col.get("books") or [])[0]
+    out["bookObject"] = {
+        "id": first.get("id"),
+        "type": "book",
+        "title": first.get("title"),
+        "relativePath": first.get("relativePath"),
+    }
 types_path.write_text(json.dumps(out, indent=2) + "\n")
 print("wrote DevHarness/public/demo-types/types.json (with collections)")
 PY
