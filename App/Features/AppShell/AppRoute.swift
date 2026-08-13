@@ -15,6 +15,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     case calendar
     case capture
     case importExport
+    case typeConvert
 
     var id: Self { self }
 
@@ -23,7 +24,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
 
     /// Debug / tooling destinations (reachable, not primary).
     static let tooling: [AppRoute] = [
-        .tags, .graph, .calendar, .capture, .importExport, .designGallery,
+        .tags, .graph, .calendar, .capture, .importExport, .typeConvert, .designGallery,
     ]
 
     var route: Route {
@@ -39,6 +40,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
         case .calendar: return .calendar
         case .capture: return .capture
         case .importExport: return .importExport
+        case .typeConvert: return .typeConvert
         }
     }
 
@@ -59,6 +61,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
         case .calendar: self = .calendar
         case .capture: self = .capture
         case .importExport: self = .importExport
+        case .typeConvert: self = .typeConvert
         case .object: return nil
         }
     }

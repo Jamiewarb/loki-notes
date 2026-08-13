@@ -10,6 +10,7 @@ struct ObjectEditorView: View {
     @State private var session: EditorSessionBridge?
     @State private var errorMessage: String?
     @State private var isLoading = true
+    @State private var showConvert = false
 
     var body: some View {
         Group {
@@ -29,6 +30,19 @@ struct ObjectEditorView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task(id: objectID.uuidString) { await load() }
+        .sheet(isPresented: $showConvert) {
+            NavigationStack {
+                TypeConversionFeature.sheet(services: services, objectID: objectID)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Done") { showConvert = false }
+                        }
+                    }
+            }
+            #if os(macOS)
+            .frame(minWidth: 420, minHeight: 480)
+            #endif
+        }
         .onDisappear {
             if services.activeEditorSession?.objectID == objectID {
                 services.activeEditorSession = nil
@@ -75,6 +89,9 @@ struct ObjectEditorView: View {
                 HStack(spacing: LociSpacing.stack(.md)) {
                     LociButton("Save now", style: .secondary) {
                         Task { await session.flushSave() }
+                    }
+                    LociButton("Convert type…", style: .secondary) {
+                        showConvert = true
                     }
                     LociButton("Delete", style: .secondary) {
                         Task { await deleteObject() }

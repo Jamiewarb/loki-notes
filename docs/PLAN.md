@@ -92,7 +92,7 @@ todos:
     status: completed
   - id: pr28-type-convert
     content: 'PR28: Type conversion with property mapping'
-    status: pending
+    status: completed
   - id: pr29-editor-rich
     content: 'PR29: Richer editor (tables, toggles, code highlight)'
     status: pending

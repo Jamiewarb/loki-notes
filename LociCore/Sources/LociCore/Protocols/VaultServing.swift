@@ -17,6 +17,9 @@ public protocol VaultServing: Sendable {
     func deleteFile(atRelativePath path: String) async throws
     func fileExists(atRelativePath path: String) async throws -> Bool
 
+    /// Coordinated move inside the vault (type conversion / relocate). Emits deleted + created.
+    func moveFile(fromRelativePath source: String, toRelativePath destination: String) async throws
+
     /// Coordinated media put into `media/images` or `media/files` (unique name). Prefer `MediaServing`.
     func putMedia(
         _ data: Data,

@@ -22,7 +22,8 @@ export type PanelId =
   | "graph"
   | "calendar"
   | "capture"
-  | "import";
+  | "import"
+  | "type-convert";
 
 export interface NavItem {
   id: PanelId;
@@ -66,6 +67,12 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "calendar", label: "Calendar", subtitle: "Daily notes · dots", section: "studio" },
   { id: "capture", label: "Capture", subtitle: "Share · widget · menu bar", section: "studio" },
   { id: "import", label: "Import", subtitle: "Markdown · Obsidian · Capacities", section: "studio" },
+  {
+    id: "type-convert",
+    label: "Convert",
+    subtitle: "Type · property map",
+    section: "studio",
+  },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -151,6 +158,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Import",
     body: "Import (PR27). Markdown folder · Obsidian vault · Capacities export — dry-run summary then apply into objects/daily/media. Preserve ObjectID + daily paths when detectable.",
     inspector: "ImportServing only — no parallel store; index stays outside the vault.",
+  },
+  "type-convert": {
+    id: "type-convert",
+    title: "Convert",
+    body: "Type conversion (PR28). Property mapping UI · move objects/<type>/ · ObjectID stable · index via ObjectServing / IndexUpdating.",
+    inspector: "Map PropertyDefs · refuse daily · index never in vault.",
   },
   tags: {
     id: "tags",

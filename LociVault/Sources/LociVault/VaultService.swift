@@ -101,6 +101,22 @@ public final class VaultService: VaultServing, @unchecked Sendable {
         monitor.noteLocalWrite(relativePath: normalizeRelativePath(path), kind: .deleted)
     }
 
+    public func moveFile(fromRelativePath source: String, toRelativePath destination: String)
+        async throws
+    {
+        let from = normalizeRelativePath(source)
+        let to = normalizeRelativePath(destination)
+        guard from != to else { return }
+        let sourceURL = try absoluteURLSync(forRelativePath: from)
+        guard coordinator.fileExists(at: sourceURL) else {
+            throw LociError.fileNotFound(from)
+        }
+        let destURL = try absoluteURLSync(forRelativePath: to)
+        try coordinator.moveItem(from: sourceURL, to: destURL)
+        monitor.noteLocalWrite(relativePath: from, kind: .deleted)
+        monitor.noteLocalWrite(relativePath: to, kind: .created)
+    }
+
     public func fileExists(atRelativePath path: String) async throws -> Bool {
         let url = try absoluteURLSync(forRelativePath: path)
         return coordinator.fileExists(at: url)

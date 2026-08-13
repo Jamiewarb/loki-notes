@@ -211,6 +211,126 @@ public final class ObjectService: ObjectServing, @unchecked Sendable {
         return OpenedObject(meta: meta, bodyMarkdown: template.bodyMarkdown)
     }
 
+    // MARK: - Type conversion (PR28)
+
+    public func planConversion(id: ObjectID, toTypeID: ObjectTypeID) async throws -> TypeConversionPlan {
+        guard let schema else {
+            throw LociError.schemaNotFound("schema required for type conversion")
+        }
+        try Self.validateConversionTypes(toTypeID: toTypeID)
+
+        let opened = try await open(id: id)
+        try Self.validateConversionSource(opened.meta.typeID, toTypeID: toTypeID)
+
+        let sourceType = try await schema.loadType(opened.meta.typeID)
+        let targetType = try await schema.loadType(toTypeID)
+        let mappings = TypeConversionMapper.suggestMapping(
+            sourceDefs: sourceType.properties,
+            targetDefs: targetType.properties
+        )
+        let proposed = try await ObjectPathAllocator.allocate(
+            typeID: toTypeID,
+            title: opened.meta.title,
+            id: opened.meta.id,
+            vault: vault
+        )
+        return TypeConversionPlan(
+            objectID: opened.meta.id,
+            title: opened.meta.title,
+            sourceTypeID: opened.meta.typeID,
+            targetTypeID: toTypeID,
+            sourceRelativePath: opened.meta.relativePath,
+            proposedRelativePath: proposed,
+            mappings: mappings,
+            sourceDefs: sourceType.properties,
+            targetDefs: targetType.properties,
+            droppedPropertyIDs: TypeConversionMapper.droppedPropertyIDs(in: mappings),
+            unmappedRequiredTargetIDs: TypeConversionMapper.unmappedRequiredTargetIDs(
+                targetDefs: targetType.properties,
+                mappings: mappings
+            )
+        )
+    }
+
+    public func convert(
+        id: ObjectID,
+        toTypeID: ObjectTypeID,
+        propertyMap: [TypeConversionPropertyMap]
+    ) async throws -> TypeConversionResult {
+        guard let schema else {
+            throw LociError.schemaNotFound("schema required for type conversion")
+        }
+        try Self.validateConversionTypes(toTypeID: toTypeID)
+
+        let opened = try await open(id: id)
+        let sourceTypeID = opened.meta.typeID
+        try Self.validateConversionSource(sourceTypeID, toTypeID: toTypeID)
+
+        let targetType = try await schema.loadType(toTypeID)
+        let oldPath = opened.meta.relativePath
+        let newPath = try await ObjectPathAllocator.allocate(
+            typeID: toTypeID,
+            title: opened.meta.title,
+            id: opened.meta.id,
+            vault: vault
+        )
+
+        let mapped = TypeConversionMapper.applyProperties(
+            source: opened.meta.properties,
+            mappings: propertyMap,
+            targetDefs: targetType.properties
+        )
+        let dropped = TypeConversionMapper.droppedPropertyIDs(in: propertyMap)
+
+        var meta = opened.meta
+        meta.typeID = toTypeID
+        meta.relativePath = newPath
+        meta.properties = mapped
+        meta.updated = Date()
+
+        // Write rewritten frontmatter at the new type folder path, then remove the old file.
+        try await writeDocument(meta: meta, bodyMarkdown: opened.bodyMarkdown)
+        if oldPath != newPath {
+            try await vault.deleteFile(atRelativePath: oldPath)
+        }
+
+        // Index: drop old path row, upsert new (ObjectID stable → links stay by id).
+        if oldPath != newPath {
+            try await update.applyVaultEvent(relativePath: oldPath, kind: .deleted)
+        }
+        try await update.applyVaultEvent(relativePath: newPath, kind: .created)
+
+        let resultOpened = OpenedObject(meta: meta, bodyMarkdown: opened.bodyMarkdown)
+        return TypeConversionResult(
+            objectID: meta.id,
+            sourceTypeID: sourceTypeID,
+            targetTypeID: toTypeID,
+            oldRelativePath: oldPath,
+            newRelativePath: newPath,
+            mappedPropertyCount: mapped.count,
+            droppedPropertyCount: dropped.count,
+            opened: resultOpened
+        )
+    }
+
+    private static func validateConversionTypes(toTypeID: ObjectTypeID) throws {
+        if toTypeID == .daily {
+            throw LociError.typeConversionNotAllowed("cannot convert into daily notes")
+        }
+    }
+
+    private static func validateConversionSource(
+        _ sourceTypeID: ObjectTypeID,
+        toTypeID: ObjectTypeID
+    ) throws {
+        if sourceTypeID == .daily {
+            throw LociError.typeConversionNotAllowed("cannot convert daily notes")
+        }
+        if sourceTypeID == toTypeID {
+            throw LociError.typeConversionNotAllowed("source and target type are the same")
+        }
+    }
+
     // MARK: - Internals
 
     private struct AppliedTemplate: Sendable {

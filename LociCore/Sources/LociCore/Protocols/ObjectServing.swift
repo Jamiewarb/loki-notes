@@ -25,4 +25,18 @@ public protocol ObjectServing: Sendable {
     /// Re-apply a template to an object only when body is empty / whitespace (PR14).
     @discardableResult
     func applyTemplateIfEmpty(id: ObjectID, templateID: String) async throws -> OpenedObject
+
+    // MARK: - Type conversion (PR28)
+
+    /// Preview a type change with suggested property mapping (no vault writes).
+    func planConversion(id: ObjectID, toTypeID: ObjectTypeID) async throws -> TypeConversionPlan
+
+    /// Change object type: remap properties, move file under `objects/<type>/`,
+    /// keep ObjectID stable, update index/links via IndexUpdating.
+    @discardableResult
+    func convert(
+        id: ObjectID,
+        toTypeID: ObjectTypeID,
+        propertyMap: [TypeConversionPropertyMap]
+    ) async throws -> TypeConversionResult
 }

@@ -123,6 +123,15 @@ Import (PR27) extras:
 
 Dry-run summary then apply: generic markdown folder, Obsidian vault (wiki-links best-effort), Capacities-style export. Writes real vault files; preserves ObjectID / `daily/YYYY-MM-DD.md` when detectable.
 
+Type conversion (PR28) extras:
+
+```bash
+./scripts/demo-type-convert.sh
+# harness: http://127.0.0.1:5173/?panel=type-convert
+```
+
+Change object type with property mapping; move file under `objects/<type>/`; ObjectID stays stable; index via ObjectServing / IndexUpdating. Daily notes cannot convert.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

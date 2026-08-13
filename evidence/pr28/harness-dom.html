@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+ * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
+ */
+
+:root {
+  /* Colors — LociColors */
+  --loci-ink: #1a2421;
+  --loci-ink-soft: #3d4a45;
+  --loci-ink-inverse: #f7fbf9;
+  --loci-paper: #e8efe8;
+  --loci-paper-deep: #d2ddd4;
+  --loci-panel: rgba(250, 252, 250, 0.82);
+  --loci-accent: #0f6b5c;
+  --loci-accent-soft: #c5e4dc;
+  --loci-mist: #b8d4c8;
+  --loci-meadow: #c9d9c4;
+  --loci-line: rgba(26, 36, 33, 0.12);
+  --loci-danger: #9b3a2f;
+
+  /* Typography — LociTypography */
+  --loci-font-display: "Fraunces", Georgia, serif;
+  --loci-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+
+  /* Spacing / radius — LociSpacing / LociRadius */
+  --loci-space-sm: 8px;
+  --loci-space-md: 12px;
+  --loci-space-lg: 16px;
+  --loci-space-xl: 24px;
+  --loci-radius: 10px;
+  --loci-radius-lg: 14px;
+  --loci-shadow: 0 18px 40px rgba(26, 36, 33, 0.08);
+
+  /* Motion — LociMotion */
+  --loci-motion-shell: 520ms;
+  --loci-motion-panel: 280ms;
+  --loci-motion-brand: 700ms;
+
+  --sidebar-w: 220px;
+  --inspector-w: 260px;
+
+  /* Back-compat aliases used by shell chrome */
+  --ink: var(--loci-ink);
+  --ink-soft: var(--loci-ink-soft);
+  --paper: var(--loci-paper);
+  --accent: var(--loci-accent);
+  --accent-soft: var(--loci-accent-soft);
+  --line: var(--loci-line);
+  --panel: var(--loci-panel);
+  --font-display: var(--loci-font-display);
+  --font-body: var(--loci-font-body);
+  --radius: var(--loci-radius);
+  --shadow: var(--loci-shadow);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--loci-mist) 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, var(--loci-meadow) 0%, transparent 50%),
+    linear-gradient(160deg, #eef4ee 0%, var(--loci-paper) 45%, #dfe9e2 100%);
+}
+
+body {
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--inspector-w);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  animation: shell-in var(--loci-motion-shell) ease-out both;
+}
+
+@keyframes shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.brand-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem 0.85rem;
+  border-bottom: 1px solid var(--loci-line);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  font-family: var(--loci-font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+  color: var(--loci-ink);
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes brand-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    letter-spacing: 0.04em;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    letter-spacing: -0.03em;
+  }
+}
+
+.brand-tag {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  font-size: 0.95rem;
+  max-width: 36rem;
+  animation: brand-rise var(--loci-motion-brand) 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sidebar {
+  border-right: 1px solid var(--loci-line);
+  padding: 1rem 0.75rem;
+  background: var(--loci-panel);
+}
+
+.nav-section {
+  margin-bottom: 0.85rem;
+}
+
+.nav-section-label {
+  margin: 0 0 0.35rem 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nav-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.nav-btn-label {
+  font-weight: 600;
+}
+
+.nav-btn-sub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--loci-accent-soft);
+  color: var(--loci-ink);
+  transform: translateX(2px);
+}
+
+.nav-btn[aria-current="page"] {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.nav-btn.is-stub {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.detail {
+  padding: 1.5rem 1.75rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+  overflow: auto;
+}
+
+@keyframes panel-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.detail h2 {
+  font-family: var(--loci-font-display);
+  font-size: 1.65rem;
+  margin: 0 0 0.5rem;
+}
+
+.detail > p,
+.detail [data-detail-root] > p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.destination {
+  max-width: 40rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+}
+
+.destination-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.destination-icon {
+  font-size: 1.35rem;
+  color: var(--loci-accent);
+  line-height: 1;
+}
+
+.destination-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0;
+}
+
+.destination-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+  max-width: 36rem;
+}
+
+.placeholder-surface {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--loci-line);
+  border-radius: var(--loci-radius);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: var(--loci-shadow);
+}
+
+.placeholder-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.placeholder-surface h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.placeholder-surface p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector {
+  border-left: 1px solid var(--loci-line);
+  padding: 1rem;
+  background: var(--loci-panel);
+}
+
+.inspector h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.inspector-title {
+  margin: 0 0 0.35rem !important;
+  font-size: 1rem !important;
+  font-weight: 600;
+  color: var(--loci-ink) !important;
+}
+
+.inspector p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector-hint {
+  margin-top: 1rem !important;
+  font-size: 0.78rem !important;
+  opacity: 0.9;
+}
+
+.harness-note {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+/* —— Design gallery —— */
+
+.gallery {
+  max-width: 44rem;
+}
+
+.gallery-intro {
+  margin-bottom: var(--loci-space-xl);
+}
+
+.gallery-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.gallery-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0 0 0.4rem;
+}
+
+.gallery-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+}
+
+.gallery-section {
+  margin-top: 2rem;
+}
+
+.gallery-section h3 {
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  margin: 0 0 0.25rem;
+}
+
+.gallery-caption {
+  margin: 0 0 0.85rem;
+  color: var(--loci-ink-soft);
+  font-size: 0.92rem;
+}
+
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.swatch-chip {
+  height: 56px;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+}
+
+.swatch-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.swatch-meta code {
+  color: var(--loci-ink-soft);
+  font-size: 0.72rem;
+}
+
+.type-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--loci-ink);
+  line-height: 1.2;
+}
+
+.type-label {
+  font-size: 0.7rem !important;
+  font-family: var(--loci-font-body) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.space-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.space-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.space-token {
+  width: 3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.space-bar {
+  height: 10px;
+  background: var(--loci-accent);
+  border-radius: 2px;
+}
+
+.space-val {
+  font-size: 0.8rem;
+  color: var(--loci-ink-soft);
+}
+
+.comp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.loci-btn {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.loci-btn:hover {
+  transform: translateY(-1px);
+}
+
+.loci-btn-primary {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-btn-secondary {
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+  border: 1px solid var(--loci-line);
+}
+
+.loci-btn-quiet {
+  background: color-mix(in srgb, var(--loci-accent-soft) 55%, transparent);
+  color: var(--loci-ink);
+}
+
+.loci-btn-destructive {
+  background: color-mix(in srgb, var(--loci-danger) 12%, white);
+  color: var(--loci-danger);
+}
+
+.loci-btn-narrow {
+  max-width: 12rem;
+}
+
+.loci-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1rem 0;
+}
+
+.loci-field-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.loci-input {
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+}
+
+.loci-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.75rem 0;
+}
+
+.loci-list-row {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--loci-ink);
+}
+
+.loci-list-row:hover {
+  background: var(--loci-accent-soft);
+}
+
+.loci-list-row.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-list-title {
+  font-weight: 600;
+}
+
+.loci-list-sub {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.loci-divider {
+  border: 0;
+  border-top: 1px solid var(--loci-line);
+  margin: 1.25rem 0;
+}
+
+.loci-empty {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.loci-empty-icon {
+  font-size: 1.75rem;
+  color: var(--loci-accent);
+  animation: soft-appear var(--loci-motion-shell) ease both;
+}
+
+.loci-empty h4 {
+  margin: 0;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.loci-empty p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 22rem;
+}
+
+.motion-demo {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 2.5rem;
+}
+
+.motion-demo.is-playing .motion-brand {
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.motion-demo.is-playing .motion-soft {
+  animation: soft-appear var(--loci-motion-shell) 80ms ease both;
+}
+
+.motion-brand {
+  font-family: var(--loci-font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.motion-soft {
+  color: var(--loci-ink-soft);
+}
+
+@keyframes soft-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Settings · vault status (PR04) */
+.vault-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.35rem 1.4rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--loci-accent-soft) 55%, white) 0%,
+      var(--loci-panel) 55%
+    );
+  animation: soft-appear var(--loci-motion-shell) ease both;
+  max-width: 36rem;
+}
+
+.vault-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-card-title {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  color: var(--loci-ink);
+}
+
+.vault-card-body {
+  margin: 0 0 1rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.vault-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.vault-meta dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-meta dd {
+  margin: 0.2rem 0 0;
+  color: var(--loci-ink);
+  font-size: 0.95rem;
+}
+
+.vault-steps {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+  color: var(--loci-ink);
+  line-height: 1.5;
+}
+
+.vault-steps code,
+.vault-card code,
+.vault-note code {
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--loci-paper-deep) 70%, white);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.vault-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.schema-type-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.schema-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-accent-soft) 35%, transparent);
+  border: 1px solid var(--loci-line);
+}
+
+.schema-type-name {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.search-title-badge {
+  font-style: normal;
+  font-family: var(--loci-font-body, inherit);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--loci-accent);
+  margin-left: 0.35rem;
+}
+
+.schema-type-meta {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+.schema-type-row[role="button"] {
+  cursor: pointer;
+}
+
+.schema-type-row[role="button"]:hover,
+.schema-type-row[role="button"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--loci-accent) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.page-detail {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px dashed var(--loci-line);
+  background: color-mix(in srgb, var(--loci-panel) 70%, transparent);
+}
+
+.page-detail .vault-card-body {
+  white-space: pre-wrap;
+}
+
+.md-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--loci-space-lg);
+  margin: 0 0 1rem;
+}
+
+.md-pane-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.md-pre {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  max-height: 28rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  color: var(--loci-ink);
+}
+
+.ast-html {
+  padding: var(--loci-space-md);
+  background: color-mix(in srgb, var(--loci-panel) 90%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  line-height: 1.45;
+  animation: editor-ast-in var(--loci-motion-panel) ease both;
+}
+
+@keyframes editor-ast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ast-html h1,
+.ast-html h2,
+.ast-html h3,
+.ast-html h4 {
+  font-family: var(--loci-font-display);
+  margin: 0.4em 0 0.25em;
+}
+
+.ast-html ul,
+.ast-html ol,
+.ast-html blockquote,
+.ast-html pre {
+  margin: 0.4em 0;
+}
+
+.ast-html blockquote {
+  border-left: 3px solid var(--loci-accent);
+  padding-left: var(--loci-space-md);
+  color: var(--loci-ink-soft);
+}
+
+.ast-html li[data-task] {
+  list-style: none;
+  margin-left: -0.5em;
+}
+
+.ast-html pre {
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  padding: var(--loci-space-sm);
+  border-radius: var(--loci-radius);
+  overflow-x: auto;
+}
+
+/* PR16 wiki-links — resolved (accent) vs broken (danger + dash underline) */
+.wiki-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.wiki-link.is-resolved {
+  color: var(--loci-accent, #0f6b5c);
+  text-decoration-style: solid;
+}
+
+.wiki-link.is-broken {
+  color: var(--loci-danger, #9b3a2f);
+  text-decoration-style: dashed;
+}
+
+@media (max-width: 900px) {
+  .md-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .sidebar,
+  .inspector {
+    border: 0;
+  }
+
+  .sidebar {
+    border-bottom: 1px solid var(--loci-line);
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .inspector {
+    border-top: 1px solid var(--loci-line);
+  }
+}
+
+/* PR21 Sync UX chips */
+.sync-chip-row,
+.sync-sim-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.sync-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 6px;
+  background: var(--loci-panel);
+  color: var(--loci-accent);
+  font-family: var(--loci-font-body);
+  font-size: 0.85rem;
+  cursor: default;
+}
+
+button.sync-chip {
+  cursor: pointer;
+}
+
+button.sync-chip:hover,
+button.sync-chip:focus-visible {
+  border-color: var(--loci-accent);
+  outline: none;
+}
+
+.sync-chip.is-live {
+  border-color: var(--loci-accent-soft);
+  background: color-mix(in srgb, var(--loci-accent-soft) 45%, white);
+}
+
+.sync-chip[data-status="conflict"],
+.sync-chip[data-status="error"] {
+  color: var(--loci-danger);
+}
+
+.sync-chip[data-status="syncing"],
+.sync-chip[data-status="offline"] {
+  color: var(--loci-ink-soft);
+}
+
+/* PR24 — Graph panel */
+.graph-canvas-wrap {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 20% 10%, color-mix(in srgb, var(--loci-mist) 35%, transparent), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, color-mix(in srgb, var(--loci-meadow) 40%, transparent), transparent 50%),
+    var(--loci-panel);
+}
+
+.graph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+
+.graph-edge {
+  stroke: color-mix(in srgb, var(--loci-ink-soft) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+.graph-node circle {
+  fill: var(--loci-ink);
+  stroke: var(--loci-paper);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 160ms ease, r 160ms ease;
+}
+
+.graph-node text {
+  fill: var(--loci-ink-soft);
+  font-family: var(--loci-font-body);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.graph-node:hover circle,
+.graph-node.is-selected circle {
+  fill: var(--loci-accent);
+}
+
+.graph-node:focus-visible circle {
+  outline: 2px solid var(--loci-accent);
+  outline-offset: 3px;
+}
+
+/* PR25 — Calendar panel */
+.cal-grid-wrap {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 15% 0%, color-mix(in srgb, var(--loci-mist) 40%, transparent), transparent 50%),
+    radial-gradient(ellipse at 90% 100%, color-mix(in srgb, var(--loci-meadow) 35%, transparent), transparent 55%),
+    var(--loci-panel);
+}
+
+.cal-toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cal-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.cal-scope {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.cal-weekdays,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cal-weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  padding-bottom: 0.35rem;
+}
+
+.cal-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0.45rem 0.2rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--loci-ink);
+  cursor: pointer;
+  font-family: var(--loci-font-body);
+}
+
+.cal-cell.out-period {
+  opacity: 0.4;
+}
+
+.cal-cell.is-today .cal-day-num {
+  color: var(--loci-accent);
+  font-weight: 600;
+}
+
+.cal-cell.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-paper);
+}
+
+.cal-cell.is-selected .cal-day-num {
+  color: var(--loci-paper);
+}
+
+.cal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.cal-cell.has-dot .cal-dot,
+.cal-week-day.has-dot .cal-dot {
+  background: var(--loci-accent);
+}
+
+.cal-cell.is-selected.has-dot .cal-dot {
+  background: var(--loci-paper);
+}
+
+.cal-week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+
+.cal-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0.5rem 0.2rem;
+  border-radius: 8px;
+  color: var(--loci-ink);
+  background: color-mix(in srgb, var(--loci-panel) 70%, transparent);
+}
+
+.cal-week-day.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-paper);
+}
+
+.cal-week-day.is-selected .cal-dot {
+  background: var(--loci-paper);
+}
+
+/* Capture (PR26) */
+.capture-surfaces,
+.capture-drain {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.capture-surface,
+.capture-drain li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--loci-panel) 75%, transparent);
+  color: var(--loci-ink);
+}
+
+.capture-surface span,
+.capture-line {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+.capture-body {
+  margin: 0.5rem 0 0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--loci-ink) 6%, transparent);
+  color: var(--loci-ink);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.capture-proof-grid {
+  margin-top: 0.75rem;
+}
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="type-convert">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tasks" aria-current="false">
+          <span class="nav-btn-label">Tasks</span>
+          <span class="nav-btn-sub">Today &amp; open</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="false">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="links" aria-current="false">
+          <span class="nav-btn-label">Links</span>
+          <span class="nav-btn-sub">Wiki-links + backlinks</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="graph" aria-current="false">
+          <span class="nav-btn-label">Graph</span>
+          <span class="nav-btn-sub">Wiki-link network</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="calendar" aria-current="false">
+          <span class="nav-btn-label">Calendar</span>
+          <span class="nav-btn-sub">Daily notes · dots</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="capture" aria-current="false">
+          <span class="nav-btn-label">Capture</span>
+          <span class="nav-btn-sub">Share · widget · menu bar</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="import" aria-current="false">
+          <span class="nav-btn-label">Import</span>
+          <span class="nav-btn-sub">Markdown · Obsidian · Capacities</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="type-convert" aria-current="page">
+          <span class="nav-btn-label">Convert</span>
+          <span class="nav-btn-sub">Type · property map</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tags" aria-current="false">
+          <span class="nav-btn-label">Tags</span>
+          <span class="nav-btn-sub">Cross-type #tags</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="media" aria-current="false">
+          <span class="nav-btn-label">Media</span>
+          <span class="nav-btn-sub">Attach + image objects</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="type-convert" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination type-convert-panel" data-harness="destination" data-destination="type-convert">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">⟲</span>
+          <h2 class="destination-title">Convert type</h2>
+        </header>
+        <p class="destination-lead">
+          Deep Work · book → person
+        </p>
+        <section class="vault-card" data-harness="type-convert-result">
+          <p class="vault-kicker">Move</p>
+          <h3 class="vault-card-title">objects/book/deep-work.md</h3>
+          <p class="vault-card-body">→ objects/person/deep-work.md</p>
+          <p class="vault-card-body">id 53890686-6b4a-4ba9-9ddc-38f53fda4922 · mapped 2 · dropped 1</p>
+        </section>
+        <p class="vault-kicker" style="margin-top:1rem">Property map</p>
+        <ul class="schema-type-list" data-harness="type-convert-mappings">
+        <li class="schema-type-row" data-harness="type-convert-map">
+          <span class="schema-type-name">status</span>
+          <span class="schema-type-meta">→ status</span>
+        </li>
+        <li class="schema-type-row" data-harness="type-convert-map">
+          <span class="schema-type-name">rating</span>
+          <span class="schema-type-meta">→ score</span>
+        </li>
+        <li class="schema-type-row" data-harness="type-convert-map">
+          <span class="schema-type-name">isbn</span>
+          <span class="schema-type-meta">→ (drop)</span>
+        </li></ul>
+        <p class="vault-kicker" style="margin-top:1rem">Result properties</p>
+        <ul class="schema-type-list" data-harness="type-convert-props">
+        <li class="schema-type-row">
+          <span class="schema-type-name">score</span>
+          <span class="schema-type-meta">5</span>
+        </li>
+        <li class="schema-type-row">
+          <span class="schema-type-name">status</span>
+          <span class="schema-type-meta">Reading</span>
+        </li></ul>
+        <dl class="vault-meta" data-harness="type-convert-proof" style="margin-top:1rem">
+          
+        <div>
+          <dt>idStable</dt>
+          <dd data-harness="type-convert-proof-idStable">yes ✓</dd>
+        </div>
+        <div>
+          <dt>indexOutsideVault</dt>
+          <dd data-harness="type-convert-proof-indexOutsideVault">yes ✓</dd>
+        </div>
+        <div>
+          <dt>indexPathUpdated</dt>
+          <dd data-harness="type-convert-proof-indexPathUpdated">yes ✓</dd>
+        </div>
+        <div>
+          <dt>indexTypeUpdated</dt>
+          <dd data-harness="type-convert-proof-indexTypeUpdated">yes ✓</dd>
+        </div>
+        <div>
+          <dt>isbnDropped</dt>
+          <dd data-harness="type-convert-proof-isbnDropped">yes ✓</dd>
+        </div>
+        <div>
+          <dt>movedFolder</dt>
+          <dd data-harness="type-convert-proof-movedFolder">yes ✓</dd>
+        </div>
+        <div>
+          <dt>newPathExists</dt>
+          <dd data-harness="type-convert-proof-newPathExists">yes ✓</dd>
+        </div>
+        <div>
+          <dt>oldPathGone</dt>
+          <dd data-harness="type-convert-proof-oldPathGone">yes ✓</dd>
+        </div>
+        <div>
+          <dt>planDroppedISBN</dt>
+          <dd data-harness="type-convert-proof-planDroppedISBN">yes ✓</dd>
+        </div>
+        <div>
+          <dt>ratingToScore</dt>
+          <dd data-harness="type-convert-proof-ratingToScore">yes ✓</dd>
+        </div>
+        <div>
+          <dt>refusedDaily</dt>
+          <dd data-harness="type-convert-proof-refusedDaily">yes ✓</dd>
+        </div>
+        <div>
+          <dt>statusMapped</dt>
+          <dd data-harness="type-convert-proof-statusMapped">yes ✓</dd>
+        </div>
+        </dl>
+        <p class="vault-note" data-harness="type-convert-note">PR28: Type conversion remaps PropertyDefs, moves objects/&lt;type&gt;/, keeps ObjectID, reindexes. Daily notes refused.</p>
+        <p class="harness-note">module 0.28.0-pr28 · index 0.2.0-pr28 · index inside vault: no ✓</p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Property map · move</p>
+        <div data-inspector-root="">
+          <p>Map PropertyDefs · refuse daily · index never in vault.</p>
+        </div>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts"></script>
+  
+
+</body></html>

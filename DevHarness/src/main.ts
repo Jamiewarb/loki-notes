@@ -23,6 +23,7 @@ import { renderGraphPanel } from "./panels/GraphPanel";
 import { renderCalendarPanel } from "./panels/CalendarPanel";
 import { renderCapturePanel } from "./panels/CapturePanel";
 import { renderImportPanel } from "./panels/ImportPanel";
+import { renderTypeConvertPanel } from "./panels/TypeConvertPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -55,6 +56,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   calendar: "▦",
   capture: "⬇",
   import: "⇩",
+  "type-convert": "⟲",
 };
 
 function renderNavSection(
@@ -148,6 +150,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "import") {
     void renderImportPanel(detail);
+    return;
+  }
+  if (panelId === "type-convert") {
+    void renderTypeConvertPanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -516,6 +522,10 @@ function inspectorTitle(id: PanelId): string {
       return "Dots · daily jump";
     case "capture":
       return "Inbox · surfaces";
+    case "import":
+      return "Dry-run · apply";
+    case "type-convert":
+      return "Property map · move";
     case "tags":
       return "Object tags · aliases";
     case "media":
