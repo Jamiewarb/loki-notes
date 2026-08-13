@@ -21,9 +21,11 @@ public enum Route: Hashable, Sendable, Codable {
     case importExport
     /// Type conversion with property mapping (PR28) — Studio / tooling destination.
     case typeConvert
+    /// AI assist (PR30) — Studio / tooling destination.
+    case ai
     case object(ObjectID)
 
-    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture, import, type convert).
+    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture, import, type convert, AI).
     public static let primaryDestinations: [Route] = [
         .daily, .tasks, .search, .types, .settings,
     ]
@@ -42,6 +44,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .capture: return "Capture"
         case .importExport: return "Import"
         case .typeConvert: return "Convert"
+        case .ai: return "AI"
         case .object: return "Object"
         }
     }
@@ -60,6 +63,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .capture: return "tray.and.arrow.down"
         case .importExport: return "square.and.arrow.down.on.square"
         case .typeConvert: return "arrow.triangle.2.circlepath"
+        case .ai: return "sparkles"
         case .object: return "doc.text"
         }
     }
@@ -78,6 +82,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .capture: return "Share · widget · menu bar"
         case .importExport: return "Markdown · Obsidian · Capacities"
         case .typeConvert: return "Type · property map"
+        case .ai: return "Assist · BYOK"
         case .object: return "Open object"
         }
     }

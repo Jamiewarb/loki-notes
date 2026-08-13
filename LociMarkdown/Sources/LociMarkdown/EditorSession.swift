@@ -231,6 +231,15 @@ public final class EditorSession: @unchecked Sendable {
         return true
     }
 
+    /// Apply an accepted AI proposal body (PR30).
+    /// Unlike `proposeRemoteReload`, this replaces blocks even when dirty and marks dirty.
+    public func applyProposedBody(_ markdown: String) throws {
+        let doc = try MarkdownParser().parse(markdown)
+        blocks = doc.blocks.isEmpty ? [.paragraph([])] : doc.blocks
+        isDirty = true
+        revisionToken &+= 1
+    }
+
     public func serializeBody() -> String {
         MarkdownSerializer().serializeBlocks(blocks)
     }

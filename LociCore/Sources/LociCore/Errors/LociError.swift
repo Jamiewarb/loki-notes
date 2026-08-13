@@ -52,4 +52,10 @@ public enum LociError: Error, Sendable, Equatable {
     case importEmpty(String)
     /// Type conversion refused (daily notes, same type, missing schema, …).
     case typeConversionNotAllowed(String)
+    /// Remote AI upload refused — user has not opted in (PR30).
+    case aiUploadNotAllowed
+    /// Preferred AI provider unavailable on this platform / configuration.
+    case aiProviderUnavailable(String)
+    /// BYOK API key missing from credential store (Application Support / Keychain).
+    case aiCredentialsMissing
 }

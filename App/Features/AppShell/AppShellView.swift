@@ -153,6 +153,15 @@ struct AppShellView: View {
                     Label("Convert", systemImage: Route.typeConvert.systemImage)
                 }
                 NavigationLink {
+                    AIFeature.destination(services: services)
+                        .navigationTitle("AI")
+                        .onAppear {
+                            Task { await services.open(route: .ai) }
+                        }
+                } label: {
+                    Label("AI", systemImage: Route.ai.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {
