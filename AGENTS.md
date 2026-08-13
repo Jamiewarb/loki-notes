@@ -59,6 +59,15 @@ On **macOS**, use Xcode’s Swift toolchain. Do not expect the `App/` SwiftUI ta
 ./scripts/run-harness.sh    # leave running; open http://127.0.0.1:5173
 ```
 
+Sync UX (PR21) extras:
+
+```bash
+./scripts/demo-sync.sh
+# harness: http://127.0.0.1:5173/?panel=settings
+```
+
+Linux CI reports **local-only** sync status; simulated chip states live in the demo fixture. On Apple, ubiquity preferred when signed in; ensure-downloaded runs before open (media refs too). Index rebuild is Settings-only and never writes into the vault.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |
