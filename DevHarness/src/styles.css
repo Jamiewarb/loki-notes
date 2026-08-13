@@ -748,6 +748,16 @@ body {
   color: var(--loci-ink);
 }
 
+.search-title-badge {
+  font-style: normal;
+  font-family: var(--loci-font-body, inherit);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--loci-accent);
+  margin-left: 0.35rem;
+}
+
 .schema-type-meta {
   font-size: 0.85rem;
   color: var(--loci-ink-soft);

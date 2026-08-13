@@ -24,7 +24,11 @@ struct SidebarView: View {
                             if destination == .types {
                                 services.focusedTypeID = nil
                             }
-                            await services.open(route: destination.route)
+                            if destination == .search {
+                                await services.openSearch()
+                            } else {
+                                await services.open(route: destination.route)
+                            }
                         }
                     }
                 }

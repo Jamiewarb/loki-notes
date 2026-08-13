@@ -29,6 +29,8 @@ struct InspectorHostView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            } else if case .search = route {
+                SearchInspectorView(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -111,7 +113,7 @@ struct InspectorHostView: View {
         case .daily:
             return "Created today is index-only — never rewritten into the daily .md."
         case .search:
-            return "Recent queries and filter chips will appear here (PR18)."
+            return "Recent queries and type filters — IndexQuerying.search only."
         case .types:
             return "Open a type dashboard to edit property defs and templates."
         case .settings:
