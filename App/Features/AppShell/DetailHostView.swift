@@ -5,6 +5,7 @@ import LociDesignSystem
 /// Center column — hosts the active destination (placeholders until feature PRs).
 struct DetailHostView: View {
     let route: Route
+    var services: AppServices?
 
     var body: some View {
         Group {
@@ -25,10 +26,14 @@ struct DetailHostView: View {
                     message: "Object type dashboards (PR12). Schema under .loci/types/."
                 )
             case .settings:
-                DestinationPlaceholderView(
-                    route: .settings,
-                    message: "Vault root, local Documents fallback, and sync status (PR04 / PR21)."
-                )
+                if let services {
+                    VaultSettingsView(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .settings,
+                        message: "Vault root, local Documents fallback, and sync status (PR04 / PR21)."
+                    )
+                }
             case .designGallery:
                 DesignGalleryView()
             case .object(let id):

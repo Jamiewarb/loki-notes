@@ -25,7 +25,7 @@ struct AppShellView: View {
             SidebarView(services: services)
                 .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 320)
         } content: {
-            DetailHostView(route: services.selectedRoute)
+            DetailHostView(route: services.selectedRoute, services: services)
                 .navigationTitle(services.selectedRoute.title)
         } detail: {
             InspectorHostView(route: services.selectedRoute)
@@ -77,7 +77,7 @@ struct AppShellView: View {
 
     private func iosStack(for destination: AppRoute) -> some View {
         NavigationStack {
-            DetailHostView(route: destination.route)
+            DetailHostView(route: destination.route, services: services)
                 .navigationTitle(destination.title)
                 .toolbar { inspectorToolbar }
         }
@@ -87,7 +87,7 @@ struct AppShellView: View {
         List {
             Section("Space") {
                 NavigationLink {
-                    DetailHostView(route: .settings)
+                    DetailHostView(route: .settings, services: services)
                         .navigationTitle("Settings")
                 } label: {
                     Label("Vault & sync", systemImage: Route.settings.systemImage)

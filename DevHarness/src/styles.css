@@ -642,6 +642,87 @@ body {
   }
 }
 
+/* Settings · vault status (PR04) */
+.vault-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.35rem 1.4rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--loci-accent-soft) 55%, white) 0%,
+      var(--loci-panel) 55%
+    );
+  animation: soft-appear var(--loci-motion-shell) ease both;
+  max-width: 36rem;
+}
+
+.vault-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-card-title {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  color: var(--loci-ink);
+}
+
+.vault-card-body {
+  margin: 0 0 1rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.vault-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.vault-meta dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-meta dd {
+  margin: 0.2rem 0 0;
+  color: var(--loci-ink);
+  font-size: 0.95rem;
+}
+
+.vault-steps {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+  color: var(--loci-ink);
+  line-height: 1.5;
+}
+
+.vault-steps code,
+.vault-card code,
+.vault-note code {
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--loci-paper-deep) 70%, white);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.vault-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
 @media (max-width: 900px) {
   .shell {
     grid-template-columns: 1fr;

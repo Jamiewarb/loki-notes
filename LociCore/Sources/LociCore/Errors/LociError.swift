@@ -8,4 +8,8 @@ public enum LociError: Error, Sendable, Equatable {
     case indexUnavailable
     case objectNotFound(ObjectID)
     case schemaNotFound(String)
+    case invalidRelativePath(String)
+    case fileNotFound(String)
+    case pathOutsideVault(String)
+    case coordinationFailed(String)
 }

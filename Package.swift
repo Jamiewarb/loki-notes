@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "LociMarkdown", targets: ["LociMarkdown"]),
         .library(name: "LociIndex", targets: ["LociIndex"]),
         .library(name: "LociDesignSystem", targets: ["LociDesignSystem"]),
+        .executable(name: "loci-vault-demo", targets: ["loci-vault-demo"]),
     ],
     targets: [
         // Core: models, IDs, errors, protocols — no SwiftUI, no I/O
@@ -26,11 +27,16 @@ let package = Package(
             path: "LociCore/Tests/LociCoreTests"
         ),
 
-        // Vault: stub — iCloud/local roots land in PR04
+        // Vault: ubiquity/local roots, coordinated I/O, trash/tombstones (PR04)
         .target(
             name: "LociVault",
             dependencies: ["LociCore"],
             path: "LociVault/Sources/LociVault"
+        ),
+        .executableTarget(
+            name: "loci-vault-demo",
+            dependencies: ["LociVault", "LociCore"],
+            path: "LociVault/Sources/LociVaultDemo"
         ),
         .testTarget(
             name: "LociVaultTests",

@@ -9,6 +9,7 @@ import {
 } from "./shell";
 import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
+import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -68,6 +69,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   const panel = PANELS[panelId];
   if (panelId === "gallery") {
     renderDesignGallery(detail);
+    return;
+  }
+  if (panelId === "settings") {
+    renderSettingsVault(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {

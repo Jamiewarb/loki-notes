@@ -34,9 +34,19 @@ targets:
         product: LociIndex
       - package: Loci
         product: LociDesignSystem
+    entitlements:
+      path: App/Resources/Loci.entitlements
+    info:
+      path: App/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Loci
+        UILaunchScreen: {}
+        NSUbiquitousContainers:
+          iCloud.app.loci.Loci:
+            NSUbiquitousContainerIsDocumentScopePublic: true
+            NSUbiquitousContainerName: Loci
+            NSUbiquitousContainerSupportedFolderLevels: Any
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Loci
-        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        CODE_SIGN_ENTITLEMENTS: App/Resources/Loci.entitlements
