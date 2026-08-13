@@ -16,7 +16,7 @@ Next stack: **PR23 Saved queries + embeds**.
 
 **Branch:** `cursor/pr22-collections-d2c1`  
 **Based on:** `cursor/pr21-sync-ux-d2c1` @ `8970e4d`  
-**Tip:** `27b6e836aa5cb31bce1dedc5a885400d2233dcab` (evidence at `evidence/pr22/`)
+**Tip:**  (evidence at )
 
 ### What landed
 
