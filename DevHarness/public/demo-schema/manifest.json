@@ -1,15 +1,17 @@
 {
   "space": {
-    "name": "Demo Templates",
-    "schemaVersion": 1,
-    "pins": []
+    "archiveApproach": "tag:#archive",
+    "hideArchived": true,
+    "name": "Demo PARA",
+    "paraPackApplied": true,
+    "resourceApproach": "tag:#resource"
   },
   "types": [
     {
-      "id": "book",
-      "name": "Books",
-      "icon": "book",
-      "color": "#8B5A2B",
+      "id": "project",
+      "name": "Project",
+      "icon": "flag",
+      "color": "#B85C38",
       "isBuiltIn": false,
       "properties": [
         {
@@ -17,22 +19,76 @@
           "kind": "select",
           "name": "Status",
           "options": [
-            "To Read",
-            "Reading",
-            "Done"
+            "Active",
+            "On Hold",
+            "Done",
+            "Archived"
           ]
         },
         {
-          "id": "rating",
-          "kind": "number",
-          "name": "Rating",
+          "id": "deadline",
+          "kind": "date",
+          "name": "Deadline",
+          "options": []
+        },
+        {
+          "id": "area",
+          "kind": "text",
+          "name": "Area",
           "options": []
         }
       ],
-      "defaultTemplateID": "book.default",
+      "defaultTemplateID": "project.default",
       "templateIDs": [
-        "book.default"
-      ]
+        "project.default"
+      ],
+      "dashboard": {
+        "hideArchived": true,
+        "cardPreviewPropertyIDs": [
+          "status"
+        ],
+        "defaultSort": "updated"
+      }
+    },
+    {
+      "id": "area",
+      "name": "Area",
+      "icon": "square.grid.2x2",
+      "color": "#2A6F97",
+      "isBuiltIn": false,
+      "properties": [
+        {
+          "id": "status",
+          "kind": "select",
+          "name": "Status",
+          "options": [
+            "Active",
+            "Paused",
+            "Archived"
+          ]
+        },
+        {
+          "id": "review",
+          "kind": "select",
+          "name": "Review",
+          "options": [
+            "Weekly",
+            "Monthly",
+            "Quarterly"
+          ]
+        }
+      ],
+      "defaultTemplateID": "area.default",
+      "templateIDs": [
+        "area.default"
+      ],
+      "dashboard": {
+        "hideArchived": true,
+        "cardPreviewPropertyIDs": [
+          "status"
+        ],
+        "defaultSort": "updated"
+      }
     },
     {
       "id": "daily",
@@ -40,11 +96,7 @@
       "icon": "sun.max",
       "color": "#3D6B5C",
       "isBuiltIn": true,
-      "properties": [],
-      "defaultTemplateID": "daily.default",
-      "templateIDs": [
-        "daily.default"
-      ]
+      "properties": []
     },
     {
       "id": "page",
@@ -56,46 +108,30 @@
     }
   ],
   "templates": {
-    "book": {
-      "bodyPreview": "## Summary\n\n## Quotes\n\n## Notes",
-      "defaultProperties": {
-        "rating": "0",
-        "status": "To Read"
-      },
+    "project": {
+      "bodyPreview": "## Outcome\n\n## Next actions\n\n## Notes",
       "exists": true,
-      "id": "book.default",
-      "name": "Default Book",
-      "path": ".loci/templates/book.default.md"
+      "id": "project.default",
+      "path": ".loci/templates/project.default.md"
     },
-    "daily": {
-      "bodyPreview": "## Morning\n\n## Evening",
+    "area": {
+      "bodyPreview": "## Standards\n\n## Current focus\n\n## Notes",
       "exists": true,
-      "id": "daily.default",
-      "name": "Daily Default",
-      "path": ".loci/templates/daily.default.md"
+      "id": "area.default",
+      "path": ".loci/templates/area.default.md"
     }
   },
-  "templatesDemo": {
-    "bookObject": {
-      "bodyMarkdown": "## Summary\n\n## Quotes\n\n## Notes",
-      "id": "9832999a-3ef8-4add-ad7d-f01116225d89",
-      "prefilledHeadings": true,
-      "properties": {
-        "rating": "0",
-        "status": "To Read"
-      },
-      "relativePath": "objects/book/deep-work.md",
-      "title": "Deep Work"
+  "para": {
+    "explainer": "PARA in Loci: Projects and Areas are object types with starter properties and templates. Mark reference material with #resource (any type \u2014 no Resource folder). Archive with #archive or status=Archived; dashboards hide archived by default. Your inbox is today\u2019s Daily note. Nothing is \u201cmoved\u201d into archive folders.",
+    "resourceGuidance": "Tag any object with #resource. No dedicated Resource type \u2014 the whole vault can hold reference material.",
+    "archiveGuidance": "Archive via #archive tag or status=Archived on Project/Area. Filter hides archived; files stay put.",
+    "archiveFilter": {
+      "allProjects": 2,
+      "archivedHidden": 1,
+      "noFolderMove": true,
+      "visibleWhenHideArchived": 1
     },
-    "dailyObject": {
-      "bodyMarkdown": "## Morning\n\n## Evening",
-      "id": "daily-2026-08-13",
-      "prefilledHeadings": true,
-      "relativePath": "daily/2026-08-13.md",
-      "title": "2026-08-13"
-    },
-    "bookPrefill": true,
-    "dailyPrefill": true
+    "idempotent": true
   },
-  "note": "Generated by scripts/demo-templates.sh \u2014 Book + Daily templates (PR14)."
+  "note": "Generated by scripts/demo-para.sh \u2014 PARA Project/Area pack (PR15)."
 }

@@ -1,0 +1,10 @@
+==> loci-para-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-para-demo' complete! (0.25s)
+paraPackApplied=True project=project.default area=area.default archivedHidden=1 idempotent=True
+wrote DevHarness/public/demo-types/types.json (with PARA)
+wrote DevHarness/public/demo-schema/manifest.json
+==> wrote /agent/DevHarness/public/demo-para/para.json
+==> demo-para complete

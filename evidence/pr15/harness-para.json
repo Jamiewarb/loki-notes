@@ -1,0 +1,160 @@
+{
+  "archiveFilter" : {
+    "allProjects" : 2,
+    "archivedHidden" : 1,
+    "noFolderMove" : true,
+    "visibleWhenHideArchived" : 1
+  },
+  "archiveGuidance" : "Archive via #archive tag or status=Archived on Project\/Area. Filter hides archived; files stay put.",
+  "areaObject" : {
+    "bodyMarkdown" : "## Standards\n\n## Current focus\n\n## Notes",
+    "id" : "10ec7d73-75ab-41ac-be37-c7f4f58212c6",
+    "prefilled" : true,
+    "relativePath" : "objects\/area\/health.md",
+    "title" : "Health"
+  },
+  "areaTemplate" : {
+    "bodyPreview" : "## Standards\n\n## Current focus\n\n## Notes",
+    "exists" : true,
+    "id" : "area.default",
+    "path" : ".loci\/templates\/area.default.md"
+  },
+  "areaType" : {
+    "color" : "#2A6F97",
+    "defaultTemplateID" : "area.default",
+    "hideArchived" : true,
+    "icon" : "square.grid.2x2",
+    "id" : "area",
+    "name" : "Area",
+    "properties" : [
+      {
+        "id" : "status",
+        "kind" : "select",
+        "name" : "Status",
+        "options" : [
+          "Active",
+          "Paused",
+          "Archived"
+        ]
+      },
+      {
+        "id" : "review",
+        "kind" : "select",
+        "name" : "Review",
+        "options" : [
+          "Weekly",
+          "Monthly",
+          "Quarterly"
+        ]
+      }
+    ],
+    "templateIDs" : [
+      "area.default"
+    ]
+  },
+  "explainer" : "PARA in Loci: Projects and Areas are object types with starter properties and templates. Mark reference material with #resource (any type — no Resource folder). Archive with #archive or status=Archived; dashboards hide archived by default. Your inbox is today’s Daily note. Nothing is “moved” into archive folders.",
+  "firstApply" : {
+    "archiveApproach" : "tag:#archive",
+    "areaTemplateID" : "area.default",
+    "createdTemplateIDs" : [
+      "project.default",
+      "area.default"
+    ],
+    "createdTypeIDs" : [
+      "project",
+      "area"
+    ],
+    "hideArchived" : true,
+    "projectTemplateID" : "project.default",
+    "resourceApproach" : "tag:#resource",
+    "skippedTemplateIDs" : [
+
+    ]
+  },
+  "idempotent" : true,
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr15",
+  "indexPath" : "\/tmp\/loci-para-demo-db-2026-08-13T11-30-53Z\/va9789acbfcb6730b\/index.sqlite",
+  "moduleVersion" : "0.15.0-pr15",
+  "note" : "Fresh vault → Apply PARA → Project\/Area ready with templates; Resource=#resource; Archive=#archive filter (PR15).",
+  "projectObject" : {
+    "bodyMarkdown" : "## Outcome\n\n## Next actions\n\n## Notes",
+    "id" : "7e853c74-8380-4fde-ae63-8bd39d55afa0",
+    "prefilled" : true,
+    "relativePath" : "objects\/project\/launch-loci-mvp.md",
+    "title" : "Launch Loci MVP"
+  },
+  "projectTemplate" : {
+    "bodyPreview" : "## Outcome\n\n## Next actions\n\n## Notes",
+    "exists" : true,
+    "id" : "project.default",
+    "path" : ".loci\/templates\/project.default.md"
+  },
+  "projectType" : {
+    "color" : "#B85C38",
+    "defaultTemplateID" : "project.default",
+    "hideArchived" : true,
+    "icon" : "flag",
+    "id" : "project",
+    "name" : "Project",
+    "properties" : [
+      {
+        "id" : "status",
+        "kind" : "select",
+        "name" : "Status",
+        "options" : [
+          "Active",
+          "On Hold",
+          "Done",
+          "Archived"
+        ]
+      },
+      {
+        "id" : "deadline",
+        "kind" : "date",
+        "name" : "Deadline",
+        "options" : [
+
+        ]
+      },
+      {
+        "id" : "area",
+        "kind" : "text",
+        "name" : "Area",
+        "options" : [
+
+        ]
+      }
+    ],
+    "templateIDs" : [
+      "project.default"
+    ]
+  },
+  "resourceGuidance" : "Tag any object with #resource. No dedicated Resource type — the whole vault can hold reference material.",
+  "resourceTypeExists" : false,
+  "secondApply" : {
+    "archiveApproach" : "tag:#archive",
+    "areaTemplateID" : "area.default",
+    "createdTemplateIDs" : [
+
+    ],
+    "createdTypeIDs" : [
+
+    ],
+    "hideArchived" : true,
+    "projectTemplateID" : "project.default",
+    "resourceApproach" : "tag:#resource",
+    "skippedTemplateIDs" : [
+      "project.default",
+      "area.default"
+    ]
+  },
+  "space" : {
+    "archiveApproach" : "tag:#archive",
+    "hideArchived" : true,
+    "name" : "Demo PARA",
+    "paraPackApplied" : true,
+    "resourceApproach" : "tag:#resource"
+  },
+  "vaultRoot" : "\/tmp\/loci-para-demo-vault-2026-08-13T11-30-53Z\/LociVault"
+}

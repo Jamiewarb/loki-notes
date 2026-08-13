@@ -1,5 +1,7 @@
 {
-  "name": "Demo Templates",
-  "schemaVersion": 1,
-  "pins": []
+  "archiveApproach": "tag:#archive",
+  "hideArchived": true,
+  "name": "Demo PARA",
+  "paraPackApplied": true,
+  "resourceApproach": "tag:#resource"
 }

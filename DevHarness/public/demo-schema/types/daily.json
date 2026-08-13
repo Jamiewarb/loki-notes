@@ -4,9 +4,5 @@
   "icon": "sun.max",
   "color": "#3D6B5C",
   "isBuiltIn": true,
-  "properties": [],
-  "defaultTemplateID": "daily.default",
-  "templateIDs": [
-    "daily.default"
-  ]
+  "properties": []
 }
