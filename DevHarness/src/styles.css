@@ -143,6 +143,19 @@ body {
   background: var(--loci-panel);
 }
 
+.nav-section {
+  margin-bottom: 0.85rem;
+}
+
+.nav-section-label {
+  margin: 0 0 0.35rem 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+}
+
 .nav {
   display: flex;
   flex-direction: column;
@@ -157,13 +170,26 @@ body {
   font: inherit;
   font-weight: 600;
   color: var(--loci-ink-soft);
-  padding: 0.65rem 0.85rem;
+  padding: 0.55rem 0.85rem;
   border-radius: var(--loci-radius);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
   transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
-.nav-btn:hover {
+.nav-btn-label {
+  font-weight: 600;
+}
+
+.nav-btn-sub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.nav-btn:hover:not(:disabled) {
   background: var(--loci-accent-soft);
   color: var(--loci-ink);
   transform: translateX(2px);
@@ -172,6 +198,11 @@ body {
 .nav-btn[aria-current="page"] {
   background: var(--loci-accent);
   color: var(--loci-ink-inverse);
+}
+
+.nav-btn.is-stub {
+  opacity: 0.65;
+  cursor: default;
 }
 
 .detail {
@@ -205,6 +236,37 @@ body {
   line-height: 1.5;
 }
 
+.destination {
+  max-width: 40rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+}
+
+.destination-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.destination-icon {
+  font-size: 1.35rem;
+  color: var(--loci-accent);
+  line-height: 1;
+}
+
+.destination-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0;
+}
+
+.destination-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+  max-width: 36rem;
+}
+
 .placeholder-surface {
   margin-top: 1.5rem;
   padding: 1.25rem;
@@ -212,6 +274,27 @@ body {
   border-radius: var(--loci-radius);
   background: rgba(255, 255, 255, 0.45);
   box-shadow: var(--loci-shadow);
+}
+
+.placeholder-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.placeholder-surface h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.placeholder-surface p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
 }
 
 .inspector {
@@ -228,11 +311,24 @@ body {
   color: var(--loci-ink-soft);
 }
 
+.inspector-title {
+  margin: 0 0 0.35rem !important;
+  font-size: 1rem !important;
+  font-weight: 600;
+  color: var(--loci-ink) !important;
+}
+
 .inspector p {
   margin: 0;
   font-size: 0.92rem;
   color: var(--loci-ink-soft);
   line-height: 1.45;
+}
+
+.inspector-hint {
+  margin-top: 1rem !important;
+  font-size: 0.78rem !important;
+  opacity: 0.9;
 }
 
 .harness-note {
