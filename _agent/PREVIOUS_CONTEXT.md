@@ -9,9 +9,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Branch:** `cursor/pr37-share-widget-d2c1`  
 **Based on:** `cursor/pr36-eventkit-d2c1`  
 **Vault module:** `0.37.0-pr37`  
-**Swift tests:** pending  
-**Playwright:** pending  
-Evidence: `evidence/pr37/`
+**Swift tests:** **336** green (was 325). **Playwright:** **79** green (`work.spec.ts` capture proofs + full suite). Evidence: `evidence/pr37/`
 
 ### Feature design
 - Domain folder: `App/Platform/iOS/ShareExtension`, `App/Platform/iOS/Widget` (no feature→feature imports)
