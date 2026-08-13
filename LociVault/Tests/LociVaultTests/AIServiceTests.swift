@@ -113,7 +113,7 @@ final class AIServiceTests: XCTestCase {
                 PropertyDef(id: "status", name: "Status", kind: .select, options: ["Draft", "Read"]),
             ]
         )
-        var meta = try await objects.create(typeID: book.id, title: "AI Book")
+        let meta = try await objects.create(typeID: book.id, title: "AI Book")
         try await objects.save(
             meta: meta,
             bodyMarkdown: "See https://example.com/book on 2024-01-02. Status Read.\n"

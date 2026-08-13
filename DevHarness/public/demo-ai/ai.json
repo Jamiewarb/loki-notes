@@ -1,0 +1,77 @@
+{
+  "autofill" : {
+    "action" : "autofillProperties",
+    "notes" : [
+      "tags: books",
+      "filled 2 properties"
+    ],
+    "objectId" : "267ff6fd-01d4-447b-adf0-c160f59c6b5e",
+    "proposedProperties" : {
+      "status" : "select(\"Read\")",
+      "url" : "url(\"https:\/\/example.com\/patterns\")"
+    },
+    "provider" : "onDeviceHeuristics",
+    "uploaded" : false
+  },
+  "book" : {
+    "appliedStatus" : "select(\"Read\")",
+    "appliedUrl" : "url(\"https:\/\/example.com\/patterns\")",
+    "id" : "267ff6fd-01d4-447b-adf0-c160f59c6b5e",
+    "path" : "objects\/book\/design-patterns.md",
+    "title" : "Design Patterns"
+  },
+  "credentialsInsideVault" : false,
+  "credentialsOutsideVault" : true,
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "markdownModuleVersion" : "0.2.0-pr30",
+  "moduleVersion" : "0.30.0-pr30",
+  "note" : "PR30: On-device heuristics + BYOK opt-in. Credentials\/settings in Application Support. Apply via ObjectServing only.",
+  "page" : {
+    "id" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "path" : "objects\/page\/hello-world-meeting.md",
+    "title" : "hello world meeting"
+  },
+  "proof" : {
+    "applyViaObjectServing" : true,
+    "autofill" : true,
+    "credentialsOutsideVault" : true,
+    "indexOutsideVault" : true,
+    "rewrite" : true,
+    "summarize" : true,
+    "translate" : true,
+    "uploadRefusedWithoutOptIn" : true
+  },
+  "rewrite" : {
+    "action" : "rewrite",
+    "notes" : [
+      "tightened on-device"
+    ],
+    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "proposedBody" : "Hello world and the book today.\n\nSee https:\/\/example.com\/ai-demo on 2024-08-13. Status is Draft #inbox.\n\nThis is a long note with filler.\n",
+    "provider" : "onDeviceHeuristics",
+    "uploaded" : false
+  },
+  "settingsOutsideVault" : true,
+  "summarize" : {
+    "action" : "summarize",
+    "notes" : [
+      "2 sentences"
+    ],
+    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "provider" : "onDeviceHeuristics",
+    "summary" : "Summary: hello world meeting · Hello world and the book today · See https:\/\/example",
+    "uploaded" : false
+  },
+  "translate" : {
+    "action" : "translate",
+    "notes" : [
+      "glossary:es"
+    ],
+    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "proposedBody" : "<!-- loci-ai:translated:es -->\nhola mundo y el libro hoy\n",
+    "provider" : "onDeviceHeuristics",
+    "uploaded" : false
+  },
+  "uploadRefusedWithoutOptIn" : true
+}

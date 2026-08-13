@@ -263,14 +263,35 @@ public enum AIHeuristics: Sendable {
     }
 
     private static func firstNumber(in text: String) -> Double? {
+        // Prefer standalone numbers that are not part of YYYY-MM-DD dates.
         guard let regex = try? NSRegularExpression(pattern: #"\b(\d+(?:\.\d+)?)\b"#) else {
             return nil
         }
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
-        guard let match = regex.firstMatch(in: text, range: range),
-            let r = Range(match.range, in: text)
-        else { return nil }
-        return Double(text[r])
+        let matches = regex.matches(in: text, range: range)
+        for match in matches {
+            guard let r = Range(match.range, in: text) else { continue }
+            let start = r.lowerBound
+            // Skip year/month/day pieces inside ISO dates.
+            if isInsideISODate(text: text, at: start) { continue }
+            if let value = Double(text[r]) { return value }
+        }
+        return nil
+    }
+
+    private static func isInsideISODate(text: String, at index: String.Index) -> Bool {
+        guard let dateRegex = try? NSRegularExpression(pattern: #"\b\d{4}-\d{2}-\d{2}\b"#)
+        else { return false }
+        let full = NSRange(text.startIndex..<text.endIndex, in: text)
+        let matches = dateRegex.matches(in: text, range: full)
+        let utf16 = text.utf16
+        let loc = utf16.distance(from: utf16.startIndex, to: index)
+        for match in matches {
+            if loc >= match.range.location && loc < match.range.location + match.range.length {
+                return true
+            }
+        }
+        return false
     }
 
     private static func firstTextSnippet(from body: String, title: String) -> String? {
