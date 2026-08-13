@@ -11,6 +11,9 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var spaceName: String
     /// Currently presented shell destination.
     public var selectedRoute: Route
+    /// Calendar day shown in the Daily inspector “Created today” panel (PR11).
+    /// Updated by `DailyNoteView` when the day switcher changes — index query only.
+    public var inspectedDailyDay: Date
     /// Concrete vault I/O (local Documents fallback always available).
     public let vault: VaultService
     /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).
@@ -27,6 +30,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         spaceName: String = "Loci",
         /// iOS / default launch prefers Daily (inbox). Documented preference for PR10.
         selectedRoute: Route = .daily,
+        inspectedDailyDay: Date = DailyNoteIdentity.startOfDay(Date()),
         vault: VaultService? = nil,
         schema: SchemaStore? = nil,
         index: IndexService? = nil,
@@ -35,6 +39,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
+        self.inspectedDailyDay = inspectedDailyDay
         let resolvedVault =
             vault
             ?? (try? VaultService(forceLocal: false))

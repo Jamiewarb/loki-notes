@@ -195,6 +195,6 @@ final class MetadataMonitorTests: XCTestCase {
 
 final class ModuleVersionTests: XCTestCase {
     func testVersionPresent() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr10"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr11"))
     }
 }

@@ -5,7 +5,7 @@ import LociDesignSystem
 /// Daily destination — day switcher + BlockEditor for `daily/YYYY-MM-DD.md`.
 ///
 /// iOS launch prefers this route (`AppServices.selectedRoute` defaults to `.daily`).
-/// Created-today inspector is PR11 — this view never rewrites the daily body for other creates.
+/// Created-today lives in the inspector (`CreatedTodayPanel`) — never rewritten into this body.
 struct DailyNoteView: View {
     var services: AppServices
 
@@ -36,6 +36,12 @@ struct DailyNoteView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task(id: dayTaskID) { await loadSelectedDay() }
+        .onAppear { syncInspectedDay() }
+    }
+
+    private func syncInspectedDay() {
+        let day = DailyNoteIdentity.startOfDay(selectedDay, calendar: calendar)
+        services.inspectedDailyDay = day
     }
 
     private var dayTaskID: String {
@@ -61,7 +67,9 @@ struct DailyNoteView: View {
                 }
                 .lociAppear(.soft)
 
-                DaySwitcher(selectedDay: $selectedDay, calendar: calendar)
+                DaySwitcher(selectedDay: $selectedDay, calendar: calendar) { day in
+                    services.inspectedDailyDay = day
+                }
 
                 Text(pathLabel)
                     .font(LociTypography.font(.caption))
@@ -95,7 +103,7 @@ struct DailyNoteView: View {
                 }
 
                 Text(
-                    "Path \(pathLabel) · id \(session.objectID.frontMatterIDString). Created-today panel is PR11 (inspector only)."
+                    "Path \(pathLabel) · id \(session.objectID.frontMatterIDString). Created-today is inspector-only (index)."
                 )
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)
@@ -108,6 +116,7 @@ struct DailyNoteView: View {
     private func loadSelectedDay() async {
         isLoading = true
         defer { isLoading = false }
+        syncInspectedDay()
         do {
             // Prefer Daily on launch: ensure vault + index, then today’s (or selected) note.
             try await services.openVaultPipeline(rebuildIfNeeded: true)

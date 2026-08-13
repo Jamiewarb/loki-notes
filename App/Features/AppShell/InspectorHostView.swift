@@ -5,8 +5,28 @@ import LociDesignSystem
 /// Trailing column (macOS) / sheet slot (iOS) — properties, backlinks, outline later.
 struct InspectorHostView: View {
     let route: Route
+    var services: AppServices
 
     var body: some View {
+        Group {
+            if case .daily = route {
+                ScrollView {
+                    CreatedTodayPanel(
+                        services: services,
+                        day: services.inspectedDailyDay
+                    )
+                    .padding(LociSpacing.stack(.lg))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(LociColors.panel.opacity(0.55))
+                .lociAppear(.panel)
+            } else {
+                placeholderBody
+            }
+        }
+    }
+
+    private var placeholderBody: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
             Text("Inspector")
                 .font(LociTypography.font(.overline))
@@ -50,7 +70,7 @@ struct InspectorHostView: View {
     private var blurb: String {
         switch route {
         case .daily:
-            return "Outline stays light. “Created today” (PR11) is an inspector panel from the index — never rewritten into this daily .md."
+            return "Created today is index-only — never rewritten into the daily .md."
         case .search:
             return "Recent queries and filter chips will appear here (PR18)."
         case .types:

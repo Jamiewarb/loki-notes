@@ -2,7 +2,8 @@ import Foundation
 
 /// Daily note lifecycle: deterministic path/id, ensure-today, day navigation (PR10).
 ///
-/// Does **not** write “created today” into the daily markdown — that is PR11 (inspector only).
+/// Does **not** write “created today” into the daily markdown — that is the
+/// inspector panel (`CreatedTodayPanel` / PR11) fed by `IndexQuerying.created(on:)`.
 public protocol DailyNoteServing: Sendable {
     /// Create today’s note if missing (empty/default body); open if present. Idempotent.
     func ensureToday(calendar: Calendar) async throws -> OpenedObject

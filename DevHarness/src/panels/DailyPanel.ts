@@ -1,6 +1,6 @@
 /**
- * Daily panel — today’s note fixture from `scripts/demo-daily.sh` (PR10).
- * Loads `/demo-daily/daily.json`.
+ * Daily panel — today’s note + Created today (PR10/PR11).
+ * Loads `/demo-daily/daily.json` and `/demo-created-today/created-today.json`.
  */
 export async function renderDailyPanel(root: HTMLElement): Promise<void> {
   root.innerHTML = `
@@ -18,9 +18,12 @@ export async function renderDailyPanel(root: HTMLElement): Promise<void> {
 
   const status = root.querySelector("[data-harness='daily-status']");
   try {
-    const res = await fetch("/demo-daily/daily.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = (await res.json()) as {
+    const [dailyRes, createdRes] = await Promise.all([
+      fetch("/demo-daily/daily.json", { cache: "no-store" }),
+      fetch("/demo-created-today/created-today.json", { cache: "no-store" }),
+    ]);
+    if (!dailyRes.ok) throw new Error(`daily.json HTTP ${dailyRes.status}`);
+    const data = (await dailyRes.json()) as {
       moduleVersion: string;
       indexInsideVault: boolean;
       idempotent: boolean;
@@ -47,6 +50,41 @@ export async function renderDailyPanel(root: HTMLElement): Promise<void> {
       note: string;
     };
 
+    let created: {
+      createdToday?: Array<{
+        id: string;
+        type: string;
+        title: string;
+        relativePath: string;
+      }>;
+      proof?: { dailyUnchanged?: boolean; beforeHash?: string; afterHash?: string };
+      excludeDailyFromPanel?: boolean;
+      note?: string;
+      moduleVersion?: string;
+    } | null = null;
+    if (createdRes.ok) {
+      created = await createdRes.json();
+    }
+
+    const createdRows = (created?.createdToday ?? [])
+      .map(
+        (h) => `
+        <li class="schema-type-row" data-harness="created-today-row" data-object-id="${escapeHtml(
+          h.id,
+        )}" role="button" tabindex="0">
+          <span class="schema-type-name">${escapeHtml(h.title)}</span>
+          <span class="schema-type-meta">${escapeHtml(h.type)} · ${escapeHtml(h.relativePath)}</span>
+        </li>`,
+      )
+      .join("");
+
+    const proofOk = created?.proof?.dailyUnchanged === true;
+    const proofLabel = created
+      ? proofOk
+        ? "daily .md unchanged after Page create ✓"
+        : "FAIL — daily .md mutated"
+      : "run ./scripts/demo-created-today.sh";
+
     root.innerHTML = `
       <div class="destination daily-panel" data-harness="destination" data-destination="daily">
         <header class="destination-header">
@@ -54,7 +92,7 @@ export async function renderDailyPanel(root: HTMLElement): Promise<void> {
           <h2 class="destination-title">Daily</h2>
         </header>
         <p class="destination-lead">
-          Auto-create today · prev/next day · BlockEditor host in the app.
+          Auto-create today · prev/next day · Created-today inspector (index-only).
           <code>${escapeHtml(data.moduleVersion)}</code>
         </p>
 
@@ -105,12 +143,54 @@ export async function renderDailyPanel(root: HTMLElement): Promise<void> {
           <pre class="code-block" data-harness="daily-markdown">${escapeHtml(data.markdown)}</pre>
         </section>
 
+        <section class="vault-card" data-harness="created-today-section" aria-label="Created today">
+          <p class="vault-kicker">PR11 · IndexQuerying.created(on:)</p>
+          <h3 class="vault-card-title">Created today</h3>
+          <p class="vault-card-body" data-harness="created-today-proof">
+            Proof: <strong data-harness="daily-unchanged">${escapeHtml(proofLabel)}</strong>
+            · exclude Daily type from panel: ${created?.excludeDailyFromPanel ? "yes" : "n/a"}
+          </p>
+          <ul class="schema-type-list" data-harness="created-today-list">
+            ${createdRows || "<li class='schema-type-row'>No created-today fixtures — run ./scripts/demo-created-today.sh</li>"}
+          </ul>
+          <div class="page-detail" data-harness="created-today-detail" hidden>
+            <p class="vault-kicker">Harness detail</p>
+            <p class="vault-card-body" data-harness="created-today-detail-body"></p>
+          </div>
+          <p class="vault-note">
+            ${escapeHtml(created?.note ?? "UI-only links; never rewrite daily.md.")}
+            Regenerate with <code>./scripts/demo-created-today.sh</code>.
+          </p>
+        </section>
+
         <p class="vault-note" data-harness="daily-status">
-          ${escapeHtml(data.note)} Regenerate with <code>./scripts/demo-daily.sh</code>.
-          Created-today inspector is PR11.
+          ${escapeHtml(data.note)} Regenerate daily with <code>./scripts/demo-daily.sh</code>.
         </p>
       </div>
     `;
+
+    const detail = root.querySelector<HTMLElement>("[data-harness='created-today-detail']");
+    const detailBody = root.querySelector<HTMLElement>("[data-harness='created-today-detail-body']");
+    const items = created?.createdToday ?? [];
+    root.querySelectorAll<HTMLLIElement>("[data-harness='created-today-row']").forEach((row) => {
+      const show = () => {
+        const id = row.dataset.objectId ?? "";
+        const hit = items.find((h) => h.id === id);
+        if (!detail || !detailBody) return;
+        detail.hidden = false;
+        detailBody.textContent = hit
+          ? `Navigate → open object ${hit.title} (${hit.relativePath})\nApp uses Navigating.open(objectID:); harness shows detail placeholder.`
+          : "Unknown object";
+        detail.dataset.objectId = id;
+      };
+      row.addEventListener("click", show);
+      row.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter" || ev.key === " ") {
+          ev.preventDefault();
+          show();
+        }
+      });
+    });
   } catch (err) {
     if (status) {
       status.textContent =
@@ -118,7 +198,8 @@ export async function renderDailyPanel(root: HTMLElement): Promise<void> {
     }
     const note = document.createElement("p");
     note.className = "vault-note";
-    note.textContent = "Missing demo-daily fixtures. Run ./scripts/demo-daily.sh then reload.";
+    note.textContent =
+      "Missing fixtures. Run ./scripts/demo-daily.sh and ./scripts/demo-created-today.sh then reload.";
     root.appendChild(note);
   }
 }
