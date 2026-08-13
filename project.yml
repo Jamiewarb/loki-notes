@@ -4,6 +4,7 @@
 #
 # PR26: Share extension + Widget + (sources for) menu bar capture are stub targets.
 # They write `.loci/inbox/` staging files; the main app drains on foreground.
+# PR32: Safari App Extension stub (macOS) — same inbox path.
 
 name: Loci
 options:
@@ -15,7 +16,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "0.30.0"
+    MARKETING_VERSION: "0.32.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
   Loci:
@@ -29,6 +30,7 @@ targets:
         excludes:
           - Platform/iOS/ShareExtension/**
           - Platform/iOS/Widget/**
+          - Platform/macOS/SafariExtension/**
     dependencies:
       - package: Loci
         product: LociCore
@@ -48,6 +50,10 @@ targets:
         embed: true
         codeSign: true
         platformFilter: iOS
+      - target: LociSafariExtension
+        embed: true
+        codeSign: true
+        platformFilter: macOS
     entitlements:
       path: App/Resources/Loci.entitlements
     info:
@@ -97,4 +103,23 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci.Widgets
+        SKIP_INSTALL: true
+
+  # PR32 — macOS Safari App Extension stub (enqueue .loci/inbox/*.json)
+  LociSafariExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: App/Platform/macOS/SafariExtension
+    dependencies:
+      - package: Loci
+        product: LociCore
+      - package: Loci
+        product: LociVault
+      - sdk: SafariServices.framework
+    info:
+      path: App/Platform/macOS/SafariExtension/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci.SafariExtension
         SKIP_INSTALL: true

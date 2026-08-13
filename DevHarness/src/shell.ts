@@ -25,7 +25,8 @@ export type PanelId =
   | "import"
   | "type-convert"
   | "ai"
-  | "apple";
+  | "apple"
+  | "safari";
 
 export interface NavItem {
   id: PanelId;
@@ -77,6 +78,7 @@ export const STUDIO_NAV: NavItem[] = [
   },
   { id: "ai", label: "AI", subtitle: "Assist · BYOK", section: "studio" },
   { id: "apple", label: "Apple", subtitle: "Calendar · Reminders", section: "studio" },
+  { id: "safari", label: "Safari", subtitle: "Clip · Weblink", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -180,6 +182,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Apple",
     body: "Apple Calendar / Reminders (PR31). Event list on daily is chrome · Create Meeting → objects/meeting/ · optional Reminders sync (explicit).",
     inspector: "Settings in Application Support · daily .md unchanged by event list · index never in vault.",
+  },
+  safari: {
+    id: "safari",
+    title: "Safari",
+    body: "Safari web clipper (PR32). Extension enqueues .loci/inbox/*.json · drain → today (`· safari`) or Weblink with url property.",
+    inspector: "Same Capture inbox · Weblink type · index never from extension.",
   },
   tags: {
     id: "tags",

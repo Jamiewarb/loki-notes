@@ -159,6 +159,15 @@ Apple Calendar / Reminders (PR31) extras:
 
 Event list on daily is UI chrome (daily .md unchanged). Create Meeting → `objects/meeting/` via ObjectServing. Optional Reminders sync is explicit + settings outside vault.
 
+Safari web clipper (PR32) extras:
+
+```bash
+./scripts/demo-safari.sh
+# harness: http://127.0.0.1:5173/?panel=safari
+```
+
+Safari App Extension enqueues `.loci/inbox/*.json` (same Capture inbox); main app drains → today’s daily (`· safari`) or a Weblink object with `url` property. Index never from the extension. **Wave D (PR30–PR32) complete.**
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

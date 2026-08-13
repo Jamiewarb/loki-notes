@@ -17,6 +17,7 @@ public enum CaptureSource: String, Sendable, Hashable, Codable, Equatable {
     case share
     case widget
     case menuBar
+    case safari
     case harness
     case unknown
 }

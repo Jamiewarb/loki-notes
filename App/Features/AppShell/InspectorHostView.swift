@@ -75,6 +75,8 @@ struct InspectorHostView: View {
                 AIFeature.inspector(services: services)
             } else if case .apple = route {
                 AppleIntegrationsFeature.inspector(services: services)
+            } else if case .safari = route {
+                SafariClipperFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -156,6 +158,7 @@ struct InspectorHostView: View {
         case .typeConvert: return "Property map · move"
         case .ai: return "Assist · BYOK"
         case .apple: return "Calendar · Reminders"
+        case .safari: return "Clip · Weblink"
         case .object: return "Properties"
         }
     }
@@ -190,6 +193,8 @@ struct InspectorHostView: View {
             return "Summarize / rewrite / translate / autofill — on-device by default; BYOK never uploads without opt-in."
         case .apple:
             return "Event list is chrome; Create Meeting writes objects/meeting/. Reminders sync is explicit + opt-in."
+        case .safari:
+            return "Safari extension enqueues .loci/inbox/; drain → today (`· safari`) or Weblink with url property."
         case .object:
             return "Properties, object tags, backlinks, type conversion, and AI assist from the local index."
         }

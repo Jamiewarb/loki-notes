@@ -85,4 +85,13 @@ final class CaptureModelsTests: XCTestCase {
         XCTAssertEqual(decoded.kind, .appendToToday)
         XCTAssertEqual(decoded.text, "Quick note")
     }
+
+    func testSafariSourceInLineFormatter() {
+        let line = CaptureLineFormatter.line(
+            text: "From Safari",
+            sourceURL: "https://example.com",
+            source: .safari
+        )
+        XCTAssertEqual(line, "- From Safari — https://example.com · safari")
+    }
 }

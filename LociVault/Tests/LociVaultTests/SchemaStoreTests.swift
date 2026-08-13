@@ -31,6 +31,7 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertTrue(ids.contains(.daily))
         XCTAssertTrue(ids.contains(.image))
         XCTAssertTrue(ids.contains(.meeting))
+        XCTAssertTrue(ids.contains(.weblink))
         let page = try await store.loadType(.page)
         XCTAssertEqual(page.name, "Page")
         XCTAssertTrue(page.isBuiltIn)
@@ -50,6 +51,11 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertEqual(meeting.name, "Meeting")
         XCTAssertTrue(meeting.isBuiltIn)
         XCTAssertTrue(meeting.properties.contains { $0.id == "event-id" })
+
+        let weblink = try await store.loadType(.weblink)
+        XCTAssertEqual(weblink.name, "Weblink")
+        XCTAssertTrue(weblink.isBuiltIn)
+        XCTAssertTrue(weblink.properties.contains { $0.id == "url" && $0.kind == .url })
 
         let settings = try await store.loadSpaceSettings()
         XCTAssertEqual(settings.name, "Schema Lab")
@@ -106,7 +112,7 @@ final class SchemaStoreTests: XCTestCase {
         // Fresh store against the same vault root — proves disk persistence.
         let store2 = SchemaStore(vault: vault)
         let ids = try await store2.knownTypeIDs()
-        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "image", "meeting", "page"])
+        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "image", "meeting", "page", "weblink"])
         let loaded = try await store2.loadType(ObjectTypeID("book"))
         XCTAssertEqual(loaded.name, "Book")
         XCTAssertEqual(loaded.properties.count, 2)
@@ -120,10 +126,10 @@ final class SchemaStoreTests: XCTestCase {
             ObjectType(id: ObjectTypeID("project"), name: "Project", icon: "folder")
         )
         let all = try await store.allTypes()
-        XCTAssertEqual(all.count, 5)
+        XCTAssertEqual(all.count, 6)
         XCTAssertEqual(
             Set(all.map(\.id.rawValue)),
-            Set(["page", "daily", "image", "meeting", "project"])
+            Set(["page", "daily", "image", "meeting", "weblink", "project"])
         )
     }
 
@@ -279,7 +285,7 @@ final class SchemaStoreTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32")
         )
     }
 }

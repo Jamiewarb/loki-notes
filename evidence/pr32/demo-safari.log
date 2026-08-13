@@ -1,0 +1,7 @@
+==> loci-safari-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-safari-demo' complete! (0.50s)
+dailyLine='- Quoted selection from the page. — https://example.com/safari-clip · safari' weblink=objects/weblink/weblink-title.md inboxEmpty=True module=0.32.0-pr32
+wrote DevHarness/public/demo-safari/safari.json

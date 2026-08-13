@@ -148,16 +148,28 @@ public final class CaptureService: CaptureServing, @unchecked Sendable {
         var meta = try await objects.create(typeID: typeID, title: title)
         var body = item.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if let url = item.sourceURL?.trimmingCharacters(in: .whitespacesAndNewlines), !url.isEmpty {
+            // Weblink: copy sourceURL into frontmatter `url` (inbox drain path).
+            if typeID == .weblink {
+                meta.properties["url"] = .url(url)
+                if let pageTitle = item.title?.trimmingCharacters(in: .whitespacesAndNewlines),
+                    !pageTitle.isEmpty
+                {
+                    meta.properties["clipped-from"] = .text(pageTitle)
+                }
+            }
             if body.isEmpty {
                 body = url
-            } else if !body.contains(url) {
+            } else if typeID != .weblink, !body.contains(url) {
+                // Weblink body already includes Source: via SafariClipFactory.
                 body += "\n\nSource: \(url)\n"
             }
         }
-        if !body.isEmpty {
-            meta.updated = Date()
-            try await objects.save(meta: meta, bodyMarkdown: body.hasSuffix("\n") ? body : body + "\n")
-        }
+        meta.updated = Date()
+        let finalBody =
+            body.isEmpty
+            ? ""
+            : (body.hasSuffix("\n") ? body : body + "\n")
+        try await objects.save(meta: meta, bodyMarkdown: finalBody)
         return CaptureResult(
             kind: .createObject,
             objectID: meta.id,

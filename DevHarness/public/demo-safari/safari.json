@@ -1,0 +1,28 @@
+{
+  "appendInboxPath" : ".loci\/inbox\/715244d9-7b44-4002-af39-50e53156b390.json",
+  "dailyBody" : "- Quoted selection from the page. — https:\/\/example.com\/safari-clip · safari\n- Direct clip line. — https:\/\/example.com\/direct · safari",
+  "dailyLine" : "- Quoted selection from the page. — https:\/\/example.com\/safari-clip · safari",
+  "dailyPath" : "daily\/2026-08-13.md",
+  "directLine" : "- Direct clip line. — https:\/\/example.com\/direct · safari",
+  "directPath" : "daily\/2026-08-13.md",
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "markdownModuleVersion" : "0.2.0-pr30",
+  "moduleVersion" : "0.32.0-pr32",
+  "note" : "PR32: Safari extension enqueues .loci\/inbox\/; drain → today (`· safari`) or Weblink with url property. Index never from extension.",
+  "pendingAfterDrain" : 0,
+  "pendingBeforeDrain" : 2,
+  "proof" : {
+    "dailyLineHasSafari" : true,
+    "directClip" : true,
+    "inboxEmpty" : true,
+    "indexOutsideVault" : true,
+    "weblinkPath" : true,
+    "weblinkTypeSeeded" : true,
+    "weblinkURLProperty" : true
+  },
+  "weblinkInboxPath" : ".loci\/inbox\/34b17852-be4d-4c89-a083-1e3b7aa29772.json",
+  "weblinkPath" : "objects\/weblink\/weblink-title.md",
+  "weblinkTypeSeeded" : true,
+  "weblinkURL" : "https:\/\/example.com\/weblink"
+}

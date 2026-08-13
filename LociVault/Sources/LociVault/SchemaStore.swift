@@ -69,13 +69,14 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return result
     }
 
-    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily** + **Image** + **Meeting**.
+    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily** + **Image** + **Meeting** + **Weblink**.
     public func bootstrapSchema(spaceName: String = "Loci") async throws {
         try await vault.ensureSkeleton(spaceName: spaceName)
         try await seedBuiltInPageIfNeeded()
         try await seedBuiltInDailyIfNeeded()
         try await seedBuiltInImageIfNeeded()
         try await seedBuiltInMeetingIfNeeded()
+        try await seedBuiltInWeblinkIfNeeded()
     }
 
     /// Write `page.json` when absent (idempotent). Safe to call after `ensureSkeleton`.
@@ -112,6 +113,15 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
             try await saveType(.builtInMeeting)
         }
         try await ensureObjectsFolder(for: .meeting)
+    }
+
+    /// Write `weblink.json` when absent (idempotent). Objects under `objects/weblink/` (PR32).
+    public func seedBuiltInWeblinkIfNeeded() async throws {
+        let path = Self.typeRelativePath(for: .weblink)
+        if !(try await vault.fileExists(atRelativePath: path)) {
+            try await saveType(.builtInWeblink)
+        }
+        try await ensureObjectsFolder(for: .weblink)
     }
 
     // MARK: - Custom types (PR12)

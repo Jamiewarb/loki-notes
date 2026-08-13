@@ -171,6 +171,15 @@ struct AppShellView: View {
                     Label("Apple", systemImage: Route.apple.systemImage)
                 }
                 NavigationLink {
+                    SafariClipperFeature.destination(services: services)
+                        .navigationTitle("Safari")
+                        .onAppear {
+                            Task { await services.open(route: .safari) }
+                        }
+                } label: {
+                    Label("Safari", systemImage: Route.safari.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {
