@@ -1,0 +1,7 @@
+==> loci-unlinked-mentions-demo
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-unlinked-mentions-demo' complete! (0.11s)
+detectsPlainTitle ignoresExistingWikiLink doesNotRewriteBody dailyUnchanged notes has no [[ until Link indexInsideVault=false
+==> wrote /workspace/DevHarness/public/demo-unlinked-mentions/unlinked-mentions.json
+==> demo-unlinked-mentions complete

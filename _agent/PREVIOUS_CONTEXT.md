@@ -10,7 +10,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Based on:** `cursor/pr43-weblink-preview-d2c1`  
 **Vault module:** `0.44.0-pr44`  
 **MARKETING_VERSION:** `0.44.0`  
-**Swift tests:** pending (was 412). **Playwright:** pending (was 94). Evidence: `evidence/pr44/`
+**Swift tests:** **427** green (was 412). **Playwright:** **97** green (was 94). Evidence: `evidence/pr44/`
 
 ### Feature design
 - Domain folder: `App/Features/Links/` — `UnlinkedMentionsPanel` via `LinksFeature.unlinkedMentions(...)`. Compose from `InspectorHostView` alongside `BacklinksPanel`. **Does not import** other feature folders.
