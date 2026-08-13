@@ -9,6 +9,7 @@
 
 export type PanelId =
   | "daily"
+  | "tasks"
   | "search"
   | "types"
   | "settings"
@@ -37,6 +38,7 @@ export interface Panel {
 /** Primary destinations — matches AppRoute.primary / Route.primaryDestinations. */
 export const PRIMARY_NAV: NavItem[] = [
   { id: "daily", label: "Daily", subtitle: "Today’s note", section: "primary" },
+  { id: "tasks", label: "Tasks", subtitle: "Today & open", section: "primary" },
   { id: "search", label: "Search", subtitle: "Full-text index", section: "primary" },
   { id: "types", label: "Types", subtitle: "Object dashboards", section: "primary" },
   { id: "settings", label: "Settings", subtitle: "Vault & sync", section: "primary" },
@@ -66,7 +68,13 @@ export const PANELS: Record<PanelId, Panel> = {
     id: "daily",
     title: "Daily",
     body: "Today’s note — daily/YYYY-MM-DD.md + id daily-YYYY-MM-DD (PR10).",
-    inspector: "Created today — IndexQuerying.created(on:) live links; daily .md never rewritten on create.",
+    inspector: "Created today + open tasks — IndexQuerying; daily .md never rewritten on create.",
+  },
+  tasks: {
+    id: "tasks",
+    title: "Tasks",
+    body: "Today / Open tasks (PR19). Index tasks table · toggles persist via ObjectServing.save · never block typing.",
+    inspector: "Aggregation only — checkboxes write vault markdown then reindex.",
   },
   search: {
     id: "search",

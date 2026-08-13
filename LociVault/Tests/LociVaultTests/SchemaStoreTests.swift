@@ -264,7 +264,7 @@ final class SchemaStoreTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19")
         )
     }
 }

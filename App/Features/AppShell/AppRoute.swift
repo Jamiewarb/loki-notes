@@ -5,6 +5,7 @@ import LociCore
 /// Maps 1:1 onto `LociCore.Route` so features never import each other’s views.
 enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     case daily
+    case tasks
     case search
     case types
     case settings
@@ -14,7 +15,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     var id: Self { self }
 
     /// Primary destinations shown in the main nav list.
-    static let primary: [AppRoute] = [.daily, .search, .types, .settings]
+    static let primary: [AppRoute] = [.daily, .tasks, .search, .types, .settings]
 
     /// Debug / tooling destinations (reachable, not primary).
     static let tooling: [AppRoute] = [.tags, .designGallery]
@@ -22,6 +23,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     var route: Route {
         switch self {
         case .daily: return .daily
+        case .tasks: return .tasks
         case .search: return .search
         case .types: return .types
         case .settings: return .settings
@@ -37,6 +39,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     init?(route: Route) {
         switch route {
         case .daily: self = .daily
+        case .tasks: self = .tasks
         case .search: self = .search
         case .types: self = .types
         case .settings: self = .settings
