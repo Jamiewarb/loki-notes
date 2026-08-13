@@ -54,6 +54,17 @@ public protocol IndexQuerying: Sendable {
         aliases: TagAliasTable,
         limit: Int
     ) async throws -> [TagSummary]
+
+    // MARK: - Tasks (PR19)
+
+    /// Projected GFM task items. `completed` nil = all; `true`/`false` filters checkbox state.
+    func tasks(completed: Bool?) async throws -> [IndexedTask]
+
+    /// Incomplete tasks across the vault (Open tasks aggregation).
+    func openTasks() async throws -> [IndexedTask]
+
+    /// Tasks whose source object is the daily note for `day` (`daily/YYYY-MM-DD.md`).
+    func tasks(inDailyNoteOn day: Date, calendar: Calendar) async throws -> [IndexedTask]
 }
 
 /// One row from the disposable `properties_idx` projection.

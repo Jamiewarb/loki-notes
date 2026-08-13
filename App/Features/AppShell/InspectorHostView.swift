@@ -11,10 +11,34 @@ struct InspectorHostView: View {
         Group {
             if case .daily = route {
                 ScrollView {
-                    CreatedTodayPanel(
-                        services: services,
-                        day: services.inspectedDailyDay
-                    )
+                    VStack(alignment: .leading, spacing: LociSpacing.stack(.xl)) {
+                        CreatedTodayPanel(
+                            services: services,
+                            day: services.inspectedDailyDay
+                        )
+                        TasksFeature.openTasksPanel(
+                            services: services,
+                            day: services.inspectedDailyDay
+                        )
+                    }
+                    .padding(LociSpacing.stack(.lg))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(LociColors.panel.opacity(0.55))
+                .lociAppear(.panel)
+            } else if case .tasks = route {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
+                        Text("Tasks")
+                            .font(LociTypography.font(.overline))
+                            .tracking(0.08)
+                            .foregroundStyle(LociColors.inkSoft)
+                        Text(
+                            "Today = daily note tasks. Open = incomplete anywhere. Checkboxes write vault markdown via save → index."
+                        )
+                        .font(LociTypography.font(.callout))
+                        .foregroundStyle(LociColors.inkSoft)
+                    }
                     .padding(LociSpacing.stack(.lg))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -98,7 +122,8 @@ struct InspectorHostView: View {
 
     private var title: String {
         switch route {
-        case .daily: return "Created today"
+        case .daily: return "Created today · Open tasks"
+        case .tasks: return "Aggregation"
         case .search: return "Filters"
         case .types: return "Type metadata"
         case .settings: return "Sync status"
@@ -111,7 +136,9 @@ struct InspectorHostView: View {
     private var blurb: String {
         switch route {
         case .daily:
-            return "Created today is index-only — never rewritten into the daily .md."
+            return "Created today + open tasks are index-only — never rewritten into the daily .md."
+        case .tasks:
+            return "Today / Open lists read IndexQuerying; toggles persist through ObjectServing.save."
         case .search:
             return "Recent queries and type filters — IndexQuerying.search only."
         case .types:

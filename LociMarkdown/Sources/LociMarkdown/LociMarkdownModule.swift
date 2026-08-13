@@ -4,7 +4,7 @@ import Foundation
 ///
 /// YAML choice: hand-rolled `SimpleYAML` subset — no SPM YAML dependency (Linux-friendly).
 public enum LociMarkdownModule {
-    public static let version = "0.2.0-pr18"
+    public static let version = "0.2.0-pr19"
 
     public static func parse(_ markdown: String) throws -> LociDocument {
         try MarkdownParser().parse(markdown)

@@ -17,6 +17,7 @@ import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
 import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
+import { renderTasksPanel } from "./panels/TasksPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -35,6 +36,7 @@ let active: PanelId = panelFromQuery();
 
 const DESTINATION_ICONS: Record<PanelId, string> = {
   daily: "☀",
+  tasks: "☑",
   search: "⌕",
   types: "▦",
   settings: "⚙",
@@ -114,6 +116,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
     void renderSearchIndex(detail);
     return;
   }
+  if (panelId === "tasks") {
+    void renderTasksPanel(detail);
+    return;
+  }
   renderDestinationPlaceholder(detail, {
     id: panelId,
     title: panel.title,
@@ -165,6 +171,9 @@ function render(): void {
   if (inspectorRoot && active === "daily") {
     void renderCreatedTodayInspector(inspectorRoot);
   }
+  if (inspectorRoot && active === "tasks") {
+    void renderTasksInspector(inspectorRoot);
+  }
   if (inspectorRoot && active === "types") {
     void renderPropertiesInspector(inspectorRoot);
   }
@@ -190,9 +199,12 @@ function render(): void {
 async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
   root.innerHTML = `<p data-harness="inspector-created-loading">Loading created today…</p>`;
   try {
-    const res = await fetch("/demo-created-today/created-today.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = (await res.json()) as {
+    const [createdRes, tasksRes] = await Promise.all([
+      fetch("/demo-created-today/created-today.json", { cache: "no-store" }),
+      fetch("/demo-tasks/tasks.json", { cache: "no-store" }),
+    ]);
+    if (!createdRes.ok) throw new Error(`HTTP ${createdRes.status}`);
+    const data = (await createdRes.json()) as {
       createdToday?: Array<{
         id: string;
         type: string;
@@ -214,11 +226,36 @@ async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
         </li>`,
       )
       .join("");
+
+    let openTasksHtml = "";
+    if (tasksRes.ok) {
+      const tasksData = (await tasksRes.json()) as {
+        openTasks?: Array<{ text: string; completed: boolean }>;
+        todayTasks?: Array<{ text: string; completed: boolean }>;
+      };
+      const openOnDaily = (tasksData.todayTasks ?? []).filter((t) => !t.completed);
+      openTasksHtml = `
+        <p class="vault-kicker" style="margin-top:0.75rem">Open tasks (today)</p>
+        <ul class="schema-type-list" data-harness="inspector-open-tasks">
+          ${
+            openOnDaily
+              .map(
+                (t) =>
+                  `<li class="schema-type-row"><span class="schema-type-name">☐ ${escapeAttr(
+                    t.text,
+                  )}</span></li>`,
+              )
+              .join("") || "<li class='schema-type-row'>None</li>"
+          }
+        </ul>`;
+    }
+
     root.innerHTML = `
       <p>Index-only · daily.md ${data.proof?.dailyUnchanged ? "unchanged ✓" : "?"} after create.</p>
       <ul class="schema-type-list" data-harness="inspector-created-list" style="margin-top:0.75rem">
         ${rows || "<li class='schema-type-row'>Empty</li>"}
       </ul>
+      ${openTasksHtml}
       <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
         data.note ?? "Tap a row — Navigating.open in the app.",
       )}</p>
@@ -250,6 +287,44 @@ async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
     });
   } catch {
     root.innerHTML = `<p>Missing created-today fixture. Run <code>./scripts/demo-created-today.sh</code>.</p>`;
+  }
+}
+
+/** Tasks inspector: proof summary from demo-tasks fixture (PR19). */
+async function renderTasksInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-tasks-loading">Loading tasks…</p>`;
+  try {
+    const res = await fetch("/demo-tasks/tasks.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      proof?: {
+        pageToggleCompleted?: boolean;
+        dailyHasOpen?: boolean;
+        openCount?: number;
+        todayCount?: number;
+      };
+      note?: string;
+    };
+    const proof = data.proof ?? {};
+    root.innerHTML = `
+      <p>Today / Open · index projection.</p>
+      <ul class="schema-type-list" style="margin-top:0.75rem" data-harness="inspector-tasks-proof">
+        <li class="schema-type-row"><span class="schema-type-name">Page toggle completed</span><span class="schema-type-meta">${
+          proof.pageToggleCompleted ? "✓" : "?"
+        }</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">Today count</span><span class="schema-type-meta">${
+          proof.todayCount ?? 0
+        }</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">Open count</span><span class="schema-type-meta">${
+          proof.openCount ?? 0
+        }</span></li>
+      </ul>
+      <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
+        data.note ?? "Checkboxes write vault markdown via ObjectServing.save.",
+      )}</p>
+    `;
+  } catch {
+    root.innerHTML = `<p>Missing tasks fixture. Run <code>./scripts/demo-tasks.sh</code>.</p>`;
   }
 }
 
@@ -385,7 +460,9 @@ function escapeAttr(value: string): string {
 function inspectorTitle(id: PanelId): string {
   switch (id) {
     case "daily":
-      return "Created today";
+      return "Created today · Open tasks";
+    case "tasks":
+      return "Aggregation";
     case "search":
       return "Filters";
     case "types":

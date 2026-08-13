@@ -8,6 +8,7 @@ struct IndexedDocument: Sendable {
     var bodyText: String
     var wikiLinks: [WikiLink]
     var bodyTags: [String]
+    var tasks: [ExtractedTask]
 }
 
 /// Walks BlockAST + frontmatter into indexable fields.
@@ -37,7 +38,8 @@ enum ObjectIndexer {
             ),
             bodyText: walk.plainText,
             wikiLinks: walk.wikiLinks,
-            bodyTags: walk.tags
+            bodyTags: walk.tags,
+            tasks: walk.tasks
         )
     }
 }
@@ -46,10 +48,14 @@ private struct ASTWalker {
     var plainText: String = ""
     var wikiLinks: [WikiLink] = []
     var tags: [String] = []
+    var tasks: [ExtractedTask] = []
+    private var blockIndex: Int = 0
+    private var captureTasks = true
 
     static func walk(_ blocks: [BlockNode]) -> ASTWalker {
         var walker = ASTWalker()
-        for block in blocks {
+        for (i, block) in blocks.enumerated() {
+            walker.blockIndex = i
             walker.visit(block)
         }
         return walker
@@ -64,14 +70,28 @@ private struct ASTWalker {
             visitInlines(inlines)
             plainText.append("\n")
         case .bulletList(let items), .numberedList(_, let items):
-            for item in items {
+            for (itemIndex, item) in items.enumerated() {
+                if captureTasks, let checked = item.checked {
+                    let text = inlinePlainText(item.inlines)
+                    tasks.append(
+                        ExtractedTask(
+                            blockIndex: blockIndex,
+                            itemIndex: itemIndex,
+                            text: text,
+                            isCompleted: checked
+                        )
+                    )
+                }
                 visitInlines(item.inlines)
                 plainText.append("\n")
             }
         case .blockQuote(let nested):
+            let was = captureTasks
+            captureTasks = false
             for b in nested {
                 visit(b)
             }
+            captureTasks = was
         case .codeBlock(_, let code):
             plainText.append(code)
             plainText.append("\n")
@@ -106,5 +126,29 @@ private struct ASTWalker {
                 plainText.append(" ")
             }
         }
+    }
+
+    private func inlinePlainText(_ inlines: [InlineNode]) -> String {
+        var s = ""
+        func walk(_ nodes: [InlineNode]) {
+            for node in nodes {
+                switch node {
+                case .text(let t), .code(let t):
+                    s.append(t)
+                case .emphasis(let inner), .strong(let inner), .link(let inner, _, _):
+                    walk(inner)
+                case .image(let alt, _, _):
+                    s.append(alt)
+                case .wikiLink(let link):
+                    s.append(link.label ?? link.target)
+                case .tag(let name):
+                    s.append("#\(name)")
+                case .softBreak, .hardBreak:
+                    s.append(" ")
+                }
+            }
+        }
+        walk(inlines)
+        return s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

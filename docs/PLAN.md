@@ -65,7 +65,7 @@ todos:
     status: pending
   - id: pr19-tasks
     content: 'PR19: Task blocks + today task list'
-    status: pending
+    status: completed
   - id: pr20-media
     content: 'PR20: Media attach + image objects in vault'
     status: pending

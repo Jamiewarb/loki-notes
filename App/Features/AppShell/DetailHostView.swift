@@ -19,6 +19,15 @@ struct DetailHostView: View {
                         message: "Today’s note opens here (PR10). Deterministic path daily/YYYY-MM-DD.md."
                     )
                 }
+            case .tasks:
+                if let services {
+                    TasksFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .tasks,
+                        message: "Today / Open tasks from the local index (PR19). Toggles persist via ObjectServing.save."
+                    )
+                }
             case .search:
                 if let services {
                     SearchFeature.destination(services: services)
@@ -78,6 +87,7 @@ struct DetailHostView: View {
     private var routeIdentity: String {
         switch route {
         case .daily: return "daily"
+        case .tasks: return "tasks"
         case .search: return "search"
         case .types: return "types"
         case .settings: return "settings"

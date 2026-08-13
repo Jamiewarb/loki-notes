@@ -46,6 +46,10 @@ struct AppShellView: View {
                 .tabItem { Label("Daily", systemImage: Route.daily.systemImage) }
                 .tag(AppRoute.daily)
 
+            iosStack(for: .tasks)
+                .tabItem { Label("Tasks", systemImage: Route.tasks.systemImage) }
+                .tag(AppRoute.tasks)
+
             iosStack(for: .search)
                 .tabItem { Label("Search", systemImage: Route.search.systemImage) }
                 .tag(AppRoute.search)
@@ -147,7 +151,7 @@ struct AppShellView: View {
         Binding(
             get: {
                 let mapped = AppRoute(route: services.selectedRoute)
-                if mapped == .designGallery { return .settings }
+                if mapped == .designGallery || mapped == .tags { return .settings }
                 return mapped ?? .daily
             },
             set: { route in

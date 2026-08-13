@@ -66,6 +66,25 @@ enum IndexSchema {
                     """
             )
         }
+        // PR19: GFM task-list projection for Today / Open aggregation.
+        migrator.registerMigration("v2-tasks") { db in
+            try db.execute(
+                sql: """
+                    CREATE TABLE tasks (
+                      id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      object_id TEXT NOT NULL,
+                      block_index INTEGER NOT NULL,
+                      item_index INTEGER NOT NULL,
+                      text TEXT NOT NULL,
+                      completed INTEGER NOT NULL DEFAULT 0,
+                      FOREIGN KEY(object_id) REFERENCES objects(id) ON DELETE CASCADE
+                    );
+
+                    CREATE INDEX tasks_completed ON tasks(completed);
+                    CREATE INDEX tasks_object ON tasks(object_id);
+                    """
+            )
+        }
         try migrator.migrate(dbQueue)
     }
 }

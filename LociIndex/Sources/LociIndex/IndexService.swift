@@ -147,6 +147,25 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func tasks(completed: Bool?) async throws -> [IndexedTask] {
+        try await dbQueue.read { db in
+            try TasksQuery.tasks(db: db, completed: completed)
+        }
+    }
+
+    public func openTasks() async throws -> [IndexedTask] {
+        try await tasks(completed: false)
+    }
+
+    public func tasks(inDailyNoteOn day: Date, calendar: Calendar = .current) async throws
+        -> [IndexedTask]
+    {
+        let path = DailyNoteIdentity.relativePath(for: day, calendar: calendar)
+        return try await dbQueue.read { db in
+            try TasksQuery.tasks(db: db, relativePath: path)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {
@@ -155,6 +174,7 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
             try db.execute(sql: "DELETE FROM links")
             try db.execute(sql: "DELETE FROM tags")
             try db.execute(sql: "DELETE FROM properties_idx")
+            try db.execute(sql: "DELETE FROM tasks")
             try db.execute(sql: "DELETE FROM blocks_fts")
             try db.execute(sql: "DELETE FROM objects")
         }
@@ -239,6 +259,7 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
             }
 
             try LinkIndexer.replaceLinks(db: db, sourceID: meta.id, links: doc.wikiLinks)
+            try TasksQuery.replaceTasks(db: db, objectID: meta.id, tasks: doc.tasks)
             try Self.writeProperties(db: db, objectID: id, properties: meta.properties)
 
             try db.execute(
@@ -263,6 +284,7 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         try db.execute(sql: "DELETE FROM links WHERE source_id = ?", arguments: [id])
         try db.execute(sql: "DELETE FROM tags WHERE object_id = ?", arguments: [id])
         try db.execute(sql: "DELETE FROM properties_idx WHERE object_id = ?", arguments: [id])
+        try db.execute(sql: "DELETE FROM tasks WHERE object_id = ?", arguments: [id])
         try db.execute(sql: "DELETE FROM blocks_fts WHERE object_id = ?", arguments: [id])
         try db.execute(sql: "DELETE FROM objects WHERE id = ?", arguments: [id])
     }

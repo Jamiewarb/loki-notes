@@ -5,12 +5,13 @@ final class RouteTests: XCTestCase {
     func testPrimaryDestinationsOrder() {
         XCTAssertEqual(
             Route.primaryDestinations,
-            [.daily, .search, .types, .settings]
+            [.daily, .tasks, .search, .types, .settings]
         )
     }
 
     func testPrimaryFlags() {
         XCTAssertTrue(Route.daily.isPrimaryDestination)
+        XCTAssertTrue(Route.tasks.isPrimaryDestination)
         XCTAssertTrue(Route.settings.isPrimaryDestination)
         XCTAssertFalse(Route.designGallery.isPrimaryDestination)
         XCTAssertFalse(Route.tags.isPrimaryDestination)
@@ -19,6 +20,8 @@ final class RouteTests: XCTestCase {
 
     func testTitlesAndIcons() {
         XCTAssertEqual(Route.daily.title, "Daily")
+        XCTAssertEqual(Route.tasks.title, "Tasks")
+        XCTAssertEqual(Route.tasks.systemImage, "checklist")
         XCTAssertEqual(Route.search.systemImage, "magnifyingglass")
         XCTAssertEqual(Route.designGallery.title, "Design")
         XCTAssertEqual(Route.tags.title, "Tags")
@@ -27,7 +30,7 @@ final class RouteTests: XCTestCase {
     }
 
     func testCodableRoundTripPrimary() throws {
-        let routes: [Route] = [.daily, .search, .types, .settings, .designGallery, .tags]
+        let routes: [Route] = [.daily, .tasks, .search, .types, .settings, .designGallery, .tags]
         let data = try JSONEncoder().encode(routes)
         let decoded = try JSONDecoder().decode([Route].self, from: data)
         XCTAssertEqual(decoded, routes)

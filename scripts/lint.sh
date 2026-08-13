@@ -81,6 +81,11 @@ if [[ -d "$ROOT/App/Features/Search" ]]; then
 else
   fail "App/Features/Search missing"
 fi
+if [[ -d "$ROOT/App/Features/Tasks" ]]; then
+  pass "App/Features/Tasks present"
+else
+  fail "App/Features/Tasks missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

@@ -1,0 +1,105 @@
+{
+  "completedTasks" : [
+    {
+      "blockIndex" : 1,
+      "completed" : true,
+      "id" : "d01a2026-0813-4000-8000-6461696c7900|1|1",
+      "itemIndex" : 1,
+      "objectId" : "d01a2026-0813-4000-8000-6461696c7900",
+      "objectTitle" : "2026-08-13",
+      "relativePath" : "daily\/2026-08-13.md",
+      "text" : "Seed daily note",
+      "type" : "daily"
+    },
+    {
+      "blockIndex" : 1,
+      "completed" : true,
+      "id" : "da3b6ff7-b02e-4066-b8d5-369488a170da|1|0",
+      "itemIndex" : 0,
+      "objectId" : "da3b6ff7-b02e-4066-b8d5-369488a170da",
+      "objectTitle" : "Launch Checklist",
+      "relativePath" : "objects\/page\/launch-checklist.md",
+      "text" : "Check task in a Page",
+      "type" : "page"
+    },
+    {
+      "blockIndex" : 1,
+      "completed" : true,
+      "id" : "da3b6ff7-b02e-4066-b8d5-369488a170da|1|2",
+      "itemIndex" : 2,
+      "objectId" : "da3b6ff7-b02e-4066-b8d5-369488a170da",
+      "objectTitle" : "Launch Checklist",
+      "relativePath" : "objects\/page\/launch-checklist.md",
+      "text" : "Scaffold feature folder",
+      "type" : "page"
+    }
+  ],
+  "dailyPath" : "daily\/2026-08-13.md",
+  "day" : "2026-08-13",
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-tasks-demo-db-2026-08-13T12-08-39Z\/v1295d4623a74ead7\/index.sqlite",
+  "markdownModuleVersion" : "0.2.0-pr19",
+  "moduleVersion" : "0.2.0-pr19",
+  "note" : "PR19: Task blocks index into tasks table; Today = daily note tasks; Open = incomplete; toggles persist via ObjectServing.save.",
+  "openTasks" : [
+    {
+      "blockIndex" : 1,
+      "completed" : false,
+      "id" : "d01a2026-0813-4000-8000-6461696c7900|1|0",
+      "itemIndex" : 0,
+      "objectId" : "d01a2026-0813-4000-8000-6461696c7900",
+      "objectTitle" : "2026-08-13",
+      "relativePath" : "daily\/2026-08-13.md",
+      "text" : "Review PR19 Tasks",
+      "type" : "daily"
+    },
+    {
+      "blockIndex" : 1,
+      "completed" : false,
+      "id" : "da3b6ff7-b02e-4066-b8d5-369488a170da|1|1",
+      "itemIndex" : 1,
+      "objectId" : "da3b6ff7-b02e-4066-b8d5-369488a170da",
+      "objectTitle" : "Launch Checklist",
+      "relativePath" : "objects\/page\/launch-checklist.md",
+      "text" : "Write evidence",
+      "type" : "page"
+    }
+  ],
+  "proof" : {
+    "completedCount" : 3,
+    "dailyHasOpen" : true,
+    "dailyOpenCount" : 1,
+    "indexOutsideVault" : true,
+    "openCount" : 2,
+    "pageToggleCompleted" : true,
+    "todayCount" : 2
+  },
+  "sqliteEngine" : "GRDB",
+  "todayTasks" : [
+    {
+      "blockIndex" : 1,
+      "completed" : false,
+      "id" : "d01a2026-0813-4000-8000-6461696c7900|1|0",
+      "itemIndex" : 0,
+      "objectId" : "d01a2026-0813-4000-8000-6461696c7900",
+      "objectTitle" : "2026-08-13",
+      "relativePath" : "daily\/2026-08-13.md",
+      "text" : "Review PR19 Tasks",
+      "type" : "daily"
+    },
+    {
+      "blockIndex" : 1,
+      "completed" : true,
+      "id" : "d01a2026-0813-4000-8000-6461696c7900|1|1",
+      "itemIndex" : 1,
+      "objectId" : "d01a2026-0813-4000-8000-6461696c7900",
+      "objectTitle" : "2026-08-13",
+      "relativePath" : "daily\/2026-08-13.md",
+      "text" : "Seed daily note",
+      "type" : "daily"
+    }
+  ],
+  "vaultID" : "v1295d4623a74ead7",
+  "vaultModuleVersion" : "0.19.0-pr19",
+  "vaultRoot" : "\/tmp\/loci-tasks-demo-vault-2026-08-13T12-08-39Z\/LociVault"
+}
