@@ -16,7 +16,7 @@ Next stack: **PR23 Saved queries + embeds**.
 
 **Branch:** `cursor/pr22-collections-d2c1`  
 **Based on:** `cursor/pr21-sync-ux-d2c1` @ `8970e4d`  
-**Tip:**  (evidence at )
+**Tip:** see `git rev-parse HEAD` on branch (evidence at `evidence/pr22/`)
 
 ### What landed
 
