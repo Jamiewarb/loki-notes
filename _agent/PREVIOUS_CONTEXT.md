@@ -9,8 +9,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Branch:** `cursor/pr41-dashboard-d2c1`  
 **Based on:** `cursor/pr40-object-select-d2c1`  
 **Vault module:** `0.41.0-pr41`  
-**Swift tests:** pending evidence  
-**Playwright:** pending evidence
+**Swift tests:** **383** green (was 366). **Playwright:** **88** green (was 85). Evidence: `evidence/pr41/`
 
 ### Feature design
 - Domain folder: `App/Features/ObjectTypes/` — `TypeDashboardView` + `TypeDashboardStore` / `TypeDashboardControls` / `TypeDashboardList`. **Does not import** `App/Features/Queries` (list uses `IndexQuerying.execute` + Core `QueryDefinition`). Existing Feature facade calls (Properties / Templates / Collections / Queries pinned) stay.

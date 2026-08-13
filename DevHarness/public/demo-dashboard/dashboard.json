@@ -1,0 +1,75 @@
+{
+  "books" : [
+    {
+      "bodyMarkdown" : "Tiny changes.",
+      "id" : "007f0d13-1c59-435b-9d19-f0401579d7c6",
+      "relativePath" : "objects\/book\/atomic-habits.md",
+      "status" : "Done",
+      "title" : "Atomic Habits"
+    },
+    {
+      "bodyMarkdown" : "Focus is a skill.",
+      "id" : "5fb18a00-62a9-462d-9572-1498f0e5ec73",
+      "relativePath" : "objects\/book\/deep-work.md",
+      "status" : "Reading",
+      "title" : "Deep Work"
+    },
+    {
+      "bodyMarkdown" : "Generalists.",
+      "id" : "8694a351-4aa0-4bed-a047-03b625bf8d34",
+      "relativePath" : "objects\/book\/range.md",
+      "status" : "Reading",
+      "title" : "Range"
+    },
+    {
+      "bodyMarkdown" : "Career capital.",
+      "id" : "594b49b0-698c-454e-9803-f73c0fbd4028",
+      "relativePath" : "objects\/book\/so-good-they-can-t-ignore-you.md",
+      "status" : "To Read",
+      "title" : "So Good They Can't Ignore You"
+    }
+  ],
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dailyUnchanged" : true,
+  "dashboard" : {
+    "defaultFilterKey" : "status",
+    "defaultFilterText" : "Reading",
+    "defaultGroupBy" : "status",
+    "defaultSort" : "titleAsc",
+    "relativePath" : ".loci\/types\/book.json"
+  },
+  "filteredTitles" : [
+    "Deep Work",
+    "Range"
+  ],
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-dashboard-demo-db-2026-08-13T21-31-12Z\/vb2c603ebe11a386c\/index.sqlite",
+  "moduleVersion" : "0.41.0-pr41",
+  "note" : "PR41: type dashboard uses QueryEngine for filter\/sort. Group-by is derived UI. Only .loci\/types\/<slug>.json dashboard fields change — object YAML and daily notes stay put. Index never in vault.",
+  "objectMarkdownUnchanged" : true,
+  "proof" : {
+    "filterApplied" : true,
+    "groupApplied" : true,
+    "indexInsideVault" : false,
+    "resultsNotWrittenToMarkdown" : true,
+    "sortApplied" : true
+  },
+  "sections" : [
+    {
+      "key" : "Reading",
+      "titles" : [
+        "Deep Work",
+        "Range"
+      ]
+    }
+  ],
+  "typeSchemaChanged" : true,
+  "typeSchemaSnippet" : "{\n  \"color\" : \"#8B5A2B\",\n  \"dashboard\" : {\n    \"cardPreviewPropertyIDs\" : [\n\n    ],\n    \"defaultFilterKey\" : \"status\",\n    \"defaultFilterText\" : \"Reading\",\n    \"defaultGroupBy\" : \"status\",\n    \"defaultSort\" : \"titleAsc\",\n    \"hideArchived\" : false\n  },\n  \"icon\" : \"book\",\n  \"id\" : \"book\",\n  \"isBuiltIn\" : false,\n  \"isDaily\" : false,\n  \"name\" : \"Books\",\n  \"properties\" : [\n    {\n      \"id\" : \"status\",\n      \"kind\" : \"select\",\n      \"name\" : \"Status\",\n      \"options\" : [\n        \"To Read\",\n        \"Reading\",\n        \"Done\"\n      ],\n      \"required\" : false\n    }\n  ],\n  \"templateIDs\" : [\n\n  ]\n}",
+  "unfilteredSectionKeys" : [
+    "Done",
+    "Reading",
+    "To Read"
+  ],
+  "vaultRoot" : "\/tmp\/loci-dashboard-demo-vault-2026-08-13T21-31-12Z\/LociVault"
+}
