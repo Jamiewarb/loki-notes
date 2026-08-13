@@ -50,4 +50,6 @@ public enum LociError: Error, Sendable, Equatable {
     case importSourceNotFound(String)
     /// Import produced no markdown candidates.
     case importEmpty(String)
+    /// Type conversion refused (daily notes, same type, missing schema, …).
+    case typeConversionNotAllowed(String)
 }

@@ -24,6 +24,6 @@ final class MarkdownParserEdgeTests: XCTestCase {
         let out = try LociMarkdownModule.roundTrip(md)
         let doc = try LociMarkdownModule.parse(out)
         XCTAssertEqual(doc.blocks.first, .heading(level: 1, inlines: [.text("Hi")]))
-        XCTAssertEqual(LociMarkdownModule.version, "0.2.0-pr27")
+        XCTAssertEqual(LociMarkdownModule.version, "0.2.0-pr28")
     }
 }

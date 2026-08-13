@@ -144,6 +144,15 @@ struct AppShellView: View {
                     Label("Import", systemImage: Route.importExport.systemImage)
                 }
                 NavigationLink {
+                    TypeConversionFeature.destination(services: services)
+                        .navigationTitle("Convert")
+                        .onAppear {
+                            Task { await services.open(route: .typeConvert) }
+                        }
+                } label: {
+                    Label("Convert", systemImage: Route.typeConvert.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {

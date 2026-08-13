@@ -102,6 +102,15 @@ struct DetailHostView: View {
                         message: "Import (PR27). Markdown folder · Obsidian · Capacities — dry-run then apply into the vault."
                     )
                 }
+            case .typeConvert:
+                if let services {
+                    TypeConversionFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .typeConvert,
+                        message: "Type conversion (PR28). Property map · move objects/<type>/ · ObjectID stable."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -133,6 +142,7 @@ struct DetailHostView: View {
         case .calendar: return "calendar"
         case .capture: return "capture"
         case .importExport: return "importExport"
+        case .typeConvert: return "typeConvert"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

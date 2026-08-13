@@ -50,6 +50,7 @@ struct InspectorHostView: View {
                         PropertiesFeature.editor(services: services, objectID: id)
                         TagsFeature.objectTags(services: services, objectID: id)
                         LinksFeature.backlinks(services: services, objectID: id)
+                        TypeConversionFeature.sheet(services: services, objectID: id)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -63,6 +64,8 @@ struct InspectorHostView: View {
                 CaptureFeature.inspector(services: services)
             } else if case .importExport = route {
                 ImportExportFeature.inspector(services: services)
+            } else if case .typeConvert = route {
+                TypeConversionFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -141,6 +144,7 @@ struct InspectorHostView: View {
         case .calendar: return "Dots · daily jump"
         case .capture: return "Inbox · surfaces"
         case .importExport: return "Dry-run · apply"
+        case .typeConvert: return "Property map · move"
         case .object: return "Properties"
         }
     }
@@ -169,8 +173,10 @@ struct InspectorHostView: View {
             return "Share / widget / menu bar enqueue .loci/inbox/; drain lands in today or a typed object."
         case .importExport:
             return "Markdown folder · Obsidian · Capacities — dry-run summary, then vault writes + index."
+        case .typeConvert:
+            return "Map PropertyDefs, move objects/<type>/, keep ObjectID; index via ObjectServing."
         case .object:
-            return "Properties, object tags, and backlinks from the local index."
+            return "Properties, object tags, backlinks, and type conversion from the local index."
         }
     }
 

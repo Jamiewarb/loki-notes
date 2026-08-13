@@ -19,6 +19,7 @@ final class RouteTests: XCTestCase {
         XCTAssertFalse(Route.calendar.isPrimaryDestination)
         XCTAssertFalse(Route.capture.isPrimaryDestination)
         XCTAssertFalse(Route.importExport.isPrimaryDestination)
+        XCTAssertFalse(Route.typeConvert.isPrimaryDestination)
         XCTAssertFalse(Route.object(ObjectID()).isPrimaryDestination)
     }
 
@@ -38,13 +39,15 @@ final class RouteTests: XCTestCase {
         XCTAssertEqual(Route.capture.systemImage, "tray.and.arrow.down")
         XCTAssertEqual(Route.importExport.title, "Import")
         XCTAssertFalse(Route.importExport.systemImage.isEmpty)
+        XCTAssertEqual(Route.typeConvert.title, "Convert")
+        XCTAssertFalse(Route.typeConvert.systemImage.isEmpty)
         XCTAssertFalse(Route.types.subtitle.isEmpty)
     }
 
     func testCodableRoundTripPrimary() throws {
         let routes: [Route] = [
             .daily, .tasks, .search, .types, .settings, .designGallery, .tags, .graph,
-            .calendar, .capture, .importExport,
+            .calendar, .capture, .importExport, .typeConvert,
         ]
         let data = try JSONEncoder().encode(routes)
         let decoded = try JSONDecoder().decode([Route].self, from: data)
