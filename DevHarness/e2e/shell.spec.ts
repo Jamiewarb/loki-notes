@@ -62,7 +62,20 @@ for (const id of PANEL_IDS) {
   });
 }
 
-test("pinned Inbox is disabled", async ({ page }) => {
+test("pinned rows are visible and enabled", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "Inbox" })).toBeDisabled();
+  await expect(harness(page, "sidebar")).toBeVisible();
+  const inbox = harness(page, "pin-row").filter({ hasText: "Inbox" });
+  await expect(inbox).toBeVisible();
+  await expect(inbox).toBeEnabled();
+});
+
+test("clicking a pin stays on the shell", async ({ page }) => {
+  await page.goto("/");
+  await expect(harness(page, "loci-shell")).toBeVisible();
+  await harness(page, "pin-row").filter({ hasText: "Inbox" }).click();
+  await expect(harness(page, "loci-shell")).toBeVisible();
+  await expect(harness(page, "sidebar")).toBeVisible();
+  await expect(harness(page, "pin-open")).toBeVisible();
+  await expect(harness(page, "pin-open")).toContainText("Navigating.open");
 });

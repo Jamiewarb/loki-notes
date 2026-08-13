@@ -171,6 +171,15 @@ Safari web clipper (PR32) extras:
 
 Safari App Extension enqueues `.loci/inbox/*.json` (same Capture inbox); main app drains → today’s daily (`· safari`) or a Weblink object with `url` property. Index never from the extension. **Wave D (PR30–PR32) complete.**
 
+Pins (PR34) extras:
+
+```bash
+./scripts/demo-pins.sh
+# harness: http://127.0.0.1:5173  (sidebar Pinned section)
+```
+
+Pinned object ids live in `.loci/space.json` (`pins`) so they sync with the vault. The index only resolves title/type for display. Cap 24; pin is idempotent; unpin missing is a no-op. Daily notes may be pinned.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

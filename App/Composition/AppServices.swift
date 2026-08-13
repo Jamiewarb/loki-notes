@@ -58,6 +58,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public private(set) var safariClipper: SafariClipService?
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
+    /// Bumped when the pin list in space.json changes (PR34).
+    public var pinRefreshNonce: Int = 0
 
     public init(
         spaceName: String = "Loci",
@@ -273,6 +275,10 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
 
     public func bumpSyncRefresh() {
         syncRefreshNonce &+= 1
+    }
+
+    public func bumpPinRefresh() {
+        pinRefreshNonce &+= 1
     }
 
     /// Settings / onboarding “Create vault” — skeleton + bootstrap + index.

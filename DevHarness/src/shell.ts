@@ -53,12 +53,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { id: "settings", label: "Settings", subtitle: "Vault & sync", section: "primary" },
 ];
 
-/** Pin section stub — real pins arrive with Object CRUD. */
-export const PINNED_STUB = {
-  id: "pin-inbox",
-  label: "Inbox",
-  subtitle: "Pinned · coming later",
-} as const;
+/** Pins load from `/demo-pins/pins.json` (PR34) — not a stub destination. */
 
 /** Tooling / debug destinations (Design gallery + Markdown kit + Editor). */
 export const STUDIO_NAV: NavItem[] = [

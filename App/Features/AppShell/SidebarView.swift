@@ -68,17 +68,7 @@ struct SidebarView: View {
 
             VStack(alignment: .leading, spacing: LociSpacing.stack(.xs)) {
                 sectionLabel("Pinned")
-                ForEach(PinnedItemStub.placeholders) { pin in
-                    LociListRow(
-                        title: pin.title,
-                        subtitle: pin.subtitle,
-                        systemImage: "pin",
-                        isSelected: false
-                    ) {
-                        // Stub — pin navigation lands with collections.
-                    }
-                    .opacity(0.72)
-                }
+                PinsFeature.sidebarList(services: services)
             }
 
             Spacer(minLength: LociSpacing.stack(.md))

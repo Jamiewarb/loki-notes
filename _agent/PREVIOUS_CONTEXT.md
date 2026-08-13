@@ -4,6 +4,45 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR34 — Pins
+
+**Branch:** `cursor/pr34-pins-d2c1`  
+**Based on:** `cursor/pr33-e2e-harness-d2c1`  
+**Vault module:** `0.34.0-pr34`
+
+### Feature design
+- Domain folder: `App/Features/Pins/`
+- Writes vault? yes — `.loci/space.json` field `pins` (ObjectID strings in order). Cap 24.
+- Reads index? yes — title/type/path only (`IndexQuerying.object` then `ObjectServing.open`). Missing → “Missing pin”, still unpin-able.
+- Protocols: `PinServing` (SchemaStore), `IndexQuerying`, `ObjectServing`, `Navigating`
+- Events: none published; sidebar reloads on `pinRefreshNonce`
+- Not the index: pins sync via iCloud because they live in space.json
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-pins.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # sidebar Pinned section; data-harness=pin-row
+```
+
+### Pitfalls
+- Do not store pins in SQLite. space.json is truth.
+- Unpin of an unknown id is a no-op (no error).
+- Pin of an already-pinned id is idempotent (order unchanged).
+- Daily notes are allowed.
+- Linux: SwiftUI Pins UI is not compiled; XCTest + DevHarness + Playwright must be green.
+- Playwright: pin rows are enabled; do not expect the old disabled Inbox stub.
+
+### Next
+
+Stacked after PR33. Parent opens the GitHub PR.
+
+---
+
 ## Takeover (2026-08-13)
 
 `HANDOFF.md` from PR29 was absorbed here and deleted. Durable facts:

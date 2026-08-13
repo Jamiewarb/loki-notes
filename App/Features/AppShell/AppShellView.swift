@@ -190,10 +190,7 @@ struct AppShellView: View {
                 }
             }
             Section("Pinned") {
-                ForEach(PinnedItemStub.placeholders) { pin in
-                    Label(pin.title, systemImage: "pin")
-                        .foregroundStyle(LociColors.inkSoft)
-                }
+                PinsFeature.sidebarList(services: services)
             }
         }
         .navigationTitle("Settings")
