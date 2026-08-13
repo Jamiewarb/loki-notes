@@ -54,6 +54,12 @@ struct LociSyncDemo {
         let path = try await sync.vaultPathDisplay()
         let revealed = try await sync.revealVaultPath()
 
+        // Baseline local-only when no conflict elevation / no override.
+        let localBaseline = SyncStatusDerivation.derive(
+            rootKind: .localDocuments,
+            hasConflicts: false
+        )
+
         // Simulated chip states for harness demo (Linux).
         let simulated: [(String, SyncStatus)] = [
             ("localOnly", .localOnly),
@@ -85,7 +91,8 @@ struct LociSyncDemo {
             },
             "simulatedStatuses": simulated.map { ["id": $0.0, "label": $0.1.displayLabel] },
             "proof": [
-                "localOnlyStatus": status == .localOnly,
+                "localOnlyBaseline": localBaseline == .localOnly,
+                "conflictStatusFromCopies": status == .conflict,
                 "hasMarkdownConflict": conflicts.contains { $0.kind == .markdown },
                 "hasMediaConflict": conflicts.contains { $0.kind == .media },
                 "ensureDownloadedNoOp": true,
@@ -94,7 +101,7 @@ struct LociSyncDemo {
                 "indexOutsideVault": !path.contains("index.sqlite"),
             ],
             "note":
-                "PR21 Sync UX — chip states, conflict list (incl. media), rebuild index, reveal vault path. Linux uses local-only + simulated states.",
+                "PR21 Sync UX — chip states, conflict list (incl. media), rebuild index, reveal vault path. Linux uses local-only baseline + conflict elevation + simulated states.",
         ]
 
         let data = try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])

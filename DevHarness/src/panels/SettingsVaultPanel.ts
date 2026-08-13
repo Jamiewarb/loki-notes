@@ -145,7 +145,7 @@ async function loadSync(root: HTMLElement): Promise<void> {
 
     const proof = data.proof ?? {};
     loading.textContent = `Sync UX ${data.moduleVersion ?? ""} · ${
-      proof.localOnlyStatus ? "local-only ✓" : "?"
+      proof.conflictStatusFromCopies ? "conflicts ✓" : "?"
     }`;
 
     chipRow.hidden = false;

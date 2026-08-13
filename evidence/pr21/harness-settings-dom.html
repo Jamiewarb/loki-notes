@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+ * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
+ */
+
+:root {
+  /* Colors — LociColors */
+  --loci-ink: #1a2421;
+  --loci-ink-soft: #3d4a45;
+  --loci-ink-inverse: #f7fbf9;
+  --loci-paper: #e8efe8;
+  --loci-paper-deep: #d2ddd4;
+  --loci-panel: rgba(250, 252, 250, 0.82);
+  --loci-accent: #0f6b5c;
+  --loci-accent-soft: #c5e4dc;
+  --loci-mist: #b8d4c8;
+  --loci-meadow: #c9d9c4;
+  --loci-line: rgba(26, 36, 33, 0.12);
+  --loci-danger: #9b3a2f;
+
+  /* Typography — LociTypography */
+  --loci-font-display: "Fraunces", Georgia, serif;
+  --loci-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+
+  /* Spacing / radius — LociSpacing / LociRadius */
+  --loci-space-sm: 8px;
+  --loci-space-md: 12px;
+  --loci-space-lg: 16px;
+  --loci-space-xl: 24px;
+  --loci-radius: 10px;
+  --loci-radius-lg: 14px;
+  --loci-shadow: 0 18px 40px rgba(26, 36, 33, 0.08);
+
+  /* Motion — LociMotion */
+  --loci-motion-shell: 520ms;
+  --loci-motion-panel: 280ms;
+  --loci-motion-brand: 700ms;
+
+  --sidebar-w: 220px;
+  --inspector-w: 260px;
+
+  /* Back-compat aliases used by shell chrome */
+  --ink: var(--loci-ink);
+  --ink-soft: var(--loci-ink-soft);
+  --paper: var(--loci-paper);
+  --accent: var(--loci-accent);
+  --accent-soft: var(--loci-accent-soft);
+  --line: var(--loci-line);
+  --panel: var(--loci-panel);
+  --font-display: var(--loci-font-display);
+  --font-body: var(--loci-font-body);
+  --radius: var(--loci-radius);
+  --shadow: var(--loci-shadow);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--loci-mist) 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, var(--loci-meadow) 0%, transparent 50%),
+    linear-gradient(160deg, #eef4ee 0%, var(--loci-paper) 45%, #dfe9e2 100%);
+}
+
+body {
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--inspector-w);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  animation: shell-in var(--loci-motion-shell) ease-out both;
+}
+
+@keyframes shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.brand-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem 0.85rem;
+  border-bottom: 1px solid var(--loci-line);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  font-family: var(--loci-font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+  color: var(--loci-ink);
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes brand-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    letter-spacing: 0.04em;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    letter-spacing: -0.03em;
+  }
+}
+
+.brand-tag {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  font-size: 0.95rem;
+  max-width: 36rem;
+  animation: brand-rise var(--loci-motion-brand) 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sidebar {
+  border-right: 1px solid var(--loci-line);
+  padding: 1rem 0.75rem;
+  background: var(--loci-panel);
+}
+
+.nav-section {
+  margin-bottom: 0.85rem;
+}
+
+.nav-section-label {
+  margin: 0 0 0.35rem 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nav-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.nav-btn-label {
+  font-weight: 600;
+}
+
+.nav-btn-sub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--loci-accent-soft);
+  color: var(--loci-ink);
+  transform: translateX(2px);
+}
+
+.nav-btn[aria-current="page"] {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.nav-btn.is-stub {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.detail {
+  padding: 1.5rem 1.75rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+  overflow: auto;
+}
+
+@keyframes panel-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.detail h2 {
+  font-family: var(--loci-font-display);
+  font-size: 1.65rem;
+  margin: 0 0 0.5rem;
+}
+
+.detail > p,
+.detail [data-detail-root] > p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.destination {
+  max-width: 40rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+}
+
+.destination-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.destination-icon {
+  font-size: 1.35rem;
+  color: var(--loci-accent);
+  line-height: 1;
+}
+
+.destination-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0;
+}
+
+.destination-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+  max-width: 36rem;
+}
+
+.placeholder-surface {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--loci-line);
+  border-radius: var(--loci-radius);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: var(--loci-shadow);
+}
+
+.placeholder-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.placeholder-surface h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.placeholder-surface p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector {
+  border-left: 1px solid var(--loci-line);
+  padding: 1rem;
+  background: var(--loci-panel);
+}
+
+.inspector h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.inspector-title {
+  margin: 0 0 0.35rem !important;
+  font-size: 1rem !important;
+  font-weight: 600;
+  color: var(--loci-ink) !important;
+}
+
+.inspector p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector-hint {
+  margin-top: 1rem !important;
+  font-size: 0.78rem !important;
+  opacity: 0.9;
+}
+
+.harness-note {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+/* —— Design gallery —— */
+
+.gallery {
+  max-width: 44rem;
+}
+
+.gallery-intro {
+  margin-bottom: var(--loci-space-xl);
+}
+
+.gallery-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.gallery-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0 0 0.4rem;
+}
+
+.gallery-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+}
+
+.gallery-section {
+  margin-top: 2rem;
+}
+
+.gallery-section h3 {
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  margin: 0 0 0.25rem;
+}
+
+.gallery-caption {
+  margin: 0 0 0.85rem;
+  color: var(--loci-ink-soft);
+  font-size: 0.92rem;
+}
+
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.swatch-chip {
+  height: 56px;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+}
+
+.swatch-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.swatch-meta code {
+  color: var(--loci-ink-soft);
+  font-size: 0.72rem;
+}
+
+.type-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--loci-ink);
+  line-height: 1.2;
+}
+
+.type-label {
+  font-size: 0.7rem !important;
+  font-family: var(--loci-font-body) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.space-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.space-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.space-token {
+  width: 3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.space-bar {
+  height: 10px;
+  background: var(--loci-accent);
+  border-radius: 2px;
+}
+
+.space-val {
+  font-size: 0.8rem;
+  color: var(--loci-ink-soft);
+}
+
+.comp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.loci-btn {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.loci-btn:hover {
+  transform: translateY(-1px);
+}
+
+.loci-btn-primary {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-btn-secondary {
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+  border: 1px solid var(--loci-line);
+}
+
+.loci-btn-quiet {
+  background: color-mix(in srgb, var(--loci-accent-soft) 55%, transparent);
+  color: var(--loci-ink);
+}
+
+.loci-btn-destructive {
+  background: color-mix(in srgb, var(--loci-danger) 12%, white);
+  color: var(--loci-danger);
+}
+
+.loci-btn-narrow {
+  max-width: 12rem;
+}
+
+.loci-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1rem 0;
+}
+
+.loci-field-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.loci-input {
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+}
+
+.loci-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.75rem 0;
+}
+
+.loci-list-row {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--loci-ink);
+}
+
+.loci-list-row:hover {
+  background: var(--loci-accent-soft);
+}
+
+.loci-list-row.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-list-title {
+  font-weight: 600;
+}
+
+.loci-list-sub {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.loci-divider {
+  border: 0;
+  border-top: 1px solid var(--loci-line);
+  margin: 1.25rem 0;
+}
+
+.loci-empty {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.loci-empty-icon {
+  font-size: 1.75rem;
+  color: var(--loci-accent);
+  animation: soft-appear var(--loci-motion-shell) ease both;
+}
+
+.loci-empty h4 {
+  margin: 0;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.loci-empty p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 22rem;
+}
+
+.motion-demo {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 2.5rem;
+}
+
+.motion-demo.is-playing .motion-brand {
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.motion-demo.is-playing .motion-soft {
+  animation: soft-appear var(--loci-motion-shell) 80ms ease both;
+}
+
+.motion-brand {
+  font-family: var(--loci-font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.motion-soft {
+  color: var(--loci-ink-soft);
+}
+
+@keyframes soft-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Settings · vault status (PR04) */
+.vault-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.35rem 1.4rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--loci-accent-soft) 55%, white) 0%,
+      var(--loci-panel) 55%
+    );
+  animation: soft-appear var(--loci-motion-shell) ease both;
+  max-width: 36rem;
+}
+
+.vault-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-card-title {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  color: var(--loci-ink);
+}
+
+.vault-card-body {
+  margin: 0 0 1rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.vault-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.vault-meta dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-meta dd {
+  margin: 0.2rem 0 0;
+  color: var(--loci-ink);
+  font-size: 0.95rem;
+}
+
+.vault-steps {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+  color: var(--loci-ink);
+  line-height: 1.5;
+}
+
+.vault-steps code,
+.vault-card code,
+.vault-note code {
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--loci-paper-deep) 70%, white);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.vault-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.schema-type-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.schema-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-accent-soft) 35%, transparent);
+  border: 1px solid var(--loci-line);
+}
+
+.schema-type-name {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.search-title-badge {
+  font-style: normal;
+  font-family: var(--loci-font-body, inherit);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--loci-accent);
+  margin-left: 0.35rem;
+}
+
+.schema-type-meta {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+.schema-type-row[role="button"] {
+  cursor: pointer;
+}
+
+.schema-type-row[role="button"]:hover,
+.schema-type-row[role="button"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--loci-accent) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.page-detail {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px dashed var(--loci-line);
+  background: color-mix(in srgb, var(--loci-panel) 70%, transparent);
+}
+
+.page-detail .vault-card-body {
+  white-space: pre-wrap;
+}
+
+.md-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--loci-space-lg);
+  margin: 0 0 1rem;
+}
+
+.md-pane-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.md-pre {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  max-height: 28rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  color: var(--loci-ink);
+}
+
+.ast-html {
+  padding: var(--loci-space-md);
+  background: color-mix(in srgb, var(--loci-panel) 90%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  line-height: 1.45;
+  animation: editor-ast-in var(--loci-motion-panel) ease both;
+}
+
+@keyframes editor-ast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ast-html h1,
+.ast-html h2,
+.ast-html h3,
+.ast-html h4 {
+  font-family: var(--loci-font-display);
+  margin: 0.4em 0 0.25em;
+}
+
+.ast-html ul,
+.ast-html ol,
+.ast-html blockquote,
+.ast-html pre {
+  margin: 0.4em 0;
+}
+
+.ast-html blockquote {
+  border-left: 3px solid var(--loci-accent);
+  padding-left: var(--loci-space-md);
+  color: var(--loci-ink-soft);
+}
+
+.ast-html li[data-task] {
+  list-style: none;
+  margin-left: -0.5em;
+}
+
+.ast-html pre {
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  padding: var(--loci-space-sm);
+  border-radius: var(--loci-radius);
+  overflow-x: auto;
+}
+
+/* PR16 wiki-links — resolved (accent) vs broken (danger + dash underline) */
+.wiki-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.wiki-link.is-resolved {
+  color: var(--loci-accent, #0f6b5c);
+  text-decoration-style: solid;
+}
+
+.wiki-link.is-broken {
+  color: var(--loci-danger, #9b3a2f);
+  text-decoration-style: dashed;
+}
+
+@media (max-width: 900px) {
+  .md-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .sidebar,
+  .inspector {
+    border: 0;
+  }
+
+  .sidebar {
+    border-bottom: 1px solid var(--loci-line);
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .inspector {
+    border-top: 1px solid var(--loci-line);
+  }
+}
+
+/* PR21 Sync UX chips */
+.sync-chip-row,
+.sync-sim-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.sync-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 6px;
+  background: var(--loci-panel);
+  color: var(--loci-accent);
+  font-family: var(--loci-font-body);
+  font-size: 0.85rem;
+  cursor: default;
+}
+
+button.sync-chip {
+  cursor: pointer;
+}
+
+button.sync-chip:hover,
+button.sync-chip:focus-visible {
+  border-color: var(--loci-accent);
+  outline: none;
+}
+
+.sync-chip.is-live {
+  border-color: var(--loci-accent-soft);
+  background: color-mix(in srgb, var(--loci-accent-soft) 45%, white);
+}
+
+.sync-chip[data-status="conflict"],
+.sync-chip[data-status="error"] {
+  color: var(--loci-danger);
+}
+
+.sync-chip[data-status="syncing"],
+.sync-chip[data-status="offline"] {
+  color: var(--loci-ink-soft);
+}
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="settings">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tasks" aria-current="false">
+          <span class="nav-btn-label">Tasks</span>
+          <span class="nav-btn-sub">Today &amp; open</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="page">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="false">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="links" aria-current="false">
+          <span class="nav-btn-label">Links</span>
+          <span class="nav-btn-sub">Wiki-links + backlinks</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tags" aria-current="false">
+          <span class="nav-btn-label">Tags</span>
+          <span class="nav-btn-sub">Cross-type #tags</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="media" aria-current="false">
+          <span class="nav-btn-label">Media</span>
+          <span class="nav-btn-sub">Attach + image objects</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="settings" data-harness="detail">
+        <div data-detail-root="">
+    <div class="destination vault-settings" data-harness="destination" data-destination="settings">
+      <header class="destination-header">
+        <span class="destination-icon" aria-hidden="true">⚙</span>
+        <h2 class="destination-title">Settings</h2>
+      </header>
+      <p class="destination-lead">
+        Vault root, sync status chip, conflict list, rebuild index, and reveal vault path.
+        Files are truth; the SQLite index never lives inside the vault.
+      </p>
+
+      <section class="vault-card" data-harness="sync-status" aria-label="Sync status">
+        <p class="vault-kicker">PR21 · Sync UX</p>
+        <h3 class="vault-card-title">Sync status</h3>
+        <p class="vault-card-body" data-harness="sync-loading">Sync UX 0.21.0-pr21 · conflicts ✓</p>
+        <div class="sync-chip-row" data-harness="sync-chip-row">
+      <span class="sync-chip is-live" data-harness="sync-chip" data-status="conflict">Conflict</span>
+    </div>
+        <dl class="vault-meta" data-harness="sync-meta">
+          <div>
+            <dt>Live status (Linux)</dt>
+            <dd data-harness="sync-live-status">Conflict (conflict)</dd>
+          </div>
+          <div>
+            <dt>Vault path</dt>
+            <dd data-harness="sync-vault-path">/tmp/loci-sync-demo-vault-2026-08-13T12-24-59Z/LociVault</dd>
+          </div>
+          <div>
+            <dt>Ensure downloaded</dt>
+            <dd data-harness="sync-ensure">no-op success ✓</dd>
+          </div>
+          <div>
+            <dt>Rebuild index</dt>
+            <dd data-harness="sync-rebuild">ok ✓</dd>
+          </div>
+        </dl>
+        <p class="vault-kicker" style="margin-top:0.75rem">Conflicts (markdown + media)</p>
+        <ul class="schema-type-list" data-harness="sync-conflicts">
+        <li class="schema-type-row" data-harness="sync-conflict-row" data-kind="media">
+          <span class="schema-type-name">hero (Conflicted copy from iPhone).png</span>
+          <span class="schema-type-meta">media · media/images/hero (Conflicted copy from iPhone).png</span>
+        </li>
+        <li class="schema-type-row" data-harness="sync-conflict-row" data-kind="markdown">
+          <span class="schema-type-name">Sync Note (Conflicted copy from MacBook).md</span>
+          <span class="schema-type-meta">markdown · objects/page/Sync Note (Conflicted copy from MacBook).md</span>
+        </li></ul>
+        <p class="vault-kicker" style="margin-top:0.75rem">Simulated chip states</p>
+        <div class="sync-sim-row" data-harness="sync-sim-row"><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="localOnly">Local only</button><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="syncing">Syncing</button><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="offline">Offline</button><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="iCloudAvailable">iCloud available</button><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="conflict">Conflict</button><button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="error">Error</button></div>
+        <p class="vault-note" data-harness="sync-note">PR21 Sync UX — chip states, conflict list (incl. media), rebuild index, reveal vault path. Linux uses local-only baseline + conflict elevation + simulated states.</p>
+        <p class="vault-note">
+          Run <code>./scripts/demo-sync.sh</code> → <code>/demo-sync/sync.json</code>.
+          In the app: Settings → Sync &amp; resilience · sidebar sync chip.
+        </p>
+      </section>
+
+      <section class="vault-card" data-harness="vault-status" aria-label="Vault status">
+        <p class="vault-kicker">PR04 · LociVault</p>
+        <h3 class="vault-card-title">Create vault</h3>
+        <p class="vault-card-body">
+          On Apple builds, Settings → <strong>Create vault</strong> writes
+          <code>.loci/space.json</code> under the ubiquity container (or local Documents fallback).
+        </p>
+        <dl class="vault-meta">
+          <div>
+            <dt>Root kind (Linux / CI)</dt>
+            <dd data-harness="vault-root-kind">localDocuments</dd>
+          </div>
+          <div>
+            <dt>Skeleton</dt>
+            <dd><code>.loci/</code> · <code>daily/</code> · <code>objects/</code> · <code>media/</code></dd>
+          </div>
+          <div>
+            <dt>Index location</dt>
+            <dd>Application Support only — never inside the vault</dd>
+          </div>
+        </dl>
+        <p class="vault-note">
+          Identity is ObjectID (frontmatter), not absolute ubiquity URLs.
+          Conflicted-copy filenames surface in SyncStatus conflict list (PR21).
+        </p>
+      </section>
+
+      <section class="vault-card" data-harness="para-pack" aria-label="PARA starter pack">
+        <p class="vault-kicker">PR15 · PARA</p>
+        <h3 class="vault-card-title">Apply PARA pack</h3>
+        <p class="vault-card-body" data-harness="para-loading">PARA pack applied ✓ · 0.15.0-pr15</p>
+        <p class="vault-card-body" data-harness="para-explainer">PARA in Loci: Projects and Areas are object types with starter properties and templates. Mark reference material with #resource (any type — no Resource folder). Archive with #archive or status=Archived; dashboards hide archived by default. Your inbox is today’s Daily note. Nothing is “moved” into archive folders.</p>
+        <dl class="vault-meta" data-harness="para-meta">
+          <div>
+            <dt>Project</dt>
+            <dd data-harness="para-project">Project · project.default · prefill ✓</dd>
+          </div>
+          <div>
+            <dt>Area</dt>
+            <dd data-harness="para-area">Area · area.default · prefill ✓</dd>
+          </div>
+          <div>
+            <dt>Resource</dt>
+            <dd data-harness="para-resource">tag:#resource (type exists: no)</dd>
+          </div>
+          <div>
+            <dt>Archive</dt>
+            <dd data-harness="para-archive">tag:#archive · hideArchived=true</dd>
+          </div>
+          <div>
+            <dt>Idempotent re-apply</dt>
+            <dd data-harness="para-idempotent">yes ✓</dd>
+          </div>
+          <div>
+            <dt>Archived hidden (demo)</dt>
+            <dd data-harness="para-filter">1 hidden / 2 projects · folder move: none</dd>
+          </div>
+        </dl>
+        <p class="vault-note" data-harness="para-note">Fresh vault → Apply PARA → Project/Area ready with templates; Resource=#resource; Archive=#archive filter (PR15).</p>
+        <p class="vault-note">
+          Run <code>./scripts/demo-para.sh</code> → <code>/demo-para/para.json</code>.
+          In the app: Settings → <strong>Apply PARA pack</strong> (idempotent).
+        </p>
+      </section>
+    </div>
+  </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">PARA · sync status · conflicts</p>
+        <div data-inspector-root="">
+          <p>iCloud vs local Documents — index never stored in the vault. Sync status + conflict list.</p>
+        </div>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786623898031"></script>
+  
+
+</body></html>

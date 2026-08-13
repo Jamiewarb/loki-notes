@@ -23,7 +23,8 @@ import json, pathlib
 root = pathlib.Path("DevHarness/public/demo-sync")
 data = json.loads((root / "sync.json").read_text())
 proof = data.get("proof") or {}
-assert proof.get("localOnlyStatus") is True, proof
+assert proof.get("localOnlyBaseline") is True, proof
+assert proof.get("conflictStatusFromCopies") is True, proof
 assert proof.get("hasMarkdownConflict") is True, proof
 assert proof.get("hasMediaConflict") is True, proof
 assert proof.get("ensureDownloadedNoOp") is True, proof

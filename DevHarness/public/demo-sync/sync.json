@@ -1,0 +1,59 @@
+{
+  "conflicts" : [
+    {
+      "filename" : "hero (Conflicted copy from iPhone).png",
+      "kind" : "media",
+      "relativePath" : "media\/images\/hero (Conflicted copy from iPhone).png"
+    },
+    {
+      "filename" : "Sync Note (Conflicted copy from MacBook).md",
+      "kind" : "markdown",
+      "relativePath" : "objects\/page\/Sync Note (Conflicted copy from MacBook).md"
+    }
+  ],
+  "ensureDownloaded" : true,
+  "moduleVersion" : "0.21.0-pr21",
+  "note" : "PR21 Sync UX — chip states, conflict list (incl. media), rebuild index, reveal vault path. Linux uses local-only baseline + conflict elevation + simulated states.",
+  "proof" : {
+    "conflictStatusFromCopies" : true,
+    "ensureDownloadedNoOp" : true,
+    "hasMarkdownConflict" : true,
+    "hasMediaConflict" : true,
+    "indexOutsideVault" : true,
+    "localOnlyBaseline" : true,
+    "pathRevealed" : true,
+    "rebuildIndexOk" : true
+  },
+  "rebuildIndex" : true,
+  "revealedPath" : "\/tmp\/loci-sync-demo-vault-2026-08-13T12-24-59Z\/LociVault",
+  "rootKind" : "localDocuments",
+  "simulatedStatuses" : [
+    {
+      "id" : "localOnly",
+      "label" : "Local only"
+    },
+    {
+      "id" : "syncing",
+      "label" : "Syncing"
+    },
+    {
+      "id" : "offline",
+      "label" : "Offline"
+    },
+    {
+      "id" : "iCloudAvailable",
+      "label" : "iCloud available"
+    },
+    {
+      "id" : "conflict",
+      "label" : "Conflict"
+    },
+    {
+      "id" : "error",
+      "label" : "Error"
+    }
+  ],
+  "status" : "conflict",
+  "statusLabel" : "Conflict",
+  "vaultPath" : "\/tmp\/loci-sync-demo-vault-2026-08-13T12-24-59Z\/LociVault"
+}
