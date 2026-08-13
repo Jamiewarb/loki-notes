@@ -8,7 +8,8 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr34-pins-d2c1`  
 **Based on:** `cursor/pr33-e2e-harness-d2c1`  
-**Vault module:** `0.34.0-pr34`
+**Vault module:** `0.34.0-pr34`  
+**Swift tests:** **311** green (was 303). **Playwright:** **78** green (was 77). Evidence: `evidence/pr34/`
 
 ### Feature design
 - Domain folder: `App/Features/Pins/`
