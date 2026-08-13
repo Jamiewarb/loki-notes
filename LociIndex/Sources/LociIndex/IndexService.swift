@@ -166,6 +166,12 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func execute(_ definition: QueryDefinition) async throws -> [LociObjectMeta] {
+        try await dbQueue.read { db in
+            try QueryEngine.execute(db: db, definition: definition)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {

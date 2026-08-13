@@ -1,4 +1,5 @@
 import Foundation
+import LociCore
 
 /// Parse Loci MD text into `LociDocument` (frontmatter + BlockAST).
 public struct MarkdownParser: Sendable {
@@ -155,6 +156,13 @@ public struct MarkdownParser: Sendable {
                 && t.drop(while: { $0 == fenceChar }).allSatisfy({ $0.isWhitespace })
             {
                 let code = codeLines.joined(separator: "\n")
+                if language?.lowercased() == "query" {
+                    let slug = TypeSlug.normalize(
+                        code.trimmingCharacters(in: .whitespacesAndNewlines)
+                            .split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? code
+                    )
+                    return (.queryEmbed(queryID: slug.isEmpty ? "query" : slug), i + 1)
+                }
                 return (.codeBlock(language: language, code: code), i + 1)
             }
             codeLines.append(lines[i])

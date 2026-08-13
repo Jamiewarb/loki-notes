@@ -52,6 +52,9 @@ public struct MarkdownSerializer: Sendable {
         case .codeBlock(let language, let code):
             let info = language ?? ""
             return "```\(info)\n\(code)\n```"
+        case .queryEmbed(let queryID):
+            // Fence language `query`; body is the saved-query slug only (no result rows).
+            return "```query\n\(queryID)\n```"
         case .image(let alt, let url, let title):
             return serializeImage(alt: alt, url: url, title: title)
         case .thematicBreak:

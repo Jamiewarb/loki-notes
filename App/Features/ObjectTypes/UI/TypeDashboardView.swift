@@ -121,6 +121,13 @@ struct TypeDashboardView: View {
             )
             .padding(.vertical, LociSpacing.stack(.sm))
 
+            QueriesFeature.pinned(
+                services: services,
+                typeID: typeID,
+                onOpen: { id in await services.open(objectID: id) }
+            )
+            .padding(.vertical, LociSpacing.stack(.sm))
+
             if showRename {
                 HStack(spacing: LociSpacing.stack(.md)) {
                     TextField("Type name", text: $renameDraft)

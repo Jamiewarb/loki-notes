@@ -12,8 +12,9 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
       <p class="destination-lead">
         Create custom types on the fly — <code>.loci/types/&lt;slug&gt;.json</code> +
         <code>objects/&lt;slug&gt;/</code>. Built-in Page/Daily are protected from casual delete.
-        Type dashboards list All objects plus manual <strong>collection tabs</strong>
-        (membership in <code>.loci/collections/&lt;type&gt;.&lt;slug&gt;.json</code>).
+        Type dashboards list All objects, manual <strong>collection tabs</strong>, and
+        <strong>pinned queries</strong> (defs in <code>.loci/queries/&lt;slug&gt;.json</code>;
+        results live from the index).
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
         <p class="vault-kicker">PR15 · SchemaServing + PARA + templates</p>
@@ -49,6 +50,15 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <pre class="md-pre" data-harness="collections-snippet" style="max-height:10rem;overflow:auto" hidden></pre>
         <p class="vault-note" data-harness="collections-note" hidden></p>
       </section>
+      <section class="vault-card" data-harness="queries-status" aria-label="Saved queries">
+        <p class="vault-kicker">PR23 · Saved queries + embeds</p>
+        <h3 class="vault-card-title">Pinned queries</h3>
+        <p class="vault-card-body" data-harness="queries-loading">Loading demo-queries…</p>
+        <div class="collection-tabs" data-harness="pinned-query-tabs" hidden></div>
+        <ul class="schema-type-list" data-harness="queries-results" hidden></ul>
+        <pre class="md-pre" data-harness="queries-snippet" style="max-height:10rem;overflow:auto" hidden></pre>
+        <p class="vault-note" data-harness="queries-note" hidden></p>
+      </section>
       <section class="vault-card" data-harness="pages-status" aria-label="Pages">
         <p class="vault-kicker">PR08 · ObjectService</p>
         <h3 class="vault-card-title">Pages</h3>
@@ -67,6 +77,7 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   await renderPARASection(root);
   await renderBooksDashboard(root);
   await renderCollectionsSection(root);
+  await renderQueriesSection(root);
   await renderPagesSection(root);
 }
 
@@ -538,6 +549,116 @@ async function renderCollectionsSection(root: HTMLElement): Promise<void> {
       err instanceof Error ? err.message : "Failed to load collections fixtures";
     note.hidden = false;
     note.textContent = "Run: ./scripts/demo-collections.sh then refresh (?panel=types).";
+  }
+}
+
+async function renderQueriesSection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='queries-loading']");
+  const results = root.querySelector<HTMLUListElement>("[data-harness='queries-results']");
+  const note = root.querySelector<HTMLElement>("[data-harness='queries-note']");
+  const snippet = root.querySelector<HTMLElement>("[data-harness='queries-snippet']");
+  const tabs = root.querySelector<HTMLElement>("[data-harness='pinned-query-tabs']");
+  if (!loading || !results || !note) return;
+
+  try {
+    let data: {
+      query?: {
+        id?: string;
+        name?: string;
+        relativePath?: string;
+        exists?: boolean;
+        definitionOnly?: boolean;
+        pinnedTypeID?: string;
+        tags?: string[];
+        propertyEquals?: string;
+      };
+      resultTitles?: string[];
+      resultCount?: number;
+      results?: Array<{ id?: string; title?: string; tags?: string[] }>;
+      pinnedQueryIDs?: string[];
+      queriesDirectory?: string;
+      definitionIsVaultFile?: boolean;
+      vaultFileSnippet?: string;
+      moduleVersion?: string;
+      note?: string;
+      embed?: { storesResultsInBody?: boolean; roundTripKind?: string };
+    } | null = null;
+
+    const qRes = await fetch("/demo-queries/queries.json", { cache: "no-store" });
+    if (qRes.ok) {
+      data = (await qRes.json()) as typeof data;
+    } else {
+      const typesRes = await fetch("/demo-types/types.json", { cache: "no-store" });
+      if (typesRes.ok) {
+        const t = (await typesRes.json()) as {
+          queries?: Array<typeof data extends null ? never : NonNullable<typeof data>["query"]>;
+          queryResultTitles?: string[];
+          queryResultCount?: number;
+          queryResults?: Array<{ id?: string; title?: string; tags?: string[] }>;
+          pinnedQueries?: string[];
+          queriesDirectory?: string;
+          definitionIsVaultFile?: boolean;
+          moduleVersion?: string;
+          queriesNote?: string;
+        };
+        data = {
+          query: t.queries?.[0],
+          resultTitles: t.queryResultTitles,
+          resultCount: t.queryResultCount,
+          results: t.queryResults,
+          pinnedQueryIDs: t.pinnedQueries,
+          queriesDirectory: t.queriesDirectory,
+          definitionIsVaultFile: t.definitionIsVaultFile,
+          moduleVersion: t.moduleVersion,
+          note: t.queriesNote,
+        };
+      }
+    }
+    if (!data?.query?.id) throw new Error("missing queries fixtures");
+
+    const q = data.query;
+    loading.textContent = `Pinned · ${q.relativePath ?? ".loci/queries/…"} · ${
+      data.resultCount ?? 0
+    } live hits · ${data.moduleVersion ?? ""}`;
+
+    if (tabs) {
+      tabs.hidden = false;
+      tabs.innerHTML = `<button type="button" class="nav-btn is-active" data-harness="pinned-query-chip">${escapeHtml(
+        q.name ?? q.id ?? "Query",
+      )}</button>`;
+    }
+
+    results.hidden = false;
+    const titles = data.resultTitles ?? (data.results ?? []).map((r) => r.title ?? "");
+    results.innerHTML = titles
+      .map(
+        (title) => `
+        <li class="schema-type-row" data-harness="query-result-row">
+          <span class="schema-type-name">${escapeHtml(title || "Untitled")}</span>
+          <span class="schema-type-meta">live index hit</span>
+        </li>`,
+      )
+      .join("");
+
+    if (snippet && data.vaultFileSnippet) {
+      snippet.hidden = false;
+      snippet.textContent = data.vaultFileSnippet;
+    }
+
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      `definitionOnly=${q.definitionOnly === true ? "yes" : "no"} · embed stores results=${
+        data.embed?.storesResultsInBody === true ? "yes" : "no"
+      } · definitionIsVaultFile=${data.definitionIsVaultFile === true ? "yes" : "no"}`;
+    note.dataset.queryId = q.id ?? "";
+    note.dataset.resultCount = String(data.resultCount ?? 0);
+    note.dataset.definitionIsVaultFile = String(data.definitionIsVaultFile === true);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load queries fixtures";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-queries.sh then refresh (?panel=types).";
   }
 }
 

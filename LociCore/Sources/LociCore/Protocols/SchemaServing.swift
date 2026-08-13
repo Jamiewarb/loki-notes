@@ -108,4 +108,35 @@ public protocol SchemaServing: Sendable {
     @discardableResult
     func removeFromCollection(_ collectionID: String, objectID: ObjectID) async throws
         -> ObjectCollection
+
+    // MARK: - Saved queries (PR23)
+
+    /// All saved queries (disk files under `.loci/queries/`).
+    func listQueries() async throws -> [SavedQuery]
+
+    /// Queries pinned to a type dashboard (`pinnedTypeID` match).
+    func listPinnedQueries(typeID: ObjectTypeID) async throws -> [SavedQuery]
+
+    /// Load one query by slug id (`reading-books`).
+    func loadQuery(_ id: String) async throws -> SavedQuery
+
+    /// Create or replace a saved query definition file.
+    @discardableResult
+    func saveQuery(_ query: SavedQuery) async throws -> SavedQuery
+
+    /// Create a new saved query (`.loci/queries/<slug>.json`).
+    @discardableResult
+    func createQuery(
+        name: String,
+        definition: QueryDefinition,
+        slug: String?,
+        pinnedTypeID: ObjectTypeID?
+    ) async throws -> SavedQuery
+
+    /// Delete saved query file.
+    func deleteQuery(_ id: String) async throws
+
+    /// Pin or unpin a query on a type dashboard.
+    @discardableResult
+    func setQueryPinned(_ id: String, typeID: ObjectTypeID?) async throws -> SavedQuery
 }

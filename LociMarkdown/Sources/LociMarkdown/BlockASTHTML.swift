@@ -30,6 +30,9 @@ public enum BlockASTHTML: Sendable {
         case .codeBlock(let language, let code):
             let lang = language.map { " class=\"language-\(escape($0))\"" } ?? ""
             return "<pre><code\(lang)>\(escape(code))</code></pre>"
+        case .queryEmbed(let queryID):
+            return
+                "<div class=\"query-embed\" data-query-id=\"\(escape(queryID))\" data-harness=\"query-embed\"><span class=\"query-embed-label\">/query</span> <code>\(escape(queryID))</code> <span class=\"query-embed-hint\">live results</span></div>"
         case .image(let alt, let url, _):
             return "<p><img src=\"\(escape(url))\" alt=\"\(escape(alt))\" /></p>"
         case .thematicBreak:
