@@ -34,7 +34,7 @@ public enum ShareInboxFactory: Sendable {
                 if !resolvedText.isEmpty {
                     return CaptureLineFormatter.inferredTitle(from: resolvedText)
                 }
-                return CaptureLineFormatter.inferredTitle(from: resolvedURL, fallback: "Shared link")
+                return "Shared link"
             }()
             return CaptureInboxItem.createTyped(
                 typeID: .page,
