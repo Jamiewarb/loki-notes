@@ -141,6 +141,47 @@ final class GraphBuilderTests: XCTestCase {
         XCTAssertLessThanOrEqual(capped.edges.count, 1)
     }
 
+    func testHideDegreeAndFocusNeighborsFromIndex() async throws {
+        try await boot()
+        let idHub = UUID(uuidString: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1")!
+        let idA = UUID(uuidString: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb2")!
+        let idB = UUID(uuidString: "cccccccc-cccc-4ccc-8ccc-ccccccccccc3")!
+        let idE = UUID(uuidString: "dddddddd-dddd-4ddd-8ddd-ddddddddddd4")!
+        let idF = UUID(uuidString: "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee5")!
+
+        try await writePage(id: idA, title: "A", path: "objects/page/a.md", body: "Leaf A.")
+        try await writePage(id: idB, title: "B", path: "objects/page/b.md", body: "Leaf B.")
+        try await writePage(id: idF, title: "F", path: "objects/page/f.md", body: "Leaf F.")
+        try await writePage(
+            id: idE,
+            title: "E",
+            path: "objects/page/e.md",
+            body: "See [[\(idF.uuidString.lowercased())]]."
+        )
+        try await writePage(
+            id: idHub,
+            title: "Hub",
+            path: "objects/page/hub.md",
+            body: """
+                See [[\(idA.uuidString.lowercased())]] and [[\(idB.uuidString.lowercased())]].
+                """
+        )
+        try await index.rebuild()
+
+        let hidden = try await index.graph(
+            options: GraphBuildOptions(hideDegreeAtOrAbove: 2)
+        )
+        XCTAssertTrue(hidden.hiddenHubs)
+        XCTAssertFalse(hidden.nodes.contains(where: { $0.title == "Hub" }))
+        XCTAssertEqual(Set(hidden.nodes.map(\.title)), ["A", "B", "E", "F"])
+
+        let focused = try await index.graph(
+            options: GraphBuildOptions(focusObjectID: ObjectID(idA))
+        )
+        XCTAssertTrue(focused.isolatedFocus)
+        XCTAssertEqual(Set(focused.nodes.map(\.title)), ["A", "Hub"])
+    }
+
     func testGraphLayoutFromIndexSnapshot() async throws {
         try await boot()
         let idA = UUID(uuidString: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1")!

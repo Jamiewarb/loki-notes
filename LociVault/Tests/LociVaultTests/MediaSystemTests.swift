@@ -213,19 +213,19 @@ final class MediaSystemTests: XCTestCase {
     }
 
     func testModuleVersionsPR20() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43") || LociVaultModule.version.contains("pr44"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43") || LociVaultModule.version.contains("pr44") || LociVaultModule.version.contains("pr45"))
         XCTAssertTrue(LociIndexModule.version.contains("pr22") || LociIndexModule.version.contains("pr23") || LociIndexModule.version.contains("pr24") || LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27") || LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29") || LociIndexModule.version.contains("pr30"))
         XCTAssertTrue(LociMarkdownModule.version.contains("pr22") || LociMarkdownModule.version.contains("pr23") || LociMarkdownModule.version.contains("pr24") || LociMarkdownModule.version.contains("pr25") || LociMarkdownModule.version.contains("pr26") || LociMarkdownModule.version.contains("pr27") || LociMarkdownModule.version.contains("pr28") || LociMarkdownModule.version.contains("pr29") || LociMarkdownModule.version.contains("pr30"))
     }
 
     func testModuleVersionIsPR40() {
         XCTAssertTrue(
-            LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43") || LociVaultModule.version.contains("pr44"),
+            LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43") || LociVaultModule.version.contains("pr44") || LociVaultModule.version.contains("pr45"),
             LociVaultModule.version
         )
         XCTAssertTrue(
             LociVaultModule.version == "0.40.0-pr40" || LociVaultModule.version == "0.41.0-pr41"
-                || LociVaultModule.version == "0.42.0-pr42" || LociVaultModule.version == "0.43.0-pr43" || LociVaultModule.version == "0.44.0-pr44",
+                || LociVaultModule.version == "0.42.0-pr42" || LociVaultModule.version == "0.43.0-pr43" || LociVaultModule.version == "0.44.0-pr44" || LociVaultModule.version == "0.45.0-pr45",
             LociVaultModule.version
         )
     }

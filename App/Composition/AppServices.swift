@@ -62,6 +62,14 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var syncRefreshNonce: Int = 0
     /// Bumped when the pin list in space.json changes (PR34).
     public var pinRefreshNonce: Int = 0
+    /// Session-only graph polish (PR45). Never written to vault markdown.
+    public var graphHideHubs: Bool = false
+    /// Degree threshold used when `graphHideHubs` is on (default 8).
+    public var graphHideDegree: Int = GraphBuildOptions.defaultHideHubDegree
+    /// When true and a node is selected, isolate to that node + 1-hop neighbors.
+    public var graphFocusNeighbors: Bool = false
+    /// Last graph node selection (session). Survives Navigating.open round-trips.
+    public var graphSelectedObjectID: ObjectID?
 
     public init(
         spaceName: String = "Loci",

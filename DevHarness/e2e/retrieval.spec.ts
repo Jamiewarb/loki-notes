@@ -23,6 +23,29 @@ test("clicking a graph node updates selection text", async ({ page }) => {
   );
 });
 
+test("graph polish proof flags hide hubs, focus neighbors, and no layout in vault", async ({
+  page,
+}) => {
+  await gotoPanel(page, "graph");
+  await expect(harness(page, "graph-proof")).toBeVisible();
+  await expect(harness(page, "graph-proof-hidesHighDegree")).toHaveText("yes ✓");
+  await expect(harness(page, "graph-proof-focusNeighbors")).toHaveText("yes ✓");
+  await expect(harness(page, "graph-proof-layoutNotWrittenToVault")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "graph-proof-indexInsideVault")).toHaveText("no ✓");
+});
+
+test("hide hubs control drops the high-degree Deep Work node", async ({ page }) => {
+  await gotoPanel(page, "graph");
+  await expect(harness(page, "graph-node").filter({ hasText: "Deep Work" })).toBeVisible();
+  await harness(page, "graph-hide-hubs").click();
+  await expect(harness(page, "graph-node").filter({ hasText: "Deep Work" })).toHaveCount(
+    0,
+  );
+  await expect(harness(page, "graph-proof-hidesHighDegree")).toHaveText("yes ✓");
+});
+
 test("tag aliases are surfaced on the tags panel", async ({ page }) => {
   await gotoPanel(page, "tags");
   const proof = harness(page, "tags-proof");

@@ -139,8 +139,8 @@ export const PANELS: Record<PanelId, Panel> = {
   graph: {
     id: "graph",
     title: "Graph",
-    body: "Force-directed link graph (PR24). IndexQuerying.graph from links table · type filter · node/edge caps · open on tap.",
-    inspector: "Caps · Navigating.open · index never in vault.",
+    body: "Force-directed link graph (PR24 / PR45). IndexQuerying.graph · type filter · hide high-degree · 1-hop focus · open on tap.",
+    inspector: "Selected title/type/degree · hide hubs · focus neighbors · layout never in vault.",
   },
   calendar: {
     id: "calendar",

@@ -4,7 +4,51 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR45 — graph polish (hide hubs + 1-hop focus)
+
+**Branch:** `cursor/pr45-graph-polish-d2c1`  
+**Based on:** `cursor/pr44-unlinked-mentions-d2c1`  
+**Vault module:** `0.45.0-pr45`  
+**MARKETING_VERSION:** `0.45.0`  
+**Swift tests:** pending evidence. **Playwright:** pending evidence. Evidence: `evidence/pr45/`  
+**Wave F (PR40–PR45) complete.**
+
+### Feature design
+- Domain folder: `App/Features/Graph/` — polish on existing `GraphView` / `GraphInspectorView` / `GraphStore`. **Does not import** other feature folders.
+- Writes vault? **no**. Hide hubs + focus neighbors are session-only on `AppServices`. Layout coordinates are never written into markdown or space.json.
+- Reads index? yes — `IndexQuerying.graph(options:)` with `GraphBuildOptions.hideDegreeAtOrAbove` / `focusObjectID`. **Never** on the typing path.
+- Protocols: `IndexQuerying`, `Navigating`. Shared protocol only.
+- Core: `GraphAssembly.assemble` hides degree ≥ n **before** caps (then drops those edges); `focusObjectID` keeps the node + 1-hop neighbors. `GraphPolishProof`.
+- Demo: `scripts/demo-graph.sh` → `DevHarness/public/demo-graph/graph.json`. Harness: `?panel=graph`.
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-graph.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=graph — hidesHighDegree / focusNeighbors / layoutNotWrittenToVault
+```
+
+### Pitfalls
+- Do not persist graph layout into markdown. Session-only hide/focus (AppServices). space.json is optional and unused here.
+- Typing never waits on graph layout. Caps still keep highest-degree when hide is off.
+- Hide hubs drops hubs that clutter the view; node-cap (maxNodes) still prefers hubs. Different controls.
+- `focusObjectID` is protected from hide so focusing a hub still isolates its neighborhood.
+- Do not screenshot-compare or assert SVG x/y in Playwright.
+- Stacked vault version assertions (`contains("pr44")`) must also accept `pr45`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave G **PR46** daily date mentions / due tasks, stacked on PR45 (`cursor/pr45-graph-polish-d2c1`). Do **not** implement Wave G here. Parent opens the GitHub PR.
+
+---
+
 ## PR44 — unlinked mentions (scan titles)
+
 
 **Branch:** `cursor/pr44-unlinked-mentions-d2c1`  
 **Based on:** `cursor/pr43-weblink-preview-d2c1`  

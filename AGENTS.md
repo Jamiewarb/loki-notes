@@ -262,7 +262,16 @@ Unlinked mentions (PR44) extras:
 # harness: http://127.0.0.1:5173/?panel=links
 ```
 
-Other notes whose **plain body text** contains this object’s **title** but do not already wiki-link to it. Scanner is pure (`UnlinkedMentionScanner`); `IndexQuerying.unlinkedMentions` is bounded (50) and **never** runs on the typing path. Derived UI only — do not auto-rewrite markdown. Optional **Link** tap replaces the first occurrence with `[[id|title]]` via `ObjectServing.save`. Proof flags `detectsPlainTitle` / `ignoresExistingWikiLink` / `doesNotRewriteBody` / `indexInsideVault: false`. **Graph polish is PR45.**
+Other notes whose **plain body text** contains this object’s **title** but do not already wiki-link to it. Scanner is pure (`UnlinkedMentionScanner`); `IndexQuerying.unlinkedMentions` is bounded (50) and **never** runs on the typing path. Derived UI only — do not auto-rewrite markdown. Optional **Link** tap replaces the first occurrence with `[[id|title]]` via `ObjectServing.save`. Proof flags `detectsPlainTitle` / `ignoresExistingWikiLink` / `doesNotRewriteBody` / `indexInsideVault: false`. **Wave F (PR40–PR45) complete.**
+
+Graph polish (PR45) extras:
+
+```bash
+./scripts/demo-graph.sh
+# harness: http://127.0.0.1:5173/?panel=graph
+```
+
+Hide high-degree nodes (`GraphBuildOptions.hideDegreeAtOrAbove`) runs **before** caps, then drops their edges. `focusObjectID` isolates to the node + 1-hop neighbors. Hide/focus persist in memory (`AppServices`) — **not** vault markdown. Layout coordinates are never written into notes. Proof flags `hidesHighDegree` / `focusNeighbors` / `layoutNotWrittenToVault` / `indexInsideVault: false`. **Next is Wave G PR46** (daily date mentions / due tasks) — do not implement here.
 
 Object-select picker (PR40) extras:
 

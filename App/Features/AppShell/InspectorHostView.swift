@@ -154,7 +154,7 @@ struct InspectorHostView: View {
         case .settings: return "Sync status"
         case .designGallery: return "Tokens"
         case .tags: return "Aliases"
-        case .graph: return "Caps · navigation"
+        case .graph: return "Selected · caps · hide hubs"
         case .calendar: return "Dots · daily jump"
         case .capture: return "Inbox · surfaces"
         case .importExport: return "Dry-run · apply"
@@ -183,7 +183,7 @@ struct InspectorHostView: View {
         case .tags:
             return "Tag aliases in space.json expand queries across spellings."
         case .graph:
-            return "Graph reads the links table via IndexQuerying; node tap opens via Navigating."
+            return "Graph reads the links table; hide hubs / focus are session-only. Node tap opens via Navigating."
         case .calendar:
             return "Calendar dots are index-derived; day select opens daily/YYYY-MM-DD.md."
         case .capture:
