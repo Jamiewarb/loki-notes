@@ -7,7 +7,7 @@ import LociMarkdown
 /// Templates live under `.loci/templates/<id>.md` (PR14).
 /// Collections live under `.loci/collections/<type>.<slug>.json` (PR22).
 /// Saved queries live under `.loci/queries/<slug>.json` (PR23) — definitions only.
-public final class SchemaStore: SchemaServing, @unchecked Sendable {
+public final class SchemaStore: SchemaServing, PinServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder

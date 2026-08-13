@@ -4,7 +4,8 @@ import Foundation
 public struct SpaceSettings: Hashable, Sendable, Codable, Equatable {
     public var name: String
     public var schemaVersion: Int
-    /// Pinned object id strings (ObjectID uuid) or type slugs — UI interprets later.
+    /// Pinned object ids in order (`ObjectID.frontMatterIDString`: UUID or `daily-YYYY-MM-DD`).
+    /// Vault truth in `.loci/space.json` — not the index (PR34).
     public var pins: [String]
     /// PARA starter pack applied (PR15). Idempotent re-apply is safe.
     public var paraPackApplied: Bool
