@@ -15,11 +15,18 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         Type dashboards list All objects; recently opened is a stub until navigation polish.
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
-        <p class="vault-kicker">PR14 · SchemaServing + templates</p>
+        <p class="vault-kicker">PR15 · SchemaServing + PARA + templates</p>
         <h3 class="vault-card-title">Object types</h3>
         <p class="vault-card-body" data-harness="types-loading">Loading demo fixtures…</p>
         <ul class="schema-type-list" data-harness="type-list" hidden></ul>
         <p class="vault-note" data-harness="types-note" hidden></p>
+      </section>
+      <section class="vault-card" data-harness="para-dashboard" aria-label="PARA Project Area">
+        <p class="vault-kicker">PR15 · PARA starter pack</p>
+        <h3 class="vault-card-title">Project · Area</h3>
+        <p class="vault-card-body" data-harness="para-types-loading">Loading demo-para / demo-types…</p>
+        <ul class="schema-type-list" data-harness="para-types-list" hidden></ul>
+        <p class="vault-note" data-harness="para-types-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
         <p class="vault-kicker">PR14 · Type dashboard + templates</p>
@@ -47,8 +54,87 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   `;
 
   await renderTypesSection(root);
+  await renderPARASection(root);
   await renderBooksDashboard(root);
   await renderPagesSection(root);
+}
+
+async function renderPARASection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='para-types-loading']");
+  const list = root.querySelector<HTMLUListElement>("[data-harness='para-types-list']");
+  const note = root.querySelector<HTMLElement>("[data-harness='para-types-note']");
+  if (!loading || !list || !note) return;
+
+  try {
+    let data: {
+      projectObject?: { title?: string; bodyMarkdown?: string; prefilled?: boolean };
+      areaObject?: { title?: string; bodyMarkdown?: string; prefilled?: boolean };
+      projectTemplate?: { id?: string; bodyPreview?: string };
+      areaTemplate?: { id?: string; bodyPreview?: string };
+      archiveFilter?: { archivedHidden?: number; visibleWhenHideArchived?: number };
+      para?: {
+        explainer?: string;
+        resourceApproach?: string;
+        archiveApproach?: string;
+        idempotent?: boolean;
+        resourceTypeExists?: boolean;
+      };
+      types?: Array<{ id?: string; name?: string; defaultTemplateID?: string }>;
+      note?: string;
+    } | null = null;
+
+    const typesRes = await fetch("/demo-types/types.json", { cache: "no-store" });
+    if (typesRes.ok) {
+      data = (await typesRes.json()) as typeof data;
+    }
+    if (!data?.projectTemplate) {
+      const paraRes = await fetch("/demo-para/para.json", { cache: "no-store" });
+      if (paraRes.ok) {
+        data = (await paraRes.json()) as typeof data;
+      }
+    }
+    if (!data) throw new Error("missing PARA fixtures");
+
+    const project = (data.types ?? []).find((t) => t.id === "project");
+    const area = (data.types ?? []).find((t) => t.id === "area");
+    loading.textContent = `PARA · Project ${project?.defaultTemplateID ?? data.projectTemplate?.id ?? "?"} · Area ${
+      area?.defaultTemplateID ?? data.areaTemplate?.id ?? "?"
+    }`;
+    list.hidden = false;
+    list.innerHTML = `
+      <li class="schema-type-row" data-harness="para-project-row">
+        <span class="schema-type-name">${escapeHtml(data.projectObject?.title ?? "Project")}</span>
+        <span class="schema-type-meta">${escapeHtml(
+          data.projectObject?.prefilled
+            ? "template prefill ✓"
+            : (data.projectTemplate?.bodyPreview ?? "").split("\n")[0] || "project",
+        )}</span>
+      </li>
+      <li class="schema-type-row" data-harness="para-area-row">
+        <span class="schema-type-name">${escapeHtml(data.areaObject?.title ?? "Area")}</span>
+        <span class="schema-type-meta">${escapeHtml(
+          data.areaObject?.prefilled
+            ? "template prefill ✓"
+            : (data.areaTemplate?.bodyPreview ?? "").split("\n")[0] || "area",
+        )}</span>
+      </li>
+    `;
+    note.hidden = false;
+    const filt = data.archiveFilter;
+    note.textContent = [
+      data.para?.resourceApproach ?? "tag:#resource",
+      data.para?.archiveApproach ?? "tag:#archive",
+      data.para?.resourceTypeExists === false ? "no Resource type" : null,
+      filt
+        ? `hide archived: ${filt.archivedHidden ?? 0} hidden / ${filt.visibleWhenHideArchived ?? 0} visible`
+        : null,
+      data.para?.idempotent ? "idempotent ✓" : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  } catch {
+    loading.textContent = "Run ./scripts/demo-para.sh for Project/Area fixtures.";
+  }
 }
 
 async function renderTypesSection(root: HTMLElement): Promise<void> {

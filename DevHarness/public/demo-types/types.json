@@ -1,16 +1,18 @@
 {
-  "moduleVersion": "0.14.0-pr14",
+  "moduleVersion": "0.15.0-pr15",
   "space": {
-    "name": "Demo Templates",
-    "schemaVersion": 1,
-    "pins": []
+    "archiveApproach": "tag:#archive",
+    "hideArchived": true,
+    "name": "Demo PARA",
+    "paraPackApplied": true,
+    "resourceApproach": "tag:#resource"
   },
   "types": [
     {
-      "id": "book",
-      "name": "Books",
-      "icon": "book",
-      "color": "#8B5A2B",
+      "id": "project",
+      "name": "Project",
+      "icon": "flag",
+      "color": "#B85C38",
       "isBuiltIn": false,
       "properties": [
         {
@@ -18,22 +20,64 @@
           "kind": "select",
           "name": "Status",
           "options": [
-            "To Read",
-            "Reading",
-            "Done"
+            "Active",
+            "On Hold",
+            "Done",
+            "Archived"
           ]
         },
         {
-          "id": "rating",
-          "kind": "number",
-          "name": "Rating",
+          "id": "deadline",
+          "kind": "date",
+          "name": "Deadline",
+          "options": []
+        },
+        {
+          "id": "area",
+          "kind": "text",
+          "name": "Area",
           "options": []
         }
       ],
-      "defaultTemplateID": "book.default",
+      "defaultTemplateID": "project.default",
       "templateIDs": [
-        "book.default"
-      ]
+        "project.default"
+      ],
+      "hideArchived": true
+    },
+    {
+      "id": "area",
+      "name": "Area",
+      "icon": "square.grid.2x2",
+      "color": "#2A6F97",
+      "isBuiltIn": false,
+      "properties": [
+        {
+          "id": "status",
+          "kind": "select",
+          "name": "Status",
+          "options": [
+            "Active",
+            "Paused",
+            "Archived"
+          ]
+        },
+        {
+          "id": "review",
+          "kind": "select",
+          "name": "Review",
+          "options": [
+            "Weekly",
+            "Monthly",
+            "Quarterly"
+          ]
+        }
+      ],
+      "defaultTemplateID": "area.default",
+      "templateIDs": [
+        "area.default"
+      ],
+      "hideArchived": true
     },
     {
       "id": "daily",
@@ -41,11 +85,7 @@
       "icon": "sun.max",
       "color": "#3D6B5C",
       "isBuiltIn": true,
-      "properties": [],
-      "defaultTemplateID": "daily.default",
-      "templateIDs": [
-        "daily.default"
-      ]
+      "properties": []
     },
     {
       "id": "page",
@@ -56,52 +96,46 @@
       "properties": []
     }
   ],
-  "bookObject": {
-    "id": "9832999a-3ef8-4add-ad7d-f01116225d89",
-    "type": "book",
-    "title": "Deep Work",
-    "relativePath": "objects/book/deep-work.md",
-    "properties": {
-      "rating": "0",
-      "status": "To Read"
-    },
-    "bodyMarkdown": "## Summary\n\n## Quotes\n\n## Notes",
-    "prefilledHeadings": true
+  "projectObject": {
+    "bodyMarkdown": "## Outcome\n\n## Next actions\n\n## Notes",
+    "id": "7e853c74-8380-4fde-ae63-8bd39d55afa0",
+    "prefilled": true,
+    "relativePath": "objects/project/launch-loci-mvp.md",
+    "title": "Launch Loci MVP"
   },
-  "dailyObject": {
-    "bodyMarkdown": "## Morning\n\n## Evening",
-    "id": "daily-2026-08-13",
-    "prefilledHeadings": true,
-    "relativePath": "daily/2026-08-13.md",
-    "title": "2026-08-13"
+  "areaObject": {
+    "bodyMarkdown": "## Standards\n\n## Current focus\n\n## Notes",
+    "id": "10ec7d73-75ab-41ac-be37-c7f4f58212c6",
+    "prefilled": true,
+    "relativePath": "objects/area/health.md",
+    "title": "Health"
   },
-  "bookTemplate": {
-    "bodyPreview": "## Summary\n\n## Quotes\n\n## Notes",
-    "defaultProperties": {
-      "rating": "0",
-      "status": "To Read"
-    },
+  "projectTemplate": {
+    "bodyPreview": "## Outcome\n\n## Next actions\n\n## Notes",
     "exists": true,
-    "id": "book.default",
-    "name": "Default Book",
-    "path": ".loci/templates/book.default.md"
+    "id": "project.default",
+    "path": ".loci/templates/project.default.md"
   },
-  "dailyTemplate": {
-    "bodyPreview": "## Morning\n\n## Evening",
+  "areaTemplate": {
+    "bodyPreview": "## Standards\n\n## Current focus\n\n## Notes",
     "exists": true,
-    "id": "daily.default",
-    "name": "Daily Default",
-    "path": ".loci/templates/daily.default.md"
+    "id": "area.default",
+    "path": ".loci/templates/area.default.md"
   },
-  "bookPrefill": true,
-  "dailyPrefill": true,
-  "booksCount": 1,
-  "pagesCount": 0,
-  "appearsOnlyUnderBooks": true,
-  "objectsFolder": "objects/book",
-  "objectsFolderExists": true,
-  "pageDeleteBlocked": true,
-  "survivedReload": true,
-  "frontmatterSnippet": "id: 9832999a-3ef8-4add-ad7d-f01116225d89\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T11:23:18Z\"\nupdated: \"2026-08-13T11:23:18Z\"\nproperties:\n  rating: 0\n  status:\n    kind: select\n    value: To Read\ntemplate: book.default",
-  "note": "Default Book template prefills headings + status; new daily uses daily template (PR14)."
+  "archiveFilter": {
+    "allProjects": 2,
+    "archivedHidden": 1,
+    "noFolderMove": true,
+    "visibleWhenHideArchived": 1
+  },
+  "para": {
+    "explainer": "PARA in Loci: Projects and Areas are object types with starter properties and templates. Mark reference material with #resource (any type \u2014 no Resource folder). Archive with #archive or status=Archived; dashboards hide archived by default. Your inbox is today\u2019s Daily note. Nothing is \u201cmoved\u201d into archive folders.",
+    "resourceGuidance": "Tag any object with #resource. No dedicated Resource type \u2014 the whole vault can hold reference material.",
+    "archiveGuidance": "Archive via #archive tag or status=Archived on Project/Area. Filter hides archived; files stay put.",
+    "resourceApproach": "tag:#resource",
+    "archiveApproach": "tag:#archive",
+    "idempotent": true,
+    "resourceTypeExists": false
+  },
+  "note": "Fresh vault \u2192 Apply PARA \u2192 Project/Area ready with templates; Resource=#resource; Archive=#archive filter (PR15)."
 }

@@ -373,7 +373,7 @@ function inspectorTitle(id: PanelId): string {
     case "types":
       return "Templates · property defs";
     case "settings":
-      return "Sync status";
+      return "PARA · sync status";
     case "gallery":
       return "Tokens";
     case "markdown":

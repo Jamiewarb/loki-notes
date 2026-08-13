@@ -14,8 +14,13 @@ enum OnboardingFeature {
 
     @MainActor
     static func settingsHint() -> some View {
-        Text("Create vault writes .loci/ + Page/Daily types, then opens today’s note (local index in Application Support).")
-            .font(LociTypography.font(.caption))
-            .foregroundStyle(LociColors.inkSoft)
+        VStack(alignment: .leading, spacing: LociSpacing.stack(.xs)) {
+            Text("Create vault writes .loci/ + Page/Daily types, then opens today’s note (local index in Application Support).")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+            Text("Optional: Apply PARA pack for Project/Area types, #resource / #archive guidance, and hide-archived filters.")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+        }
     }
 }

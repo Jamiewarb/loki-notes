@@ -1,0 +1,40 @@
+{
+  "id": "area",
+  "name": "Area",
+  "icon": "square.grid.2x2",
+  "color": "#2A6F97",
+  "isBuiltIn": false,
+  "properties": [
+    {
+      "id": "status",
+      "kind": "select",
+      "name": "Status",
+      "options": [
+        "Active",
+        "Paused",
+        "Archived"
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "select",
+      "name": "Review",
+      "options": [
+        "Weekly",
+        "Monthly",
+        "Quarterly"
+      ]
+    }
+  ],
+  "defaultTemplateID": "area.default",
+  "templateIDs": [
+    "area.default"
+  ],
+  "dashboard": {
+    "hideArchived": true,
+    "cardPreviewPropertyIDs": [
+      "status"
+    ],
+    "defaultSort": "updated"
+  }
+}

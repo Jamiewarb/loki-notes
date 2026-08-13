@@ -89,11 +89,44 @@ final class DomainModelTests: XCTestCase {
         XCTAssertEqual(settings.pins.count, 3)
     }
 
+    func testSpaceSettingsPARAFieldsRoundTrip() throws {
+        let settings = SpaceSettings(
+            name: "PARA Lab",
+            schemaVersion: 1,
+            pins: [],
+            paraPackApplied: true,
+            hideArchived: true,
+            resourceApproach: "tag:#resource",
+            archiveApproach: "tag:#archive"
+        )
+        let data = try JSONEncoder().encode(settings)
+        let decoded = try JSONDecoder().decode(SpaceSettings.self, from: data)
+        XCTAssertEqual(decoded, settings)
+        XCTAssertTrue(decoded.paraPackApplied)
+        XCTAssertEqual(decoded.resourceApproach, "tag:#resource")
+    }
+
     func testSpaceSettingsDecodesWithoutPinsKey() throws {
         let json = Data(#"{"name":"Legacy","schemaVersion":1}"#.utf8)
         let settings = try JSONDecoder().decode(SpaceSettings.self, from: json)
         XCTAssertEqual(settings.name, "Legacy")
         XCTAssertTrue(settings.pins.isEmpty)
+        XCTAssertFalse(settings.paraPackApplied)
+        XCTAssertFalse(settings.hideArchived)
+    }
+
+    func testArchiveFilterAndPARAExplainer() {
+        XCTAssertTrue(PARAPack.explainer.contains("Projects and Areas"))
+        XCTAssertEqual(PARAPack.resourceTag, "resource")
+        XCTAssertEqual(PARAPack.archiveTag, "archive")
+        let archived = LociObjectMeta(
+            id: ObjectID(),
+            typeID: .project,
+            title: "Done",
+            relativePath: "objects/project/x.md",
+            tags: ["archive"]
+        )
+        XCTAssertTrue(ArchiveFilter.isArchived(archived))
     }
 
     func testLociObjectMetaWithTagsAndProperties() throws {
@@ -121,6 +154,7 @@ final class DomainModelTests: XCTestCase {
         let dash = TypeDashboardConfig()
         XCTAssertTrue(dash.cardPreviewPropertyIDs.isEmpty)
         XCTAssertNil(dash.defaultSort)
+        XCTAssertFalse(dash.hideArchived)
     }
 
     func testTypeSlugFromName() throws {

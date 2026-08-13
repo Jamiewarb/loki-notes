@@ -1,0 +1,43 @@
+{
+  "id": "project",
+  "name": "Project",
+  "icon": "flag",
+  "color": "#B85C38",
+  "isBuiltIn": false,
+  "properties": [
+    {
+      "id": "status",
+      "kind": "select",
+      "name": "Status",
+      "options": [
+        "Active",
+        "On Hold",
+        "Done",
+        "Archived"
+      ]
+    },
+    {
+      "id": "deadline",
+      "kind": "date",
+      "name": "Deadline",
+      "options": []
+    },
+    {
+      "id": "area",
+      "kind": "text",
+      "name": "Area",
+      "options": []
+    }
+  ],
+  "defaultTemplateID": "project.default",
+  "templateIDs": [
+    "project.default"
+  ],
+  "dashboard": {
+    "hideArchived": true,
+    "cardPreviewPropertyIDs": [
+      "status"
+    ],
+    "defaultSort": "updated"
+  }
+}

@@ -15,6 +15,8 @@ struct TypeDashboardView: View {
     @State private var errorMessage: String?
     @State private var isBusy = false
     @State private var showRename = false
+    @State private var hideArchived = false
+    @State private var archivedHiddenCount = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
@@ -51,6 +53,16 @@ struct TypeDashboardView: View {
                 .font(LociTypography.font(.body))
                 .foregroundStyle(LociColors.inkSoft)
                 .frame(maxWidth: 520, alignment: .leading)
+
+            if hideArchived {
+                Text(
+                    archivedHiddenCount > 0
+                        ? "Hiding \(archivedHiddenCount) archived (#archive / status=Archived)."
+                        : "Archived objects hidden by default (PARA)."
+                )
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+            }
 
             if let type {
                 PropertiesFeature.defsEditor(services: services, typeID: type.id)
@@ -159,7 +171,12 @@ struct TypeDashboardView: View {
         do {
             _ = try await services.ensureIndex()
             type = try await services.schema.loadType(typeID)
-            objects = try await services.index?.objects(typeID: typeID) ?? []
+            let space = try? await services.schema.loadSpaceSettings()
+            hideArchived = (type?.dashboard.hideArchived == true) || (space?.hideArchived == true)
+            let all = try await services.index?.objects(typeID: typeID) ?? []
+            let visible = ArchiveFilter.visible(all, hideArchived: hideArchived)
+            archivedHiddenCount = all.count - visible.count
+            objects = visible
             // Daily notes use deterministic paths; still list from index when viewing Daily type.
             errorMessage = nil
         } catch {
