@@ -42,6 +42,10 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public private(set) var dailyNotes: DailyNoteService?
     /// Media attach into vault `media/` (PR20). Always available — no index required.
     public let media: MediaService
+    /// Sync status derivation + conflict scan (PR21).
+    public let sync: SyncStatusService
+    /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
+    public var syncRefreshNonce: Int = 0
 
     public init(
         spaceName: String = "Loci",
@@ -55,7 +59,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         index: IndexService? = nil,
         objects: ObjectService? = nil,
         dailyNotes: DailyNoteService? = nil,
-        media: MediaService? = nil
+        media: MediaService? = nil,
+        sync: SyncStatusService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -69,6 +74,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.vault = resolvedVault
         self.schema = schema ?? SchemaStore(vault: resolvedVault)
         self.media = media ?? MediaService(vault: resolvedVault)
+        self.sync = sync ?? SyncStatusService(vault: resolvedVault)
         self.index = index
         if let objects {
             self.objects = objects
@@ -144,13 +150,43 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
 
     public var status: SyncStatus {
         get async {
-            switch await vault.rootKind {
-            case .localDocuments:
-                return .localOnly
-            case .iCloudUbiquity:
-                return .iCloudAvailable
-            }
+            await sync.currentStatus()
         }
+    }
+
+    public var vaultPathDisplay: String {
+        get async throws {
+            try await sync.vaultPathDisplay()
+        }
+    }
+
+    public func listConflictedCopies() async throws -> [SyncConflictItem] {
+        try await sync.listConflictedCopies()
+    }
+
+    public func ensureDownloaded(atRelativePath path: String) async throws {
+        try await sync.ensureDownloaded(atRelativePath: path)
+    }
+
+    public func rebuildIndex() async throws {
+        let index = try await ensureIndex()
+        try await index.rebuild()
+        bumpSyncRefresh()
+    }
+
+    @discardableResult
+    public func revealVaultPath() async throws -> String {
+        try await sync.revealVaultPath()
+    }
+
+    /// DevHarness / tests: force chip state (Linux simulated syncing/offline/error).
+    public func simulateSyncStatus(_ status: SyncStatus?) {
+        sync.simulatedOverride = status
+        bumpSyncRefresh()
+    }
+
+    public func bumpSyncRefresh() {
+        syncRefreshNonce &+= 1
     }
 
     /// Settings / onboarding “Create vault” — skeleton + bootstrap + index.

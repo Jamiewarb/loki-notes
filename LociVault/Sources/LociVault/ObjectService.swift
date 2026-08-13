@@ -78,6 +78,9 @@ public final class ObjectService: ObjectServing, @unchecked Sendable {
             throw LociError.objectNotFound(id)
         }
 
+        // PR21: ensure note bytes are local before parse (no-op on local/Linux).
+        try await vault.ensureDownloaded(atRelativePath: relativePath)
+
         let data = try await vault.readFile(atRelativePath: relativePath)
         guard let markdown = String(data: data, encoding: .utf8) else {
             throw LociError.fileNotFound(relativePath)
@@ -88,7 +91,79 @@ public final class ObjectService: ObjectServing, @unchecked Sendable {
         }
         let meta = frontMatter.toMeta(relativePath: relativePath)
         let bodyMarkdown = serializer.serializeBlocks(document.blocks)
+
+        // Ensure referenced media blobs are downloaded when opening (iCloud on-demand).
+        for mediaPath in Self.mediaRelativePaths(
+            in: document.blocks,
+            fromObjectRelativePath: relativePath
+        ) {
+            try? await vault.ensureDownloaded(atRelativePath: mediaPath)
+        }
+
         return OpenedObject(meta: meta, bodyMarkdown: bodyMarkdown)
+    }
+
+    /// Collect vault-relative `media/…` paths referenced by image blocks.
+    static func mediaRelativePaths(
+        in blocks: [BlockNode],
+        fromObjectRelativePath objectPath: String
+    ) -> [String] {
+        var paths: [String] = []
+        for block in blocks {
+            switch block {
+            case .image(_, let url, _):
+                if let resolved = resolveMediaRelativePath(
+                    imageURL: url,
+                    fromObjectRelativePath: objectPath
+                ) {
+                    paths.append(resolved)
+                }
+            case .paragraph(let inlines), .heading(_, let inlines):
+                for node in inlines {
+                    if case .image(_, let url, _) = node,
+                       let resolved = resolveMediaRelativePath(
+                           imageURL: url,
+                           fromObjectRelativePath: objectPath
+                       )
+                    {
+                        paths.append(resolved)
+                    }
+                }
+            default:
+                continue
+            }
+        }
+        return paths
+    }
+
+    private static func resolveMediaRelativePath(
+        imageURL: String,
+        fromObjectRelativePath objectPath: String
+    ) -> String? {
+        // Absolute vault-style: media/images/x.png
+        if imageURL.hasPrefix("media/") {
+            return imageURL
+        }
+        // Relative from object: ../../media/images/x.png
+        if imageURL.contains("media/") {
+            let objectDir = (objectPath as NSString).deletingLastPathComponent
+            let joined = (objectDir as NSString).appendingPathComponent(imageURL)
+            let standardized = (joined as NSString).standardizingPath
+            // Drop leading ./ and normalize
+            var path = standardized
+            while path.hasPrefix("./") {
+                path = String(path.dropFirst(2))
+            }
+            if path.hasPrefix("media/") {
+                return path
+            }
+            // standardizingPath may produce absolute-looking paths without vault root —
+            // find media/ suffix.
+            if let range = path.range(of: "media/") {
+                return String(path[range.lowerBound...])
+            }
+        }
+        return nil
     }
 
     public func save(meta: LociObjectMeta, bodyMarkdown: String) async throws {

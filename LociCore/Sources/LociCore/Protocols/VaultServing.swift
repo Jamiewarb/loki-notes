@@ -31,6 +31,12 @@ public protocol VaultServing: Sendable {
 
     /// Absolute URL for a vault-relative path (locator only — do not persist as sole identity).
     func absoluteURL(forRelativePath path: String) async throws -> URL
+
+    /// Ensure bytes are local before parse (iCloud download-on-demand). Linux / local: no-op success.
+    func ensureDownloaded(atRelativePath path: String) async throws
+
+    /// Scan vault for conflicted-copy filenames (markdown + media). Index may keep both copies.
+    func listConflictedCopies() async throws -> [SyncConflictItem]
 }
 
 /// Where the vault root was resolved from.

@@ -914,3 +914,51 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+
+/* PR21 Sync UX chips */
+.sync-chip-row,
+.sync-sim-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.sync-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 6px;
+  background: var(--loci-panel);
+  color: var(--loci-accent);
+  font-family: var(--loci-font-body);
+  font-size: 0.85rem;
+  cursor: default;
+}
+
+button.sync-chip {
+  cursor: pointer;
+}
+
+button.sync-chip:hover,
+button.sync-chip:focus-visible {
+  border-color: var(--loci-accent);
+  outline: none;
+}
+
+.sync-chip.is-live {
+  border-color: var(--loci-accent-soft);
+  background: color-mix(in srgb, var(--loci-accent-soft) 45%, white);
+}
+
+.sync-chip[data-status="conflict"],
+.sync-chip[data-status="error"] {
+  color: var(--loci-danger);
+}
+
+.sync-chip[data-status="syncing"],
+.sync-chip[data-status="offline"] {
+  color: var(--loci-ink-soft);
+}

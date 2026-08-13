@@ -93,8 +93,8 @@ export const PANELS: Record<PanelId, Panel> = {
   settings: {
     id: "settings",
     title: "Settings",
-    body: "Vault root + Apply PARA pack (PR15). Project/Area types; Resource=#resource; Archive=#archive filter (no folder move).",
-    inspector: "iCloud vs local Documents — index never stored in the vault. PARA explainer in Settings.",
+    body: "Vault root + Sync UX (PR21) + PARA pack (PR15). Sync chip, conflicts (incl. media), rebuild index, reveal vault path.",
+    inspector: "iCloud vs local Documents — index never stored in the vault. Sync status + conflict list.",
   },
   gallery: {
     id: "gallery",
