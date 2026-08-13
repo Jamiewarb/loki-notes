@@ -270,7 +270,7 @@ final class SchemaStoreTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25")
         )
     }
 }

@@ -1011,3 +1011,127 @@ button.sync-chip:focus-visible {
   outline: 2px solid var(--loci-accent);
   outline-offset: 3px;
 }
+
+/* PR25 — Calendar panel */
+.cal-grid-wrap {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 15% 0%, color-mix(in srgb, var(--loci-mist) 40%, transparent), transparent 50%),
+    radial-gradient(ellipse at 90% 100%, color-mix(in srgb, var(--loci-meadow) 35%, transparent), transparent 55%),
+    var(--loci-panel);
+}
+
+.cal-toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cal-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.cal-scope {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.cal-weekdays,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cal-weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  padding-bottom: 0.35rem;
+}
+
+.cal-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0.45rem 0.2rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--loci-ink);
+  cursor: pointer;
+  font-family: var(--loci-font-body);
+}
+
+.cal-cell.out-period {
+  opacity: 0.4;
+}
+
+.cal-cell.is-today .cal-day-num {
+  color: var(--loci-accent);
+  font-weight: 600;
+}
+
+.cal-cell.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-paper);
+}
+
+.cal-cell.is-selected .cal-day-num {
+  color: var(--loci-paper);
+}
+
+.cal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.cal-cell.has-dot .cal-dot,
+.cal-week-day.has-dot .cal-dot {
+  background: var(--loci-accent);
+}
+
+.cal-cell.is-selected.has-dot .cal-dot {
+  background: var(--loci-paper);
+}
+
+.cal-week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+
+.cal-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0.5rem 0.2rem;
+  border-radius: 8px;
+  color: var(--loci-ink);
+  background: color-mix(in srgb, var(--loci-panel) 70%, transparent);
+}
+
+.cal-week-day.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-paper);
+}
+
+.cal-week-day.is-selected .cal-dot {
+  background: var(--loci-paper);
+}

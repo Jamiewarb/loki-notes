@@ -57,6 +57,8 @@ struct InspectorHostView: View {
                 SearchInspectorView(services: services)
             } else if case .graph = route {
                 GraphFeature.inspector(services: services)
+            } else if case .calendar = route {
+                CalendarFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -132,6 +134,7 @@ struct InspectorHostView: View {
         case .designGallery: return "Tokens"
         case .tags: return "Aliases"
         case .graph: return "Caps · navigation"
+        case .calendar: return "Dots · daily jump"
         case .object: return "Properties"
         }
     }
@@ -154,6 +157,8 @@ struct InspectorHostView: View {
             return "Tag aliases in space.json expand queries across spellings."
         case .graph:
             return "Graph reads the links table via IndexQuerying; node tap opens via Navigating."
+        case .calendar:
+            return "Calendar dots are index-derived; day select opens daily/YYYY-MM-DD.md."
         case .object:
             return "Properties, object tags, and backlinks from the local index."
         }

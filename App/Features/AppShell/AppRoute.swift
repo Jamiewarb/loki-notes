@@ -12,6 +12,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     case designGallery
     case tags
     case graph
+    case calendar
 
     var id: Self { self }
 
@@ -19,7 +20,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
     static let primary: [AppRoute] = [.daily, .tasks, .search, .types, .settings]
 
     /// Debug / tooling destinations (reachable, not primary).
-    static let tooling: [AppRoute] = [.tags, .graph, .designGallery]
+    static let tooling: [AppRoute] = [.tags, .graph, .calendar, .designGallery]
 
     var route: Route {
         switch self {
@@ -31,6 +32,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
         case .designGallery: return .designGallery
         case .tags: return .tags
         case .graph: return .graph
+        case .calendar: return .calendar
         }
     }
 
@@ -48,6 +50,7 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
         case .designGallery: self = .designGallery
         case .tags: self = .tags
         case .graph: self = .graph
+        case .calendar: self = .calendar
         case .object: return nil
         }
     }

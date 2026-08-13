@@ -77,6 +77,16 @@ public protocol IndexQuerying: Sendable {
     /// Build a capped link graph from the disposable `links` table (resolved edges only).
     /// Features must not scrape markdown for graph topology.
     func graph(options: GraphBuildOptions) async throws -> GraphSnapshot
+
+    // MARK: - Calendar markers (PR25)
+
+    /// Index-derived day markers for calendar chrome (daily note presence, content, creations).
+    /// Inclusive `from`/`to` calendar days. Never writes into the vault.
+    func calendarMarkers(
+        from: Date,
+        to: Date,
+        calendar: Calendar
+    ) async throws -> [CalendarDayMarker]
 }
 
 /// One row from the disposable `properties_idx` projection.

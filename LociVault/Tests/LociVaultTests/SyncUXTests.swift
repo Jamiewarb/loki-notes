@@ -86,6 +86,6 @@ final class SyncConflictListingTests: XCTestCase {
     }
 
     func testModuleVersionPR22() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25"))
     }
 }
