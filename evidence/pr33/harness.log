@@ -1,0 +1,5 @@
+PR33 DevHarness evidence
+- Playwright: 77 passed (see e2e.log)
+- lint: passed (see lint.log)
+- XCTest: 303 passed (see test.log)
+- Harness: http://127.0.0.1:5173 (Vite already serving; gallery uses data-harness=destination)

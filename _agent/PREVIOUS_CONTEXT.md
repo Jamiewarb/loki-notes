@@ -14,9 +14,50 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 - Swift 6.2: `export PATH=/opt/swift/usr/bin:$PATH`. Linux tests SPM packages + DevHarness only (`App/` SwiftUI is Apple).
 - Hard rules: vault = truth; never put the index in the vault; no feature→feature imports; do not rewrite daily notes for derived UI; AI must not upload the vault unless the user opts in; typing must not wait on index/network.
 
-Stacked PRs already opened: https://github.com/Jamiewarb/loki-notes/pull/1 … https://github.com/Jamiewarb/loki-notes/pull/31
+Stacked PRs already opened: https://github.com/Jamiewarb/loki-notes/pull/1 … https://github.com/Jamiewarb/loki-notes/pull/33
 
 Branch naming: `cursor/prNN-<short-name>-d2c1`.
+
+---
+
+## PR33 — Playwright feature harness
+
+**Branch:** `cursor/pr33-e2e-harness-d2c1`  
+**Based on:** `cursor/pr32-safari-d2c1`  
+**Swift tests:** **303** green. **Playwright:** **77** green. Evidence: `evidence/pr33/`
+
+### What landed
+
+- Skill: `.cursor/skills/loci-playwright-feature-tests/SKILL.md` (locators, waits, what not to test)
+- DevHarness Playwright: `playwright.config.ts` (Chromium, `testIdAttribute: data-harness`, Vite `webServer`, never `networkidle`)
+- Helpers: `DevHarness/e2e/helpers.ts` (`gotoPanel`, `harness`, `PANEL_IDS`)
+- Specs mapped to `docs/PLAN.md`: `shell`, `daily`, `types`, `editor`, `retrieval`, `work`, `vault`, `integrations`, `architecture`
+- `./scripts/e2e.sh` + CI harness-smoke runs Playwright
+- Gallery panel uses the shared `destination` contract
+- Editor demo JSON restored `queryEmbed` so “query results not stored in body” is visible
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173
+```
+
+### Pitfalls
+
+- Linux tests DevHarness, not SwiftUI. Do not duplicate XCTest in the browser.
+- Vite HMR websocket: never `waitForLoadState('networkidle')`.
+- Panels `fetch()` then replace `innerHTML` — wait on destination/proof locators.
+- Fixture dates are frozen (e.g. `2026-08-13`); do not assert against `Date.now()`.
+- Playwright 1.62 has no `test.each` — parametrize with `for...of`.
+- `getByRole('button', { name: 'Daily' })` also matches Calendar (“Daily notes”) — scope to the Navigate nav.
+
+### Next
+
+Unplanned after Wave D. Optional later: Readwise, plugins, Windows — not scheduled.
 
 ---
 
@@ -59,7 +100,7 @@ export PATH=/opt/swift/usr/bin:$PATH
 
 ### Next
 
-Wave D complete. No further stacked PRs in the plan. Optional later: Readwise, plugins, Windows — not scheduled.
+Wave D complete. Follow-on **PR33** adds Playwright feature tests against DevHarness (`cursor/pr33-e2e-harness-d2c1`). Optional later: Readwise, plugins, Windows — not scheduled.
 
 ---
 
