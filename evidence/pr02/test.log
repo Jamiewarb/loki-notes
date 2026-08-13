@@ -1,0 +1,83 @@
+==> swift --version
+Swift version 6.2 (swift-6.2-RELEASE)
+Target: x86_64-unknown-linux-gnu
+==> swift test
+[0/1] Planning build
+Building for debugging...
+[0/3] Write sources
+[1/20] Write swift-version--166437D737243488.txt
+[2/12] Wrapping AST for LociDesignSystem for debugging
+[4/14] Emitting module LociDesignSystemTests
+[5/14] Compiling LociDesignSystemTests DesignTokenTests.swift
+[6/15] /agent/.build/x86_64-unknown-linux-gnu/debug/LociPackageDiscoveredTests.derived/all-discovered-tests.swift
+[7/15] Write sources
+[8/15] Wrapping AST for LociDesignSystemTests for debugging
+[10/21] Compiling LociPackageDiscoveredTests LociVaultTests.swift
+[11/22] Compiling LociPackageDiscoveredTests LociIndexTests.swift
+[12/22] Compiling LociPackageDiscoveredTests LociMarkdownTests.swift
+[13/22] Compiling LociPackageDiscoveredTests LociCoreTests.swift
+[14/22] Compiling LociPackageDiscoveredTests LociDesignSystemTests.swift
+[15/22] Emitting module LociPackageDiscoveredTests
+[16/22] Compiling LociPackageDiscoveredTests all-discovered-tests.swift
+[17/23] /agent/.build/x86_64-unknown-linux-gnu/debug/LociPackageTests.derived/runner.swift
+[18/23] Write sources
+[19/23] Wrapping AST for LociPackageDiscoveredTests for debugging
+[21/25] Compiling LociPackageTests runner.swift
+[22/25] Emitting module LociPackageTests
+[23/25] Write Objects.LinkFileList
+[24/25] Linking LociPackageTests.xctest
+Build complete! (0.91s)
+Test Suite 'All tests' started at 2026-08-13 08:15:28.163
+Test Suite 'debug.xctest' started at 2026-08-13 08:15:28.164
+Test Suite 'DesignTokenTests' started at 2026-08-13 08:15:28.164
+Test Case 'DesignTokenTests.testAccentRGBInMossRange' started at 2026-08-13 08:15:28.164
+Test Case 'DesignTokenTests.testAccentRGBInMossRange' passed (0.001 seconds)
+Test Case 'DesignTokenTests.testBrandIdentity' started at 2026-08-13 08:15:28.164
+Test Case 'DesignTokenTests.testBrandIdentity' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testColorHexConstants' started at 2026-08-13 08:15:28.165
+Test Case 'DesignTokenTests.testColorHexConstants' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testRadiusAndElevationTokens' started at 2026-08-13 08:15:28.165
+Test Case 'DesignTokenTests.testRadiusAndElevationTokens' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testSpacingScaleIsAscending' started at 2026-08-13 08:15:28.165
+Test Case 'DesignTokenTests.testSpacingScaleIsAscending' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testTypographyFamiliesAndSizes' started at 2026-08-13 08:15:28.165
+Test Case 'DesignTokenTests.testTypographyFamiliesAndSizes' passed (0.0 seconds)
+Test Suite 'DesignTokenTests' passed at 2026-08-13 08:15:28.165
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'LociMarkdownStubTests' started at 2026-08-13 08:15:28.165
+Test Case 'LociMarkdownStubTests.testStubVersionPresent' started at 2026-08-13 08:15:28.165
+Test Case 'LociMarkdownStubTests.testStubVersionPresent' passed (0.0 seconds)
+Test Suite 'LociMarkdownStubTests' passed at 2026-08-13 08:15:28.165
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'LociIndexStubTests' started at 2026-08-13 08:15:28.165
+Test Case 'LociIndexStubTests.testIndexLivesOutsideVaultConvention' started at 2026-08-13 08:15:28.165
+Test Case 'LociIndexStubTests.testIndexLivesOutsideVaultConvention' passed (0.0 seconds)
+Test Case 'LociIndexStubTests.testStubVersionPresent' started at 2026-08-13 08:15:28.165
+Test Case 'LociIndexStubTests.testStubVersionPresent' passed (0.0 seconds)
+Test Suite 'LociIndexStubTests' passed at 2026-08-13 08:15:28.165
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'LociVaultStubTests' started at 2026-08-13 08:15:28.165
+Test Case 'LociVaultStubTests.testStubVersionPresent' started at 2026-08-13 08:15:28.165
+Test Case 'LociVaultStubTests.testStubVersionPresent' passed (0.101 seconds)
+Test Suite 'LociVaultStubTests' passed at 2026-08-13 08:15:28.266
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.101 (0.101) seconds
+Test Suite 'ObjectIDTests' started at 2026-08-13 08:15:28.266
+Test Case 'ObjectIDTests.testCodableRoundTrip' started at 2026-08-13 08:15:28.266
+Test Case 'ObjectIDTests.testCodableRoundTrip' passed (0.001 seconds)
+Test Case 'ObjectIDTests.testDailyDateKeyFormat' started at 2026-08-13 08:15:28.266
+Test Case 'ObjectIDTests.testDailyDateKeyFormat' passed (0.001 seconds)
+Test Case 'ObjectIDTests.testInvalidUUIDStringReturnsNil' started at 2026-08-13 08:15:28.267
+Test Case 'ObjectIDTests.testInvalidUUIDStringReturnsNil' passed (0.0 seconds)
+Test Case 'ObjectIDTests.testRoundTripUUIDString' started at 2026-08-13 08:15:28.268
+Test Case 'ObjectIDTests.testRoundTripUUIDString' passed (0.0 seconds)
+Test Suite 'ObjectIDTests' passed at 2026-08-13 08:15:28.268
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'debug.xctest' passed at 2026-08-13 08:15:28.268
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.104 (0.104) seconds
+Test Suite 'All tests' passed at 2026-08-13 08:15:28.268
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.104 (0.104) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2 (3fdabe5392108d8)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+==> tests passed

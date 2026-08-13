@@ -12,8 +12,10 @@ Browser-runnable **visual test shell** for Loci Cloud agents (no Xcode / Simulat
 ## What it mirrors
 
 - Brand **Loci** as a hero-level signal in chrome
-- Sidebar: Daily, Search, Types, Settings
-- Detail placeholder + inspector placeholder (AppShell layout from PR03)
+- CSS variables aligned with `LociDesignSystem` tokens (`--loci-ink`, `--loci-accent`, …)
+- **Design** gallery panel (PR02) — colors, type, spacing, button/field/row/empty primitives, motion
+- Sidebar: Design, Daily, Search, Types, Settings
+- Detail + inspector placeholders for AppShell (PR03)
 
 ## Adding a panel in a later PR
 

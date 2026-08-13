@@ -62,10 +62,15 @@ let package = Package(
             path: "LociIndex/Tests/LociIndexTests"
         ),
 
-        // Design system: stub — tokens/components land in PR02
+        // Design system: tokens (Linux-testable) + SwiftUI primitives (Apple)
         .target(
             name: "LociDesignSystem",
             path: "LociDesignSystem/Sources/LociDesignSystem"
+        ),
+        .testTarget(
+            name: "LociDesignSystemTests",
+            dependencies: ["LociDesignSystem"],
+            path: "LociDesignSystem/Tests/LociDesignSystemTests"
         ),
     ]
 )

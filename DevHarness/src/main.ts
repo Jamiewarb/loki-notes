@@ -1,12 +1,13 @@
 import "./styles.css";
 import { NAV_ITEMS, PANELS, type PanelId } from "./shell";
+import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
   throw new Error("#app missing");
 }
 
-let active: PanelId = "daily";
+let active: PanelId = "gallery";
 
 function render(): void {
   const panel = PANELS[active];
@@ -32,11 +33,7 @@ function render(): void {
         <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
       </aside>
       <main class="detail" data-panel="${panel.id}">
-        <h2>${panel.title}</h2>
-        <p>${panel.body}</p>
-        <div class="placeholder-card">
-          Detail surface placeholder — SwiftUI AppShell arrives in PR03.
-        </div>
+        <div data-detail-root></div>
       </main>
       <aside class="inspector" aria-label="Inspector">
         <h3>Inspector</h3>
@@ -44,6 +41,21 @@ function render(): void {
       </aside>
     </div>
   `;
+
+  const detail = app.querySelector<HTMLElement>("[data-detail-root]");
+  if (!detail) return;
+
+  if (active === "gallery") {
+    renderDesignGallery(detail);
+  } else {
+    detail.innerHTML = `
+      <h2>${panel.title}</h2>
+      <p>${panel.body}</p>
+      <div class="placeholder-surface">
+        Detail surface placeholder — SwiftUI AppShell arrives in PR03.
+      </div>
+    `;
+  }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]").forEach((btn) => {
     btn.addEventListener("click", () => {
