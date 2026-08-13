@@ -1,7 +1,5 @@
 {
-  "name" : "Loci Demo",
-  "pins" : [
-
-  ],
-  "schemaVersion" : 1
+  "name": "Demo Properties",
+  "schemaVersion": 1,
+  "pins": []
 }
