@@ -106,7 +106,7 @@ final class SchemaStoreTests: XCTestCase {
         // Fresh store against the same vault root — proves disk persistence.
         let store2 = SchemaStore(vault: vault)
         let ids = try await store2.knownTypeIDs()
-        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "image", "page"])
+        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "image", "meeting", "page"])
         let loaded = try await store2.loadType(ObjectTypeID("book"))
         XCTAssertEqual(loaded.name, "Book")
         XCTAssertEqual(loaded.properties.count, 2)
@@ -120,8 +120,11 @@ final class SchemaStoreTests: XCTestCase {
             ObjectType(id: ObjectTypeID("project"), name: "Project", icon: "folder")
         )
         let all = try await store.allTypes()
-        XCTAssertEqual(all.count, 4)
-        XCTAssertEqual(Set(all.map(\.id.rawValue)), Set(["page", "daily", "image", "project"]))
+        XCTAssertEqual(all.count, 5)
+        XCTAssertEqual(
+            Set(all.map(\.id.rawValue)),
+            Set(["page", "daily", "image", "meeting", "project"])
+        )
     }
 
     func testLoadMissingTypeThrowsSchemaNotFound() async throws {
