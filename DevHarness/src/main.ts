@@ -9,6 +9,7 @@ import {
 } from "./shell";
 import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
+import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 
@@ -33,6 +34,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   types: "▦",
   settings: "⚙",
   gallery: "◈",
+  markdown: "¶",
 };
 
 function renderNavSection(
@@ -78,6 +80,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "types") {
     void renderTypesSchema(detail);
+    return;
+  }
+  if (panelId === "markdown") {
+    void renderMarkdownDebug(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -148,6 +154,8 @@ function inspectorTitle(id: PanelId): string {
       return "Sync status";
     case "gallery":
       return "Tokens";
+    case "markdown":
+      return "BlockAST";
   }
 }
 

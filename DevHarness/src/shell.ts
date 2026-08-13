@@ -7,7 +7,7 @@
  * 3. Document the panel in evidence/<prXX>/ and PREVIOUS_CONTEXT.md.
  */
 
-export type PanelId = "daily" | "search" | "types" | "settings" | "gallery";
+export type PanelId = "daily" | "search" | "types" | "settings" | "gallery" | "markdown";
 
 export interface NavItem {
   id: PanelId;
@@ -40,9 +40,10 @@ export const PINNED_STUB = {
   subtitle: "Pinned · coming later",
 } as const;
 
-/** Tooling / debug destinations (Design gallery). */
+/** Tooling / debug destinations (Design gallery + Markdown kit). */
 export const STUDIO_NAV: NavItem[] = [
   { id: "gallery", label: "Design", subtitle: "Tokens & primitives", section: "studio" },
+  { id: "markdown", label: "Markdown", subtitle: "AST round-trip", section: "studio" },
 ];
 
 /** Flat list for click wiring (primary + studio). */
@@ -78,5 +79,11 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Design gallery",
     body: "Tokens + primitives mirrored from LociDesignSystem (PR02).",
     inspector: "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent.",
+  },
+  markdown: {
+    id: "markdown",
+    title: "Markdown",
+    body: "Loci MD ↔ BlockAST debug round-trip (PR06). Frontmatter aligns with LociObjectMeta.",
+    inspector: "Wiki-links and #tags feed the Indexer (PR07).",
   },
 };
