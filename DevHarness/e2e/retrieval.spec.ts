@@ -45,3 +45,37 @@ test("search index is never stored in the vault", async ({ page }) => {
   await expect(harness(page, "search-index-in-vault")).toBeVisible();
   await expect(harness(page, "search-index-in-vault")).toHaveText("no ✓");
 });
+
+test("unlinked mentions list includes Notes for Deep Work", async ({ page }) => {
+  await gotoPanel(page, "links");
+  await expect(harness(page, "unlinked-mentions-panel")).toBeVisible();
+  await expect(
+    harness(page, "unlinked-mention-row").filter({ hasText: "Notes" }),
+  ).toBeVisible();
+  await expect(harness(page, "unlinked-proof-detectsPlainTitle")).toHaveText("yes ✓");
+  await expect(harness(page, "unlinked-proof-ignoresExistingWikiLink")).toHaveText(
+    "yes ✓",
+  );
+});
+
+test("unlinked mention scan does not rewrite Notes.md until Link", async ({ page }) => {
+  await gotoPanel(page, "links");
+  await expect(harness(page, "unlinked-notes-body")).toBeVisible();
+  await expect(harness(page, "unlinked-notes-body")).toContainText("Deep Work");
+  await expect(harness(page, "unlinked-notes-body")).not.toContainText("[[");
+  await expect(harness(page, "unlinked-notes-has-wiki")).toHaveText("no");
+  await expect(harness(page, "unlinked-proof-doesNotRewriteBody")).toHaveText("yes ✓");
+  await expect(harness(page, "unlinked-daily-unchanged")).toHaveText("yes ✓");
+  await expect(harness(page, "unlinked-index-in-vault")).toHaveText("no ✓");
+});
+
+test("explicit Link replaces the first unlinked title with a wiki-link", async ({
+  page,
+}) => {
+  await gotoPanel(page, "links");
+  const link = harness(page, "unlinked-mention-link");
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(harness(page, "unlinked-notes-body")).toContainText("[[");
+  await expect(harness(page, "unlinked-notes-has-wiki")).toHaveText("yes");
+});

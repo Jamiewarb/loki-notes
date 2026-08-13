@@ -56,6 +56,7 @@ struct InspectorHostView: View {
                         PinsFeature.toggle(services: services, objectID: id)
                         TagsFeature.objectTags(services: services, objectID: id)
                         LinksFeature.backlinks(services: services, objectID: id)
+                        LinksFeature.unlinkedMentions(services: services, objectID: id)
                         TypeConversionFeature.sheet(services: services, objectID: id)
                         AIFeature.panel(services: services, objectID: id)
                     }
@@ -198,7 +199,7 @@ struct InspectorHostView: View {
         case .safari:
             return "Safari extension enqueues .loci/inbox/; drain → today (`· safari`) or Weblink with url property."
         case .object:
-            return "Properties, weblink preview (cache-only), pins, object tags, backlinks, type conversion, and AI assist from the local index."
+            return "Properties, weblink preview (cache-only), pins, object tags, backlinks, unlinked mentions, type conversion, and AI assist from the local index."
         }
     }
 

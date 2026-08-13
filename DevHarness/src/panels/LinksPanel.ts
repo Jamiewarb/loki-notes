@@ -1,6 +1,6 @@
 /**
- * Links panel — wiki-link A→B + backlinks on B + broken-link styling (PR16).
- * Loads `/demo-links/links.json` from `scripts/demo-links.sh`.
+ * Links panel — wiki-link A→B + backlinks (PR16) + unlinked title mentions (PR44).
+ * Loads `/demo-links/links.json` and `/demo-unlinked-mentions/unlinked-mentions.json`.
  */
 export async function renderLinksPanel(root: HTMLElement): Promise<void> {
   root.innerHTML = `
@@ -78,6 +78,8 @@ export async function renderLinksPanel(root: HTMLElement): Promise<void> {
       )
       .join("");
 
+    const unlinkedHTML = await renderUnlinkedMentionsCard();
+
     root.innerHTML = `
       <div class="destination links-panel" data-harness="destination" data-destination="links">
         <header class="destination-header">
@@ -149,8 +151,10 @@ export async function renderLinksPanel(root: HTMLElement): Promise<void> {
         </section>
 
         <p class="vault-note">${escapeAttr(data.note)}</p>
+        ${unlinkedHTML}
       </div>
     `;
+    wireUnlinkedMentionLink(root);
   } catch (err) {
     if (status) {
       status.innerHTML = `Missing links fixture. Run <code>./scripts/demo-links.sh</code>. (${escapeAttr(
@@ -167,3 +171,123 @@ function escapeAttr(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+type UnlinkedFixture = {
+  dailyUnchanged?: boolean;
+  notesBodyContainsWikiLink?: boolean;
+  notesBodyAfterLink?: string;
+  notesBodyAfterLinkContainsWikiLink?: boolean;
+  mentionTitles?: string[];
+  notes?: { title?: string; bodyMarkdown?: string };
+  target?: { title?: string };
+  mentions?: Array<{ sourceId: string; sourceTitle: string; snippet: string }>;
+  proof?: Record<string, boolean>;
+  note?: string;
+  indexInsideVault?: boolean;
+};
+
+async function renderUnlinkedMentionsCard(): Promise<string> {
+  try {
+    const res = await fetch("/demo-unlinked-mentions/unlinked-mentions.json", {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as UnlinkedFixture;
+    const proof = data.proof || {};
+    const proofRows = Object.entries(proof)
+      .map(
+        ([k, v]) => `
+        <div>
+          <dt>${escapeAttr(k)}</dt>
+          <dd data-harness="unlinked-proof-${escapeAttr(k)}">${v ? "yes ✓" : "NO"}</dd>
+        </div>`,
+      )
+      .join("");
+    const rows = (data.mentions ?? [])
+      .map(
+        (m) => `
+        <li class="schema-type-row" data-harness="unlinked-mention-row" data-source-id="${escapeAttr(
+          m.sourceId,
+        )}">
+          <span class="schema-type-name">${escapeAttr(m.sourceTitle)}</span>
+          <span class="schema-type-meta">${escapeAttr(m.snippet)}</span>
+          <button type="button" data-harness="unlinked-mention-link">Link</button>
+        </li>`,
+      )
+      .join("");
+    return `
+      <section class="vault-card" data-harness="unlinked-mentions-panel" aria-label="Unlinked mentions">
+        <p class="vault-kicker">PR44 · Unlinked mentions · scan titles</p>
+        <h3 class="vault-card-title">Mentions of ${escapeAttr(data.target?.title ?? "Deep Work")}</h3>
+        <ul class="schema-type-list" data-harness="unlinked-mentions-list">${
+          rows || "<li>Empty</li>"
+        }</ul>
+        <div class="md-pane" style="margin-top:0.75rem">
+          <h3 class="md-pane-title">${escapeAttr(data.notes?.title ?? "Notes")} body</h3>
+          <pre class="md-pre" data-harness="unlinked-notes-body">${escapeAttr(
+            (data.notes?.bodyMarkdown || "").trimEnd(),
+          )}</pre>
+        </div>
+        <dl class="vault-meta">
+          <div>
+            <dt>Notes has [[</dt>
+            <dd data-harness="unlinked-notes-has-wiki">${
+              data.notesBodyContainsWikiLink ? "yes" : "no"
+            }</dd>
+          </div>
+          <div>
+            <dt>Daily unchanged</dt>
+            <dd data-harness="unlinked-daily-unchanged">${
+              data.dailyUnchanged ? "yes ✓" : "NO"
+            }</dd>
+          </div>
+          <div>
+            <dt>Index in vault</dt>
+            <dd data-harness="unlinked-index-in-vault">${
+              data.indexInsideVault ? "YES (bad)" : "no ✓"
+            }</dd>
+          </div>
+        </dl>
+        <dl class="vault-meta capture-proof-grid">${proofRows}</dl>
+        <pre class="md-pre" data-harness="unlinked-notes-body-after" hidden>${escapeAttr(
+          (data.notesBodyAfterLink || "").trimEnd(),
+        )}</pre>
+        <p
+          class="vault-note"
+          data-harness="unlinked-mentions-note"
+          data-daily-unchanged="${data.dailyUnchanged === true}"
+          data-notes-has-wiki="${data.notesBodyContainsWikiLink === true}"
+        >${escapeAttr(data.note || "")}</p>
+      </section>
+    `;
+  } catch (err) {
+    return `
+      <section class="vault-card" data-harness="unlinked-mentions-panel" aria-label="Unlinked mentions">
+        <p class="vault-kicker">PR44 · Unlinked mentions</p>
+        <h3 class="vault-card-title">Unlinked mentions</h3>
+        <p class="vault-note" data-harness="unlinked-mentions-missing">
+          Missing unlinked mentions fixture. Run <code>./scripts/demo-unlinked-mentions.sh</code>.
+          (${escapeAttr(String(err))})
+        </p>
+      </section>
+    `;
+  }
+}
+
+function wireUnlinkedMentionLink(root: HTMLElement): void {
+  const button = root.querySelector<HTMLButtonElement>(
+    "[data-harness='unlinked-mention-link']",
+  );
+  const body = root.querySelector<HTMLElement>("[data-harness='unlinked-notes-body']");
+  const hasWiki = root.querySelector<HTMLElement>("[data-harness='unlinked-notes-has-wiki']");
+  const list = root.querySelector<HTMLElement>("[data-harness='unlinked-mentions-list']");
+  const after = root.querySelector<HTMLElement>("[data-harness='unlinked-notes-body-after']");
+  if (!button || !body || !after) return;
+  button.addEventListener("click", () => {
+    body.textContent = after.textContent || "";
+    if (hasWiki) hasWiki.textContent = "yes";
+    if (list) list.innerHTML = "<li class='schema-type-row'>Empty</li>";
+    button.disabled = true;
+  });
+}
+

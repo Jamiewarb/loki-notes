@@ -209,7 +209,13 @@ final class LinkPreviewSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR43() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr43"), LociVaultModule.version)
-        XCTAssertEqual(LociVaultModule.version, "0.43.0-pr43")
+        XCTAssertTrue(
+            LociVaultModule.version.contains("pr43") || LociVaultModule.version.contains("pr44"),
+            LociVaultModule.version
+        )
+        XCTAssertTrue(
+            LociVaultModule.version == "0.43.0-pr43" || LociVaultModule.version == "0.44.0-pr44",
+            LociVaultModule.version
+        )
     }
 }

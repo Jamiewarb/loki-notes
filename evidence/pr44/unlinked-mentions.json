@@ -1,0 +1,51 @@
+{
+  "dailyBody" : "",
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dailyUnchanged" : true,
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-unlinked-demo-db-2026-08-13T22-00-07Z\/v38ec29f6d1e9ddff\/index.sqlite",
+  "journal" : {
+    "bodyMarkdown" : "See [[70537094-4e7a-4313-ab08-9fe0f8ab1015|Deep Work]] yesterday\n",
+    "id" : "dcfaaf06-04b3-465c-a758-2446c231e40a",
+    "relativePath" : "objects\/page\/journal.md",
+    "title" : "Journal"
+  },
+  "mentionTitles" : [
+    "Notes"
+  ],
+  "mentions" : [
+    {
+      "snippet" : "I read Deep Work yesterday",
+      "sourceId" : "692011c9-1784-4dd1-b2c2-b97d97de0f05",
+      "sourceTitle" : "Notes"
+    }
+  ],
+  "mentionsAfterLink" : [
+
+  ],
+  "moduleVersion" : "0.44.0-pr44",
+  "note" : "PR44: Unlinked mentions scan titles in other notes. Notes.md contains plain “Deep Work” and is listed; Journal already wiki-links and is not. Scan does not rewrite markdown. Explicit Link replaces the first occurrence with [[id|title]]. Daily unchanged. Index outside vault.",
+  "notes" : {
+    "bodyMarkdown" : "I read Deep Work yesterday",
+    "id" : "692011c9-1784-4dd1-b2c2-b97d97de0f05",
+    "relativePath" : "objects\/page\/notes.md",
+    "title" : "Notes"
+  },
+  "notesBodyAfterLink" : "I read [[70537094-4e7a-4313-ab08-9fe0f8ab1015|Deep Work]] yesterday",
+  "notesBodyAfterLinkContainsWikiLink" : true,
+  "notesBodyContainsWikiLink" : false,
+  "proof" : {
+    "detectsPlainTitle" : true,
+    "doesNotRewriteBody" : true,
+    "ignoresExistingWikiLink" : true,
+    "indexInsideVault" : false
+  },
+  "target" : {
+    "bodyMarkdown" : "Focus is a skill.\n",
+    "id" : "70537094-4e7a-4313-ab08-9fe0f8ab1015",
+    "relativePath" : "objects\/page\/deep-work.md",
+    "title" : "Deep Work"
+  },
+  "vaultRoot" : "\/tmp\/loci-unlinked-demo-vault-2026-08-13T22-00-07Z\/LociVault"
+}
