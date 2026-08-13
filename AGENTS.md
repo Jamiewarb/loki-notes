@@ -68,6 +68,15 @@ Sync UX (PR21) extras:
 
 Linux CI reports **local-only** sync status; simulated chip states live in the demo fixture. On Apple, ubiquity preferred when signed in; ensure-downloaded runs before open (media refs too). Index rebuild is Settings-only and never writes into the vault.
 
+Collections (PR22) extras:
+
+```bash
+./scripts/demo-collections.sh
+# harness: http://127.0.0.1:5173/?panel=types
+```
+
+Membership is vault JSON under `.loci/collections/<type>.<slug>.json` (not index-only).
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

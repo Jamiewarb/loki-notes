@@ -76,4 +76,36 @@ public protocol SchemaServing: Sendable {
 
     /// Resolve the starred default template for a type, if any.
     func defaultTemplate(for typeID: ObjectTypeID) async throws -> ObjectTemplate?
+
+    // MARK: - Collections (PR22)
+
+    /// All collections for a type (disk files under `.loci/collections/`).
+    func listCollections(typeID: ObjectTypeID) async throws -> [ObjectCollection]
+
+    /// Load one collection by id (`book.favorites`).
+    func loadCollection(_ id: String) async throws -> ObjectCollection
+
+    /// Create or replace a collection membership file.
+    @discardableResult
+    func saveCollection(_ collection: ObjectCollection) async throws -> ObjectCollection
+
+    /// Create a new empty collection (`<type>.<slug>.json`).
+    @discardableResult
+    func createCollection(
+        typeID: ObjectTypeID,
+        name: String,
+        slug: String?
+    ) async throws -> ObjectCollection
+
+    /// Delete collection membership file.
+    func deleteCollection(_ id: String) async throws
+
+    /// Append an object id to a collection (no-op if already present).
+    @discardableResult
+    func addToCollection(_ collectionID: String, objectID: ObjectID) async throws -> ObjectCollection
+
+    /// Remove an object id from a collection.
+    @discardableResult
+    func removeFromCollection(_ collectionID: String, objectID: ObjectID) async throws
+        -> ObjectCollection
 }

@@ -5,6 +5,7 @@ import LociMarkdown
 /// Loads/saves `.loci/space.json` and per-type `.loci/types/<slug>.json` via `VaultServing`.
 /// Merge-friendly: one type per file — never a monolithic schema.json.
 /// Templates live under `.loci/templates/<id>.md` (PR14).
+/// Collections live under `.loci/collections/<type>.<slug>.json` (PR22).
 public final class SchemaStore: SchemaServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let encoder: JSONEncoder
@@ -360,6 +361,104 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return try await loadTemplate(id)
     }
 
+    // MARK: - Collections (PR22)
+
+    public func listCollections(typeID: ObjectTypeID) async throws -> [ObjectCollection] {
+        _ = try await loadType(typeID)
+        let ids = try await listCollectionFileIDs()
+        var result: [ObjectCollection] = []
+        let prefix = "\(typeID.rawValue)."
+        for fileID in ids where fileID.hasPrefix(prefix) {
+            if let collection = try? await loadCollection(fileID), collection.typeID == typeID {
+                result.append(collection)
+            }
+        }
+        return result.sorted { $0.id < $1.id }
+    }
+
+    public func loadCollection(_ id: String) async throws -> ObjectCollection {
+        let path = Self.collectionRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.collectionNotFound(id)
+        }
+        let data = try await vault.readFile(atRelativePath: path)
+        do {
+            return try decoder.decode(ObjectCollection.self, from: data)
+        } catch {
+            throw LociError.collectionNotFound(id)
+        }
+    }
+
+    @discardableResult
+    public func saveCollection(_ collection: ObjectCollection) async throws -> ObjectCollection {
+        guard CollectionID.isValid(collection.id) else {
+            throw LociError.invalidCollectionID(collection.id)
+        }
+        _ = try await loadType(collection.typeID)
+        var stored = collection
+        stored.updatedAt = Date()
+        let data = try encoder.encode(stored)
+        try await vault.writeFile(data, atRelativePath: Self.collectionRelativePath(for: stored.id))
+        return stored
+    }
+
+    @discardableResult
+    public func createCollection(
+        typeID: ObjectTypeID,
+        name: String,
+        slug: String? = nil
+    ) async throws -> ObjectCollection {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw LociError.invalidCollectionID("(empty name)")
+        }
+        _ = try await loadType(typeID)
+        let id = try CollectionID.make(typeID: typeID, name: trimmed, explicitSlug: slug)
+        if try await vault.fileExists(atRelativePath: Self.collectionRelativePath(for: id)) {
+            throw LociError.collectionAlreadyExists(id)
+        }
+        let collection = ObjectCollection(
+            id: id,
+            typeID: typeID,
+            name: trimmed,
+            memberIDs: []
+        )
+        return try await saveCollection(collection)
+    }
+
+    public func deleteCollection(_ id: String) async throws {
+        let path = Self.collectionRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.collectionNotFound(id)
+        }
+        try await vault.deleteFile(atRelativePath: path)
+    }
+
+    @discardableResult
+    public func addToCollection(_ collectionID: String, objectID: ObjectID) async throws
+        -> ObjectCollection
+    {
+        var collection = try await loadCollection(collectionID)
+        if !collection.memberIDs.contains(objectID) {
+            collection.memberIDs.append(objectID)
+            collection = try await saveCollection(collection)
+        }
+        return collection
+    }
+
+    @discardableResult
+    public func removeFromCollection(_ collectionID: String, objectID: ObjectID) async throws
+        -> ObjectCollection
+    {
+        var collection = try await loadCollection(collectionID)
+        let before = collection.memberIDs.count
+        collection.memberIDs.removeAll { $0 == objectID }
+        guard collection.memberIDs.count < before else {
+            throw LociError.collectionMemberNotFound(objectID.frontMatterIDString)
+        }
+        return try await saveCollection(collection)
+    }
+
     // MARK: - Paths
 
     public static func typeRelativePath(for id: ObjectTypeID) -> String {
@@ -368,6 +467,10 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
 
     public static func templateRelativePath(for id: String) -> String {
         "\(VaultLayout.templatesDirectory)/\(id).md"
+    }
+
+    public static func collectionRelativePath(for id: String) -> String {
+        "\(VaultLayout.collectionsDirectory)/\(id).json"
     }
 
     public static func objectsFolderRelativePath(for id: ObjectTypeID) -> String {
@@ -439,6 +542,26 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         )
         return urls
             .filter { $0.pathExtension.lowercased() == "md" }
+            .map { $0.deletingPathExtension().lastPathComponent }
+            .sorted()
+    }
+
+    private func listCollectionFileIDs() async throws -> [String] {
+        let root = try await vault.vaultRootURL
+        let dir = root.appendingPathComponent(VaultLayout.collectionsDirectory, isDirectory: true)
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: dir.path, isDirectory: &isDir),
+            isDir.boolValue
+        else {
+            return []
+        }
+        let urls = try FileManager.default.contentsOfDirectory(
+            at: dir,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        return urls
+            .filter { $0.pathExtension.lowercased() == "json" }
             .map { $0.deletingPathExtension().lastPathComponent }
             .sorted()
     }

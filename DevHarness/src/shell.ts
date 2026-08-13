@@ -87,8 +87,8 @@ export const PANELS: Record<PanelId, Panel> = {
   types: {
     id: "types",
     title: "Types",
-    body: "Custom types + property defs (PR12/PR13). Book status/rating values in frontmatter; properties_idx for filter/sort.",
-    inspector: "Property defs for the focused type; object inspector edits values (YAML).",
+    body: "Custom types + property defs + collection tabs (PR12/PR13/PR22). Manual collections under .loci/collections/<type>.<slug>.json.",
+    inspector: "Property defs · templates · collection membership (vault JSON, not index).",
   },
   settings: {
     id: "settings",
