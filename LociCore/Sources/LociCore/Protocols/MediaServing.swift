@@ -4,6 +4,10 @@ import Foundation
 ///
 /// Features never write absolute paths or put binaries in SQLite — only vault-relative
 /// paths and markdown references. Implementations live in LociVault (`MediaService`).
+///
+/// PhotosPicker (iOS) and Finder drop (macOS) load `Data` / a temp file URL, then call
+/// `attach`. Linux tests use `attach(fileURL:)` — the same path. See `MediaPickerProof`.
+/// Do not put PhotosUI or EventKit types on this protocol.
 public protocol MediaServing: Sendable {
     /// Copy bytes into `media/images` or `media/files` (unique name on collision).
     func attach(

@@ -1,0 +1,20 @@
+==> loci-media-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-media-demo' complete! (0.53s)
+images=['hero.png', 'loci-demo-hero-d72c64d6-b607-41fa-a230-ed911a802.png'] files=['notes.txt'] pageImage=True blobNotInIndex=True
+==> wrote /workspace/DevHarness/public/demo-media/media.json
+==> demo-media complete
+==> loci-media-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-media-demo' complete! (0.52s)
+images=['hero.png', 'loci-demo-hero-9baf0ae6-219b-41d1-8dec-72be570a1.png'] files=['notes.txt'] pageImage=True blobNotInIndex=True
+==> wrote /workspace/DevHarness/public/demo-media/media.json
+==> demo-media complete
+photosPickerWired=True dragDropWired=True attachedViaFileURL=True indexInsideVault=False relative=media/images/hero.png
+==> demo-media-pickers complete
+
+==> harness served http://127.0.0.1:5173/?panel=media (700 bytes index.html)

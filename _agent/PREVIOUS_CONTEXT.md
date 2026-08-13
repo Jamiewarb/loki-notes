@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR35 — Media pickers
+
+**Branch:** `cursor/pr35-media-pickers-d2c1`  
+**Based on:** `cursor/pr34-pins-d2c1`  
+**Vault module:** `0.35.0-pr35`  
+**Swift tests:** **315** green (was 311). **Playwright:** **79** green (was 78). Evidence: `evidence/pr35/`
+
+### Feature design
+- Domain folder: `App/Features/Media/`
+- Writes vault? yes — `media/images|files` via existing `MediaServing` (copy, never blobs in SQLite)
+- Reads index? no
+- Protocols: `MediaServing` (unchanged surface); `MediaPickerProof` / `MediaPickerNotes` in LociCore so tests never import PhotosUI
+- iOS: real `PhotosPicker` (`#if canImport(PhotosUI)`), load `Data`, `attach`, insert markdown via `onInsertedMarkdown`
+- macOS: `.onDrop` of files/images on attach controls + open editor; file URL/data → `attach`; never persist absolute paths
+- Linux: demo-byte buttons + `attach(fileURL:)`. `#else` stubs compile without PhotosUI
+- Reuses `ImageObjectFactory` / `MediaInserter` — no second media store
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-media.sh
+./scripts/demo-media-pickers.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=media — photosPickerWired / dragDropWired
+```
+
+### Pitfalls
+- Do not put PhotosUI or EventKit types in LociCore.
+- Dropped Finder paths must not appear in note markdown — only vault-relative `media/…`.
+- Index stays in Application Support; trash media does not rewrite notes.
+- Linux cannot drive PhotosPicker / SwiftUI drop; XCTest + DevHarness prove the attach path.
+- `photosPickerWired` / `dragDropWired` are “code present” flags on Linux fixtures.
+
+### Next
+
+Stacked after PR34. Parent opens the GitHub PR.
+
+---
+
 ## PR34 — Pins
 
 **Branch:** `cursor/pr34-pins-d2c1`  

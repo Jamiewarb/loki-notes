@@ -2,10 +2,11 @@ import SwiftUI
 import LociCore
 import LociVault
 
-/// Public entry for Media feature (PR20) — attach into `media/`, markdown images, Image type.
+/// Public entry for Media feature (PR20 / PR35) — attach into `media/`, markdown images, Image type.
 ///
 /// Writes vault? **yes** (`media/images|files` + optional `objects/image/`). Never SQLite blobs.
-/// Photos picker / drag-drop are Apple stubs; Linux tests use `MediaServing.attach(fileURL:)`.
+/// iOS: `PhotosPicker` (`#if canImport(PhotosUI)`). macOS: `.onDrop`. Linux: demo bytes +
+/// `MediaServing.attach(fileURL:)` — see `MediaPickerProof`.
 enum MediaFeature {
     /// Factory for Image objects wired from composition.
     @MainActor
@@ -21,6 +22,20 @@ enum MediaFeature {
         onInserted: @escaping (String) -> Void
     ) -> some View {
         MediaAttachControls(
+            services: services,
+            objectRelativePath: objectRelativePath,
+            onInsertedMarkdown: onInserted
+        )
+    }
+
+    /// Drop target for the open editor (macOS). No-op modifier on other platforms.
+    @MainActor
+    static func dropAttachModifier(
+        services: AppServices,
+        objectRelativePath: String,
+        onInserted: @escaping (String) -> Void
+    ) -> MediaDropAttachModifier {
+        MediaDropAttachModifier(
             services: services,
             objectRelativePath: objectRelativePath,
             onInsertedMarkdown: onInserted

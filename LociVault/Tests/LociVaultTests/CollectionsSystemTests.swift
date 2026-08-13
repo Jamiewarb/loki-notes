@@ -148,7 +148,7 @@ final class CollectionsSystemTests: XCTestCase {
     func testModuleVersionsIncludePR22() {
         XCTAssertTrue(
             LociVaultModule.version.contains("pr2")
-                || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34")
+                || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35")
         )
         XCTAssertTrue(
             LociIndexModule.version.contains("pr2")

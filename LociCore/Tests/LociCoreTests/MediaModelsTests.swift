@@ -61,4 +61,58 @@ final class MediaModelsTests: XCTestCase {
         XCTAssertTrue(TypeSlug.isProtected(.image))
         XCTAssertThrowsError(try TypeSlug.resolve(explicit: "image", fromName: "X"))
     }
+
+    func testMediaPickerProofRelativeMarkdown() {
+        let attachment = MediaAttachment(
+            relativePath: "media/images/picked.png",
+            kind: .image,
+            fileName: "picked.png",
+            byteCount: 8
+        )
+        let body = MediaInserter.appendImage(
+            to: "Picker note",
+            alt: "picked",
+            attachment: attachment,
+            fromObjectRelativePath: "objects/page/picker.md"
+        )
+        let proof = MediaPickerProof.evaluate(
+            attachment: attachment,
+            noteBody: body,
+            indexInsideVault: false,
+            attachedViaFileURL: true
+        )
+        XCTAssertTrue(proof.photosPickerWired)
+        XCTAssertTrue(proof.dragDropWired)
+        XCTAssertTrue(proof.attachedViaFileURL)
+        XCTAssertFalse(proof.indexInsideVault)
+        XCTAssertTrue(proof.markdownRelativePathStartsWithMedia)
+        XCTAssertFalse(proof.noteBodyHasAbsolutePath)
+        XCTAssertEqual(
+            MediaPickerProof.collapseDotDot("../../media/images/picked.png"),
+            "media/images/picked.png"
+        )
+        XCTAssertTrue(MediaPickerNotes.photosUIStaysInApp)
+        XCTAssertTrue(MediaPickerNotes.persistVaultRelativeOnly)
+    }
+
+    func testMediaPickerProofRejectsAbsolutePaths() {
+        let attachment = MediaAttachment(
+            relativePath: "media/images/x.png",
+            kind: .image,
+            fileName: "x.png",
+            byteCount: 1
+        )
+        let bad = "Dropped ![x](/tmp/absolute.png) must not persist."
+        let proof = MediaPickerProof.evaluate(
+            attachment: attachment,
+            noteBody: bad,
+            indexInsideVault: false,
+            attachedViaFileURL: true
+        )
+        XCTAssertTrue(proof.noteBodyHasAbsolutePath)
+        XCTAssertFalse(proof.markdownRelativePathStartsWithMedia)
+        XCTAssertTrue(MediaPickerProof.isAbsoluteFilesystemPath("/Users/me/photo.png"))
+        XCTAssertTrue(MediaPickerProof.isAbsoluteFilesystemPath("file:///tmp/a.png"))
+        XCTAssertFalse(MediaPickerProof.isAbsoluteFilesystemPath("../../media/images/a.png"))
+    }
 }

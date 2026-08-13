@@ -147,6 +147,9 @@ final class PinsSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR34() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr34"), LociVaultModule.version)
+        XCTAssertTrue(
+            LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35"),
+            LociVaultModule.version
+        )
     }
 }

@@ -180,6 +180,16 @@ Pins (PR34) extras:
 
 Pinned object ids live in `.loci/space.json` (`pins`) so they sync with the vault. The index only resolves title/type for display. Cap 24; pin is idempotent; unpin missing is a no-op. Daily notes may be pinned.
 
+Media pickers (PR35) extras:
+
+```bash
+./scripts/demo-media.sh
+./scripts/demo-media-pickers.sh
+# harness: http://127.0.0.1:5173/?panel=media
+```
+
+iOS `PhotosPicker` and macOS `.onDrop` copy bytes via `MediaServing` into vault `media/`, then insert `![alt](relative)`. Linux uses `attach(fileURL:)`. Never persist absolute disk paths or store blobs in SQLite. Proof flags `photosPickerWired` / `dragDropWired` mean “code present”.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

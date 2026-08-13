@@ -114,6 +114,14 @@ struct ObjectEditorView: View {
             .padding(LociSpacing.stack(.xl))
         }
         .accessibilityIdentifier("object-editor")
+        .modifier(
+            MediaFeature.dropAttachModifier(
+                services: services,
+                objectRelativePath: session.relativePath
+            ) { line in
+                session.insertMarkdownImageLine(line)
+            }
+        )
     }
 
     private func load() async {

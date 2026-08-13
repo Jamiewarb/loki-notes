@@ -2,7 +2,11 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Attach controls — PhotosPicker / file importer stubs on Apple; Linux uses MediaServing APIs.
+#if canImport(PhotosUI)
+import PhotosUI
+#endif
+
+/// Attach controls — PhotosPicker on iOS, drop on macOS, demo-byte buttons everywhere (Linux).
 struct MediaAttachControls: View {
     var services: AppServices
     var objectRelativePath: String
@@ -11,10 +15,10 @@ struct MediaAttachControls: View {
     @State private var status: String?
     @State private var isBusy = false
 
-#if os(iOS)
-    // PhotosUI available on iOS — stub entry until full picker wiring.
-    @State private var showPhotosStub = false
-#endif
+    #if canImport(PhotosUI) && os(iOS)
+    @State private var showPhotosPicker = false
+    @State private var photosSelection: PhotosPickerItem?
+    #endif
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
@@ -29,27 +33,44 @@ struct MediaAttachControls: View {
                 }
                 .disabled(isBusy)
 
-#if os(iOS)
+                #if canImport(PhotosUI) && os(iOS)
                 LociButton("Photos…", style: .secondary) {
-                    showPhotosStub = true
-                    status = "Photos picker stub — use Attach image / MediaServing on Linux."
+                    showPhotosPicker = true
                 }
-#endif
+                .disabled(isBusy)
+                .photosPicker(
+                    isPresented: $showPhotosPicker,
+                    selection: $photosSelection,
+                    matching: .images
+                )
+                .onChange(of: photosSelection) { _, item in
+                    Task { await attachPhotosItem(item) }
+                }
+                #endif
 
-#if os(macOS)
-                Text("Drop files onto the editor (stub)")
+                #if os(macOS)
+                Text("Drop files onto the editor")
                     .font(LociTypography.font(.caption))
                     .foregroundStyle(LociColors.inkSoft)
-#endif
+                #endif
             }
 
             if let status {
                 Text(status)
                     .font(LociTypography.font(.caption))
                     .foregroundStyle(LociColors.inkSoft)
+                    .accessibilityIdentifier("media-attach-status")
             }
         }
         .accessibilityIdentifier("media-attach-controls")
+        .modifier(
+            MediaDropAttachModifier(
+                services: services,
+                objectRelativePath: objectRelativePath,
+                onInsertedMarkdown: onInsertedMarkdown,
+                onStatus: { status = $0 }
+            )
+        )
     }
 
     /// Deterministic PNG-ish bytes for simulator / local fallback without a real picker.
@@ -58,18 +79,16 @@ struct MediaAttachControls: View {
         defer { isBusy = false }
         do {
             let bytes = Data("PNG-DEMO-\(UUID().uuidString.prefix(8))".utf8)
-            let attachment = try await services.media.attach(
+            let result = try await MediaAttachAction.attachData(
+                media: services.media,
                 data: bytes,
                 kind: .image,
-                preferredFileName: "demo.png"
-            )
-            let line = MediaInserter.markdownLine(
+                preferredFileName: "demo.png",
                 alt: "demo",
-                attachment: attachment,
-                fromObjectRelativePath: objectRelativePath
+                objectRelativePath: objectRelativePath
             )
-            onInsertedMarkdown(line)
-            status = "Saved \(attachment.relativePath) (\(attachment.byteCount) B)"
+            onInsertedMarkdown(result.markdown)
+            status = "Saved \(result.attachment.relativePath) (\(result.attachment.byteCount) B)"
         } catch {
             status = error.localizedDescription
         }
@@ -90,4 +109,45 @@ struct MediaAttachControls: View {
             status = error.localizedDescription
         }
     }
+
+    #if canImport(PhotosUI) && os(iOS)
+    private func attachPhotosItem(_ item: PhotosPickerItem?) async {
+        guard let item else { return }
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self) else {
+                status = "Could not load photo data"
+                return
+            }
+            let name = suggestedPhotoFileName(item)
+            let result = try await MediaAttachAction.attachData(
+                media: services.media,
+                data: data,
+                kind: .image,
+                preferredFileName: name,
+                alt: (name as NSString).deletingPathExtension,
+                objectRelativePath: objectRelativePath
+            )
+            onInsertedMarkdown(result.markdown)
+            status = "Saved \(result.attachment.relativePath) (\(result.attachment.byteCount) B)"
+        } catch {
+            status = error.localizedDescription
+        }
+        photosSelection = nil
+    }
+
+    private func suggestedPhotoFileName(_ item: PhotosPickerItem) -> String {
+        if let type = item.supportedContentTypes.first {
+            let ext = type.preferredFilenameExtension ?? "jpg"
+            return "photo.\(ext)"
+        }
+        return "photo.jpg"
+    }
+    #endif
 }
+
+#if !canImport(PhotosUI)
+/// PhotosPicker is Apple-only. Linux / tests use `MediaServing.attach(fileURL:)`.
+enum MediaPhotosPickerStub {}
+#endif

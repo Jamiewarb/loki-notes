@@ -44,6 +44,11 @@ export async function renderMediaPanel(root: HTMLElement): Promise<void> {
       proof.pageHasMarkdownImage ? "page markdown image ✓" : null,
       proof.imageObjectCreated ? "Image object ✓" : null,
       proof.blobNotInIndex ? "blob not in index ✓" : null,
+      proof.photosPickerWired ? "photos picker wired ✓" : null,
+      proof.dragDropWired ? "drag-drop wired ✓" : null,
+      proof.attachedViaFileURL ? "attach via fileURL ✓" : null,
+      proof.markdownRelativePathStartsWithMedia ? "markdown → media/ ✓" : null,
+      proof.noteBodyHasAbsolutePath ? "ABSOLUTE PATH IN NOTE (bug)" : "no absolute paths ✓",
       data.indexInsideVault ? "INDEX IN VAULT (bug)" : "index outside vault ✓",
     ]
       .filter(Boolean)
@@ -77,7 +82,7 @@ export async function renderMediaPanel(root: HTMLElement): Promise<void> {
         </p>
 
         <section class="vault-card" data-harness="media-meta" aria-label="Media status">
-          <p class="vault-kicker">PR20 · Attach</p>
+          <p class="vault-kicker">PR35 · Pickers</p>
           <h3 class="vault-card-title">Vault is truth</h3>
           <dl class="vault-meta">
             <div>
@@ -95,6 +100,18 @@ export async function renderMediaPanel(root: HTMLElement): Promise<void> {
             <div>
               <dt>Index inside vault?</dt>
               <dd data-harness="media-index-in-vault">${data.indexInsideVault ? "YES (bug)" : "no ✓"}</dd>
+            </div>
+            <div>
+              <dt>Photos picker</dt>
+              <dd data-harness="media-proof-photos-picker">${
+                proof.photosPickerWired ? "wired ✓" : "no"
+              }</dd>
+            </div>
+            <div>
+              <dt>Drag-drop</dt>
+              <dd data-harness="media-proof-drag-drop">${
+                proof.dragDropWired ? "wired ✓" : "no"
+              }</dd>
             </div>
           </dl>
           <p class="vault-note" data-harness="media-proof">${escapeHtml(proofBits)}</p>
@@ -138,7 +155,8 @@ export async function renderMediaPanel(root: HTMLElement): Promise<void> {
 
         <p class="vault-note" data-harness="media-note">
           ${escapeHtml(data.note ?? "Blobs only under media/; index never stores binaries.")}
-          Regenerate with <code>./scripts/demo-media.sh</code>.
+          Regenerate with <code>./scripts/demo-media.sh</code>
+          or <code>./scripts/demo-media-pickers.sh</code>.
         </p>
       </div>
     `;
