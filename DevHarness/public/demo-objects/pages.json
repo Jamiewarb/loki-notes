@@ -1,0 +1,34 @@
+{
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-objects-demo-db-2026-08-13T10-12-42Z\/v17f23647e7b0ebae\/index.sqlite",
+  "moduleVersion" : "0.8.0-pr08",
+  "note" : "ObjectService create→save→index→list. Pages listed from IndexQuerying; index never in vault.",
+  "openedSample" : {
+    "bodyPreview" : "First page from ObjectService.\n\nTag #demo and link later.",
+    "id" : "cf85b5a1-6608-44be-9cf7-57e455587a98",
+    "relativePath" : "objects\/page\/hello-loci.md",
+    "title" : "Hello Loci"
+  },
+  "pageCount" : 2,
+  "pages" : [
+    {
+      "id" : "cf85b5a1-6608-44be-9cf7-57e455587a98",
+      "relativePath" : "objects\/page\/hello-loci.md",
+      "tags" : [
+        "demo"
+      ],
+      "title" : "Hello Loci",
+      "type" : "page"
+    },
+    {
+      "id" : "bd2e8ce0-d672-438f-a00b-0560ebf7195f",
+      "relativePath" : "objects\/page\/second-note.md",
+      "tags" : [
+
+      ],
+      "title" : "Second Note",
+      "type" : "page"
+    }
+  ],
+  "vaultRoot" : "\/tmp\/loci-objects-demo-vault-2026-08-13T10-12-42Z\/LociVault"
+}

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+ * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
+ */
+
+:root {
+  /* Colors — LociColors */
+  --loci-ink: #1a2421;
+  --loci-ink-soft: #3d4a45;
+  --loci-ink-inverse: #f7fbf9;
+  --loci-paper: #e8efe8;
+  --loci-paper-deep: #d2ddd4;
+  --loci-panel: rgba(250, 252, 250, 0.82);
+  --loci-accent: #0f6b5c;
+  --loci-accent-soft: #c5e4dc;
+  --loci-mist: #b8d4c8;
+  --loci-meadow: #c9d9c4;
+  --loci-line: rgba(26, 36, 33, 0.12);
+  --loci-danger: #9b3a2f;
+
+  /* Typography — LociTypography */
+  --loci-font-display: "Fraunces", Georgia, serif;
+  --loci-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+
+  /* Spacing / radius — LociSpacing / LociRadius */
+  --loci-space-sm: 8px;
+  --loci-space-md: 12px;
+  --loci-space-lg: 16px;
+  --loci-space-xl: 24px;
+  --loci-radius: 10px;
+  --loci-radius-lg: 14px;
+  --loci-shadow: 0 18px 40px rgba(26, 36, 33, 0.08);
+
+  /* Motion — LociMotion */
+  --loci-motion-shell: 520ms;
+  --loci-motion-panel: 280ms;
+  --loci-motion-brand: 700ms;
+
+  --sidebar-w: 220px;
+  --inspector-w: 260px;
+
+  /* Back-compat aliases used by shell chrome */
+  --ink: var(--loci-ink);
+  --ink-soft: var(--loci-ink-soft);
+  --paper: var(--loci-paper);
+  --accent: var(--loci-accent);
+  --accent-soft: var(--loci-accent-soft);
+  --line: var(--loci-line);
+  --panel: var(--loci-panel);
+  --font-display: var(--loci-font-display);
+  --font-body: var(--loci-font-body);
+  --radius: var(--loci-radius);
+  --shadow: var(--loci-shadow);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--loci-mist) 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, var(--loci-meadow) 0%, transparent 50%),
+    linear-gradient(160deg, #eef4ee 0%, var(--loci-paper) 45%, #dfe9e2 100%);
+}
+
+body {
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--inspector-w);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  animation: shell-in var(--loci-motion-shell) ease-out both;
+}
+
+@keyframes shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.brand-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem 0.85rem;
+  border-bottom: 1px solid var(--loci-line);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  font-family: var(--loci-font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+  color: var(--loci-ink);
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes brand-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    letter-spacing: 0.04em;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    letter-spacing: -0.03em;
+  }
+}
+
+.brand-tag {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  font-size: 0.95rem;
+  max-width: 36rem;
+  animation: brand-rise var(--loci-motion-brand) 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sidebar {
+  border-right: 1px solid var(--loci-line);
+  padding: 1rem 0.75rem;
+  background: var(--loci-panel);
+}
+
+.nav-section {
+  margin-bottom: 0.85rem;
+}
+
+.nav-section-label {
+  margin: 0 0 0.35rem 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nav-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  color: var(--loci-ink-soft);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.nav-btn-label {
+  font-weight: 600;
+}
+
+.nav-btn-sub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--loci-accent-soft);
+  color: var(--loci-ink);
+  transform: translateX(2px);
+}
+
+.nav-btn[aria-current="page"] {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.nav-btn.is-stub {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.detail {
+  padding: 1.5rem 1.75rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+  overflow: auto;
+}
+
+@keyframes panel-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.detail h2 {
+  font-family: var(--loci-font-display);
+  font-size: 1.65rem;
+  margin: 0 0 0.5rem;
+}
+
+.detail > p,
+.detail [data-detail-root] > p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.destination {
+  max-width: 40rem;
+  animation: panel-fade var(--loci-motion-panel) ease both;
+}
+
+.destination-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.destination-icon {
+  font-size: 1.35rem;
+  color: var(--loci-accent);
+  line-height: 1;
+}
+
+.destination-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0;
+}
+
+.destination-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+  max-width: 36rem;
+}
+
+.placeholder-surface {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--loci-line);
+  border-radius: var(--loci-radius);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: var(--loci-shadow);
+}
+
+.placeholder-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.placeholder-surface h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.placeholder-surface p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector {
+  border-left: 1px solid var(--loci-line);
+  padding: 1rem;
+  background: var(--loci-panel);
+}
+
+.inspector h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.inspector-title {
+  margin: 0 0 0.35rem !important;
+  font-size: 1rem !important;
+  font-weight: 600;
+  color: var(--loci-ink) !important;
+}
+
+.inspector p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.inspector-hint {
+  margin-top: 1rem !important;
+  font-size: 0.78rem !important;
+  opacity: 0.9;
+}
+
+.harness-note {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+/* —— Design gallery —— */
+
+.gallery {
+  max-width: 44rem;
+}
+
+.gallery-intro {
+  margin-bottom: var(--loci-space-xl);
+}
+
+.gallery-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.gallery-title {
+  font-family: var(--loci-font-display);
+  font-size: 1.85rem;
+  margin: 0 0 0.4rem;
+}
+
+.gallery-lead {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  line-height: 1.5;
+}
+
+.gallery-section {
+  margin-top: 2rem;
+}
+
+.gallery-section h3 {
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  margin: 0 0 0.25rem;
+}
+
+.gallery-caption {
+  margin: 0 0 0.85rem;
+  color: var(--loci-ink-soft);
+  font-size: 0.92rem;
+}
+
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.swatch-chip {
+  height: 56px;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+}
+
+.swatch-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.swatch-meta code {
+  color: var(--loci-ink-soft);
+  font-size: 0.72rem;
+}
+
+.type-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--loci-ink);
+  line-height: 1.2;
+}
+
+.type-label {
+  font-size: 0.7rem !important;
+  font-family: var(--loci-font-body) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+}
+
+.space-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.space-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.space-token {
+  width: 3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.space-bar {
+  height: 10px;
+  background: var(--loci-accent);
+  border-radius: 2px;
+}
+
+.space-val {
+  font-size: 0.8rem;
+  color: var(--loci-ink-soft);
+}
+
+.comp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.loci-btn {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.loci-btn:hover {
+  transform: translateY(-1px);
+}
+
+.loci-btn-primary {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-btn-secondary {
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+  border: 1px solid var(--loci-line);
+}
+
+.loci-btn-quiet {
+  background: color-mix(in srgb, var(--loci-accent-soft) 55%, transparent);
+  color: var(--loci-ink);
+}
+
+.loci-btn-destructive {
+  background: color-mix(in srgb, var(--loci-danger) 12%, white);
+  color: var(--loci-danger);
+}
+
+.loci-btn-narrow {
+  max-width: 12rem;
+}
+
+.loci-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1rem 0;
+}
+
+.loci-field-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.loci-input {
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+}
+
+.loci-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.75rem 0;
+}
+
+.loci-list-row {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--loci-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--loci-ink);
+}
+
+.loci-list-row:hover {
+  background: var(--loci-accent-soft);
+}
+
+.loci-list-row.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-ink-inverse);
+}
+
+.loci-list-title {
+  font-weight: 600;
+}
+
+.loci-list-sub {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.loci-divider {
+  border: 0;
+  border-top: 1px solid var(--loci-line);
+  margin: 1.25rem 0;
+}
+
+.loci-empty {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.loci-empty-icon {
+  font-size: 1.75rem;
+  color: var(--loci-accent);
+  animation: soft-appear var(--loci-motion-shell) ease both;
+}
+
+.loci-empty h4 {
+  margin: 0;
+  font-family: var(--loci-font-display);
+  font-size: 1.25rem;
+}
+
+.loci-empty p {
+  margin: 0;
+  color: var(--loci-ink-soft);
+  max-width: 22rem;
+}
+
+.motion-demo {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 2.5rem;
+}
+
+.motion-demo.is-playing .motion-brand {
+  animation: brand-rise var(--loci-motion-brand) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.motion-demo.is-playing .motion-soft {
+  animation: soft-appear var(--loci-motion-shell) 80ms ease both;
+}
+
+.motion-brand {
+  font-family: var(--loci-font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.motion-soft {
+  color: var(--loci-ink-soft);
+}
+
+@keyframes soft-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Settings · vault status (PR04) */
+.vault-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.35rem 1.4rem;
+  border-radius: var(--loci-radius);
+  border: 1px solid var(--loci-line);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--loci-accent-soft) 55%, white) 0%,
+      var(--loci-panel) 55%
+    );
+  animation: soft-appear var(--loci-motion-shell) ease both;
+  max-width: 36rem;
+}
+
+.vault-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-card-title {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.35rem;
+  color: var(--loci-ink);
+}
+
+.vault-card-body {
+  margin: 0 0 1rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.vault-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.vault-meta dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--loci-ink-soft);
+  font-weight: 600;
+}
+
+.vault-meta dd {
+  margin: 0.2rem 0 0;
+  color: var(--loci-ink);
+  font-size: 0.95rem;
+}
+
+.vault-steps {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+  color: var(--loci-ink);
+  line-height: 1.5;
+}
+
+.vault-steps code,
+.vault-card code,
+.vault-note code {
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--loci-paper-deep) 70%, white);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.vault-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+  line-height: 1.45;
+}
+
+.schema-type-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.schema-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-accent-soft) 35%, transparent);
+  border: 1px solid var(--loci-line);
+}
+
+.schema-type-name {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.schema-type-meta {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+.schema-type-row[role="button"] {
+  cursor: pointer;
+}
+
+.schema-type-row[role="button"]:hover,
+.schema-type-row[role="button"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--loci-accent) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.page-detail {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--loci-radius);
+  border: 1px dashed var(--loci-line);
+  background: color-mix(in srgb, var(--loci-panel) 70%, transparent);
+}
+
+.page-detail .vault-card-body {
+  white-space: pre-wrap;
+}
+
+.md-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--loci-space-lg);
+  margin: 0 0 1rem;
+}
+
+.md-pane-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--loci-font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.md-pre {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  max-height: 28rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  color: var(--loci-ink);
+}
+
+@media (max-width: 900px) {
+  .md-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .sidebar,
+  .inspector {
+    border: 0;
+  }
+
+  .sidebar {
+    border-bottom: 1px solid var(--loci-line);
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .inspector {
+    border-top: 1px solid var(--loci-line);
+  }
+}
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="types">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="page">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="types" data-harness="detail">
+        <div data-detail-root="">
+    <div class="destination types-schema" data-harness="destination" data-destination="types">
+      <header class="destination-header">
+        <span class="destination-icon" aria-hidden="true">▦</span>
+        <h2 class="destination-title">Types</h2>
+      </header>
+      <p class="destination-lead">
+        Schema lives under <code>.loci/types/</code> — one JSON file per type (merge-friendly).
+        Built-in <strong>Page</strong> is seeded on vault create / <code>bootstrapSchema</code>.
+        Pages are listed from the local index via <code>ObjectService</code> / <code>IndexQuerying</code>.
+      </p>
+      <section class="vault-card" data-harness="types-status" aria-label="Schema types">
+        <p class="vault-kicker">PR05 · SchemaStore</p>
+        <h3 class="vault-card-title">Object types</h3>
+        <p class="vault-card-body" data-harness="types-loading">Space “Loci Demo” · schema v1 · 1 type(s)</p>
+        <ul class="schema-type-list" data-harness="type-list">
+          <li class="schema-type-row" data-harness="type-row" data-type-id="page">
+            <span class="schema-type-name">Page</span>
+            <span class="schema-type-meta">.page · 0 properties · built-in</span>
+          </li>
+        </ul>
+        <p class="vault-note" data-harness="types-note" data-page-present="true">Page type present — seeded by SchemaStore / ensureSkeleton. Generated by scripts/demo-schema.sh — per-type files under .loci/types/</p>
+      </section>
+      <section class="vault-card" data-harness="pages-status" aria-label="Pages">
+        <p class="vault-kicker">PR08 · ObjectService</p>
+        <h3 class="vault-card-title">Pages</h3>
+        <p class="vault-card-body" data-harness="pages-loading">2 page(s) from ObjectService · indexInsideVault=false · 0.8.0-pr08</p>
+        <ul class="schema-type-list" data-harness="page-list">
+        <li class="schema-type-row" data-harness="page-row" data-object-id="cf85b5a1-6608-44be-9cf7-57e455587a98" role="button" tabindex="0">
+          <span class="schema-type-name">Hello Loci</span>
+          <span class="schema-type-meta">objects/page/hello-loci.md</span>
+        </li>
+        <li class="schema-type-row" data-harness="page-row" data-object-id="bd2e8ce0-d672-438f-a00b-0560ebf7195f" role="button" tabindex="0">
+          <span class="schema-type-name">Second Note</span>
+          <span class="schema-type-meta">objects/page/second-note.md</span>
+        </li></ul>
+        <div class="page-detail" data-harness="page-detail" hidden="">
+          <p class="vault-kicker">Detail placeholder</p>
+          <p class="vault-card-body" data-harness="page-detail-body"></p>
+        </div>
+        <p class="vault-note" data-harness="pages-note" data-index-inside-vault="false">ObjectService create→save→index→list. Pages listed from IndexQuerying; index never in vault. Opened sample body: “First page from ObjectService.
+
+Tag #demo and link later.”</p>
+      </section>
+    </div>
+  </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Pages · type metadata</p>
+        <p>Tap a page for detail placeholder. Block editor lands in PR09.</p>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786615914633"></script>
+  
+
+</body></html>

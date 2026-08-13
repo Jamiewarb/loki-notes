@@ -140,7 +140,7 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertTrue(text.contains("\n"), "expected pretty-printed JSON")
     }
 
-    func testModuleVersionIsPR05() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr05"))
+    func testModuleVersionIsPR08() {
+        XCTAssertTrue(LociVaultModule.version.contains("pr08"))
     }
 }
