@@ -16,7 +16,7 @@ Next stack: **PR26 Capture surfaces**.
 
 **Branch:** `cursor/pr25-calendar-d2c1`  
 **Based on:** `cursor/pr24-graph-d2c1` @ `68f7f7e`  
-**Tip:** `e94eac19b8b9aa46e512770311da4da2313eb156`
+**Tip:** `cc56708289002b0feeb7f235d678132ac8a55817`
 
 ### What landed
 
