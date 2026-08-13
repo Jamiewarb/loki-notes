@@ -21,7 +21,8 @@ export type PanelId =
   | "media"
   | "graph"
   | "calendar"
-  | "capture";
+  | "capture"
+  | "import";
 
 export interface NavItem {
   id: PanelId;
@@ -64,6 +65,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "graph", label: "Graph", subtitle: "Wiki-link network", section: "studio" },
   { id: "calendar", label: "Calendar", subtitle: "Daily notes · dots", section: "studio" },
   { id: "capture", label: "Capture", subtitle: "Share · widget · menu bar", section: "studio" },
+  { id: "import", label: "Import", subtitle: "Markdown · Obsidian · Capacities", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -143,6 +145,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Capture",
     body: "Share / widget / menu bar (PR26). Extensions enqueue .loci/inbox/*.json; main app drains → today or typed object. Index on foreground only.",
     inspector: "Staging inbox is transient — daily remains the user-facing inbox.",
+  },
+  import: {
+    id: "import",
+    title: "Import",
+    body: "Import (PR27). Markdown folder · Obsidian vault · Capacities export — dry-run summary then apply into objects/daily/media. Preserve ObjectID + daily paths when detectable.",
+    inspector: "ImportServing only — no parallel store; index stays outside the vault.",
   },
   tags: {
     id: "tags",

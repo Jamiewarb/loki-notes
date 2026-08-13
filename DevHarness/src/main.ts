@@ -22,6 +22,7 @@ import { renderMediaPanel } from "./panels/MediaPanel";
 import { renderGraphPanel } from "./panels/GraphPanel";
 import { renderCalendarPanel } from "./panels/CalendarPanel";
 import { renderCapturePanel } from "./panels/CapturePanel";
+import { renderImportPanel } from "./panels/ImportPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -53,6 +54,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   graph: "⬡",
   calendar: "▦",
   capture: "⬇",
+  import: "⇩",
 };
 
 function renderNavSection(
@@ -142,6 +144,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "capture") {
     void renderCapturePanel(detail);
+    return;
+  }
+  if (panelId === "import") {
+    void renderImportPanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {

@@ -35,6 +35,7 @@ let package = Package(
         .executable(name: "loci-graph-demo", targets: ["loci-graph-demo"]),
         .executable(name: "loci-calendar-demo", targets: ["loci-calendar-demo"]),
         .executable(name: "loci-capture-demo", targets: ["loci-capture-demo"]),
+        .executable(name: "loci-import-demo", targets: ["loci-import-demo"]),
     ],
     dependencies: [
         // GRDB builds on Swift 6.2 Linux (confirmed PR07) and Apple platforms.
@@ -153,10 +154,16 @@ let package = Package(
             dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
             path: "LociVault/Sources/LociCaptureDemo"
         ),
+        .executableTarget(
+            name: "loci-import-demo",
+            dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
+            path: "LociVault/Sources/LociImportDemo"
+        ),
         .testTarget(
             name: "LociVaultTests",
             dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
-            path: "LociVault/Tests/LociVaultTests"
+            path: "LociVault/Tests/LociVaultTests",
+            resources: [.copy("Fixtures")]
         ),
 
         // Markdown: Loci MD ↔ BlockAST + YAML frontmatter (PR06)

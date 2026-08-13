@@ -135,6 +135,15 @@ struct AppShellView: View {
                     Label("Capture", systemImage: Route.capture.systemImage)
                 }
                 NavigationLink {
+                    ImportExportFeature.destination(services: services)
+                        .navigationTitle("Import")
+                        .onAppear {
+                            Task { await services.open(route: .importExport) }
+                        }
+                } label: {
+                    Label("Import", systemImage: Route.importExport.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {
