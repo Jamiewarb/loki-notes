@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -887,3 +897,187 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="editor">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="page">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="editor" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination editor-panel" data-harness="destination" data-destination="editor">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">✎</span>
+          <h2 class="destination-title">Editor</h2>
+        </header>
+        <p class="destination-lead">
+          Slash-style inserts via <code>EditorSession</code> (0.2.0-pr09).
+          Typing never awaits the index.
+        </p>
+
+        <section class="vault-card" data-harness="editor-meta" aria-label="Editor session status">
+          <p class="vault-kicker">PR09 · Block editor</p>
+          <h3 class="vault-card-title">Session → serialize</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Blocks</dt>
+              <dd data-harness="editor-blocks">heading(2) · paragraph · bulletList(tasks:2) · numberedList(2) · blockQuote · codeBlock(swift) · heading(3) · bulletList(tasks:1) · bulletList(1) · codeBlock(-)</dd>
+            </div>
+            <div>
+              <dt>Count</dt>
+              <dd data-harness="editor-count">10</dd>
+            </div>
+            <div>
+              <dt>Slash simulated</dt>
+              <dd data-harness="editor-slash">h3, task, bullet, code</dd>
+            </div>
+            <div>
+              <dt>Round-trip stable</dt>
+              <dd data-harness="editor-stable">yes</dd>
+            </div>
+            <div>
+              <dt>Dirty after demo edits</dt>
+              <dd>yes</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="md-columns" aria-label="Serialized markdown and AST HTML">
+          <div class="md-pane">
+            <h3 class="md-pane-title">Serialized MD</h3>
+            <pre class="md-pre" data-harness="editor-serialized">## Editor MVP
+
+Paragraph before slash inserts.
+
+- [ ] Capture tasks
+- [x] Land PR08
+
+1. First step
+2. Second step
+
+&gt; Quotes survive round-trip
+
+```swift
+let session = EditorSession()
+```
+
+### Slash inserts
+
+- [ ] Debounced save
+
+- Bullet from /bullet
+
+```
+print("slash")
+```</pre>
+          </div>
+          <div class="md-pane">
+            <h3 class="md-pane-title">AST HTML preview</h3>
+            <div class="ast-html" data-harness="editor-html"><article class="loci-ast" data-harness="block-ast-html">
+<h2>Editor MVP</h2>
+<p>Paragraph before slash inserts.</p>
+<ul>
+<li data-task="open">☐ Capture tasks</li>
+<li data-task="done">☑ Land PR08</li>
+</ul>
+<ol>
+<li>First step</li>
+<li>Second step</li>
+</ol>
+<blockquote>
+<p>Quotes survive round-trip</p>
+</blockquote>
+<pre><code class="language-swift">let session = EditorSession()</code></pre>
+<h3>Slash inserts</h3>
+<ul>
+<li data-task="open">☐ Debounced save</li>
+</ul>
+<ul>
+<li>Bullet from /bullet</li>
+</ul>
+<pre><code>print("slash")</code></pre>
+</article></div>
+          </div>
+        </section>
+
+        <p class="vault-note">
+          Regenerate with <code>./scripts/demo-editor.sh</code>. Daily notes (PR10) build on this session.
+        </p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Slash · keymap</p>
+        <p>Autosave debounced to ObjectServing; index never on keystroke.</p>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786616371341"></script>
+  
+
+</body></html>

@@ -9,6 +9,7 @@ import {
 } from "./shell";
 import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
+import { renderEditorPanel } from "./panels/EditorPanel";
 import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
 import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
@@ -36,6 +37,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   settings: "⚙",
   gallery: "◈",
   markdown: "¶",
+  editor: "✎",
 };
 
 function renderNavSection(
@@ -85,6 +87,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "markdown") {
     void renderMarkdownDebug(detail);
+    return;
+  }
+  if (panelId === "editor") {
+    void renderEditorPanel(detail);
     return;
   }
   if (panelId === "search") {
@@ -161,6 +167,8 @@ function inspectorTitle(id: PanelId): string {
       return "Tokens";
     case "markdown":
       return "BlockAST";
+    case "editor":
+      return "Slash · keymap";
   }
 }
 

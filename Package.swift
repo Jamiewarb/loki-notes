@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "LociDesignSystem", targets: ["LociDesignSystem"]),
         .executable(name: "loci-vault-demo", targets: ["loci-vault-demo"]),
         .executable(name: "loci-markdown-demo", targets: ["loci-markdown-demo"]),
+        .executable(name: "loci-editor-demo", targets: ["loci-editor-demo"]),
         .executable(name: "loci-index-demo", targets: ["loci-index-demo"]),
         .executable(name: "loci-objects-demo", targets: ["loci-objects-demo"]),
     ],
@@ -72,6 +73,11 @@ let package = Package(
             name: "loci-markdown-demo",
             dependencies: ["LociMarkdown"],
             path: "LociMarkdown/Sources/LociMarkdownDemo"
+        ),
+        .executableTarget(
+            name: "loci-editor-demo",
+            dependencies: ["LociMarkdown", "LociCore"],
+            path: "LociMarkdown/Sources/LociEditorDemo"
         ),
 
         // Index: SQLite projection in Application Support (never inside the vault)

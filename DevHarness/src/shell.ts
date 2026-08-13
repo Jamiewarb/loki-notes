@@ -7,7 +7,14 @@
  * 3. Document the panel in evidence/<prXX>/ and PREVIOUS_CONTEXT.md.
  */
 
-export type PanelId = "daily" | "search" | "types" | "settings" | "gallery" | "markdown";
+export type PanelId =
+  | "daily"
+  | "search"
+  | "types"
+  | "settings"
+  | "gallery"
+  | "markdown"
+  | "editor";
 
 export interface NavItem {
   id: PanelId;
@@ -40,10 +47,11 @@ export const PINNED_STUB = {
   subtitle: "Pinned · coming later",
 } as const;
 
-/** Tooling / debug destinations (Design gallery + Markdown kit). */
+/** Tooling / debug destinations (Design gallery + Markdown kit + Editor). */
 export const STUDIO_NAV: NavItem[] = [
   { id: "gallery", label: "Design", subtitle: "Tokens & primitives", section: "studio" },
   { id: "markdown", label: "Markdown", subtitle: "AST round-trip", section: "studio" },
+  { id: "editor", label: "Editor", subtitle: "Block session + slash", section: "studio" },
 ];
 
 /** Flat list for click wiring (primary + studio). */
@@ -66,7 +74,7 @@ export const PANELS: Record<PanelId, Panel> = {
     id: "types",
     title: "Types",
     body: "Object types + Page list (PR05/PR08). Create via ObjectService → objects/page/ → index list.",
-    inspector: "Tap a page for detail placeholder. Block editor lands in PR09.",
+    inspector: "Tap a page to open the block editor host. Slash menu + autosave in PR09.",
   },
   settings: {
     id: "settings",
@@ -85,5 +93,11 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Markdown",
     body: "Loci MD ↔ BlockAST debug round-trip (PR06). Frontmatter aligns with LociObjectMeta.",
     inspector: "Wiki-links and #tags feed the Indexer (PR07).",
+  },
+  editor: {
+    id: "editor",
+    title: "Editor",
+    body: "EditorSession BlockAST + slash insert simulation (PR09). HTML preview of tasks/headings/lists.",
+    inspector: "Autosave debounced to ObjectServing; index never on keystroke.",
   },
 };
