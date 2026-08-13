@@ -31,7 +31,7 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 **Branch:** `cursor/pr32-safari-d2c1`  
 **Based on:** `cursor/pr31-apple-integrations-d2c1`  
 **Vault module:** `0.32.0-pr32`  
-**Evidence:** `evidence/pr32/`
+**Tests:** **303** green (was 291). Evidence: `evidence/pr32/`
 
 ### What landed
 
