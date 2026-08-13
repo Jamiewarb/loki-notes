@@ -1,0 +1,187 @@
+import SwiftUI
+import LociCore
+import LociDesignSystem
+import LociVault
+
+/// Type dashboard: All objects of this type + recently opened stub (PR12).
+struct TypeDashboardView: View {
+    var services: AppServices
+    let typeID: ObjectTypeID
+    var onBack: () -> Void
+
+    @State private var type: ObjectType?
+    @State private var objects: [LociObjectMeta] = []
+    @State private var renameDraft: String = ""
+    @State private var errorMessage: String?
+    @State private var isBusy = false
+    @State private var showRename = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
+            HStack(spacing: LociSpacing.stack(.md)) {
+                LociButton("← Types", style: .secondary) { onBack() }
+                Spacer(minLength: 0)
+                if let type, !type.isBuiltIn {
+                    LociButton("Rename", style: .secondary) {
+                        renameDraft = type.name
+                        showRename = true
+                    }
+                    .disabled(isBusy)
+                    LociButton("Delete", style: .secondary) {
+                        Task { await deleteType() }
+                    }
+                    .disabled(isBusy)
+                }
+                LociButton("New \(type?.name ?? "object")", style: .primary) {
+                    Task { await createObject() }
+                }
+                .disabled(isBusy)
+            }
+
+            HStack(spacing: LociSpacing.stack(.md)) {
+                LociIcon(type?.icon ?? "square.grid.2x2", size: 22)
+                    .foregroundStyle(LociColors.accent)
+                Text(type?.name ?? typeID.rawValue)
+                    .font(LociTypography.font(.display))
+                    .foregroundStyle(LociColors.ink)
+            }
+            .lociAppear(.soft)
+
+            Text(".\(typeID.rawValue) · objects live under objects/\(typeID.rawValue)/ — filesystem sharding only.")
+                .font(LociTypography.font(.body))
+                .foregroundStyle(LociColors.inkSoft)
+                .frame(maxWidth: 520, alignment: .leading)
+
+            if showRename {
+                HStack(spacing: LociSpacing.stack(.md)) {
+                    TextField("Type name", text: $renameDraft)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 280)
+                    LociButton("Save name", style: .primary) {
+                        Task { await rename() }
+                    }
+                    .disabled(isBusy)
+                    LociButton("Cancel", style: .secondary) { showRename = false }
+                }
+            }
+
+            sectionHeader("All")
+            if objects.isEmpty {
+                LociEmptyState(
+                    title: "No \(type?.name ?? "objects") yet",
+                    message: "Create one to write markdown under objects/\(typeID.rawValue)/.",
+                    systemImage: type?.icon ?? "doc"
+                )
+            } else {
+                VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
+                    ForEach(objects, id: \.id.uuidString) { item in
+                        objectRow(item)
+                    }
+                }
+                .lociAppear(.soft)
+            }
+
+            sectionHeader("Recently opened")
+            Text("Stub — session recents land with navigation polish. Use All for now.")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+
+            LociButton("Refresh", style: .secondary) {
+                Task { await reload() }
+            }
+            .disabled(isBusy)
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(LociTypography.font(.caption))
+                    .foregroundStyle(LociColors.danger)
+            }
+        }
+        .padding(LociSpacing.stack(.xl))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .task { await reload() }
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title.uppercased())
+            .font(LociTypography.font(.overline))
+            .tracking(0.08)
+            .foregroundStyle(LociColors.inkSoft)
+            .padding(.top, LociSpacing.stack(.sm))
+    }
+
+    @ViewBuilder
+    private func objectRow(_ item: LociObjectMeta) -> some View {
+        Button {
+            Task { await services.open(objectID: item.id) }
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.title.isEmpty ? "Untitled" : item.title)
+                        .font(LociTypography.font(.headline))
+                        .foregroundStyle(LociColors.ink)
+                    Text(item.relativePath)
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.inkSoft)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.vertical, LociSpacing.stack(.sm))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("type-object-\(item.id.uuidString.lowercased())")
+    }
+
+    private func reload() async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            _ = try await services.ensureIndex()
+            type = try await services.schema.loadType(typeID)
+            objects = try await services.index?.objects(typeID: typeID) ?? []
+            // Daily notes use deterministic paths; still list from index when viewing Daily type.
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func createObject() async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            if typeID == .daily {
+                _ = try await services.ensureTodayDailyNote()
+            } else {
+                _ = try await services.createObject(typeID: typeID, title: "Untitled")
+            }
+            await reload()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func rename() async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            type = try await services.schema.renameType(typeID, name: renameDraft)
+            showRename = false
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func deleteType() async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            try await services.schema.deleteType(typeID, force: false)
+            services.focusedTypeID = nil
+            onBack()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}

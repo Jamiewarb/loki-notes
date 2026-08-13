@@ -1,7 +1,6 @@
 /**
- * Types / schema + Pages list panel (PR05 + PR08).
- * Loads `/demo-schema/manifest.json` and `/demo-objects/pages.json`
- * (written by scripts/demo-schema.sh and scripts/demo-objects.sh).
+ * Types / schema + custom type dashboard (PR05 + PR08 + PR12).
+ * Loads `/demo-schema/manifest.json`, `/demo-types/types.json`, `/demo-objects/pages.json`.
  */
 export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   root.innerHTML = `
@@ -11,16 +10,27 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <h2 class="destination-title">Types</h2>
       </header>
       <p class="destination-lead">
-        Schema lives under <code>.loci/types/</code> — one JSON file per type (merge-friendly).
-        Built-in <strong>Page</strong> is seeded on vault create / <code>bootstrapSchema</code>.
-        Pages are listed from the local index via <code>ObjectService</code> / <code>IndexQuerying</code>.
+        Create custom types on the fly — <code>.loci/types/&lt;slug&gt;.json</code> +
+        <code>objects/&lt;slug&gt;/</code>. Built-in Page/Daily are protected from casual delete.
+        Type dashboards list All objects; recently opened is a stub until navigation polish.
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
-        <p class="vault-kicker">PR05 · SchemaStore</p>
+        <p class="vault-kicker">PR12 · SchemaServing</p>
         <h3 class="vault-card-title">Object types</h3>
-        <p class="vault-card-body" data-harness="types-loading">Loading demo-schema fixtures…</p>
+        <p class="vault-card-body" data-harness="types-loading">Loading demo fixtures…</p>
         <ul class="schema-type-list" data-harness="type-list" hidden></ul>
         <p class="vault-note" data-harness="types-note" hidden></p>
+      </section>
+      <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
+        <p class="vault-kicker">PR12 · Type dashboard</p>
+        <h3 class="vault-card-title">Books</h3>
+        <p class="vault-card-body" data-harness="books-loading">Loading demo-types fixture…</p>
+        <ul class="schema-type-list" data-harness="books-list" hidden></ul>
+        <div class="page-detail" data-harness="books-recent" hidden>
+          <p class="vault-kicker">Recently opened</p>
+          <p class="vault-card-body">Stub — session recents land later. Use All for now.</p>
+        </div>
+        <p class="vault-note" data-harness="books-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="pages-status" aria-label="Pages">
         <p class="vault-kicker">PR08 · ObjectService</p>
@@ -36,33 +46,55 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
     </div>
   `;
 
+  await renderTypesSection(root);
+  await renderBooksDashboard(root);
+  await renderPagesSection(root);
+}
+
+async function renderTypesSection(root: HTMLElement): Promise<void> {
   const loading = root.querySelector<HTMLElement>("[data-harness='types-loading']");
   const list = root.querySelector<HTMLUListElement>("[data-harness='type-list']");
   const note = root.querySelector<HTMLElement>("[data-harness='types-note']");
   if (!loading || !list || !note) return;
 
   try {
-    const res = await fetch("/demo-schema/manifest.json", { cache: "no-store" });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} — run ./scripts/demo-schema.sh to generate fixtures`);
-    }
-    const manifest = (await res.json()) as {
+    // Prefer PR12 demo-types; fall back to demo-schema manifest.
+    let manifest: {
       space?: { name?: string; schemaVersion?: number };
       types?: Array<{
         id?: string;
         name?: string;
         icon?: string;
+        color?: string;
         isBuiltIn?: boolean;
         properties?: unknown[];
       }>;
       note?: string;
-    };
+      pageDeleteBlocked?: boolean;
+      appearsOnlyUnderBooks?: boolean;
+    } | null = null;
 
-    const types = manifest.types ?? [];
+    const typesRes = await fetch("/demo-types/types.json", { cache: "no-store" });
+    if (typesRes.ok) {
+      const data = (await typesRes.json()) as typeof manifest & {
+        pageDeleteBlocked?: boolean;
+        appearsOnlyUnderBooks?: boolean;
+      };
+      manifest = data;
+    } else {
+      const res = await fetch("/demo-schema/manifest.json", { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(
+          `HTTP ${res.status} — run ./scripts/demo-types.sh (or demo-schema.sh)`,
+        );
+      }
+      manifest = (await res.json()) as typeof manifest;
+    }
+
+    const types = manifest?.types ?? [];
     const page = types.find((t) => t.id === "page");
-    loading.textContent = `Space “${manifest.space?.name ?? "Loci"}” · schema v${
-      manifest.space?.schemaVersion ?? 1
-    } · ${types.length} type(s)`;
+    const book = types.find((t) => t.id === "book");
+    loading.textContent = `Space “${manifest?.space?.name ?? "Loci"}” · ${types.length} type(s)`;
 
     list.hidden = false;
     list.innerHTML = types
@@ -72,30 +104,92 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         return `
           <li class="schema-type-row" data-harness="type-row" data-type-id="${t.id ?? ""}">
             <span class="schema-type-name">${escapeHtml(t.name ?? t.id ?? "Unknown")}</span>
-            <span class="schema-type-meta">.${t.id ?? "?"} · ${props} properties${builtIn}</span>
+            <span class="schema-type-meta">.${t.id ?? "?"} · ${props} properties${builtIn}${
+              t.color ? ` · ${escapeHtml(t.color)}` : ""
+            }</span>
           </li>
         `;
       })
       .join("");
 
     note.hidden = false;
-    if (page) {
-      note.textContent =
-        "Page type present — seeded by SchemaStore / ensureSkeleton. " +
-        (manifest.note ?? "");
-      note.dataset.pagePresent = "true";
-    } else {
-      note.textContent = "Page type missing from fixtures.";
-      note.dataset.pagePresent = "false";
-    }
+    const bits: string[] = [];
+    if (page) bits.push("Page seeded");
+    if (book) bits.push("Books custom type present");
+    if (manifest?.pageDeleteBlocked) bits.push("Page delete guarded ✓");
+    if (manifest?.appearsOnlyUnderBooks) bits.push("Deep Work only under Books ✓");
+    note.textContent = bits.join(" · ") || (manifest?.note ?? "");
+    note.dataset.pagePresent = page ? "true" : "false";
+    note.dataset.bookPresent = book ? "true" : "false";
   } catch (err) {
     loading.textContent =
-      err instanceof Error ? err.message : "Failed to load demo-schema fixtures";
+      err instanceof Error ? err.message : "Failed to load type fixtures";
     note.hidden = false;
-    note.textContent = "Run: ./scripts/demo-schema.sh then refresh this panel (?panel=types).";
+    note.textContent = "Run: ./scripts/demo-types.sh then refresh (?panel=types).";
   }
+}
 
-  await renderPagesSection(root);
+async function renderBooksDashboard(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='books-loading']");
+  const list = root.querySelector<HTMLUListElement>("[data-harness='books-list']");
+  const note = root.querySelector<HTMLElement>("[data-harness='books-note']");
+  const recent = root.querySelector<HTMLElement>("[data-harness='books-recent']");
+  if (!loading || !list || !note || !recent) return;
+
+  try {
+    const res = await fetch("/demo-types/types.json", { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} — run ./scripts/demo-types.sh`);
+    }
+    const data = (await res.json()) as {
+      bookObject?: {
+        id?: string;
+        type?: string;
+        title?: string;
+        relativePath?: string;
+        tags?: string[];
+      };
+      booksCount?: number;
+      pagesCount?: number;
+      appearsOnlyUnderBooks?: boolean;
+      objectsFolder?: string;
+      objectsFolderExists?: boolean;
+      pageDeleteBlocked?: boolean;
+      moduleVersion?: string;
+      note?: string;
+    };
+
+    const book = data.bookObject;
+    loading.textContent = `All · ${data.booksCount ?? 0} book(s) · folder ${
+      data.objectsFolder ?? "objects/book"
+    } exists=${data.objectsFolderExists ?? "?"} · ${data.moduleVersion ?? ""}`;
+
+    list.hidden = false;
+    if (book) {
+      list.innerHTML = `
+        <li class="schema-type-row" data-harness="book-row" data-object-id="${escapeHtml(
+          book.id ?? "",
+        )}" role="button" tabindex="0">
+          <span class="schema-type-name">${escapeHtml(book.title ?? "Untitled")}</span>
+          <span class="schema-type-meta">${escapeHtml(book.relativePath ?? "")}</span>
+        </li>`;
+    } else {
+      list.innerHTML = `<li class="schema-type-row"><span class="schema-type-meta">No books yet</span></li>`;
+    }
+
+    recent.hidden = false;
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      "Create Books → Deep Work. Appears only under Books (not Pages).";
+    note.dataset.appearsOnlyUnderBooks = String(data.appearsOnlyUnderBooks === true);
+    note.dataset.pageDeleteBlocked = String(data.pageDeleteBlocked === true);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load demo-types fixture";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-types.sh then refresh (?panel=types).";
+  }
 }
 
 async function renderPagesSection(root: HTMLElement): Promise<void> {
@@ -155,7 +249,7 @@ async function renderPagesSection(root: HTMLElement): Promise<void> {
         const page = pages.find((p) => p.id === id);
         detail.hidden = false;
         detailBody.textContent = page
-          ? `Open placeholder — ${page.title ?? "Untitled"} (${page.relativePath ?? ""})\nFull ObjectEditor is Apple SwiftUI; BlockEditor lands in PR09.`
+          ? `Open placeholder — ${page.title ?? "Untitled"} (${page.relativePath ?? ""})`
           : "Unknown page";
         detail.dataset.objectId = id;
       };

@@ -2,9 +2,10 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Left column: brand-forward Loci mark, primary destinations, pin stub, tooling.
+/// Left column: brand-forward Loci mark, primary destinations, type entries, tooling.
 struct SidebarView: View {
     @Bindable var services: AppServices
+    @State private var schemaTypes: [ObjectType] = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
@@ -19,7 +20,12 @@ struct SidebarView: View {
                         systemImage: destination.systemImage,
                         isSelected: isSelected(destination)
                     ) {
-                        Task { await services.open(route: destination.route) }
+                        Task {
+                            if destination == .types {
+                                services.focusedTypeID = nil
+                            }
+                            await services.open(route: destination.route)
+                        }
                     }
                 }
                 LociButton("New Page", style: .secondary) {
@@ -27,12 +33,33 @@ struct SidebarView: View {
                         do {
                             _ = try await services.createPage(title: "Untitled")
                         } catch {
-                            // Surface via Types/Settings if vault not ready.
                             await services.open(route: .settings)
                         }
                     }
                 }
                 .padding(.top, LociSpacing.stack(.xs))
+            }
+
+            VStack(alignment: .leading, spacing: LociSpacing.stack(.xs)) {
+                sectionLabel("Types")
+                if schemaTypes.isEmpty {
+                    Text("Open vault to list types")
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.inkSoft)
+                        .padding(.vertical, LociSpacing.stack(.xs))
+                } else {
+                    ForEach(schemaTypes, id: \.id.rawValue) { type in
+                        LociListRow(
+                            title: type.name,
+                            subtitle: ".\(type.id.rawValue)",
+                            systemImage: type.icon,
+                            isSelected: services.selectedRoute == .types
+                                && services.focusedTypeID == type.id
+                        ) {
+                            Task { await services.openTypeDashboard(type.id) }
+                        }
+                    }
+                }
             }
 
             VStack(alignment: .leading, spacing: LociSpacing.stack(.xs)) {
@@ -44,7 +71,7 @@ struct SidebarView: View {
                         systemImage: "pin",
                         isSelected: false
                     ) {
-                        // Stub — pin navigation lands with Object CRUD.
+                        // Stub — pin navigation lands with collections.
                     }
                     .opacity(0.72)
                 }
@@ -70,6 +97,10 @@ struct SidebarView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(LociColors.panel.opacity(0.55))
         .lociAppear(.soft)
+        .task { await reloadTypes() }
+        .onChange(of: services.selectedRoute) { _, _ in
+            Task { await reloadTypes() }
+        }
     }
 
     private var brandHeader: some View {
@@ -100,6 +131,17 @@ struct SidebarView: View {
     }
 
     private func isSelected(_ destination: AppRoute) -> Bool {
-        AppRoute(route: services.selectedRoute) == destination
+        if destination == .types {
+            return services.selectedRoute == .types && services.focusedTypeID == nil
+        }
+        return AppRoute(route: services.selectedRoute) == destination
+    }
+
+    private func reloadTypes() async {
+        do {
+            schemaTypes = try await services.schema.allTypes()
+        } catch {
+            schemaTypes = []
+        }
     }
 }

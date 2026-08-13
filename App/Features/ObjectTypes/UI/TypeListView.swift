@@ -3,29 +3,28 @@ import LociCore
 import LociDesignSystem
 import LociVault
 
-/// Object-type list (PR05) + Page list entry (PR08). Full type dashboards arrive in PR12.
+/// Object-type list + navigation into type dashboards / create editor (PR12).
 struct TypeListView: View {
-    var services: AppServices
+    @Bindable var services: AppServices
     @State private var types: [ObjectType] = []
     @State private var spaceName: String = "…"
     @State private var errorMessage: String?
     @State private var isBusy = false
-    @State private var showPages = false
+    @State private var showEditor = false
 
     var body: some View {
         Group {
-            if showPages {
-                PageListView(services: services)
-                    .safeAreaInset(edge: .top, spacing: 0) {
-                        HStack {
-                            LociButton("← Types", style: .secondary) {
-                                showPages = false
-                            }
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.horizontal, LociSpacing.stack(.xl))
-                        .padding(.top, LociSpacing.stack(.md))
-                    }
+            if let focused = services.focusedTypeID {
+                TypeDashboardView(services: services, typeID: focused) {
+                    services.focusedTypeID = nil
+                }
+            } else if showEditor {
+                TypeEditorView(services: services) {
+                    showEditor = false
+                    Task { await reload() }
+                } onCancel: {
+                    showEditor = false
+                }
             } else {
                 typesBody
             }
@@ -41,14 +40,14 @@ struct TypeListView: View {
                     .font(LociTypography.font(.display))
                     .foregroundStyle(LociColors.ink)
                 Spacer(minLength: 0)
-                LociButton("New Page", style: .primary) {
-                    Task { await createPage() }
+                LociButton("New Type", style: .primary) {
+                    showEditor = true
                 }
                 .disabled(isBusy)
             }
             .lociAppear(.soft)
 
-            Text("Schema lives under .loci/types/ — one file per type (merge-friendly). Built-in Page is seeded on vault create.")
+            Text("Create custom types anytime. Schema is merge-friendly — one `.loci/types/<slug>.json` plus `objects/<slug>/`.")
                 .font(LociTypography.font(.body))
                 .foregroundStyle(LociColors.inkSoft)
                 .frame(maxWidth: 520, alignment: .leading)
@@ -60,7 +59,7 @@ struct TypeListView: View {
             if types.isEmpty {
                 LociEmptyState(
                     title: "No types yet",
-                    message: "Create a vault in Settings to bootstrap the built-in Page type.",
+                    message: "Create a vault in Settings to bootstrap Page + Daily, then add custom types.",
                     systemImage: Route.types.systemImage
                 )
             } else {
@@ -91,9 +90,7 @@ struct TypeListView: View {
     @ViewBuilder
     private func typeRow(_ type: ObjectType) -> some View {
         Button {
-            if type.id == .page {
-                showPages = true
-            }
+            services.focusedTypeID = type.id
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
                 LociIcon(type.icon, size: 18)
@@ -105,11 +102,9 @@ struct TypeListView: View {
                     Text(".\(type.id.rawValue) · \(type.properties.count) properties\(type.isBuiltIn ? " · built-in" : "")")
                         .font(LociTypography.font(.caption))
                         .foregroundStyle(LociColors.inkSoft)
-                    if type.id == .page {
-                        Text("Tap to list pages")
-                            .font(LociTypography.font(.caption))
-                            .foregroundStyle(LociColors.accent)
-                    }
+                    Text("Open dashboard")
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.accent)
                 }
                 Spacer(minLength: 0)
             }
@@ -132,21 +127,6 @@ struct TypeListView: View {
                 spaceName = settings.name
             }
             errorMessage = nil
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    private func createPage() async {
-        isBusy = true
-        defer { isBusy = false }
-        do {
-            if try await services.vault.fileExists(atRelativePath: VaultLayout.spaceJSON) == false {
-                try await OnboardingFeature.completeVaultOpen(services: services)
-            } else {
-                _ = try await services.ensureIndex()
-            }
-            _ = try await services.createPage(title: "Untitled")
         } catch {
             errorMessage = error.localizedDescription
         }

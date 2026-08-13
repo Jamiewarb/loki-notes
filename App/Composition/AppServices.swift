@@ -14,6 +14,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     /// Calendar day shown in the Daily inspector “Created today” panel (PR11).
     /// Updated by `DailyNoteView` when the day switcher changes — index query only.
     public var inspectedDailyDay: Date
+    /// Type dashboard focus inside Types destination (`nil` = type list). PR12.
+    public var focusedTypeID: ObjectTypeID?
     /// Concrete vault I/O (local Documents fallback always available).
     public let vault: VaultService
     /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).
@@ -31,6 +33,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         /// iOS / default launch prefers Daily (inbox). Documented preference for PR10.
         selectedRoute: Route = .daily,
         inspectedDailyDay: Date = DailyNoteIdentity.startOfDay(Date()),
+        focusedTypeID: ObjectTypeID? = nil,
         vault: VaultService? = nil,
         schema: SchemaStore? = nil,
         index: IndexService? = nil,
@@ -40,6 +43,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
         self.inspectedDailyDay = inspectedDailyDay
+        self.focusedTypeID = focusedTypeID
         let resolvedVault =
             vault
             ?? (try? VaultService(forceLocal: false))
@@ -134,10 +138,24 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     /// Create a Page and navigate to the editor.
     @discardableResult
     public func createPage(title: String = "Untitled") async throws -> LociObjectMeta {
+        try await createObject(typeID: .page, title: title)
+    }
+
+    /// Create an object of any known type and navigate to the editor.
+    @discardableResult
+    public func createObject(typeID: ObjectTypeID, title: String = "Untitled") async throws
+        -> LociObjectMeta
+    {
         let service = try await ensureObjectService()
-        let meta = try await service.create(typeID: .page, title: title)
+        let meta = try await service.create(typeID: typeID, title: title)
         await open(objectID: meta.id)
         return meta
+    }
+
+    /// Open Types destination focused on a type dashboard (PR12).
+    public func openTypeDashboard(_ typeID: ObjectTypeID) async {
+        focusedTypeID = typeID
+        selectedRoute = .types
     }
 
     public func ensureObjectService() async throws -> ObjectService {

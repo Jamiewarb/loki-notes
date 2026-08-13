@@ -26,11 +26,11 @@ struct DetailHostView: View {
                 )
             case .types:
                 if let services {
-                    TypeListView(services: services)
+                    ObjectTypesFeature.root(services: services)
                 } else {
                     DestinationPlaceholderView(
                         route: .types,
-                        message: "Object type list (PR05). Schema under .loci/types/."
+                        message: "Object type list + dashboards (PR12). Schema under .loci/types/."
                     )
                 }
             case .settings:

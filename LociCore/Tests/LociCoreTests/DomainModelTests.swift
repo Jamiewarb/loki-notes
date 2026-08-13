@@ -111,6 +111,21 @@ final class DomainModelTests: XCTestCase {
         XCTAssertNil(dash.defaultSort)
     }
 
+    func testTypeSlugFromName() throws {
+        XCTAssertEqual(TypeSlug.fromName("Books"), "books")
+        XCTAssertEqual(TypeSlug.fromName("  Deep  Work!! "), "deep-work")
+        let resolved = try TypeSlug.resolve(explicit: nil, fromName: "People")
+        XCTAssertEqual(resolved, "people")
+        XCTAssertThrowsError(try TypeSlug.resolve(explicit: "page", fromName: "X")) { error in
+            guard case LociError.invalidTypeSlug("page") = error else {
+                return XCTFail("expected invalidTypeSlug, got \(error)")
+            }
+        }
+        XCTAssertTrue(TypeSlug.isProtected(.page))
+        XCTAssertTrue(TypeSlug.isProtected(.daily))
+        XCTAssertFalse(TypeSlug.isProtected(ObjectTypeID("book")))
+    }
+
     func testOpenedObjectCodable() throws {
         let meta = LociObjectMeta(
             id: ObjectID(),
