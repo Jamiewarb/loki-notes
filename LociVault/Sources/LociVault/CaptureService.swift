@@ -10,7 +10,6 @@ public final class CaptureService: CaptureServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let objects: any ObjectServing
     private let dailyNotes: any DailyNoteServing
-    private let lock = NSLock()
 
     public init(
         vault: any VaultServing,

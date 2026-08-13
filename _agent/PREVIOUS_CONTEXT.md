@@ -6,28 +6,30 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ## Wave C (PR22–)
 
-**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph → Calendar → Capture…
+**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph → Calendar → Capture → Import…
 
-Next stack: **PR26 Capture surfaces**.
+Next stack: **PR27 Import**.
 
 ---
 
-## PR25 — Calendar UI
+## PR26 — Capture surfaces
 
-**Branch:** `cursor/pr25-calendar-d2c1`  
-**Based on:** `cursor/pr24-graph-d2c1` @ `68f7f7e`  
-**Tip:** `a8ab66ee07d32a8ea97484285a86e4b797d6b106`
+**Branch:** `cursor/pr26-share-widget-d2c1`  
+**Based on:** `cursor/pr25-calendar-d2c1`  
+**Tip:** 
 
 ### What landed
 
-- **Core:** `CalendarScope` / `CalendarDayMarker` / `CalendarCell` / `CalendarGrid`; `CalendarGridBuilder` (month/week, Linux-testable); `Route.calendar`
-- **Index:** `IndexQuerying.calendarMarkers`; `CalendarMarkersQuery` (daily presence + FTS content + creations in range)
-- **Features/Calendar/:** `CalendarFeature`, `CalendarStore`, `CalendarView` (month/week + dots), `CalendarInspectorView` — day select → `DailyNoteServing.ensure` + `Navigating.open`
-- **Demo:** `loci-calendar-demo` / `scripts/demo-calendar.sh` → `DevHarness/public/demo-calendar/`
-- **Harness:** Studio **Calendar** panel at `?panel=calendar`
-- **Tests:** CalendarGridBuilder (+6) + CalendarMarkersQuery (+2) → **219** total
-- Evidence: `evidence/pr25/`
-- Version: Index / Markdown → `*-pr25`; Vault → `0.25.0-pr25`
+- **Core:** `CaptureKind` / `CaptureInboxItem` / `CaptureResult` / `CaptureInbox` / `CaptureLineFormatter` / `CaptureInboxCodec`; `CaptureServing`; `Route.capture`
+- **Vault:** `CaptureService` + `CaptureInboxWriter`; `.loci/inbox/` in `VaultLayout`; module `0.26.0-pr26`
+- **Pipeline:** Extensions enqueue `.loci/inbox/<id>.json` → main app `drainInbox` → append today’s `daily/YYYY-MM-DD.md` **or** create typed object via ObjectServing
+- **Features/Capture/:** Quick add UI + store; AppServices wires capture + drains on `openVaultPipeline`
+- **Platform stubs:** iOS Share extension + Widget (Info.plist + sources); macOS menu bar quick capture controller
+- **Demo:** `loci-capture-demo` / `scripts/demo-capture.sh` → `DevHarness/public/demo-capture/`
+- **Harness:** Studio **Capture** panel at `?panel=capture`
+- **Tests:** CaptureModels (+8) + CaptureSystem (+5) + Route.capture
+- Evidence: `evidence/pr26/`
+- Version: Index / Markdown → `*-pr26`; Vault → `0.26.0-pr26`
 
 ### How to run checks
 
@@ -35,35 +37,42 @@ Next stack: **PR26 Capture surfaces**.
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-calendar.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=calendar
+./scripts/demo-capture.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=capture
 ```
 
-### Pitfalls for PR26 (Capture surfaces)
+### Pitfalls for PR27 (Import)
 
-- Share / widget / menu bar must append to **today’s daily** via deterministic `daily/YYYY-MM-DD.md` + `DailyNoteServing.ensureToday` — do not invent parallel inbox files
-- Capture writes are real vault mutations (unlike calendar chrome); keep them coordinated and index-applied
-- No feature→feature imports; Capture talks ObjectServing / DailyNoteServing / VaultServing protocols
-- Extensions are Apple-only targets — keep Linux-testable core helpers in packages; DevHarness can stub the capture UX
+- Importers write **real vault files** then index — never invent a parallel store
+- Prefer dry-run summary before applying; map Capacities/Obsidian frontmatter carefully
+- Wiki-links best-effort; do not break existing ObjectID / daily path schemes
+- No feature→feature imports; Import talks ObjectServing / VaultServing / SchemaServing
+- Keep Linux-testable parsers in packages; Apple-only UI can stay stubs
 
-### Next: PR26 — Capture surfaces
+### Next: PR27 — Import
 
-- Branch: `cursor/pr26-capture-d2c1`
-- iOS Share extension (append to today or create typed object); home-screen widget (Open today / Quick add); macOS menu bar quick capture
-- Depends on: PR10, PR08
+- Branch: `cursor/pr27-import-d2c1` (or `cursor/pr27-import-…` per agent suffix)
+- Importers: generic markdown folder, Obsidian vault, Capacities export; dry-run summary
+- Depends on: PR08, PR06, PR12
+
+---
+
+## PR25 — Calendar UI
+
+**Branch:** `cursor/pr25-calendar-d2c1`
+
+Calendar from index markers; day jump via DailyNoteServing. See `evidence/pr25/`.
+
+### Still relevant
+
+- Capture drains into daily — calendar dots will pick up content after index apply
+- Do not confuse calendar chrome (index-only) with capture writes (vault mutations)
 
 ---
 
 ## PR24 — Graph view
 
-**Branch:** `cursor/pr24-graph-d2c1`
-
 Graph from links table; type filter + caps. See `evidence/pr24/`.
-
-### Still relevant
-
-- Calendar dots are index-only (done in PR25) — do not confuse with capture writes
-- Graph Studio destination remains; Calendar is a sibling Studio route
 
 ---
 
@@ -79,4 +88,4 @@ Manual collections per type; membership vault JSON. See `evidence/pr22/`.
 
 ---
 
-## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR25 done · next PR26
+## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR26 done · next PR27

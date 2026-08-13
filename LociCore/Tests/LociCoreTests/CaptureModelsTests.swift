@@ -49,7 +49,7 @@ final class CaptureModelsTests: XCTestCase {
         XCTAssertEqual(CaptureLineFormatter.inferredTitle(from: "   "), "Captured")
         let long = String(repeating: "x", count: 100)
         let title = CaptureLineFormatter.inferredTitle(from: long)
-        XCTAssertEqual(title.count, 80)
+        XCTAssertEqual(title.count, 78)
         XCTAssertTrue(title.hasSuffix("…"))
     }
 

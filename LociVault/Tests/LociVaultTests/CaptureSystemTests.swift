@@ -70,7 +70,8 @@ final class CaptureSystemTests: XCTestCase {
             sourceURL: "https://example.com"
         )
         let inboxPath = try await capture.enqueue(item)
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: inboxPath))
+        let existsBefore = try await vault.fileExists(atRelativePath: inboxPath)
+        XCTAssertTrue(existsBefore)
 
         let results = try await capture.drainInbox(calendar: calendar)
         XCTAssertEqual(results.count, 1)
@@ -78,7 +79,8 @@ final class CaptureSystemTests: XCTestCase {
         XCTAssertEqual(result.kind, .appendToToday)
         XCTAssertTrue(result.relativePath.hasPrefix("daily/"))
         XCTAssertEqual(result.inboxRelativePath, inboxPath)
-        XCTAssertFalse(try await vault.fileExists(atRelativePath: inboxPath))
+        let existsAfter = try await vault.fileExists(atRelativePath: inboxPath)
+        XCTAssertFalse(existsAfter)
 
         let opened = try await daily.open(date: Date(), calendar: calendar)
         XCTAssertTrue(opened.bodyMarkdown.contains("Inbox line"))
@@ -109,7 +111,8 @@ final class CaptureSystemTests: XCTestCase {
         XCTAssertEqual(opened.meta.title, "Shared Article")
         XCTAssertTrue(opened.bodyMarkdown.contains("Clip body"))
         XCTAssertTrue(opened.bodyMarkdown.contains("https://news.example/a"))
-        XCTAssertTrue(try await capture.listPendingInbox().isEmpty)
+        let pending = try await capture.listPendingInbox()
+        XCTAssertTrue(pending.isEmpty)
     }
 
     func testDirectAppendToToday() async throws {
