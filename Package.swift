@@ -15,6 +15,11 @@ let package = Package(
         .library(name: "LociDesignSystem", targets: ["LociDesignSystem"]),
         .executable(name: "loci-vault-demo", targets: ["loci-vault-demo"]),
         .executable(name: "loci-markdown-demo", targets: ["loci-markdown-demo"]),
+        .executable(name: "loci-index-demo", targets: ["loci-index-demo"]),
+    ],
+    dependencies: [
+        // GRDB builds on Swift 6.2 Linux (confirmed PR07) and Apple platforms.
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0"),
     ],
     targets: [
         // Core: models, IDs, errors, protocols — no SwiftUI, no I/O
@@ -63,16 +68,25 @@ let package = Package(
             path: "LociMarkdown/Sources/LociMarkdownDemo"
         ),
 
-        // Index: stub — SQLite projection lands in PR07 (Application Support only)
+        // Index: SQLite projection in Application Support (never inside the vault)
         .target(
             name: "LociIndex",
-            dependencies: ["LociCore"],
+            dependencies: [
+                "LociCore",
+                "LociMarkdown",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ],
             path: "LociIndex/Sources/LociIndex"
         ),
         .testTarget(
             name: "LociIndexTests",
-            dependencies: ["LociIndex"],
+            dependencies: ["LociIndex", "LociVault", "LociMarkdown", "LociCore"],
             path: "LociIndex/Tests/LociIndexTests"
+        ),
+        .executableTarget(
+            name: "loci-index-demo",
+            dependencies: ["LociIndex", "LociVault", "LociMarkdown", "LociCore"],
+            path: "LociIndex/Sources/LociIndexDemo"
         ),
 
         // Design system: tokens (Linux-testable) + SwiftUI primitives (Apple)

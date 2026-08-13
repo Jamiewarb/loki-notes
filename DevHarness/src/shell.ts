@@ -59,8 +59,8 @@ export const PANELS: Record<PanelId, Panel> = {
   search: {
     id: "search",
     title: "Search",
-    body: "Global FTS search placeholder (PR18). Reads IndexQuerying only — never blocks typing.",
-    inspector: "Recent queries and filters will appear here.",
+    body: "Local index FTS demo (PR07). Reads IndexQuerying only — never blocks typing. Full ⌘K UI lands in PR18.",
+    inspector: "Index lives in Application Support — never inside the vault.",
   },
   types: {
     id: "types",
