@@ -26,6 +26,14 @@ public enum LociError: Error, Sendable, Equatable {
     case templateNotFound(String)
     /// Template id already exists.
     case templateAlreadyExists(String)
+    /// Collection id empty, malformed, or reserved shape.
+    case invalidCollectionID(String)
+    /// Collection file / id not found under `.loci/collections/`.
+    case collectionNotFound(String)
+    /// Collection id already exists.
+    case collectionAlreadyExists(String)
+    /// Object is not a member of the collection (remove no-op failure).
+    case collectionMemberNotFound(String)
     case invalidRelativePath(String)
     case fileNotFound(String)
     case pathOutsideVault(String)

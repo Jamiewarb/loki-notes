@@ -96,6 +96,11 @@ if [[ -d "$ROOT/App/Features/SyncStatus" ]]; then
 else
   fail "App/Features/SyncStatus missing"
 fi
+if [[ -d "$ROOT/App/Features/Collections" ]]; then
+  pass "App/Features/Collections present"
+else
+  fail "App/Features/Collections missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

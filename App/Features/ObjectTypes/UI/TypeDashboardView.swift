@@ -3,7 +3,7 @@ import LociCore
 import LociDesignSystem
 import LociVault
 
-/// Type dashboard: All objects of this type + recently opened stub (PR12).
+/// Type dashboard: All objects of this type + collection tabs (PR12 / PR22).
 struct TypeDashboardView: View {
     var services: AppServices
     let typeID: ObjectTypeID
@@ -21,6 +21,18 @@ struct TypeDashboardView: View {
     @State private var activeTagFilter: String?
     @State private var tagAliases = TagAliasTable.empty
     @State private var tagFilterHiddenCount = 0
+    @State private var selectedCollectionID: String?
+    @State private var activeCollection: ObjectCollection?
+
+    private var displayedObjects: [LociObjectMeta] {
+        guard let activeCollection else { return objects }
+        let order = Dictionary(
+            uniqueKeysWithValues: activeCollection.memberIDs.enumerated().map { ($0.element, $0.offset) }
+        )
+        return objects
+            .filter { order[$0.id] != nil }
+            .sorted { (order[$0.id] ?? 0) < (order[$1.id] ?? 0) }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
@@ -100,6 +112,15 @@ struct TypeDashboardView: View {
                     .padding(.vertical, LociSpacing.stack(.sm))
             }
 
+            CollectionsFeature.tabs(
+                services: services,
+                typeID: typeID,
+                allObjects: objects,
+                selectedCollectionID: $selectedCollectionID,
+                onChanged: { await reloadCollections() }
+            )
+            .padding(.vertical, LociSpacing.stack(.sm))
+
             if showRename {
                 HStack(spacing: LociSpacing.stack(.md)) {
                     TextField("Type name", text: $renameDraft)
@@ -113,16 +134,20 @@ struct TypeDashboardView: View {
                 }
             }
 
-            sectionHeader("All")
-            if objects.isEmpty {
+            sectionHeader(activeCollection.map { $0.name.uppercased() } ?? "All")
+            if displayedObjects.isEmpty {
                 LociEmptyState(
-                    title: "No \(type?.name ?? "objects") yet",
-                    message: "Create one to write markdown under objects/\(typeID.rawValue)/.",
+                    title: activeCollection == nil
+                        ? "No \(type?.name ?? "objects") yet"
+                        : "Empty collection",
+                    message: activeCollection == nil
+                        ? "Create one to write markdown under objects/\(typeID.rawValue)/."
+                        : "Add objects from the collection controls above.",
                     systemImage: type?.icon ?? "doc"
                 )
             } else {
                 VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
-                    ForEach(objects, id: \.id.uuidString) { item in
+                    ForEach(displayedObjects, id: \.id.uuidString) { item in
                         objectRow(item)
                     }
                 }
@@ -148,6 +173,9 @@ struct TypeDashboardView: View {
         .padding(LociSpacing.stack(.xl))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task { await reload() }
+        .onChange(of: selectedCollectionID) { _, _ in
+            Task { await reloadCollections() }
+        }
     }
 
     private func sectionHeader(_ title: String) -> some View {
@@ -160,27 +188,36 @@ struct TypeDashboardView: View {
 
     @ViewBuilder
     private func objectRow(_ item: LociObjectMeta) -> some View {
-        Button {
-            Task { await services.open(objectID: item.id) }
-        } label: {
-            HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title.isEmpty ? "Untitled" : item.title)
-                        .font(LociTypography.font(.headline))
-                        .foregroundStyle(LociColors.ink)
-                    Text(propertyPreview(item))
-                        .font(LociTypography.font(.caption))
-                        .foregroundStyle(LociColors.inkSoft)
-                    Text(item.relativePath)
-                        .font(LociTypography.font(.caption))
-                        .foregroundStyle(LociColors.inkSoft)
+        HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
+            Button {
+                Task { await services.open(objectID: item.id) }
+            } label: {
+                HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.title.isEmpty ? "Untitled" : item.title)
+                            .font(LociTypography.font(.headline))
+                            .foregroundStyle(LociColors.ink)
+                        Text(propertyPreview(item))
+                            .font(LociTypography.font(.caption))
+                            .foregroundStyle(LociColors.inkSoft)
+                        Text(item.relativePath)
+                            .font(LociTypography.font(.caption))
+                            .foregroundStyle(LociColors.inkSoft)
+                    }
+                    Spacer(minLength: 0)
                 }
-                Spacer(minLength: 0)
+                .padding(.vertical, LociSpacing.stack(.sm))
             }
-            .padding(.vertical, LociSpacing.stack(.sm))
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("type-object-\(item.id.uuidString.lowercased())")
+
+            if let selectedCollectionID {
+                LociButton("Remove", style: .secondary) {
+                    Task { await removeFromCollection(selectedCollectionID, objectID: item.id) }
+                }
+                .disabled(isBusy)
+            }
         }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("type-object-\(item.id.uuidString.lowercased())")
     }
 
     private func propertyPreview(_ item: LociObjectMeta) -> String {
@@ -209,8 +246,36 @@ struct TypeDashboardView: View {
             let filtered = TagFilter.visible(unarchived, tag: activeTagFilter, aliases: tagAliases)
             tagFilterHiddenCount = unarchived.count - filtered.count
             objects = filtered
-            // Daily notes use deterministic paths; still list from index when viewing Daily type.
+            await reloadCollections()
             errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func reloadCollections() async {
+        do {
+            if let selectedCollectionID {
+                activeCollection = try await services.schema.loadCollection(selectedCollectionID)
+            } else {
+                activeCollection = nil
+            }
+        } catch {
+            activeCollection = nil
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func removeFromCollection(_ collectionID: String, objectID: ObjectID) async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            try await CollectionsFeature.removeMember(
+                services: services,
+                collectionID: collectionID,
+                objectID: objectID
+            )
+            await reloadCollections()
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -12,7 +12,8 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
       <p class="destination-lead">
         Create custom types on the fly — <code>.loci/types/&lt;slug&gt;.json</code> +
         <code>objects/&lt;slug&gt;/</code>. Built-in Page/Daily are protected from casual delete.
-        Type dashboards list All objects; recently opened is a stub until navigation polish.
+        Type dashboards list All objects plus manual <strong>collection tabs</strong>
+        (membership in <code>.loci/collections/&lt;type&gt;.&lt;slug&gt;.json</code>).
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
         <p class="vault-kicker">PR15 · SchemaServing + PARA + templates</p>
@@ -29,15 +30,24 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <p class="vault-note" data-harness="para-types-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
-        <p class="vault-kicker">PR14 · Type dashboard + templates</p>
+        <p class="vault-kicker">PR22 · Type dashboard + collections</p>
         <h3 class="vault-card-title">Books</h3>
         <p class="vault-card-body" data-harness="books-loading">Loading demo-types fixture…</p>
+        <div class="collection-tabs" data-harness="collection-tabs" hidden></div>
         <ul class="schema-type-list" data-harness="books-list" hidden></ul>
         <div class="page-detail" data-harness="books-recent" hidden>
           <p class="vault-kicker">Recently opened</p>
           <p class="vault-card-body">Stub — session recents land later. Use All for now.</p>
         </div>
         <p class="vault-note" data-harness="books-note" hidden></p>
+      </section>
+      <section class="vault-card" data-harness="collections-status" aria-label="Collections">
+        <p class="vault-kicker">PR22 · Manual collections</p>
+        <h3 class="vault-card-title">Collections</h3>
+        <p class="vault-card-body" data-harness="collections-loading">Loading demo-collections…</p>
+        <ul class="schema-type-list" data-harness="collections-list" hidden></ul>
+        <pre class="md-pre" data-harness="collections-snippet" style="max-height:10rem;overflow:auto" hidden></pre>
+        <p class="vault-note" data-harness="collections-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="pages-status" aria-label="Pages">
         <p class="vault-kicker">PR08 · ObjectService</p>
@@ -56,6 +66,7 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   await renderTypesSection(root);
   await renderPARASection(root);
   await renderBooksDashboard(root);
+  await renderCollectionsSection(root);
   await renderPagesSection(root);
 }
 
@@ -254,7 +265,17 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
         bodyMarkdown?: string;
         prefilledHeadings?: boolean;
       };
+      books?: Array<{
+        id?: string;
+        title?: string;
+        relativePath?: string;
+        inFavorites?: boolean;
+        inReadingList?: boolean;
+      }>;
       booksCount?: number;
+      allBooksCount?: number;
+      collectionTabs?: string[];
+      favorites?: { id?: string; memberCount?: number; relativePath?: string };
       pagesCount?: number;
       appearsOnlyUnderBooks?: boolean;
       objectsFolder?: string;
@@ -272,15 +293,30 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
       frontmatterSnippet?: string;
       moduleVersion?: string;
       note?: string;
+      collectionsNote?: string;
     };
 
     const book = data.bookObject;
-    loading.textContent = `All · ${data.booksCount ?? 0} book(s) · folder ${
+    const booksFromCollections = data.books ?? [];
+    const booksCount = data.booksCount ?? data.allBooksCount ?? booksFromCollections.length;
+    loading.textContent = `All · ${booksCount} book(s) · folder ${
       data.objectsFolder ?? "objects/book"
     } exists=${data.objectsFolderExists ?? "?"} · ${data.moduleVersion ?? ""}`;
 
     list.hidden = false;
-    if (book) {
+    if (booksFromCollections.length > 0) {
+      list.innerHTML = booksFromCollections
+        .map(
+          (b) => `
+        <li class="schema-type-row">
+          <span class="schema-type-name">${escapeHtml(b.title ?? "Untitled")}</span>
+          <span class="schema-type-meta">${escapeHtml(b.relativePath ?? "")}${
+            b.inFavorites ? " · ★ Favorites" : ""
+          }</span>
+        </li>`,
+        )
+        .join("");
+    } else if (book) {
       const propBits = Object.entries(book.properties ?? {})
         .map(([k, v]) => `${k}=${v}`)
         .join(" · ");
@@ -370,6 +406,138 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
       err instanceof Error ? err.message : "Failed to load demo-types fixture";
     note.hidden = false;
     note.textContent = "Run: ./scripts/demo-types.sh then refresh (?panel=types).";
+  }
+}
+
+async function renderCollectionsSection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='collections-loading']");
+  const list = root.querySelector<HTMLUListElement>("[data-harness='collections-list']");
+  const note = root.querySelector<HTMLElement>("[data-harness='collections-note']");
+  const snippet = root.querySelector<HTMLElement>("[data-harness='collections-snippet']");
+  const tabs = root.querySelector<HTMLElement>("[data-harness='collection-tabs']");
+  const booksList = root.querySelector<HTMLUListElement>("[data-harness='books-list']");
+  if (!loading || !list || !note) return;
+
+  try {
+    let data: {
+      collections?: Array<{
+        id?: string;
+        name?: string;
+        memberCount?: number;
+        memberIDs?: string[];
+        relativePath?: string;
+      }>;
+      favorites?: {
+        id?: string;
+        name?: string;
+        memberCount?: number;
+        memberTitles?: string[];
+        relativePath?: string;
+        exists?: boolean;
+      };
+      readingList?: { id?: string; name?: string; memberCount?: number };
+      tabs?: string[];
+      books?: Array<{
+        id?: string;
+        title?: string;
+        relativePath?: string;
+        inFavorites?: boolean;
+        inReadingList?: boolean;
+      }>;
+      allBooksCount?: number;
+      membershipIsVaultFile?: boolean;
+      collectionsDirectory?: string;
+      vaultFileSnippet?: string;
+      moduleVersion?: string;
+      note?: string;
+    } | null = null;
+
+    const colRes = await fetch("/demo-collections/collections.json", { cache: "no-store" });
+    if (colRes.ok) {
+      data = (await colRes.json()) as typeof data;
+    } else {
+      const typesRes = await fetch("/demo-types/types.json", { cache: "no-store" });
+      if (typesRes.ok) {
+        data = (await typesRes.json()) as typeof data;
+      }
+    }
+    if (!data?.favorites) throw new Error("missing collections fixtures");
+
+    const fav = data.favorites;
+    loading.textContent = `Vault membership · ${fav.relativePath ?? ".loci/collections/…"} · ${
+      data.moduleVersion ?? ""
+    }`;
+
+    list.hidden = false;
+    list.innerHTML = (data.collections ?? [])
+      .map(
+        (c) => `
+        <li class="schema-type-row" data-harness="collection-row" data-collection-id="${escapeHtml(
+          c.id ?? "",
+        )}">
+          <span class="schema-type-name">${escapeHtml(c.name ?? c.id ?? "?")}</span>
+          <span class="schema-type-meta">${escapeHtml(c.id ?? "")} · ${
+            c.memberCount ?? 0
+          } members · ${escapeHtml(c.relativePath ?? "")}</span>
+        </li>`,
+      )
+      .join("");
+
+    if (tabs) {
+      tabs.hidden = false;
+      const tabNames = data.tabs ?? ["All", "Favorites"];
+      tabs.innerHTML = tabNames
+        .map(
+          (name, i) =>
+            `<button type="button" class="nav-btn${i === 0 ? " is-active" : ""}" data-collection-tab="${escapeHtml(
+              name,
+            )}">${escapeHtml(name)}</button>`,
+        )
+        .join(" ");
+      tabs.querySelectorAll<HTMLButtonElement>("[data-collection-tab]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabs.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          const tab = btn.dataset.collectionTab ?? "All";
+          if (!booksList || !data?.books) return;
+          const filtered = data.books.filter((b) => {
+            if (tab === "All") return true;
+            if (tab === "Favorites") return b.inFavorites === true;
+            if (tab === "Reading List") return b.inReadingList === true;
+            return true;
+          });
+          booksList.innerHTML = filtered
+            .map(
+              (b) => `
+              <li class="schema-type-row">
+                <span class="schema-type-name">${escapeHtml(b.title ?? "Untitled")}</span>
+                <span class="schema-type-meta">${escapeHtml(b.relativePath ?? "")}</span>
+              </li>`,
+            )
+            .join("");
+        });
+      });
+    }
+
+    if (snippet && data.vaultFileSnippet) {
+      snippet.hidden = false;
+      snippet.textContent = data.vaultFileSnippet;
+    }
+
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      `Favorites ${fav.memberCount ?? 0} members · membershipIsVaultFile=${
+        data.membershipIsVaultFile === true ? "yes" : "no"
+      }`;
+    note.dataset.membershipIsVaultFile = String(data.membershipIsVaultFile === true);
+    note.dataset.favoritesId = fav.id ?? "";
+    note.dataset.favoritesMembers = String(fav.memberCount ?? 0);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load collections fixtures";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-collections.sh then refresh (?panel=types).";
   }
 }
 

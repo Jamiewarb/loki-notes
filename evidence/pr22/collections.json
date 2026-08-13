@@ -1,0 +1,85 @@
+{
+  "allBooksCount" : 3,
+  "books" : [
+    {
+      "id" : "cb92f223-af29-4b6f-85b7-4678aa9ed7eb",
+      "inFavorites" : true,
+      "inReadingList" : false,
+      "relativePath" : "objects\/book\/atomic-habits.md",
+      "title" : "Atomic Habits"
+    },
+    {
+      "id" : "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+      "inFavorites" : true,
+      "inReadingList" : true,
+      "relativePath" : "objects\/book\/deep-work.md",
+      "title" : "Deep Work"
+    },
+    {
+      "id" : "b5f5ffba-bf9e-4f11-90a2-8b3df3d7751c",
+      "inFavorites" : false,
+      "inReadingList" : true,
+      "relativePath" : "objects\/book\/range.md",
+      "title" : "Range"
+    }
+  ],
+  "bookType" : {
+    "icon" : "book",
+    "id" : "book",
+    "name" : "Books"
+  },
+  "collections" : [
+    {
+      "id" : "book.favorites",
+      "memberCount" : 2,
+      "memberIDs" : [
+        "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+        "cb92f223-af29-4b6f-85b7-4678aa9ed7eb"
+      ],
+      "name" : "Favorites",
+      "relativePath" : ".loci\/collections\/book.favorites.json",
+      "typeID" : "book"
+    },
+    {
+      "id" : "book.reading-list",
+      "memberCount" : 2,
+      "memberIDs" : [
+        "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+        "b5f5ffba-bf9e-4f11-90a2-8b3df3d7751c"
+      ],
+      "name" : "Reading List",
+      "relativePath" : ".loci\/collections\/book.reading-list.json",
+      "typeID" : "book"
+    }
+  ],
+  "collectionsDirectory" : ".loci\/collections",
+  "favorites" : {
+    "exists" : true,
+    "id" : "book.favorites",
+    "memberCount" : 2,
+    "memberTitles" : [
+      "Deep Work",
+      "Atomic Habits"
+    ],
+    "name" : "Favorites",
+    "relativePath" : ".loci\/collections\/book.favorites.json"
+  },
+  "favoritesMemberCount" : 2,
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr22",
+  "markdownModuleVersion" : "0.2.0-pr22",
+  "membershipIsVaultFile" : true,
+  "moduleVersion" : "0.22.0-pr22",
+  "note" : "PR22: Manual collections per type; membership in .loci\/collections\/<type>.<slug>.json; type dashboard tabs.",
+  "readingList" : {
+    "id" : "book.reading-list",
+    "memberCount" : 2,
+    "name" : "Reading List"
+  },
+  "tabs" : [
+    "All",
+    "Favorites",
+    "Reading List"
+  ],
+  "vaultFileSnippet" : "{\n  \"id\" : \"book.favorites\",\n  \"memberIDs\" : [\n    \"98b9a9ca-925e-4afb-82a6-34b5d567c351\",\n    \"cb92f223-af29-4b6f-85b7-4678aa9ed7eb\"\n  ],\n  \"name\" : \"Favorites\",\n  \"typeID\" : \"book\",\n  \"updatedAt\" : \"2026-08-13T12:34:41Z\"\n}"
+}

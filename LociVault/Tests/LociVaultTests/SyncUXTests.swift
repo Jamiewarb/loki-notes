@@ -85,7 +85,7 @@ final class SyncConflictListingTests: XCTestCase {
         XCTAssertEqual(derived, .conflict)
     }
 
-    func testModuleVersionPR21() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr21"))
+    func testModuleVersionPR22() {
+        XCTAssertTrue(LociVaultModule.version.contains("pr22"))
     }
 }

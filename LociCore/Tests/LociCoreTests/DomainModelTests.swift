@@ -193,6 +193,41 @@ final class DomainModelTests: XCTestCase {
         XCTAssertFalse(TemplateID.isValid("invalid"))
     }
 
+    func testObjectCollectionCodableAndCollectionID() throws {
+        let member = ObjectID()
+        let collection = ObjectCollection(
+            id: "book.favorites",
+            typeID: ObjectTypeID("book"),
+            name: "Favorites",
+            memberIDs: [member]
+        )
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.sortedKeys]
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let data = try encoder.encode(collection)
+        let decoded = try decoder.decode(ObjectCollection.self, from: data)
+        XCTAssertEqual(decoded.id, "book.favorites")
+        XCTAssertEqual(decoded.typeID, ObjectTypeID("book"))
+        XCTAssertEqual(decoded.name, "Favorites")
+        XCTAssertEqual(decoded.memberIDs, [member])
+        // Membership stored as plain UUID strings (merge-friendly JSON).
+        let json = String(data: data, encoding: .utf8) ?? ""
+        XCTAssertTrue(json.contains(member.frontMatterIDString))
+        XCTAssertEqual(
+            try CollectionID.make(
+                typeID: ObjectTypeID("book"),
+                name: "Reading List",
+                explicitSlug: "reading-list"
+            ),
+            "book.reading-list"
+        )
+        XCTAssertTrue(CollectionID.isValid("book.favorites"))
+        XCTAssertFalse(CollectionID.isValid("invalid"))
+        XCTAssertEqual(CollectionID.typeID(from: "book.favorites"), ObjectTypeID("book"))
+    }
+
     func testOpenedObjectCodable() throws {
         let meta = LociObjectMeta(
             id: ObjectID(),

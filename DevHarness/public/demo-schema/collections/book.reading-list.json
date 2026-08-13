@@ -1,0 +1,9 @@
+{
+  "id": "book.reading-list",
+  "typeID": "book",
+  "name": "Reading List",
+  "memberIDs": [
+    "98b9a9ca-925e-4afb-82a6-34b5d567c351",
+    "b5f5ffba-bf9e-4f11-90a2-8b3df3d7751c"
+  ]
+}
