@@ -16,7 +16,7 @@ Next stack: **PR24 Graph view**.
 
 **Branch:** `cursor/pr23-queries-d2c1`  
 **Based on:** `cursor/pr22-collections-d2c1` @ `d680d01`  
-**Tip:** `18fe515bf3ce48f5654d5106651a2cc0a8dffb47`
+**Tip:** `dd4f13ed692f15c831fd04eac7ede99452bf1a34`
 
 ### What landed
 
