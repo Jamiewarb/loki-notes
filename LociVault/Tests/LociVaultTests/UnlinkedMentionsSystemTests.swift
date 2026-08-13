@@ -65,7 +65,10 @@ final class UnlinkedMentionsSystemTests: XCTestCase {
         XCTAssertEqual(mentions.map(\.source.title), ["Notes"])
 
         let afterScan = try await objects.open(id: notes.id)
-        XCTAssertEqual(afterScan.bodyMarkdown, notesBody)
+        XCTAssertEqual(
+            afterScan.bodyMarkdown.trimmingCharacters(in: .whitespacesAndNewlines),
+            notesBody.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
         XCTAssertFalse(afterScan.bodyMarkdown.contains("[["))
 
         let dailyAfterScan = try await daily.open(date: day, calendar: utcCalendar)

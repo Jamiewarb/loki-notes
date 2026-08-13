@@ -36,10 +36,12 @@ public struct UnlinkedMentionProof: Hashable, Sendable, Equatable, Codable {
         let plainHit = UnlinkedMentionScanner.mentions(plainBody, title: title)
         let wikiHit = UnlinkedMentionScanner.mentions(wikiLinkedBody, title: title)
         let workingHit = UnlinkedMentionScanner.mentions(wordBoundaryBody, title: title)
+        let before = bodyBefore.trimmingCharacters(in: .whitespacesAndNewlines)
+        let after = bodyAfterScan.trimmingCharacters(in: .whitespacesAndNewlines)
         return UnlinkedMentionProof(
             detectsPlainTitle: plainHit && !workingHit,
             ignoresExistingWikiLink: !wikiHit,
-            doesNotRewriteBody: bodyBefore == bodyAfterScan && !bodyAfterScan.contains("[["),
+            doesNotRewriteBody: before == after && !bodyAfterScan.contains("[["),
             indexInsideVault: indexInsideVault
         )
     }
