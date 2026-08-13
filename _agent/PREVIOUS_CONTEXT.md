@@ -4,26 +4,27 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR03 — App shell navigation (current)
+## PR04 — VaultIO + iCloud Documents (current)
 
-**Branch:** `cursor/pr03-app-shell-d2c1`  
-**Based on:** `cursor/pr02-design-system-d2c1` @ `0c17eda`
+**Branch:** `cursor/pr04-vault-io-d2c1`  
+**Based on:** `cursor/pr03-app-shell-d2c1` @ `c1e34a8`
 
 ### What landed
 
-- **`LociCore.Route`:** primary destinations Daily / Search / Types / Settings + `designGallery` + `object(ObjectID)`; titles/icons/subtitles; `primaryDestinations`
-- **`AppServices`:** conforms to `Navigating`; owns `selectedRoute` (default `.daily`)
-- **AppShell (Apple sources under `App/Features/AppShell/`):**
-  - `AppRoute.swift` — sidebar destinations + pin stub
-  - `AppShellView.swift` — macOS `NavigationSplitView` (sidebar | detail | inspector); iOS `TabView` + stack + inspector sheet
-  - `SidebarView.swift` — hero **Loci** brand, Navigate / Pinned / Studio
-  - `DetailHostView.swift` + placeholders; Design gallery hosted for `.designGallery`
-  - `InspectorHostView.swift` — contextual trailing column
-  - `LociAtmosphereBackground.swift` (extracted from gallery)
-- **`LociApp`:** roots to `AppShellView` (not gallery alone)
-- **DevHarness:** sectioned sidebar; destination panels switch for Daily/Search/Types/Settings/Design; `?panel=` for headless proof
-- **Tests:** +5 `RouteTests` → **19** package tests (was 14)
-- Evidence: `evidence/pr03/` (lint, test, harness.log/html/png/dom, `screenshots/harness-*-{png,dom.html}`)
+- **`LociVault` (real, not stub):**
+  - `VaultRoot` — local Documents always; ubiquity behind `#if canImport(Darwin)`
+  - `VaultService` — `VaultServing` impl: skeleton, coordinated R/W, trash+tombstone
+  - `FileCoordinatorClient` — `NSFileCoordinator` on Apple; plain `FileManager` on Linux
+  - `MetadataQueryMonitor` — `NSMetadataQuery` structure on ubiquity paths; poll/`noteLocalWrite` on Linux
+  - `ConflictedCopyDetector` — `(conflicted copy` / numbered `Name 2.md` patterns
+  - `TombstoneStore` — `.tombstone` JSON under `.loci/trash/`
+  - `VaultLayout` — canonical paths (`.loci/`, `daily/`, `objects/`, `media/…`)
+- **Core:** extended `VaultServing` (`rootKind`, `ensureSkeleton`, `trashFile`, `TombstoneRecord`, `VaultFileEvent`); `LociError` path/coordination cases
+- **App:** `AppServices` owns `VaultService` + `SyncStatusProviding`; `VaultSettingsView` Create vault; iCloud entitlements + `NSUbiquitousContainers`
+- **CLI:** `loci-vault-demo` + `scripts/demo-vault.sh`
+- **DevHarness:** Settings vault status panel (`?panel=settings`)
+- **Tests:** **30** package tests (was 19) — vault round-trip / skeleton / trash / conflicts / monitor green on Linux
+- Evidence: `evidence/pr04/` (lint, test, demo-vault, harness settings png/dom)
 
 ### How to run checks
 
@@ -31,74 +32,58 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=daily|search|types|settings|gallery
+./scripts/demo-vault.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=settings
 ```
 
-### Pitfalls for PR04
+### API surface (VaultServing)
 
-- App/ SwiftUI is **not** in Linux SPM — DevHarness remains visual proof for shell chrome.
-- Headless Chrome may hang after screenshot/dump-dom — use `timeout` + unique `--user-data-dir`.
-- Index must never live inside the vault (Application Support only).
-- Local Documents fallback is mandatory when iCloud is unavailable.
-- Do not implement real daily notes / editor / indexer here — VaultIO only.
+```text
+vaultRootURL / rootKind
+ensureSkeleton(spaceName:)
+readFile / writeFile / deleteFile / fileExists / absoluteURL
+trashFile → TombstoneRecord
+```
 
-### Next: PR04 — VaultIO + iCloud Documents
+### Pitfalls for PR05
 
-- Ubiquity container + local sandbox fallback
-- Vault skeleton (`.loci/space.json`), coordinated read/write
-- `NSMetadataQuery` events + conflicted-copy hook
-- Settings “Create vault” demo path
-- Branch: `cursor/pr04-vault-io-d2c1`
-- Wire concretes into `AppServices`; keep features on `VaultServing` only
+- Do **not** put SQLite inside the vault — SchemaStore uses VaultServing only for `.loci/types/*.json` + `space.json`.
+- `space.json` already written by `ensureSkeleton`; SchemaStore should load/merge, not blindly overwrite pins later.
+- Prefer per-type files under `.loci/types/` (merge-friendly) — seed built-in **Page**.
+- Identity = ObjectID / type id strings — never persist absolute ubiquity URLs as sole identity.
+- Linux has no iCloud; tests must keep using `preferredLocalDirectory` / `forceLocal`.
+
+### Next: PR05 — Domain models + schema store
+
+- `Space`, `ObjectType`, `PropertyDef`, `LociObject` metadata in LociCore
+- SchemaStore load/save via VaultServing; bootstrap `page.json`
+- Settings type list (read-only)
+- Branch: `cursor/pr05-schema-domain-d2c1`
+
+---
+
+## PR03 — App shell navigation
+
+**Branch:** `cursor/pr03-app-shell-d2c1`  
+**Based on:** `cursor/pr02-design-system-d2c1` @ `0c17eda`
+
+### What landed
+
+- **`LociCore.Route`:** primary destinations Daily / Search / Types / Settings + `designGallery` + `object(ObjectID)`
+- **`AppServices`:** `Navigating`; owns `selectedRoute`
+- AppShell (macOS split / iOS tabs) + DevHarness sectioned sidebar
+- Tests: 19 package tests after PR03
 
 ---
 
 ## PR02 — Design system
 
-**Branch:** `cursor/pr02-design-system-d2c1`  
-**Based on:** `cursor/pr01-scaffold-d2c1` @ `a01d4ac`
+**Branch:** `cursor/pr02-design-system-d2c1`
 
-### What landed
-
-- **`LociDesignSystem`** fleshed out (no longer a stub):
-  - **Tokens (Linux-testable, no SwiftUI):** `Tokens/Colors.swift`, `Typography.swift`, `Spacing.swift`, `Radius.swift`, `Elevation.swift`
-  - **Components (`#if canImport(SwiftUI)`):** `LociButton`, `LociTextField`, `LociListRow`, `LociEmptyState`, `LociIcon`, `LociDivider`
-  - **Motion:** `Motion/Transitions.swift` — brand rise, soft appear, panel transition (`lociAppear`, `lociPanelTransition`)
-- **Apple gallery:** `App/Features/AppShell/DesignGalleryView.swift`; atmosphere shared with shell
-- **DevHarness:** CSS vars `--loci-*` mirror tokens; Design nav + `DesignGalleryPanel.ts`
-- **Tests:** `LociDesignSystemTests` (6 cases). PR02 total was **14**; PR03 raised to **19**
-- Evidence: `evidence/pr02/`
-
-### Design direction — **editorial-sage**
-
-| Token | Value |
-|---|---|
-| Ink | `#1A2421` |
-| Paper | `#E8EFE8` |
-| Accent (moss-teal) | `#0F6B5C` |
-| Accent soft | `#C5E4DC` |
-| Display font | Fraunces |
-| Body font | Source Sans 3 |
-| Spacing scale | 2, 4, 8, 12, 16, 24, 32, 48 |
-
-Avoided: purple-on-white, cream+terracotta cliché, dark-mode-first.
+Design direction **editorial-sage** (ink `#1A2421`, paper `#E8EFE8`, accent `#0F6B5C`, Fraunces + Source Sans 3).
 
 ---
 
 ## PR01 — Scaffold
 
-**Branch:** `cursor/pr01-scaffold-d2c1`
-
-### What exists
-
-- Git repo initialized; SPM monorepo via root `Package.swift`
-- Packages: `LociCore`, `LociVault` / `LociMarkdown` / `LociIndex` stubs; DesignSystem (PR02); AppShell (PR03)
-- Protocols in Core: VaultServing, SchemaServing, ObjectServing, IndexQuerying, IndexUpdating, Navigating, SyncStatusProviding + `Route`
-- Scripts: `scripts/lint.sh`, `scripts/test.sh`, `scripts/run-harness.sh`
-- Docs: `README.md`, `AGENTS.md`, CI workflow `.github/workflows/ci.yml`
-- Evidence: `evidence/pr01/`
-
-### Swift on Linux
-
-- Swift **6.2 (swift-6.2-RELEASE)** at `/opt/swift`
-- `export PATH=/opt/swift/usr/bin:$PATH`
+SPM monorepo, protocols, scripts, CI. Swift **6.2** at `/opt/swift`.
