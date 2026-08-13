@@ -14,7 +14,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr29-editor-rich-d2c1`  
 **Based on:** `cursor/pr28-type-convert-d2c1` tip `d74c90491b188c9404ed08143121f25b5cf2ad6c`  
-**Tip:** 
+**Tip:** `b1c8836b6b6b6517a7ba11c3a87f19bb615caed6`
 
 ### What landed
 
