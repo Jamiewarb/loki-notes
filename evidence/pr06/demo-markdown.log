@@ -1,0 +1,8 @@
+==> loci-markdown-demo
+[0/1] Planning build
+Building for debugging...
+[0/3] Write swift-version--166437D737243488.txt
+Build of product 'loci-markdown-demo' complete! (0.10s)
+==> wrote /agent/DevHarness/public/demo-markdown/roundtrip.json
+==> wrote /agent/DevHarness/public/demo-markdown/basic-page.md
+==> demo-markdown complete

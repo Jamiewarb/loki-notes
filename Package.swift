@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "LociIndex", targets: ["LociIndex"]),
         .library(name: "LociDesignSystem", targets: ["LociDesignSystem"]),
         .executable(name: "loci-vault-demo", targets: ["loci-vault-demo"]),
+        .executable(name: "loci-markdown-demo", targets: ["loci-markdown-demo"]),
     ],
     targets: [
         // Core: models, IDs, errors, protocols — no SwiftUI, no I/O
@@ -44,7 +45,7 @@ let package = Package(
             path: "LociVault/Tests/LociVaultTests"
         ),
 
-        // Markdown: stub — parse/serialize lands in PR06
+        // Markdown: Loci MD ↔ BlockAST + YAML frontmatter (PR06)
         .target(
             name: "LociMarkdown",
             dependencies: ["LociCore"],
@@ -52,8 +53,14 @@ let package = Package(
         ),
         .testTarget(
             name: "LociMarkdownTests",
+            dependencies: ["LociMarkdown", "LociCore"],
+            path: "LociMarkdown/Tests/LociMarkdownTests",
+            resources: [.copy("Fixtures")]
+        ),
+        .executableTarget(
+            name: "loci-markdown-demo",
             dependencies: ["LociMarkdown"],
-            path: "LociMarkdown/Tests/LociMarkdownTests"
+            path: "LociMarkdown/Sources/LociMarkdownDemo"
         ),
 
         // Index: stub — SQLite projection lands in PR07 (Application Support only)

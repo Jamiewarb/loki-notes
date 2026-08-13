@@ -4,7 +4,71 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR05 — Domain models + schema store (current)
+## PR06 — MarkdownKit (current)
+
+**Branch:** `cursor/pr06-markdown-kit-d2c1`  
+**Based on:** `cursor/pr05-schema-domain-d2c1` @ `c3b85c9`
+
+### What landed
+
+- **`LociMarkdown` (real):**
+  - `BlockNode` / `InlineNode` / `ListItem` / `LociDocument`
+  - `FrontMatter` aligned with `LociObjectMeta` (`id`, `type`↔`typeID`, `title`, `created`, `updated`, `tags`, `properties`, optional `template`)
+  - `MarkdownParser` + `MarkdownSerializer` with structural round-trip
+  - `WikiLink` / `TagSyntax` helpers
+  - **YAML choice:** hand-rolled `SimpleYAML` subset (no SPM YAML dependency; Linux-friendly). Documented on `LociMarkdownModule`.
+  - `PropertyValueYAML` — bare primitives + tagged `{kind,value}` for select/url losslessness
+- **Fixtures:** `LociMarkdown/Tests/LociMarkdownTests/Fixtures/*.md`
+- **CLI:** `loci-markdown-demo` + `scripts/demo-markdown.sh` → `DevHarness/public/demo-markdown/`
+- **DevHarness:** Studio nav **Markdown** panel (`?panel=markdown`) shows input/serialized round-trip
+- **Tests:** **66** package tests (was 48) — 18 new MarkdownKit tests; Vault/Schema unchanged green
+- Evidence: `evidence/pr06/`
+
+### Supported block types
+
+| Block | Notes |
+|---|---|
+| paragraph | inline: text, code, emphasis, strong, link, image, wiki-link, tag |
+| heading 1–4 | `#`…`####` (h5+ stays paragraph text) |
+| bulletList | `-` / `*` / `+` |
+| numberedList | `1.` … |
+| task items | `- [ ]` / `- [x]` on bullet lists |
+| blockQuote | `>` lines |
+| codeBlock | fenced ` ``` ` / `~~~` |
+| image | standalone `![]()` block or inline |
+| thematicBreak | `---` / `***` / `___` |
+| wiki-link | `[[target]]` / `[[target\|label]]` |
+| #tag | `#Focus`, nested `a/b` |
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-markdown.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=markdown
+```
+
+### Pitfalls for PR07 (Indexer)
+
+- Parse vault `.md` with `MarkdownParser` → index `FrontMatter` + walk blocks for wiki-links / tags / task items / FTS text
+- `WikiLinkSyntax.extract` / `TagSyntax.extract` available for flat scans; prefer AST walk for accuracy
+- Frontmatter `type` key maps to `ObjectTypeID`; `relativePath` is **not** in frontmatter — Indexer/ObjectService must supply path
+- Bare property arrays of `[[slug]]` decode as `.objectSelect` (brackets stripped); UUIDs in arrays also → objectSelect
+- `.select` / `.url` serialize as tagged YAML maps so they round-trip; bare strings decode as `.text`
+- **Never** put `index.sqlite` in the vault — Application Support only
+- Indexer should depend on `LociCore` + `LociMarkdown`; apply vault events asynchronously
+
+### Next: PR07 — Indexer (SQLite)
+
+- GRDB/SQLite in Application Support; schema objects/links/tags/blocks_fts/properties_idx
+- Full scan + incremental Vault events; `IndexQuerying` APIs
+- Branch: `cursor/pr07-indexer-d2c1` (or plan name)
+
+---
+
+## PR05 — Domain models + schema store
 
 **Branch:** `cursor/pr05-schema-domain-d2c1`  
 **Based on:** `cursor/pr04-vault-io-d2c1` @ `944321d`
@@ -42,97 +106,16 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 }
 ```
 
-### How to run checks
-
-```bash
-export PATH=/opt/swift/usr/bin:$PATH
-./scripts/lint.sh
-./scripts/test.sh
-./scripts/demo-schema.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
-```
-
-### Pitfalls for PR06 (MarkdownKit)
-
-- Frontmatter fields should align with `LociObjectMeta` (`id`, `type`/`typeID`, `title`, `created`, `updated`, `tags`, `properties`)
-- Property values in YAML may be bare primitives — `PropertyValue` already accepts bare JSON text/number/bool/array; MD frontmatter parser should map into the same union
-- Do **not** put SQLite in the vault; SchemaStore remains VaultServing-only
-- Daily type is modeled (`ObjectType.builtInDaily` / `isDaily`) but **not** auto-seeded yet — PR10 can seed `daily.json`
-- Identity remains ObjectID strings — never absolute ubiquity URLs
-
-### Next: PR06 — MarkdownKit
-
-- Loci MD ↔ BlockAST + YAML frontmatter encode/decode
-- Round-trip unit tests + fixtures
-- Branch: `cursor/pr06-markdown-kit-d2c1` (or plan name)
-
 ---
 
 ## PR04 — VaultIO + iCloud Documents
 
-**Branch:** `cursor/pr04-vault-io-d2c1`  
-**Based on:** `cursor/pr03-app-shell-d2c1` @ `c1e34a8`
+**Branch:** `cursor/pr04-vault-io-d2c1`
 
-### What landed
-
-- **`LociVault` (real, not stub):**
-  - `VaultRoot` — local Documents always; ubiquity behind `#if canImport(Darwin)`
-  - `VaultService` — `VaultServing` impl: skeleton, coordinated R/W, trash+tombstone
-  - `FileCoordinatorClient` — `NSFileCoordinator` on Apple; plain `FileManager` on Linux
-  - `MetadataQueryMonitor` — `NSMetadataQuery` structure on ubiquity paths; poll/`noteLocalWrite` on Linux
-  - `ConflictedCopyDetector` — `(conflicted copy` / numbered `Name 2.md` patterns
-  - `TombstoneStore` — `.tombstone` JSON under `.loci/trash/`
-  - `VaultLayout` — canonical paths (`.loci/`, `daily/`, `objects/`, `media/…`)
-- **Core:** extended `VaultServing` (`rootKind`, `ensureSkeleton`, `trashFile`, `TombstoneRecord`, `VaultFileEvent`); `LociError` path/coordination cases
-- **App:** `AppServices` owns `VaultService` + `SyncStatusProviding`; `VaultSettingsView` Create vault; iCloud entitlements + `NSUbiquitousContainers`
-- **CLI:** `loci-vault-demo` + `scripts/demo-vault.sh`
-- **DevHarness:** Settings vault status panel (`?panel=settings`)
-- **Tests:** **30** package tests (was 19) — vault round-trip / skeleton / trash / conflicts / monitor green on Linux
-- Evidence: `evidence/pr04/` (lint, test, demo-vault, harness settings png/dom)
-
-### How to run checks
-
-```bash
-export PATH=/opt/swift/usr/bin:$PATH
-./scripts/lint.sh
-./scripts/test.sh
-./scripts/demo-vault.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=settings
-```
-
-### API surface (VaultServing)
-
-```text
-vaultRootURL / rootKind
-ensureSkeleton(spaceName:)
-readFile / writeFile / deleteFile / fileExists / absoluteURL
-trashFile → TombstoneRecord
-```
+See prior handoff for VaultServing API, skeleton layout, trash/tombstones.
 
 ---
 
-## PR03 — App shell navigation
+## PR03 / PR02 / PR01
 
-**Branch:** `cursor/pr03-app-shell-d2c1`  
-**Based on:** `cursor/pr02-design-system-d2c1` @ `0c17eda`
-
-### What landed
-
-- **`LociCore.Route`:** primary destinations Daily / Search / Types / Settings + `designGallery` + `object(ObjectID)`
-- **`AppServices`:** `Navigating`; owns `selectedRoute`
-- AppShell (macOS split / iOS tabs) + DevHarness sectioned sidebar
-- Tests: 19 package tests after PR03
-
----
-
-## PR02 — Design system
-
-**Branch:** `cursor/pr02-design-system-d2c1`
-
-Design direction **editorial-sage** (ink `#1A2421`, paper `#E8EFE8`, accent `#0F6B5C`, Fraunces + Source Sans 3).
-
----
-
-## PR01 — Scaffold
-
-SPM monorepo, protocols, scripts, CI. Swift **6.2** at `/opt/swift`.
+App shell, design system (editorial-sage), SPM scaffold. Swift **6.2** at `/opt/swift`.

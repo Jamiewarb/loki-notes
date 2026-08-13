@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -810,3 +820,152 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="markdown">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="page">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="markdown" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination markdown-debug" data-harness="destination" data-destination="markdown">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">¶</span>
+          <h2 class="destination-title">Markdown</h2>
+        </header>
+        <p class="destination-lead">
+          Sample fixture round-trip via <code>LociMarkdown</code> (0.1.0-pr06).
+        </p>
+
+        <section class="vault-card" data-harness="markdown-meta" aria-label="Markdown kit status">
+          <p class="vault-kicker">PR06 · LociMarkdown</p>
+          <h3 class="vault-card-title">Parse → serialize</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>YAML</dt>
+              <dd>hand-rolled SimpleYAML (no SPM YAML dependency)</dd>
+            </div>
+            <div>
+              <dt>Frontmatter</dt>
+              <dd><code>Hello Loci</code> · type page</dd>
+            </div>
+            <div>
+              <dt>Blocks</dt>
+              <dd data-harness="markdown-blocks">heading(2) · paragraph</dd>
+            </div>
+            <div>
+              <dt>Round-trip stable</dt>
+              <dd data-harness="markdown-stable">yes</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="md-columns" aria-label="Input and output markdown">
+          <div class="md-pane">
+            <h3 class="md-pane-title">Input</h3>
+            <pre class="md-pre" data-harness="markdown-input">---
+id: 8f3c2a1e-1111-4111-8111-000000000001
+type: page
+title: Hello Loci
+created: 2026-08-13T09:12:00Z
+updated: 2026-08-13T11:40:00Z
+tags: [welcome, demo]
+---
+
+## Notes
+
+This is a simple page with a [[8f3c2a1e-2222-4222-8222-000000000002|related note]] and a #focus tag.</pre>
+          </div>
+          <div class="md-pane">
+            <h3 class="md-pane-title">Serialized</h3>
+            <pre class="md-pre" data-harness="markdown-output">---
+id: 8f3c2a1e-1111-4111-8111-000000000001
+type: page
+title: Hello Loci
+created: "2026-08-13T09:12:00Z"
+updated: "2026-08-13T11:40:00Z"
+tags: [welcome, demo]
+---
+
+## Notes
+
+This is a simple page with a [[8f3c2a1e-2222-4222-8222-000000000002|related note]] and a #focus tag.</pre>
+          </div>
+        </section>
+
+        <p class="vault-note">
+          Regenerate with <code>./scripts/demo-markdown.sh</code>. Indexer (PR07) will consume this AST — never store SQLite in the vault.
+        </p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">BlockAST</p>
+        <p>Wiki-links and #tags feed the Indexer (PR07).</p>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786613843117"></script>
+  
+
+</body></html>
