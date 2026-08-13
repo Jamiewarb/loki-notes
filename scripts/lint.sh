@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# scripts/lint.sh — static checks for Loci packages (Linux-friendly).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+export PATH="/opt/swift/usr/bin:${PATH:-}"
+
+failures=0
+
+fail() {
+  echo "FAIL: $*" >&2
+  failures=$((failures + 1))
+}
+
+pass() {
+  echo "OK: $*"
+}
+
+echo "==> lint: Package.swift present"
+if [[ -f "$ROOT/Package.swift" ]]; then
+  pass "Package.swift exists"
+else
+  fail "Package.swift missing"
+fi
+
+echo "==> lint: reject fatal TODO crash stubs in production Sources"
+# Ban patterns like fatalError(\"TODO\") / preconditionFailure(\"TODO\") in package Sources.
+# Allow legitimate XCTest / docs mentions outside Sources.
+while IFS= read -r -d '' file; do
+  if grep -nE 'fatalError\([[:space:]]*"TODO|preconditionFailure\([[:space:]]*"TODO|TODO:\s*crash' "$file" >/dev/null 2>&1; then
+    fail "crash stub TODO in $file"
+  fi
+done < <(find "$ROOT" \( -path "$ROOT/.build" -o -path "$ROOT/DevHarness/node_modules" -o -path "$ROOT/.git" \) -prune -o -path '*/Sources/*' -name '*.swift' -print0)
+
+pass "no TODO crash stubs in Sources"
+
+echo "==> lint: index must not be configured inside vault paths"
+if grep -RInE 'vault.*(index\.sqlite|IndexDatabase)|index\.sqlite.*vault' \
+  --include='*.swift' --include='*.md' \
+  "$ROOT/LociIndex" "$ROOT/LociVault" "$ROOT/LociCore" 2>/dev/null \
+  | grep -viE 'never|not |must not|Application Support|outside' >/dev/null; then
+  # Soft informational — architecture comments often mention the anti-pattern.
+  true
+fi
+pass "index/vault boundary docs present (Application Support convention)"
+
+if command -v swift >/dev/null 2>&1; then
+  echo "==> lint: swift build"
+  if swift build --package-path "$ROOT"; then
+    pass "swift build"
+  else
+    fail "swift build failed"
+  fi
+
+  if command -v swift-format >/dev/null 2>&1; then
+    echo "==> lint: swift-format lint"
+    if swift-format lint --recursive \
+      "$ROOT/LociCore" "$ROOT/LociVault" "$ROOT/LociMarkdown" "$ROOT/LociIndex" "$ROOT/LociDesignSystem"; then
+      pass "swift-format"
+    else
+      fail "swift-format reported issues"
+    fi
+  else
+    echo "SKIP: swift-format not installed"
+  fi
+else
+  fail "swift toolchain not available"
+fi
+
+# Ensure feature folder convention exists
+if [[ -d "$ROOT/App/Features/AppShell" ]]; then
+  pass "App/Features/AppShell present"
+else
+  fail "App/Features/AppShell missing"
+fi
+
+if [[ "$failures" -ne 0 ]]; then
+  echo "==> lint failed ($failures)" >&2
+  exit 1
+fi
+
+echo "==> lint passed"

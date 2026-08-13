@@ -1,0 +1,42 @@
+# XcodeGen project for macOS/iOS app shell.
+# Generate on a Mac: brew install xcodegen && xcodegen generate
+# Cloud Linux agents do not use this file — they run SPM tests + DevHarness.
+
+name: Loci
+options:
+  bundleIdPrefix: app.loci
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+packages:
+  Loci:
+    path: .
+targets:
+  Loci:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: App
+    dependencies:
+      - package: Loci
+        product: LociCore
+      - package: Loci
+        product: LociVault
+      - package: Loci
+        product: LociMarkdown
+      - package: Loci
+        product: LociIndex
+      - package: Loci
+        product: LociDesignSystem
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Loci
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES

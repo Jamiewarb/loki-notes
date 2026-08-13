@@ -1,0 +1,16 @@
+==> lint: Package.swift present
+OK: Package.swift exists
+==> lint: reject fatal TODO crash stubs in production Sources
+OK: no TODO crash stubs in Sources
+==> lint: index must not be configured inside vault paths
+OK: index/vault boundary docs present (Application Support convention)
+==> lint: swift build
+[0/1] Planning build
+Building for debugging...
+[0/1] Write swift-version--166437D737243488.txt
+Build complete! (0.11s)
+OK: swift build
+==> lint: swift-format lint
+OK: swift-format
+OK: App/Features/AppShell present
+==> lint passed
