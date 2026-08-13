@@ -153,6 +153,9 @@ function render(): void {
   if (inspectorRoot && active === "daily") {
     void renderCreatedTodayInspector(inspectorRoot);
   }
+  if (inspectorRoot && active === "types") {
+    void renderPropertiesInspector(inspectorRoot);
+  }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -232,6 +235,68 @@ async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
   }
 }
 
+/** Types inspector: Book property defs + Deep Work values (PR13). */
+async function renderPropertiesInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-props-loading">Loading properties…</p>`;
+  try {
+    const res = await fetch("/demo-properties/properties.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      bookType?: {
+        properties?: Array<{ id?: string; name?: string; kind?: string }>;
+      };
+      object?: {
+        title?: string;
+        properties?: Record<string, string | number | boolean>;
+      };
+      survivedReload?: boolean;
+      statusIndexed?: boolean;
+      ratingIndexed?: boolean;
+    };
+    const defs = data.bookType?.properties ?? [];
+    const values = data.object?.properties ?? {};
+    const defRows = defs
+      .map(
+        (d) =>
+          `<li class="schema-type-row"><span class="schema-type-name">${escapeAttr(
+            d.name ?? d.id ?? "?",
+          )}</span><span class="schema-type-meta">${escapeAttr(
+            d.kind ?? "",
+          )}</span></li>`,
+      )
+      .join("");
+    const valueRows = Object.entries(values)
+      .map(
+        ([k, v]) =>
+          `<li class="schema-type-row" data-harness="inspector-prop-value" data-key="${escapeAttr(
+            k,
+          )}"><span class="schema-type-name">${escapeAttr(
+            k,
+          )}</span><span class="schema-type-meta">${escapeAttr(String(v))}</span></li>`,
+      )
+      .join("");
+    root.innerHTML = `
+      <p>Book defs → object values (YAML). Reload ${
+        data.survivedReload ? "✓" : "?"
+      } · idx status/rating ${
+        data.statusIndexed && data.ratingIndexed ? "✓" : "?"
+      }</p>
+      <p class="vault-kicker" style="margin-top:0.75rem">Defs</p>
+      <ul class="schema-type-list" data-harness="inspector-prop-defs">${
+        defRows || "<li>none</li>"
+      }</ul>
+      <p class="vault-kicker" style="margin-top:0.75rem">${escapeAttr(
+        data.object?.title ?? "Object",
+      )}</p>
+      <ul class="schema-type-list" data-harness="inspector-prop-values">${
+        valueRows || "<li>none</li>"
+      }</ul>
+    `;
+  } catch {
+    root.innerHTML = `<p>Missing properties fixture. Run <code>./scripts/demo-properties.sh</code>.</p>`;
+  }
+}
+
 function escapeAttr(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -247,7 +312,7 @@ function inspectorTitle(id: PanelId): string {
     case "search":
       return "Filters";
     case "types":
-      return "Pages · type metadata";
+      return "Property defs · object values";
     case "settings":
       return "Sync status";
     case "gallery":

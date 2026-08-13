@@ -4,23 +4,23 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR12 — Custom object types + dashboards
+## PR13 — Properties system
 
-**Branch:** `cursor/pr12-custom-types-d2c1`  
-**Based on:** `cursor/pr11-created-today-d2c1` @ `8bf3480`
+**Branch:** `cursor/pr13-properties-d2c1`  
+**Based on:** `cursor/pr12-custom-types-d2c1` @ `311da09`
 
 ### What landed
 
-- **`SchemaServing` CRUD:** `createType` / `renameType` / `deleteType` → `.loci/types/<slug>.json` + `objects/<slug>/`
-- **`TypeSlug`:** name→slug, reserved `page`/`daily`, validation errors
-- **Guards:** built-in Page/Daily refuse delete; non-empty custom types need `force`
-- **UI:** `Features/ObjectTypes/{ObjectTypesFeature,UI/TypeList,TypeEditor,TypeDashboard}`
-- **Sidebar:** Types section lists all schema types → opens dashboard
-- **Demo:** `loci-types-demo` / `scripts/demo-types.sh` → `DevHarness/public/demo-types/`
-- **Harness:** Types panel shows Books + Deep Work + delete guard
-- **Tests:** **105** package tests (was 97)
-- Evidence: `evidence/pr12/`
-- Version: `LociVaultModule` → `0.12.0-pr12`
+- **Property defs on types:** `SchemaServing.setProperties` / `upsertProperty` / `removeProperty` → `.loci/types/<slug>.json`
+- **Kinds:** text, number, date, select, multiSelect, checkbox, url; object-select stub (comma-separated ids)
+- **Object inspector:** `Features/Properties/PropertyEditorView` — values → YAML frontmatter via `ObjectServing.save`
+- **Type defs UI:** `PropertyDefsEditorView` on type dashboard + types inspector
+- **Index:** `properties_idx` written on save; `objects(typeID:propertyKey:equalsText:)` + `propertyIndex(objectID:)`
+- **Demo:** `loci-properties-demo` / `scripts/demo-properties.sh` → `DevHarness/public/demo-properties/`
+- **Harness:** Types panel shows Book defs + Deep Work property detail + inspector values
+- **Tests:** **111** package tests (was 105)
+- Evidence: `evidence/pr13/`
+- Version: `LociVaultModule` / `LociIndexModule` → `*-pr13`
 
 ### How to run checks
 
@@ -28,35 +28,36 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-types.sh
+./scripts/demo-properties.sh
 ./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
 ```
 
-### Pitfalls for PR13 (Properties)
+### Pitfalls for PR14 (Templates)
 
-- Types already have `properties: [PropertyDef]` — keep empty-array compatible
-- Property values belong in YAML frontmatter via ObjectServing.save — not schema JSON
-- Index needs property columns for filter/sort (extend IndexService carefully)
-- Type dashboards currently list All from `objects(typeID:)` — property filters come next
-- Do not rewrite type id/slug when renaming display name
+- Property values belong in frontmatter — template defaults should merge into `meta.properties` on create
+- Empty `properties: []` on types remains valid
+- Select values encode as tagged YAML `{kind: select, value: …}` for lossless round-trip
+- Object-select is still a stub (no link picker until PR16)
+- Do not put SQLite / index inside the vault
 
-### Next: PR13 — Properties system
+### Next: PR14 — Templates
 
-- Branch: `cursor/pr13-properties-d2c1`
+- Branch: `cursor/pr14-templates-d2c1`
+- Template CRUD per type (body markdown + default property values); star default; apply on create
 
 ---
 
-## PR11 — Created-today auto links
+## PR12 — Custom object types + dashboards
 
-**Branch:** `cursor/pr11-created-today-d2c1`
+**Branch:** `cursor/pr12-custom-types-d2c1`
 
-`CreatedTodayPanel` from index; daily.md never rewritten on Page create. See `evidence/pr11/`.
+`SchemaServing` create/rename/delete; TypeList/TypeEditor/TypeDashboard; Books + Deep Work demo. See `evidence/pr12/`.
 
 ### Still relevant
 
-- Created-today already surfaces non-daily custom types automatically
-- ObjectService must not touch daily notes on create
+- Type id/slug stays stable on rename
+- Built-in Page/Daily refuse casual delete
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR12 done · next PR13
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR13 done · next PR14

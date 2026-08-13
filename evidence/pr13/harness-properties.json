@@ -1,0 +1,95 @@
+{
+  "bookType" : {
+    "color" : "#8B5A2B",
+    "icon" : "book",
+    "id" : "book",
+    "isBuiltIn" : false,
+    "name" : "Books",
+    "properties" : [
+      {
+        "id" : "status",
+        "kind" : "select",
+        "name" : "Status",
+        "options" : [
+          "To Read",
+          "Reading",
+          "Done"
+        ],
+        "required" : false
+      },
+      {
+        "id" : "rating",
+        "kind" : "number",
+        "name" : "Rating",
+        "options" : [
+
+        ],
+        "required" : false
+      },
+      {
+        "id" : "url",
+        "kind" : "url",
+        "name" : "URL",
+        "options" : [
+
+        ],
+        "required" : false
+      },
+      {
+        "id" : "finished",
+        "kind" : "checkbox",
+        "name" : "Finished",
+        "options" : [
+
+        ],
+        "required" : false
+      }
+    ]
+  },
+  "filterStatusReadingCount" : 1,
+  "frontmatterSnippet" : "id: b531657c-42ce-4847-8085-ed5f03de78ba\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T11:15:01Z\"\nupdated: \"2026-08-13T11:15:01Z\"\nproperties:\n  finished: false\n  rating: 5\n  status:\n    kind: select\n    value: Reading\n  url:\n    kind: url\n    value: \"https:\/\/www.calnewport.com\/books\/deep-work\/\"",
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr13",
+  "indexPath" : "\/tmp\/loci-properties-demo-db-2026-08-13T11-15-01Z\/v6b5b239ab34918d0\/index.sqlite",
+  "moduleVersion" : "0.13.0-pr13",
+  "note" : "Book type gets status + rating; values in YAML frontmatter; properties_idx updated on save (PR13).",
+  "object" : {
+    "id" : "b531657c-42ce-4847-8085-ed5f03de78ba",
+    "properties" : {
+      "finished" : "false",
+      "rating" : "5",
+      "status" : "Reading",
+      "url" : "https:\/\/www.calnewport.com\/books\/deep-work\/"
+    },
+    "relativePath" : "objects\/book\/deep-work.md",
+    "tags" : [
+
+    ],
+    "title" : "Deep Work",
+    "type" : "book"
+  },
+  "propertiesIdx" : [
+    {
+      "key" : "finished",
+      "valueBool" : false,
+      "valueText" : "false"
+    },
+    {
+      "key" : "rating",
+      "valueNumber" : 5,
+      "valueText" : "5.0"
+    },
+    {
+      "key" : "status",
+      "valueText" : "Reading"
+    },
+    {
+      "key" : "url",
+      "valueText" : "https:\/\/www.calnewport.com\/books\/deep-work\/"
+    }
+  ],
+  "ratingIndexed" : true,
+  "statusIndexed" : true,
+  "survivedReload" : true,
+  "vaultRoot" : "\/tmp\/loci-properties-demo-vault-2026-08-13T11-15-01Z\/LociVault"
+}

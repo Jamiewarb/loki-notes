@@ -20,6 +20,19 @@ struct InspectorHostView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .background(LociColors.panel.opacity(0.55))
                 .lociAppear(.panel)
+            } else if case .object(let id) = route {
+                ScrollView {
+                    PropertiesFeature.editor(services: services, objectID: id)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            } else if case .types = route, let typeID = services.focusedTypeID {
+                ScrollView {
+                    PropertiesFeature.defsEditor(services: services, typeID: typeID)
+                        .padding(LociSpacing.stack(.lg))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(LociColors.panel.opacity(0.55))
+                .lociAppear(.panel)
             } else {
                 placeholderBody
             }
@@ -74,13 +87,13 @@ struct InspectorHostView: View {
         case .search:
             return "Recent queries and filter chips will appear here (PR18)."
         case .types:
-            return "Property defs for the selected type (PR13)."
+            return "Open a type dashboard to edit property defs (PR13)."
         case .settings:
             return "iCloud vs local Documents — index never stored in the vault."
         case .designGallery:
             return "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent."
         case .object:
-            return "Backlinks, properties, and outline for the open object."
+            return "Property values persist in YAML frontmatter on save."
         }
     }
 

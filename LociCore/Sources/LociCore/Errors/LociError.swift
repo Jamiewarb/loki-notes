@@ -16,6 +16,10 @@ public enum LociError: Error, Sendable, Equatable {
     case invalidTypeSlug(String)
     /// Custom type still has object markdown under `objects/<slug>/`.
     case typeNotEmpty(String)
+    /// Property id empty or duplicate on a type.
+    case invalidPropertyID(String)
+    /// Property def not found on the type.
+    case propertyNotFound(String)
     case invalidRelativePath(String)
     case fileNotFound(String)
     case pathOutsideVault(String)

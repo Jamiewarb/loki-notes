@@ -148,6 +148,61 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         try await vault.deleteFile(atRelativePath: Self.typeRelativePath(for: id))
     }
 
+    // MARK: - Properties (PR13)
+
+    @discardableResult
+    public func setProperties(_ typeID: ObjectTypeID, properties: [PropertyDef]) async throws
+        -> ObjectType
+    {
+        var type = try await loadType(typeID)
+        // Reject duplicate ids within the payload.
+        var seen = Set<String>()
+        for def in properties {
+            let id = PropertyKey.normalize(def.id)
+            guard !id.isEmpty else { throw LociError.invalidPropertyID("(empty)") }
+            if seen.contains(id) {
+                throw LociError.invalidPropertyID(id)
+            }
+            seen.insert(id)
+        }
+        type.properties = properties.map { def in
+            var copy = def
+            copy.id = PropertyKey.normalize(def.id)
+            return copy
+        }
+        try await saveType(type)
+        return type
+    }
+
+    @discardableResult
+    public func upsertProperty(_ typeID: ObjectTypeID, def: PropertyDef) async throws -> ObjectType {
+        let id = try PropertyKey.resolve(explicit: def.id, fromName: def.name)
+        var type = try await loadType(typeID)
+        var next = def
+        next.id = id
+        if let idx = type.properties.firstIndex(where: { $0.id == id }) {
+            type.properties[idx] = next
+        } else {
+            type.properties.append(next)
+        }
+        try await saveType(type)
+        return type
+    }
+
+    @discardableResult
+    public func removeProperty(_ typeID: ObjectTypeID, propertyID: String) async throws -> ObjectType {
+        let id = PropertyKey.normalize(propertyID)
+        guard !id.isEmpty else { throw LociError.invalidPropertyID("(empty)") }
+        var type = try await loadType(typeID)
+        let before = type.properties.count
+        type.properties.removeAll { $0.id == id }
+        guard type.properties.count < before else {
+            throw LociError.propertyNotFound(id)
+        }
+        try await saveType(type)
+        return type
+    }
+
     // MARK: - Paths
 
     public static func typeRelativePath(for id: ObjectTypeID) -> String {

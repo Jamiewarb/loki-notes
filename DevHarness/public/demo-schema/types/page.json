@@ -1,9 +1,8 @@
 {
-  "color": "#0F6B5C",
-  "icon": "doc.text",
   "id": "page",
-  "isBuiltIn": true,
-  "isDaily": false,
   "name": "Page",
+  "icon": "doc.text",
+  "color": "#0F6B5C",
+  "isBuiltIn": true,
   "properties": []
 }
