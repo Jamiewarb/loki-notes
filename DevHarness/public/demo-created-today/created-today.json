@@ -1,0 +1,65 @@
+{
+  "createdToday" : [
+    {
+      "id" : "44fb6fbb-8d9f-43a8-a986-85e62190931e",
+      "relativePath" : "objects\/page\/deep-work-notes.md",
+      "tags" : [
+        "focus"
+      ],
+      "title" : "Deep Work Notes",
+      "type" : "page"
+    },
+    {
+      "id" : "611879a2-6f62-4673-b5b2-e98ade7ffbec",
+      "relativePath" : "objects\/page\/second-capture.md",
+      "tags" : [
+
+      ],
+      "title" : "Second Capture",
+      "type" : "page"
+    }
+  ],
+  "createdTodayRawCount" : 3,
+  "daily" : {
+    "id" : "daily-2026-08-13",
+    "relativePath" : "daily\/2026-08-13.md",
+    "title" : "2026-08-13",
+    "uuid" : "d01a2026-0813-4000-8000-6461696c7900"
+  },
+  "day" : "2026-08-13",
+  "excludeDailyFromPanel" : true,
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-created-today-demo-db-2026-08-13T10-48-05Z\/va65c6899b2cd8b72\/index.sqlite",
+  "markdown" : "---\nid: daily-2026-08-13\ntype: daily\ntitle: 2026-08-13\ncreated: \"2026-08-13T00:00:00Z\"\nupdated: \"2026-08-13T10:48:05Z\"\n---\n\n## Inbox\n\nMorning capture — created-today stays in the inspector.\n\n- [ ] Review yesterday\n- [x] Land PR11\n\n#daily\n",
+  "moduleVersion" : "0.11.0-pr11",
+  "note" : "Created-today is IndexQuerying.created(on:) UI only. Daily type excluded from panel. Never rewrite daily.md on create.",
+  "pagesCreated" : [
+    {
+      "id" : "44fb6fbb-8d9f-43a8-a986-85e62190931e",
+      "relativePath" : "objects\/page\/deep-work-notes.md",
+      "tags" : [
+        "focus"
+      ],
+      "title" : "Deep Work Notes",
+      "type" : "page"
+    },
+    {
+      "id" : "611879a2-6f62-4673-b5b2-e98ade7ffbec",
+      "relativePath" : "objects\/page\/second-capture.md",
+      "tags" : [
+
+      ],
+      "title" : "Second Capture",
+      "type" : "page"
+    }
+  ],
+  "proof" : {
+    "afterHash" : "len=240;hex=2d2d2d0a69643a206461696c792d323032362d30382d31330a747970653a206461696c790a7469746c653a20323032362d30382d31330a637265617465643a2022323032362d30382d31335430303a30303a30305a220a757064617465643a2022323032362d30382d31335431303a34383a30355a220a2d2d2d0a0a232320496e626f780a0a4d6f726e696e67206361707475726520e2809420637265617465642d746f64617920737461797320696e2074686520696e73706563746f722e0a0a2d205b205d20526576696577207965737465726461790a2d205b785d204c616e6420505231310a0a236461696c790a",
+    "afterMtime" : "2026-08-13T10:48:05Z",
+    "beforeHash" : "len=240;hex=2d2d2d0a69643a206461696c792d323032362d30382d31330a747970653a206461696c790a7469746c653a20323032362d30382d31330a637265617465643a2022323032362d30382d31335430303a30303a30305a220a757064617465643a2022323032362d30382d31335431303a34383a30355a220a2d2d2d0a0a232320496e626f780a0a4d6f726e696e67206361707475726520e2809420637265617465642d746f64617920737461797320696e2074686520696e73706563746f722e0a0a2d205b205d20526576696577207965737465726461790a2d205b785d204c616e6420505231310a0a236461696c790a",
+    "beforeMtime" : "2026-08-13T10:48:05Z",
+    "dailyUnchanged" : true,
+    "note" : "ObjectService.create Page does not rewrite daily .md (fingerprint + mtime + bytes)."
+  },
+  "vaultRoot" : "\/tmp\/loci-created-today-demo-vault-2026-08-13T10-48-05Z\/LociVault"
+}

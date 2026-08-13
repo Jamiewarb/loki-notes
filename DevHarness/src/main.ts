@@ -136,7 +136,9 @@ function render(): void {
       <aside class="inspector" aria-label="Inspector" data-harness="inspector">
         <h3>Inspector</h3>
         <p class="inspector-title">${inspectorTitle(active)}</p>
-        <p>${panel.inspector}</p>
+        <div data-inspector-root>
+          <p>${panel.inspector}</p>
+        </div>
         <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
       </aside>
     </div>
@@ -147,6 +149,11 @@ function render(): void {
 
   renderDetail(active, detail);
 
+  const inspectorRoot = app.querySelector<HTMLElement>("[data-inspector-root]");
+  if (inspectorRoot && active === "daily") {
+    void renderCreatedTodayInspector(inspectorRoot);
+  }
+
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.nav as PanelId;
@@ -156,6 +163,81 @@ function render(): void {
       }
     });
   });
+}
+
+/** Daily inspector: live Created today links from demo-created-today fixture (PR11). */
+async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-created-loading">Loading created today…</p>`;
+  try {
+    const res = await fetch("/demo-created-today/created-today.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      createdToday?: Array<{
+        id: string;
+        type: string;
+        title: string;
+        relativePath: string;
+      }>;
+      proof?: { dailyUnchanged?: boolean };
+      note?: string;
+    };
+    const items = data.createdToday ?? [];
+    const rows = items
+      .map(
+        (h) => `
+        <li class="schema-type-row" data-harness="inspector-created-row" data-object-id="${escapeAttr(
+          h.id,
+        )}" role="button" tabindex="0">
+          <span class="schema-type-name">${escapeAttr(h.title)}</span>
+          <span class="schema-type-meta">${escapeAttr(h.type)}</span>
+        </li>`,
+      )
+      .join("");
+    root.innerHTML = `
+      <p>Index-only · daily.md ${data.proof?.dailyUnchanged ? "unchanged ✓" : "?"} after create.</p>
+      <ul class="schema-type-list" data-harness="inspector-created-list" style="margin-top:0.75rem">
+        ${rows || "<li class='schema-type-row'>Empty</li>"}
+      </ul>
+      <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
+        data.note ?? "Tap a row — Navigating.open in the app.",
+      )}</p>
+      <div class="page-detail" data-harness="inspector-created-detail" hidden style="margin-top:0.75rem">
+        <p class="vault-card-body" data-harness="inspector-created-detail-body"></p>
+      </div>
+    `;
+    const detail = root.querySelector<HTMLElement>("[data-harness='inspector-created-detail']");
+    const detailBody = root.querySelector<HTMLElement>(
+      "[data-harness='inspector-created-detail-body']",
+    );
+    root.querySelectorAll<HTMLLIElement>("[data-harness='inspector-created-row']").forEach((row) => {
+      const show = () => {
+        const id = row.dataset.objectId ?? "";
+        const hit = items.find((h) => h.id === id);
+        if (!detail || !detailBody) return;
+        detail.hidden = false;
+        detailBody.textContent = hit
+          ? `Open ${hit.title} → ${hit.relativePath}`
+          : "Unknown";
+      };
+      row.addEventListener("click", show);
+      row.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter" || ev.key === " ") {
+          ev.preventDefault();
+          show();
+        }
+      });
+    });
+  } catch {
+    root.innerHTML = `<p>Missing created-today fixture. Run <code>./scripts/demo-created-today.sh</code>.</p>`;
+  }
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function inspectorTitle(id: PanelId): string {

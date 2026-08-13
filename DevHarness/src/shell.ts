@@ -62,7 +62,7 @@ export const PANELS: Record<PanelId, Panel> = {
     id: "daily",
     title: "Daily",
     body: "Today’s note — daily/YYYY-MM-DD.md + id daily-YYYY-MM-DD (PR10).",
-    inspector: "Created today panel lands in PR11 (index-only; never rewrites this .md).",
+    inspector: "Created today — IndexQuerying.created(on:) live links; daily .md never rewritten on create.",
   },
   search: {
     id: "search",

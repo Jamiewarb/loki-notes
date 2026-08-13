@@ -28,7 +28,7 @@ struct AppShellView: View {
             DetailHostView(route: services.selectedRoute, services: services)
                 .navigationTitle(services.selectedRoute.title)
         } detail: {
-            InspectorHostView(route: services.selectedRoute)
+            InspectorHostView(route: services.selectedRoute, services: services)
                 .navigationSplitViewColumnWidth(min: 220, ideal: 280, max: 360)
         }
         .navigationSplitViewStyle(.balanced)
@@ -63,7 +63,7 @@ struct AppShellView: View {
         .tint(LociColors.accent)
         .sheet(isPresented: $inspectorPresented) {
             NavigationStack {
-                InspectorHostView(route: services.selectedRoute)
+                InspectorHostView(route: services.selectedRoute, services: services)
                     .navigationTitle("Inspector")
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
