@@ -1,0 +1,460 @@
+{
+  "anchor" : "2026-08-13",
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr25",
+  "jump" : {
+    "daily13Unchanged" : true,
+    "day" : "2026-08-14",
+    "objectId" : "daily-2026-08-14",
+    "path" : "daily\/2026-08-14.md"
+  },
+  "markers" : [
+    {
+      "creationCount" : 1,
+      "dayKey" : "2026-08-12",
+      "hasContent" : false,
+      "hasDailyNote" : true,
+      "showsDot" : true
+    },
+    {
+      "creationCount" : 2,
+      "dayKey" : "2026-08-13",
+      "hasContent" : true,
+      "hasDailyNote" : true,
+      "showsDot" : true
+    },
+    {
+      "creationCount" : 2,
+      "dayKey" : "2026-08-14",
+      "hasContent" : false,
+      "hasDailyNote" : true,
+      "showsDot" : true
+    }
+  ],
+  "moduleVersion" : "0.25.0-pr25",
+  "month" : {
+    "cellCount" : 42,
+    "cells" : [
+      {
+        "dayKey" : "2026-07-26",
+        "dayNumber" : 26,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-07-27",
+        "dayNumber" : 27,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-07-28",
+        "dayNumber" : 28,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-07-29",
+        "dayNumber" : 29,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-07-30",
+        "dayNumber" : 30,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-07-31",
+        "dayNumber" : 31,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-01",
+        "dayNumber" : 1,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-02",
+        "dayNumber" : 2,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-03",
+        "dayNumber" : 3,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-04",
+        "dayNumber" : 4,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-05",
+        "dayNumber" : 5,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-06",
+        "dayNumber" : 6,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-07",
+        "dayNumber" : 7,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-08",
+        "dayNumber" : 8,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-09",
+        "dayNumber" : 9,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-10",
+        "dayNumber" : 10,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-11",
+        "dayNumber" : 11,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-12",
+        "dayNumber" : 12,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-13",
+        "dayNumber" : 13,
+        "inCurrentPeriod" : true,
+        "isSelected" : true,
+        "isToday" : true,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-14",
+        "dayNumber" : 14,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-15",
+        "dayNumber" : 15,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-16",
+        "dayNumber" : 16,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-17",
+        "dayNumber" : 17,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-18",
+        "dayNumber" : 18,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-19",
+        "dayNumber" : 19,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-20",
+        "dayNumber" : 20,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-21",
+        "dayNumber" : 21,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-22",
+        "dayNumber" : 22,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-23",
+        "dayNumber" : 23,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-24",
+        "dayNumber" : 24,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-25",
+        "dayNumber" : 25,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-26",
+        "dayNumber" : 26,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-27",
+        "dayNumber" : 27,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-28",
+        "dayNumber" : 28,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-29",
+        "dayNumber" : 29,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-30",
+        "dayNumber" : 30,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-31",
+        "dayNumber" : 31,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-09-01",
+        "dayNumber" : 1,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-09-02",
+        "dayNumber" : 2,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-09-03",
+        "dayNumber" : 3,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-09-04",
+        "dayNumber" : 4,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-09-05",
+        "dayNumber" : 5,
+        "inCurrentPeriod" : false,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      }
+    ],
+    "markedDayCount" : 3,
+    "title" : "August 2026",
+    "weekdaySymbols" : [
+      "S",
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S"
+    ]
+  },
+  "note" : "PR25: Calendar from IndexQuerying.calendarMarkers. Dots = daily\/content\/creations. Day select → DailyNoteServing.ensure + Navigating.open.",
+  "proof" : {
+    "chromeDidNotRewriteDaily13" : true,
+    "day13HasCreations" : true,
+    "day13HasDailyAndContent" : true,
+    "day14HasCreations" : true,
+    "day14HasDailyAfterJump" : true,
+    "monthCellCount42" : true,
+    "opensViaNavigating" : true,
+    "weekCellCount7" : true
+  },
+  "week" : {
+    "cellCount" : 7,
+    "cells" : [
+      {
+        "dayKey" : "2026-08-09",
+        "dayNumber" : 9,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-10",
+        "dayNumber" : 10,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-11",
+        "dayNumber" : 11,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      },
+      {
+        "dayKey" : "2026-08-12",
+        "dayNumber" : 12,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-13",
+        "dayNumber" : 13,
+        "inCurrentPeriod" : true,
+        "isSelected" : true,
+        "isToday" : true,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-14",
+        "dayNumber" : 14,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : true
+      },
+      {
+        "dayKey" : "2026-08-15",
+        "dayNumber" : 15,
+        "inCurrentPeriod" : true,
+        "isSelected" : false,
+        "isToday" : false,
+        "showsDot" : false
+      }
+    ],
+    "title" : "2026-08-09 – 2026-08-15"
+  }
+}
