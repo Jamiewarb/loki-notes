@@ -1,0 +1,9 @@
+Harness already serving on :5173; captured fixtures + DOM snapshot
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0
+GET /demo-queries/queries.json OK

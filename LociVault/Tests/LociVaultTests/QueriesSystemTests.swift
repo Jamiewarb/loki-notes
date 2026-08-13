@@ -163,7 +163,8 @@ final class QueryEngineTests: XCTestCase {
         XCTAssertEqual(created.id, "focus-books")
         let path = SchemaStore.queryRelativePath(for: "focus-books")
         XCTAssertEqual(path, ".loci/queries/focus-books.json")
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: path))
+        let exists = try await vault.fileExists(atRelativePath: path)
+        XCTAssertTrue(exists)
 
         let data = try await vault.readFile(atRelativePath: path)
         let json = String(data: data, encoding: .utf8) ?? ""
@@ -181,7 +182,8 @@ final class QueryEngineTests: XCTestCase {
         XCTAssertTrue(unpinned.isEmpty)
 
         try await schema.deleteQuery("focus-books")
-        XCTAssertFalse(try await vault.fileExists(atRelativePath: path))
+        let gone = try await vault.fileExists(atRelativePath: path)
+        XCTAssertFalse(gone)
     }
 
     func testQueriesSkeletonAndDuplicateRejected() async throws {

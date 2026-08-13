@@ -1,0 +1,58 @@
+{
+  "allBooksCount" : 3,
+  "bookType" : {
+    "id" : "book",
+    "name" : "Books"
+  },
+  "definitionIsVaultFile" : true,
+  "embed" : {
+    "html" : "<article class=\"loci-ast\" data-harness=\"block-ast-html\">\n<p>Notes<\/p>\n<div class=\"query-embed\" data-query-id=\"reading-focus\" data-harness=\"query-embed\"><span class=\"query-embed-label\">\/query<\/span> <code>reading-focus<\/code> <span class=\"query-embed-hint\">live results<\/span><\/div>\n<\/article>",
+    "queryID" : "reading-focus",
+    "roundTripKind" : "reading-focus",
+    "serialized" : "Notes\n\n```query\nreading-focus\n```",
+    "storesResultsInBody" : false
+  },
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr23",
+  "markdownModuleVersion" : "0.2.0-pr23",
+  "moduleVersion" : "0.23.0-pr23",
+  "note" : "PR23: QueryEngine DSL; saved defs in .loci\/queries\/<slug>.json; pin to type dashboard; \/query embed stores slug only.",
+  "pinnedQueryIDs" : [
+    "reading-focus"
+  ],
+  "queriesDirectory" : ".loci\/queries",
+  "query" : {
+    "definitionOnly" : true,
+    "exists" : true,
+    "id" : "reading-focus",
+    "name" : "Reading + focus",
+    "pinnedTypeID" : "book",
+    "propertyEquals" : "status=Reading",
+    "relativePath" : ".loci\/queries\/reading-focus.json",
+    "tags" : [
+      "focus"
+    ]
+  },
+  "resultCount" : 2,
+  "results" : [
+    {
+      "id" : "b837d883-93db-49a7-96c4-24f3a2eb6999",
+      "tags" : [
+        "focus"
+      ],
+      "title" : "Deep Work"
+    },
+    {
+      "id" : "55cd7e4b-e1cf-4140-9672-957d06586728",
+      "tags" : [
+        "focus"
+      ],
+      "title" : "Range"
+    }
+  ],
+  "resultTitles" : [
+    "Deep Work",
+    "Range"
+  ],
+  "vaultFileSnippet" : "{\n  \"definition\" : {\n    \"properties\" : [\n      {\n        \"key\" : \"status\",\n        \"op\" : \"equals\",\n        \"text\" : \"Reading\"\n      }\n    ],\n    \"sort\" : \"titleAsc\",\n    \"tagMode\" : \"all\",\n    \"tags\" : [\n      \"focus\"\n    ],\n    \"typeID\" : \"book\"\n  },\n  \"id\" : \"reading-focus\",\n  \"name\" : \"Reading + focus\",\n  \"pinnedT"
+}

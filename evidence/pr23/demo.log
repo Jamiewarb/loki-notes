@@ -1,0 +1,11 @@
+==> loci-queries-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-queries-demo' complete! (0.39s)
+query=reading-focus hits=2 vault=.loci/queries/reading-focus.json embed_results_in_body=False
+wrote DevHarness/public/demo-types/types.json (with queries)
+wrote DevHarness/public/demo-editor/editor.json (with query embed)
+wrote DevHarness/public/demo-schema/queries and updated manifest
+==> wrote /agent/DevHarness/public/demo-queries/queries.json
+==> demo-queries complete

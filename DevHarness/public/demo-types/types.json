@@ -1,5 +1,5 @@
 {
-  "moduleVersion": "0.22.0-pr22",
+  "moduleVersion": "0.23.0-pr23",
   "space": {
     "archiveApproach": "tag:#archive",
     "hideArchived": true,
@@ -217,5 +217,46 @@
     "type": "book",
     "title": "Atomic Habits",
     "relativePath": "objects/book/atomic-habits.md"
-  }
+  },
+  "queries": [
+    {
+      "definitionOnly": true,
+      "exists": true,
+      "id": "reading-focus",
+      "name": "Reading + focus",
+      "pinnedTypeID": "book",
+      "propertyEquals": "status=Reading",
+      "relativePath": ".loci/queries/reading-focus.json",
+      "tags": [
+        "focus"
+      ]
+    }
+  ],
+  "pinnedQueries": [
+    "reading-focus"
+  ],
+  "queryResults": [
+    {
+      "id": "b837d883-93db-49a7-96c4-24f3a2eb6999",
+      "tags": [
+        "focus"
+      ],
+      "title": "Deep Work"
+    },
+    {
+      "id": "55cd7e4b-e1cf-4140-9672-957d06586728",
+      "tags": [
+        "focus"
+      ],
+      "title": "Range"
+    }
+  ],
+  "queryResultTitles": [
+    "Deep Work",
+    "Range"
+  ],
+  "queryResultCount": 2,
+  "queriesDirectory": ".loci/queries",
+  "definitionIsVaultFile": true,
+  "queriesNote": "PR23: QueryEngine DSL; saved defs in .loci/queries/<slug>.json; pin to type dashboard; /query embed stores slug only."
 }

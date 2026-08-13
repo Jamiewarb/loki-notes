@@ -235,8 +235,8 @@ final class DomainModelTests: XCTestCase {
             tagMode: .all,
             properties: [.equals("status", text: "Reading")],
             created: DateRangeFilter(from: Date(timeIntervalSince1970: 1_700_000_000)),
-            sort: .updatedDesc,
-            limit: 25
+            limit: 25,
+            sort: .updatedDesc
         )
         let query = SavedQuery(
             id: "reading-books",

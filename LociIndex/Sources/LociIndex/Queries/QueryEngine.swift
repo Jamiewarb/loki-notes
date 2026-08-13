@@ -13,32 +13,34 @@ enum QueryEngine {
             """
         var joins: [String] = []
         var whereClauses: [String] = ["1=1"]
-        var args = StatementArguments()
+        // JOIN placeholders appear before WHERE in the final SQL — keep args in that order.
+        var joinArgs = StatementArguments()
+        var whereArgs = StatementArguments()
 
         if let typeID = definition.typeID {
             whereClauses.append("o.type_id = ?")
-            args += [typeID.rawValue]
+            whereArgs += [typeID.rawValue]
         }
 
         if let created = definition.created, !created.isEmpty {
             if let from = created.from {
                 whereClauses.append("o.created >= ?")
-                args += [from.timeIntervalSince1970]
+                whereArgs += [from.timeIntervalSince1970]
             }
             if let to = created.to {
                 whereClauses.append("o.created <= ?")
-                args += [to.timeIntervalSince1970]
+                whereArgs += [to.timeIntervalSince1970]
             }
         }
 
         if let updated = definition.updated, !updated.isEmpty {
             if let from = updated.from {
                 whereClauses.append("o.updated >= ?")
-                args += [from.timeIntervalSince1970]
+                whereArgs += [from.timeIntervalSince1970]
             }
             if let to = updated.to {
                 whereClauses.append("o.updated <= ?")
-                args += [to.timeIntervalSince1970]
+                whereArgs += [to.timeIntervalSince1970]
             }
         }
 
@@ -54,7 +56,7 @@ enum QueryEngine {
                     joins.append(
                         "INNER JOIN tags \(alias) ON \(alias).object_id = o.id AND \(alias).tag = ?"
                     )
-                    args += [tag]
+                    joinArgs += [tag]
                 }
             case .any:
                 let placeholders = Array(repeating: "?", count: normalizedTags.count)
@@ -68,7 +70,7 @@ enum QueryEngine {
                     """
                 )
                 for tag in normalizedTags {
-                    args += [tag]
+                    whereArgs += [tag]
                 }
             }
         }
@@ -87,7 +89,7 @@ enum QueryEngine {
                     )
                     """
                 )
-                args += [key]
+                whereArgs += [key]
             case .notExists:
                 whereClauses.append(
                     """
@@ -97,7 +99,7 @@ enum QueryEngine {
                     )
                     """
                 )
-                args += [key]
+                whereArgs += [key]
             case .equals:
                 if let bool = filter.bool {
                     joins.append(
@@ -108,7 +110,7 @@ enum QueryEngine {
                          AND \(alias).value_bool = ?
                         """
                     )
-                    args += [key, bool ? 1 : 0]
+                    joinArgs += [key, bool ? 1 : 0]
                 } else if let number = filter.number {
                     joins.append(
                         """
@@ -118,7 +120,7 @@ enum QueryEngine {
                          AND \(alias).value_number = ?
                         """
                     )
-                    args += [key, number]
+                    joinArgs += [key, number]
                 } else {
                     let text = filter.text ?? ""
                     joins.append(
@@ -129,7 +131,7 @@ enum QueryEngine {
                          AND \(alias).value_text = ?
                         """
                     )
-                    args += [key, text]
+                    joinArgs += [key, text]
                 }
             case .notEquals:
                 let text = filter.text ?? ""
@@ -143,7 +145,7 @@ enum QueryEngine {
                     )
                     """
                 )
-                args += [key, text]
+                whereArgs += [key, text]
             case .contains:
                 let text = filter.text ?? ""
                 joins.append(
@@ -154,7 +156,7 @@ enum QueryEngine {
                      AND \(alias).value_text LIKE ?
                     """
                 )
-                args += [key, "%\(text)%"]
+                joinArgs += [key, "%\(text)%"]
             case .greaterThan:
                 guard let number = filter.number else { continue }
                 joins.append(
@@ -165,7 +167,7 @@ enum QueryEngine {
                      AND \(alias).value_number > ?
                     """
                 )
-                args += [key, number]
+                joinArgs += [key, number]
             case .greaterThanOrEqual:
                 guard let number = filter.number else { continue }
                 joins.append(
@@ -176,7 +178,7 @@ enum QueryEngine {
                      AND \(alias).value_number >= ?
                     """
                 )
-                args += [key, number]
+                joinArgs += [key, number]
             case .lessThan:
                 guard let number = filter.number else { continue }
                 joins.append(
@@ -187,7 +189,7 @@ enum QueryEngine {
                      AND \(alias).value_number < ?
                     """
                 )
-                args += [key, number]
+                joinArgs += [key, number]
             case .lessThanOrEqual:
                 guard let number = filter.number else { continue }
                 joins.append(
@@ -198,7 +200,7 @@ enum QueryEngine {
                      AND \(alias).value_number <= ?
                     """
                 )
-                args += [key, number]
+                joinArgs += [key, number]
             }
         }
 
@@ -211,6 +213,8 @@ enum QueryEngine {
             sql += "\nLIMIT \(limit)"
         }
 
+        var args = joinArgs
+        args += whereArgs
         let rows = try Row.fetchAll(db, sql: sql, arguments: args)
         return try rows.map { try ObjectRowDecoder.decode($0) }
     }
