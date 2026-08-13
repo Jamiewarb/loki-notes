@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -747,3 +757,120 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="settings">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="page">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="settings" data-harness="detail">
+        <div data-detail-root="">
+    <div class="destination vault-settings" data-harness="destination" data-destination="settings">
+      <header class="destination-header">
+        <span class="destination-icon" aria-hidden="true">⚙</span>
+        <h2 class="destination-title">Settings</h2>
+      </header>
+      <p class="destination-lead">
+        Vault root, local Documents fallback, and sync status.
+        Files are truth; the SQLite index never lives inside the vault.
+      </p>
+
+      <section class="vault-card" data-harness="vault-status" aria-label="Vault status">
+        <p class="vault-kicker">PR04 · LociVault</p>
+        <h3 class="vault-card-title">Create vault</h3>
+        <p class="vault-card-body">
+          On Apple builds, Settings → <strong>Create vault</strong> writes
+          <code>.loci/space.json</code> under the ubiquity container (or local Documents fallback).
+        </p>
+        <dl class="vault-meta">
+          <div>
+            <dt>Root kind (Linux / CI)</dt>
+            <dd data-harness="vault-root-kind">localDocuments</dd>
+          </div>
+          <div>
+            <dt>Skeleton</dt>
+            <dd><code>.loci/</code> · <code>daily/</code> · <code>objects/</code> · <code>media/</code></dd>
+          </div>
+          <div>
+            <dt>Index location</dt>
+            <dd>Application Support only — never inside the vault</dd>
+          </div>
+        </dl>
+        <ol class="vault-steps">
+          <li>Run package tests: <code>./scripts/test.sh</code> (VaultService round-trip + trash).</li>
+          <li>Optional CLI: <code>./scripts/demo-vault.sh</code> → prints vault path + writes sample daily note.</li>
+          <li>macOS/iOS: open Settings and tap Create vault when iCloud or local sandbox is available.</li>
+        </ol>
+        <p class="vault-note">
+          Identity is ObjectID (frontmatter), not absolute ubiquity URLs.
+          Conflicted-copy filenames are detected via <code>ConflictedCopyDetector</code> for SyncStatus (PR21).
+        </p>
+      </section>
+    </div>
+  </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Sync status</p>
+        <p>iCloud vs local Documents — index never stored in the vault.</p>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786611456408"></script>
+  
+
+</body></html>

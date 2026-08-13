@@ -70,7 +70,7 @@ export const PANELS: Record<PanelId, Panel> = {
   settings: {
     id: "settings",
     title: "Settings",
-    body: "Vault root, local Documents fallback, and sync status (PR04 / PR21).",
+    body: "Vault root, local Documents fallback, and sync status (PR04). Create vault writes .loci/space.json.",
     inspector: "iCloud vs local Documents — index never stored in the vault.",
   },
   gallery: {

@@ -1,0 +1,24 @@
+==> loci-vault-demo (parent: /tmp/loci-vault-demo.UfAbS0)
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-vault-demo' complete! (0.11s)
+LociVault demo 0.4.0-pr04
+rootKind: localDocuments
+vaultRoot: /tmp/loci-vault-demo.UfAbS0/LociVault
+space.json: {
+  "name" : "Loci Demo",
+  "schemaVersion" : 1
+}
+skeleton:
+  ✓ .loci → /tmp/loci-vault-demo.UfAbS0/LociVault/.loci
+  ✓ .loci/types → /tmp/loci-vault-demo.UfAbS0/LociVault/.loci/types
+  ✓ .loci/templates → /tmp/loci-vault-demo.UfAbS0/LociVault/.loci/templates
+  ✓ .loci/trash → /tmp/loci-vault-demo.UfAbS0/LociVault/.loci/trash
+  ✓ daily → /tmp/loci-vault-demo.UfAbS0/LociVault/daily
+  ✓ objects → /tmp/loci-vault-demo.UfAbS0/LociVault/objects
+  ✓ media/images → /tmp/loci-vault-demo.UfAbS0/LociVault/media/images
+  ✓ media/files → /tmp/loci-vault-demo.UfAbS0/LociVault/media/files
+sample: daily/2026-08-13.md written
+note: index.sqlite must never live inside this vault (Application Support only).
+==> demo complete
