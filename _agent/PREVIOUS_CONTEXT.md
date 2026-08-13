@@ -4,6 +4,47 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR41 — type dashboard filter / sort / group
+
+**Branch:** `cursor/pr41-dashboard-d2c1`  
+**Based on:** `cursor/pr40-object-select-d2c1`  
+**Vault module:** `0.41.0-pr41`  
+**Swift tests:** **383** green (was 366). **Playwright:** **88** green (was 85). Evidence: `evidence/pr41/`
+
+### Feature design
+- Domain folder: `App/Features/ObjectTypes/` — `TypeDashboardView` + `TypeDashboardStore` / `TypeDashboardControls` / `TypeDashboardList`. **Does not import** `App/Features/Queries` (list uses `IndexQuerying.execute` + Core `QueryDefinition`). Existing Feature facade calls (Properties / Templates / Collections / Queries pinned) stay.
+- Writes vault? yes — only `.loci/types/<slug>.json` dashboard fields (`defaultSort` / `defaultGroupBy` / `defaultFilterKey` / `defaultFilterText`). Does **not** rewrite object markdown or daily notes.
+- Reads index? yes — `IndexQuerying.execute` (type + tags + PropertyFilter.equals + QuerySort). Archive hide + collection membership are post-filters. Typing in the editor does not wait on dashboard I/O.
+- Protocols: `IndexQuerying`, `SchemaServing`. Shared protocol only — no new feature→feature imports.
+- Core: `DashboardQuery`, `DashboardSort`, `DashboardGrouping`, `DashboardViewProof`. Property-id sort is in-memory (QuerySort stays title/dates).
+- Demo: `scripts/demo-dashboard.sh` → `DevHarness/public/demo-dashboard/dashboard.json`. Harness: `?panel=types` dashboard section (`data-harness=dashboard-groups`).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-dashboard.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=types — filterApplied / sortApplied / groupApplied / resultsNotWrittenToMarkdown
+```
+
+### Pitfalls
+- Do not write filter/sort/group results into object or daily markdown. Only type schema JSON may change.
+- Do not import Features/Queries for the dashboard list. Use `IndexQuerying.execute`.
+- Collections are vault JSON — keep membership as a post-filter on `memberIDs`.
+- `defaultSort` tokens: `title` / `titleAsc` / `updated` / `created` (and *Desc / *Asc). A property id falls back to title in SQL and sorts in memory.
+- Group-by is derived UI. Kanban board is **PR42** — do not build a board.
+- Stacked vault version assertions (`contains("pr40")`) must also accept `pr41`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave F **PR42** kanban, stacked on PR41 (`cursor/pr41-dashboard-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR40 — object-select picker (creates real links)
 
 **Branch:** `cursor/pr40-object-select-d2c1`  

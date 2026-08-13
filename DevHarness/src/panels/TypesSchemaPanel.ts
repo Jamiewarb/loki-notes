@@ -12,9 +12,10 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
       <p class="destination-lead">
         Create custom types on the fly — <code>.loci/types/&lt;slug&gt;.json</code> +
         <code>objects/&lt;slug&gt;/</code>. Built-in Page/Daily are protected from casual delete.
-        Type dashboards list All objects, manual <strong>collection tabs</strong>, and
+        Type dashboards list All objects, manual <strong>collection tabs</strong>,
         <strong>pinned queries</strong> (defs in <code>.loci/queries/&lt;slug&gt;.json</code>;
-        results live from the index).
+        results live from the index), and <strong>filter / sort / group</strong>
+        (QueryEngine — results are not written into markdown).
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
         <p class="vault-kicker">PR15 · SchemaServing + PARA + templates</p>
@@ -59,6 +60,14 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <pre class="md-pre" data-harness="queries-snippet" style="max-height:10rem;overflow:auto" hidden></pre>
         <p class="vault-note" data-harness="queries-note" hidden></p>
       </section>
+      <section class="vault-card" data-harness="dashboard-status" aria-label="Type dashboard filter sort group">
+        <p class="vault-kicker">PR41 · Type dashboard filter / sort / group</p>
+        <h3 class="vault-card-title">Dashboard</h3>
+        <p class="vault-card-body" data-harness="dashboard-loading">Loading demo-dashboard…</p>
+        <div data-harness="dashboard-groups" hidden></div>
+        <dl class="vault-meta capture-proof-grid" data-harness="dashboard-meta" hidden></dl>
+        <p class="vault-note" data-harness="dashboard-note" hidden></p>
+      </section>
       <section class="vault-card" data-harness="object-select-status" aria-label="Object-select picker">
         <p class="vault-kicker">PR40 · Object-select picker</p>
         <h3 class="vault-card-title">Object-select</h3>
@@ -91,6 +100,7 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   await renderBooksDashboard(root);
   await renderCollectionsSection(root);
   await renderQueriesSection(root);
+  await renderDashboardSection(root);
   await renderObjectSelectSection(root);
   await renderPagesSection(root);
 }
@@ -673,6 +683,96 @@ async function renderQueriesSection(root: HTMLElement): Promise<void> {
       err instanceof Error ? err.message : "Failed to load queries fixtures";
     note.hidden = false;
     note.textContent = "Run: ./scripts/demo-queries.sh then refresh (?panel=types).";
+  }
+}
+
+async function renderDashboardSection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='dashboard-loading']");
+  const groups = root.querySelector<HTMLElement>("[data-harness='dashboard-groups']");
+  const meta = root.querySelector<HTMLElement>("[data-harness='dashboard-meta']");
+  const note = root.querySelector<HTMLElement>("[data-harness='dashboard-note']");
+  if (!loading || !groups || !meta || !note) return;
+
+  try {
+    const res = await fetch("/demo-dashboard/dashboard.json", { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} — run ./scripts/demo-dashboard.sh`);
+    }
+    const data = (await res.json()) as {
+      filteredTitles?: string[];
+      sections?: Array<{ key?: string; titles?: string[] }>;
+      unfilteredSectionKeys?: string[];
+      dashboard?: {
+        defaultSort?: string;
+        defaultGroupBy?: string;
+        defaultFilterKey?: string;
+        defaultFilterText?: string;
+        relativePath?: string;
+      };
+      proof?: Record<string, boolean>;
+      dailyUnchanged?: boolean;
+      objectMarkdownUnchanged?: boolean;
+      note?: string;
+    };
+
+    const sections = data.sections ?? [];
+    const proof = data.proof ?? {};
+    const dash = data.dashboard ?? {};
+    loading.textContent = `Filter ${dash.defaultFilterKey ?? "status"}=${
+      dash.defaultFilterText ?? "Reading"
+    } · sort ${dash.defaultSort ?? "titleAsc"} · group ${dash.defaultGroupBy ?? "status"}`;
+
+    groups.hidden = false;
+    groups.innerHTML = sections
+      .map((section) => {
+        const key = section.key ?? "All";
+        const titles = section.titles ?? [];
+        return `
+          <div data-harness="dashboard-section" data-section-key="${escapeHtml(key)}">
+            <p class="vault-kicker" data-harness="dashboard-section-${escapeHtml(key)}">${escapeHtml(
+              key,
+            )}</p>
+            <ul class="schema-type-list">
+              ${titles
+                .map(
+                  (title) => `
+                <li class="schema-type-row" data-harness="dashboard-row">
+                  <span class="schema-type-name">${escapeHtml(title)}</span>
+                  <span class="schema-type-meta">${escapeHtml(key)}</span>
+                </li>`,
+                )
+                .join("")}
+            </ul>
+          </div>`;
+      })
+      .join("");
+
+    meta.hidden = false;
+    meta.innerHTML = Object.entries(proof)
+      .map(
+        ([k, v]) => `
+          <div>
+            <dt>${escapeHtml(k)}</dt>
+            <dd data-harness="dashboard-proof-${escapeHtml(k)}">${v ? "yes ✓" : "NO"}</dd>
+          </div>`,
+      )
+      .join("");
+
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      "QueryEngine filter/sort + derived group-by. Results are not written into markdown.";
+    note.dataset.dailyUnchanged = String(data.dailyUnchanged === true);
+    note.dataset.objectMarkdownUnchanged = String(data.objectMarkdownUnchanged === true);
+    note.dataset.indexInsideVault = String(proof.indexInsideVault === true);
+    note.dataset.filterApplied = String(proof.filterApplied === true);
+    note.dataset.sortApplied = String(proof.sortApplied === true);
+    note.dataset.groupApplied = String(proof.groupApplied === true);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load demo-dashboard fixture";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-dashboard.sh then refresh (?panel=types).";
   }
 }
 

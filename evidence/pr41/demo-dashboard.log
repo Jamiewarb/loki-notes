@@ -1,0 +1,8 @@
+==> loci-dashboard-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-dashboard-demo' complete! (0.55s)
+filterApplied sortApplied groupApplied resultsNotWrittenToMarkdown dailyUnchanged objectMarkdownUnchanged indexInsideVault=false
+==> wrote /workspace/DevHarness/public/demo-dashboard/dashboard.json
+==> demo-dashboard complete
