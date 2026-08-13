@@ -16,7 +16,7 @@ Next stack: **PR25 Calendar UI**.
 
 **Branch:** `cursor/pr24-graph-d2c1`  
 **Based on:** `cursor/pr23-queries-d2c1` @ `a2ad141`  
-**Tip:** `0ac596db9fb1a043f7dd5c4a176dd3d38c953d94`
+**Tip:** `172e1cce7892909f083aa165174ec953fcf328a7`
 
 ### What landed
 
