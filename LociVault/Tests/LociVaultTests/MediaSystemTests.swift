@@ -150,9 +150,76 @@ final class MediaSystemTests: XCTestCase {
         XCTAssertTrue(exists)
     }
 
+    func testFileURLAttachTrashRelativeMarkdownIndexOutsideVault() async throws {
+        try await boot()
+        let temp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("loci-picker-\(UUID().uuidString).png")
+        let payload = Data("picker-bytes-pr35".utf8)
+        try payload.write(to: temp)
+        defer { try? FileManager.default.removeItem(at: temp) }
+
+        let attachment = try await media.attach(
+            fileURL: temp,
+            kind: nil,
+            preferredFileName: nil
+        )
+        XCTAssertTrue(attachment.relativePath.hasPrefix("media/images/"))
+        XCTAssertNotEqual(attachment.relativePath, temp.path)
+        XCTAssertFalse(attachment.relativePath.hasPrefix("/"))
+
+        let page = try await objects.create(typeID: .page, title: "Picker Note")
+        let body = MediaInserter.appendImage(
+            to: "Picker attach via fileURL.",
+            alt: "picked",
+            attachment: attachment,
+            fromObjectRelativePath: page.relativePath
+        )
+        try await objects.save(meta: page, bodyMarkdown: body)
+        let opened = try await objects.open(id: page.id)
+
+        XCTAssertFalse(opened.bodyMarkdown.contains(temp.path))
+        XCTAssertFalse(opened.bodyMarkdown.contains("file://"))
+        XCTAssertTrue(opened.bodyMarkdown.contains("media/"))
+
+        let proof = MediaPickerProof.evaluate(
+            attachment: attachment,
+            noteBody: opened.bodyMarkdown,
+            indexInsideVault: false,
+            attachedViaFileURL: true
+        )
+        XCTAssertTrue(proof.attachedViaFileURL)
+        XCTAssertTrue(proof.markdownRelativePathStartsWithMedia)
+        XCTAssertFalse(proof.noteBodyHasAbsolutePath)
+        XCTAssertFalse(proof.indexInsideVault)
+        XCTAssertTrue(proof.photosPickerWired)
+        XCTAssertTrue(proof.dragDropWired)
+
+        try await media.trashMedia(atRelativePath: attachment.relativePath)
+        let stillThere = try await vault.fileExists(atRelativePath: attachment.relativePath)
+        XCTAssertFalse(stillThere)
+
+        var sqliteInVault = false
+        let vaultRoot = try await vault.vaultRootURL
+        if let enumerator = FileManager.default.enumerator(
+            at: vaultRoot,
+            includingPropertiesForKeys: nil
+        ) {
+            for case let url as URL in enumerator {
+                if url.pathExtension == "sqlite" { sqliteInVault = true }
+            }
+        }
+        XCTAssertFalse(sqliteInVault)
+        XCTAssertFalse(index.databaseURL.path.hasPrefix(vaultRoot.path))
+    }
+
     func testModuleVersionsPR20() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35"))
         XCTAssertTrue(LociIndexModule.version.contains("pr22") || LociIndexModule.version.contains("pr23") || LociIndexModule.version.contains("pr24") || LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27") || LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29") || LociIndexModule.version.contains("pr30"))
         XCTAssertTrue(LociMarkdownModule.version.contains("pr22") || LociMarkdownModule.version.contains("pr23") || LociMarkdownModule.version.contains("pr24") || LociMarkdownModule.version.contains("pr25") || LociMarkdownModule.version.contains("pr26") || LociMarkdownModule.version.contains("pr27") || LociMarkdownModule.version.contains("pr28") || LociMarkdownModule.version.contains("pr29") || LociMarkdownModule.version.contains("pr30"))
+    }
+
+    func testModuleVersionIsPR35() {
+        XCTAssertTrue(LociVaultModule.version.contains("pr35"), LociVaultModule.version)
+        XCTAssertEqual(LociVaultModule.version, "0.35.0-pr35")
     }
 }

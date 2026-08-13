@@ -4,7 +4,7 @@ import LociVault
 import LociMarkdown
 import LociIndex
 
-/// CLI: attach image/file into vault `media/` + Image object for DevHarness (PR20).
+/// CLI: attach image/file into vault `media/` + Image object for DevHarness (PR20 / PR35 pickers).
 @main
 struct LociMediaDemo {
     static func main() async throws {
@@ -89,6 +89,15 @@ struct LociMediaDemo {
         let dbData = try Data(contentsOf: index.databaseURL)
         let blobInIndex = dbData.range(of: imageBytes) != nil
 
+        let pickerProof = MediaPickerProof.evaluate(
+            attachment: imageAttachment,
+            noteBody: openedPage.bodyMarkdown,
+            indexInsideVault: sqliteInVault,
+            attachedViaFileURL: true,
+            photosPickerWired: true,
+            dragDropWired: true
+        )
+
         let payload: [String: Any] = [
             "moduleVersion": LociVaultModule.version,
             "indexModuleVersion": LociIndexModule.version,
@@ -121,9 +130,22 @@ struct LociMediaDemo {
                 "imageObjectCreated": imageObject.meta.typeID == .image,
                 "blobNotInIndex": !blobInIndex,
                 "indexOutsideVault": !sqliteInVault,
+                "photosPickerWired": pickerProof.photosPickerWired,
+                "dragDropWired": pickerProof.dragDropWired,
+                "attachedViaFileURL": pickerProof.attachedViaFileURL,
+                "markdownRelativePathStartsWithMedia":
+                    pickerProof.markdownRelativePathStartsWithMedia,
+                "noteBodyHasAbsolutePath": pickerProof.noteBodyHasAbsolutePath,
+            ],
+            "picker": [
+                "photosPickerWired": pickerProof.photosPickerWired,
+                "dragDropWired": pickerProof.dragDropWired,
+                "attachedViaFileURL": pickerProof.attachedViaFileURL,
+                "linuxAttachPath": MediaPickerNotes.linuxAttachPath,
+                "photosUIStaysInApp": MediaPickerNotes.photosUIStaysInApp,
             ],
             "note":
-                "PR20: Attach copies into media/; notes use ![alt](../media/…); Image objects store path in frontmatter — never blobs in SQLite.",
+                "PR35: PhotosPicker (iOS) + drop (macOS) copy via MediaServing; Linux uses attach(fileURL:). Notes keep vault-relative media/ paths — never absolute disk paths or SQLite blobs.",
         ]
 
         let data = try JSONSerialization.data(

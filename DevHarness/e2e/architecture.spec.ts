@@ -103,6 +103,23 @@ test("demo fixtures never store the index inside the vault", async ({
         )
         .toBe(true);
     }
+
+    if (proof && "photosPickerWired" in proof) {
+      expect
+        .soft(proof.photosPickerWired, `${url} proof.photosPickerWired`)
+        .toBe(true);
+    }
+    if (proof && "dragDropWired" in proof) {
+      expect.soft(proof.dragDropWired, `${url} proof.dragDropWired`).toBe(true);
+    }
+    if (proof && "noteBodyHasAbsolutePath" in proof) {
+      expect
+        .soft(
+          proof.noteBodyHasAbsolutePath,
+          `${url} proof.noteBodyHasAbsolutePath`,
+        )
+        .toBe(false);
+    }
   }
 });
 

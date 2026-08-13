@@ -39,6 +39,21 @@ test("media attachment paths live under media/", async ({ page }) => {
   await expect(harness(page, "media-files-list")).toContainText("notes.txt");
 });
 
+test("media picker proofs are wired and note body stays vault-relative", async ({
+  page,
+}) => {
+  await gotoPanel(page, "media");
+
+  await expect(harness(page, "media-proof-photos-picker")).toBeVisible();
+  await expect(harness(page, "media-proof-photos-picker")).toContainText("wired");
+  await expect(harness(page, "media-proof-drag-drop")).toContainText("wired");
+  await expect(harness(page, "media-page-body")).toContainText("media/");
+  await expect(harness(page, "media-page-body")).not.toContainText("/tmp/");
+  await expect(harness(page, "media-proof")).toContainText("photos picker wired ✓");
+  await expect(harness(page, "media-proof")).toContainText("drag-drop wired ✓");
+  await expect(harness(page, "media-index-in-vault")).toHaveText("no ✓");
+});
+
 test("clicking a calendar day updates selection to daily/<key>.md", async ({
   page,
 }) => {
