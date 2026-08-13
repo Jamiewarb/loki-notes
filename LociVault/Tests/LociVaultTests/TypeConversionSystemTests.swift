@@ -171,7 +171,7 @@ final class TypeConversionSystemTests: XCTestCase {
 
         let before = try await index.backlinks(to: bookID)
         XCTAssertEqual(before.count, 1)
-        XCTAssertEqual(before.first?.sourceID, linker.id)
+        XCTAssertEqual(before.first?.source.id, linker.id)
 
         let plan = try await objects.planConversion(id: bookID, toTypeID: person.id)
         let result = try await objects.convert(
@@ -183,7 +183,7 @@ final class TypeConversionSystemTests: XCTestCase {
 
         let after = try await index.backlinks(to: bookID)
         XCTAssertEqual(after.count, 1)
-        XCTAssertEqual(after.first?.sourceID, linker.id)
+        XCTAssertEqual(after.first?.source.id, linker.id)
 
         let opened = try await objects.open(id: bookID)
         XCTAssertEqual(opened.meta.typeID, person.id)
