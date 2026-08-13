@@ -114,6 +114,7 @@ struct SafariClipperPanelView: View {
             status = "Saved Weblink \(result?.relativePath ?? "")."
             await refreshPending()
             if let id = result?.objectID {
+                await services.prefetchWeblinkPreview(objectID: id)
                 await services.open(objectID: id)
             }
         } catch {
@@ -127,6 +128,9 @@ struct SafariClipperPanelView: View {
             let results = try await store.drain()
             status = "Drained \(results.count) item(s)."
             lastPath = results.last?.relativePath
+            for result in results {
+                await services.prefetchWeblinkPreview(objectID: result.objectID)
+            }
             await refreshPending()
         } catch {
             status = "Drain failed: \(error.localizedDescription)"

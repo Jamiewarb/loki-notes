@@ -151,6 +151,11 @@ if [[ -d "$ROOT/App/Features/Pins" ]]; then
 else
   fail "App/Features/Pins missing"
 fi
+if [[ -d "$ROOT/App/Features/Weblinks" ]]; then
+  pass "App/Features/Weblinks present"
+else
+  fail "App/Features/Weblinks missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

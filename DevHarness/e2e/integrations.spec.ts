@@ -91,3 +91,33 @@ test("safari extracts page payload and menu bar is wired", async ({ page }) => {
   await expect(harness(page, "safari-proof-indexInsideVault")).toBeVisible();
   await expect(harness(page, "safari-proof-indexInsideVault")).toHaveText("NO");
 });
+
+test("weblink preview card shows Open Graph title and description", async ({ page }) => {
+  await gotoPanel(page, "safari");
+  await expect(harness(page, "weblink-preview-card")).toBeVisible();
+  await expect(harness(page, "weblink-preview-title")).toHaveText("Example Article");
+  await expect(harness(page, "weblink-preview-description")).toHaveText(
+    "A clipped paragraph from the page.",
+  );
+  await expect(harness(page, "weblink-preview-url")).toHaveText("https://example.com/article");
+  await expect(harness(page, "weblink-proof-parsesOpenGraph")).toHaveText("yes ✓");
+});
+
+test("weblink preview cache lives outside the vault and does not fetch on type", async ({
+  page,
+}) => {
+  await gotoPanel(page, "safari");
+  await expect(harness(page, "weblink-cache-in-vault")).toHaveText("no ✓");
+  await expect(harness(page, "weblink-index-in-vault")).toHaveText("no ✓");
+  await expect(harness(page, "weblink-proof-cacheOutsideVault")).toHaveText("yes ✓");
+  await expect(harness(page, "weblink-proof-noFetchOnType")).toHaveText("yes ✓");
+  await expect(harness(page, "weblink-proof-indexInsideVault")).toHaveText("NO");
+  await expect(harness(page, "weblink-preview-note")).toHaveAttribute(
+    "data-daily-unchanged",
+    "true",
+  );
+  await expect(harness(page, "weblink-preview-note")).toHaveAttribute(
+    "data-no-fetch-on-type",
+    "true",
+  );
+});

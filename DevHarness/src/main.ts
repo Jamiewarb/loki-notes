@@ -630,7 +630,7 @@ function inspectorTitle(id: PanelId): string {
     case "apple":
       return "Calendar · Reminders";
     case "safari":
-      return "Clip · Weblink";
+      return "Clip · Weblink preview";
     case "tags":
       return "Object tags · aliases";
     case "media":

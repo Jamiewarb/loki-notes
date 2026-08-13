@@ -142,7 +142,7 @@ final class SafariClipSystemTests: XCTestCase {
         let root = try await vault.vaultRootURL
         let folder = root.appendingPathComponent("objects/weblink", isDirectory: true)
         XCTAssertTrue(FileManager.default.fileExists(atPath: folder.path))
-        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43"))
     }
 
     func testUserInfoEnqueueWritesInboxWithoutIndex() async throws {

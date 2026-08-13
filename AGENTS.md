@@ -244,7 +244,16 @@ Kanban by label (PR42) extras:
 # harness: http://127.0.0.1:5173/?panel=types
 ```
 
-Board view lives in `App/Features/ObjectTypes/UI/TypeDashboardBoard.swift` (not a new feature module). Columns come from `DashboardGrouping` / `KanbanMove.columns` (select option order, or observed tags + Untagged). Moving a card updates YAML via `KanbanMove` + `ObjectServing.open`/`save` — body unchanged; layout is never written into markdown. `TypeDashboardConfig.defaultView` is `"list"` | `"board"` (decode default `"list"`). Proof flags `boardColumnsFromGroup` / `moveUpdatesVaultYAML` / `layoutNotWrittenToMarkdown` / `indexInsideVault: false`. **Weblink preview cache is PR43.**
+Board view lives in `App/Features/ObjectTypes/UI/TypeDashboardBoard.swift` (not a new feature module). Columns come from `DashboardGrouping` / `KanbanMove.columns` (select option order, or observed tags + Untagged). Moving a card updates YAML via `KanbanMove` + `ObjectServing.open`/`save` — body unchanged; layout is never written into markdown. `TypeDashboardConfig.defaultView` is `"list"` | `"board"` (decode default `"list"`). Proof flags `boardColumnsFromGroup` / `moveUpdatesVaultYAML` / `layoutNotWrittenToMarkdown` / `indexInsideVault: false`.
+
+Weblink preview metadata cache (PR43) extras:
+
+```bash
+./scripts/demo-weblink-preview.sh
+# harness: http://127.0.0.1:5173/?panel=safari
+```
+
+OG title/description/image are parsed from HTML (`OpenGraphHTMLParser`) and cached as JSON next to the index (Application Support) — **never** inside the vault and not written to weblink YAML. Fetch on weblink open / Refresh preview / after create; **never** on editor typing. Linux uses `FakeLinkPreviewFetcher` (fixture HTML, no live network). Proof flags `parsesOpenGraph` / `cacheOutsideVault` / `noFetchOnType` / `indexInsideVault: false`. **Unlinked mentions are PR44.**
 
 Object-select picker (PR40) extras:
 

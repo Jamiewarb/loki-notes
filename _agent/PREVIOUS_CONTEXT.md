@@ -4,6 +4,50 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR43 — weblink preview metadata cache
+
+**Branch:** `cursor/pr43-weblink-preview-d2c1`  
+**Based on:** `cursor/pr42-kanban-d2c1`  
+**Vault module:** `0.43.0-pr43`  
+**MARKETING_VERSION:** `0.43.0`  
+**Swift tests:** **TBD** green (was 396). **Playwright:** **TBD** green (was 91). Evidence: `evidence/pr43/`
+
+### Feature design
+- Domain folder: `App/Features/Weblinks/` — inspector card via `WeblinksFeature.preview(...)`. Compose from `InspectorHostView`. **Does not import** other feature folders. ObjectEditor does not import Weblinks.
+- Writes vault? **no** for OG data (cache-only JSON under Application Support next to the index). Weblink `url` property is existing vault YAML. Does **not** rewrite daily notes or weblink bodies.
+- Reads index? no (open object via ObjectServing). Typing in the editor does not wait on preview I/O.
+- Protocols: `LinkPreviewServing` (`preview` / `refresh`), `LinkPreviewFetching`, `ObjectServing`. Linux/tests: `FakeLinkPreviewFetcher` fixture HTML. Apple: `URLSessionLinkPreviewFetcher` (http(s), timeout, ~1MB cap).
+- Core: `LinkPreview`, `OpenGraphHTMLParser` (pure; XCTest fixtures, no live network), `LinkPreviewProof`, `WeblinkURL`.
+- Demo: `scripts/demo-weblink-preview.sh` → `DevHarness/public/demo-weblink-preview/weblink-preview.json`. Harness: `?panel=safari` (`data-harness=weblink-preview-card`).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-weblink-preview.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=safari — parsesOpenGraph / cacheOutsideVault / noFetchOnType
+```
+
+### Pitfalls
+- Never put `previews.json` / SQLite inside the vault. Cache sits next to `index.sqlite` (Application Support).
+- Do not persist `og-title` / `og-description` onto weblink YAML (iCloud churn). Cache-only is the default.
+- Do not fetch on editor typing debounce. Fetch on weblink open, after create if url present, or Refresh preview.
+- Failures: empty placeholder; do not crash; do not rewrite markdown. Only GET the user-stored weblink URL (http(s)).
+- AI / preview must not upload vault contents.
+- Linux uses FakeLinkPreviewFetcher — no live internet in CI. Linux cannot show remote OG images; title + description + image URL text is enough.
+- ObjectEditor must not import Weblinks. AppShell / InspectorHostView composition is the pattern.
+- Stacked vault version assertions (`contains("pr42")`) must also accept `pr43`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave F **PR44** unlinked mentions, stacked on PR43 (`cursor/pr43-weblink-preview-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR42 — kanban by label (select / tag)
 
 **Branch:** `cursor/pr42-kanban-d2c1`  

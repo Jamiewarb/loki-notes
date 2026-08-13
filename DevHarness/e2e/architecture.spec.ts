@@ -33,6 +33,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-tasks/tasks.json",
   "/demo-templates/templates.json",
   "/demo-type-convert/type-convert.json",
+  "/demo-weblink-preview/weblink-preview.json",
 ] as const;
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -252,6 +253,24 @@ test("kanban demo fixture records board columns and YAML move without writing la
   expect(proof?.boardColumnsFromGroup).toBe(true);
   expect(proof?.moveUpdatesVaultYAML).toBe(true);
   expect(proof?.layoutNotWrittenToMarkdown).toBe(true);
+  expect(proof?.indexInsideVault).toBe(false);
+});
+
+test("weblink preview fixture caches OG outside the vault without fetching on type", async ({
+  request,
+}) => {
+  const response = await request.get("/demo-weblink-preview/weblink-preview.json");
+  expect(response.ok()).toBeTruthy();
+  const data = asRecord(await response.json());
+  expect(data?.indexInsideVault).toBe(false);
+  expect(data?.cacheInsideVault).toBe(false);
+  expect(data?.dailyUnchanged).toBe(true);
+  expect(data?.yamlContainsOgTitle).toBe(false);
+  expect(data?.previewTitle).toBe("Example Article");
+  const proof = asRecord(data?.proof);
+  expect(proof?.parsesOpenGraph).toBe(true);
+  expect(proof?.cacheOutsideVault).toBe(true);
+  expect(proof?.noFetchOnType).toBe(true);
   expect(proof?.indexInsideVault).toBe(false);
 });
 

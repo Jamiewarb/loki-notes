@@ -239,7 +239,7 @@ final class TypeConversionSystemTests: XCTestCase {
 
     func testModuleVersionIsPR28() {
         XCTAssertTrue(
-            LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42"),
+            LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40") || LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42") || LociVaultModule.version.contains("pr43"),
             LociVaultModule.version
         )
         XCTAssertTrue(

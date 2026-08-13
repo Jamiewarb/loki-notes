@@ -60,4 +60,8 @@ public enum LociError: Error, Sendable, Equatable {
     case aiCredentialsMissing
     /// Pin list is already at `PinLimits.maxCount` (PR34).
     case pinLimitReached(Int)
+    /// Weblink preview fetch refused — scheme is not http(s) (PR43).
+    case linkPreviewUnsupportedScheme(String)
+    /// Weblink preview fetch failed (timeout, network, missing fixture).
+    case linkPreviewFetchFailed(String)
 }
