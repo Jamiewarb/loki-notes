@@ -199,6 +199,16 @@ EventKit (PR36) extras:
 
 On Apple, Calendar/Reminders use EventKit (`requestFullAccessToEvents` / reminders). Linux and tests inject `FakeAppleCalendarStore` / `FakeAppleRemindersStore`. EventKit types stay out of LociCore. Listing events never writes daily.md. Proof flags `eventKitWired` / `linuxUsesFakes` / `dailyUnchanged`.
 
+Share extension + Widget (PR37) extras:
+
+```bash
+./scripts/demo-capture.sh
+./scripts/demo-share-widget.sh
+# harness: http://127.0.0.1:5173/?panel=capture
+```
+
+Share sheet extracts `public.plain-text` / `public.url` via UIKit, then `ShareInboxFactory` (LociCore, no UIKit) → `CaptureInboxWriter` → `.loci/inbox/*.json`. Widget “Open today” is `loci://daily/today`; Quick add enqueues a line or deep-links `loci://capture`. Extension process never opens SQLite. Proof flags `shareExtractsText` / `widgetOpenToday` / `inboxNotIndex` / `indexInsideVault: false`.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

@@ -1,7 +1,8 @@
-import XCTest
 import LociCore
 import LociIndex
 import LociMarkdown
+import XCTest
+
 @testable import LociVault
 
 final class CaptureSystemTests: XCTestCase {
@@ -129,6 +130,40 @@ final class CaptureSystemTests: XCTestCase {
         let opened = try await daily.ensureToday(calendar: calendar)
         XCTAssertTrue(opened.bodyMarkdown.contains("Direct note"))
         XCTAssertTrue(opened.bodyMarkdown.contains("menuBar"))
+    }
+
+    func testShareFactoryEnqueueDoesNotCreateIndex() async throws {
+        try await boot(calendar: utcCalendar)
+        let item = ShareInboxFactory.inboxItem(
+            text: "Factory line",
+            url: nil,
+            source: .share
+        )
+        XCTAssertEqual(item.kind, .appendToToday)
+        let path = try await CaptureInboxWriter.enqueue(item, vault: vault)
+        XCTAssertTrue(ShareWidgetNotes.isInboxNotIndex(path))
+        XCTAssertTrue(path.hasPrefix(".loci/inbox/"))
+
+        let created = ShareInboxFactory.inboxItem(
+            text: "Shared Title",
+            url: "https://example.com/factory"
+        )
+        XCTAssertEqual(created.kind, .createObject)
+        XCTAssertEqual(created.typeID, .page)
+        _ = try await CaptureInboxWriter.enqueue(created, vault: vault)
+
+        let root = try await vault.vaultRootURL
+        var sqliteInVault = false
+        if let enumerator = FileManager.default.enumerator(at: root, includingPropertiesForKeys: nil) {
+            for case let url as URL in enumerator {
+                if url.lastPathComponent == "index.sqlite" {
+                    sqliteInVault = true
+                    break
+                }
+            }
+        }
+        XCTAssertFalse(sqliteInVault)
+        XCTAssertNotNil(CaptureVaultResolver.resolve(preferredLocalDirectory: vaultParent))
     }
 
     func testSkeletonIncludesInboxDirectory() async throws {

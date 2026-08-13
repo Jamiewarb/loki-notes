@@ -88,5 +88,14 @@ test("capture drain empties inbox and indexes on foreground only", async ({
   await expect(harness(page, "capture-proof-indexOutsideVault")).toHaveText(
     "yes ✓",
   );
+  await expect(harness(page, "capture-proof-shareExtractsText")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "capture-proof-widgetOpenToday")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "capture-proof-inboxNotIndex")).toHaveText(
+    "yes ✓",
+  );
   await expect(page.getByText("Index on foreground only")).toBeVisible();
 });

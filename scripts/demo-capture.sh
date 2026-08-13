@@ -30,6 +30,11 @@ assert proof.get("directMenuBarInDaily") is True, proof
 assert proof.get("createdTypedObject") is True, proof
 assert proof.get("inboxStagingRemoved") is True, proof
 assert proof.get("indexOutsideVault") is True, proof
+assert proof.get("shareExtractsText") is True, proof
+assert proof.get("widgetOpenToday") is True, proof
+assert proof.get("inboxNotIndex") is True, proof
+assert proof.get("indexInsideVault") is False, proof
+assert data.get("openTodayURL") == "loci://daily/today", data.get("openTodayURL")
 assert (data.get("dailyPath") or "").startswith("daily/"), data.get("dailyPath")
 assert (data.get("pendingAfter") or []) == [], data.get("pendingAfter")
 surfaces = data.get("surfaces") or []

@@ -1,7 +1,7 @@
 import Foundation
 import LociCore
-import LociVault
 import LociIndex
+import LociVault
 
 /// CLI: Capture inbox → daily / typed object fixtures for DevHarness (PR26).
 @main
@@ -27,22 +27,27 @@ struct LociCaptureDemo {
         let daily = DailyNoteService(vault: vault, index: index, schema: schema)
         let capture = CaptureService(vault: vault, objects: objects, dailyNotes: daily)
 
-        // Extension-style enqueue (no index): append + create
-        let appendItem = CaptureInboxItem.appendLine(
+        // Extension-style enqueue (no index): ShareInboxFactory maps (text, url).
+        let appendItem = ShareInboxFactory.inboxItem(
+            text: "Quick capture from share sheet",
+            url: nil,
+            source: .share
+        )
+        let appendPath = try await CaptureInboxWriter.enqueue(appendItem, vault: vault)
+
+        let createItem = ShareInboxFactory.inboxItem(
+            text: "Shared Page",
+            url: "https://example.com/article"
+        )
+        let createPath = try await capture.enqueue(createItem)
+
+        // Keep a URL-bearing append so daily still shows the classic share line.
+        let urlAppend = CaptureInboxItem.appendLine(
             "Quick capture from share sheet",
             source: .share,
             sourceURL: "https://example.com/clip"
         )
-        let appendPath = try await CaptureInboxWriter.enqueue(appendItem, vault: vault)
-
-        let createItem = CaptureInboxItem.createTyped(
-            typeID: .page,
-            title: "Shared Page",
-            text: "Body from share extension",
-            source: .share,
-            sourceURL: "https://example.com/article"
-        )
-        let createPath = try await capture.enqueue(createItem)
+        _ = try await CaptureInboxWriter.enqueue(urlAppend, vault: vault)
 
         let pendingBefore = try await capture.listPendingInbox()
         let drain = try await capture.drainInbox(calendar: calendar)
@@ -63,8 +68,7 @@ struct LociCaptureDemo {
 
         let vaultRoot = try await vault.vaultRootURL
         var sqliteInVault = false
-        if let enumerator = FileManager.default.enumerator(at: vaultRoot, includingPropertiesForKeys: nil)
-        {
+        if let enumerator = FileManager.default.enumerator(at: vaultRoot, includingPropertiesForKeys: nil) {
             for case let url as URL in enumerator {
                 if url.lastPathComponent == "index.sqlite" {
                     sqliteInVault = true
@@ -75,6 +79,13 @@ struct LociCaptureDemo {
 
         let created = drain.first(where: { $0.kind == .createObject })
         let appended = drain.first(where: { $0.kind == .appendToToday })
+        let shareProof = ShareWidgetProof.evaluate(
+            appendItem: appendItem,
+            createItem: createItem,
+            inboxPath: appendPath,
+            openTodayURL: LociDeepLink.dailyTodayAbsoluteString,
+            indexInsideVault: sqliteInVault
+        )
 
         func resultJSON(_ r: CaptureResult) -> [String: Any] {
             var d: [String: Any] = [
@@ -116,9 +127,19 @@ struct LociCaptureDemo {
             "direct": directJSON,
             "createdObject": createdObject,
             "surfaces": [
-                ["id": "share", "label": "iOS Share extension", "action": "enqueue → drain"],
-                ["id": "widget", "label": "Home Screen widget", "action": "Open today / Quick add"],
+                ["id": "share", "label": "iOS Share extension", "action": "extract text/URL → inbox"],
+                [
+                    "id": "widget",
+                    "label": "Home Screen widget",
+                    "action": "Open today \(LociDeepLink.dailyTodayAbsoluteString) / Quick add",
+                ],
                 ["id": "menubar", "label": "macOS menu bar", "action": "direct appendToToday"],
+            ],
+            "openTodayURL": LociDeepLink.dailyTodayAbsoluteString,
+            "share": [
+                "appendKind": appendItem.kind.rawValue,
+                "createKind": createItem.kind.rawValue,
+                "createType": createItem.typeID?.rawValue ?? "",
             ],
             "proof": [
                 "inboxThenDrain": pendingBefore.count >= 2 && pendingAfter.isEmpty,
@@ -131,9 +152,13 @@ struct LociCaptureDemo {
                 "dailyPathDeterministic": today.meta.relativePath
                     == DailyNoteIdentity.relativePath(for: Date(), calendar: calendar),
                 "indexOutsideVault": !sqliteInVault,
+                "shareExtractsText": shareProof.shareExtractsText,
+                "widgetOpenToday": shareProof.widgetOpenToday,
+                "inboxNotIndex": shareProof.inboxNotIndex,
+                "indexInsideVault": shareProof.indexInsideVault,
             ],
             "note":
-                "PR26: Extensions write .loci/inbox/*.json; main app drains → daily/YYYY-MM-DD.md or typed object. Index on foreground only.",
+                "PR37: Share extracts text/URL via ShareInboxFactory → .loci/inbox/*.json. Widget Open today is loci://daily/today. Index on foreground only.",
         ]
 
         let data = try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])

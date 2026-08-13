@@ -150,7 +150,7 @@ struct CaptureInspectorView: View {
                     .tracking(0.08)
                     .foregroundStyle(LociColors.inkSoft)
                 Text(
-                    "Share extension · Widget (Open today / Quick add) · macOS menu bar. Staging under `.loci/inbox/`; daily remains the inbox."
+                    "Share extracts text/URL → `.loci/inbox/`. Widget Open today is `loci://daily/today`. Daily remains the inbox."
                 )
                 .font(LociTypography.font(.callout))
                 .foregroundStyle(LociColors.inkSoft)

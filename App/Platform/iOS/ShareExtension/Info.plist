@@ -11,7 +11,7 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.26.0</string>
+	<string>0.37.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSExtension</key>
@@ -34,6 +34,6 @@
 		<string>$(PRODUCT_MODULE_NAME).ShareViewController</string>
 	</dict>
 	<key>LociCaptureNote</key>
-	<string>PR26 stub — enqueue .loci/inbox/*.json; main app drains on foreground.</string>
+	<string>PR37 — extract text/URL → ShareInboxFactory → .loci/inbox/*.json; main app drains on foreground. No SQLite.</string>
 </dict>
 </plist>

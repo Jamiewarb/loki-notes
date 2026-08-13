@@ -242,6 +242,22 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         selectedRoute = .object(objectID)
     }
 
+    /// Widget / Share deep links (`loci://daily/today`, `loci://capture`).
+    public func handleOpenURL(_ url: URL) async {
+        switch LociDeepLink.parse(url) {
+        case .dailyToday:
+            selectedRoute = .daily
+            inspectedDailyDay = DailyNoteIdentity.startOfDay(Date())
+            _ = try? await ensureTodayDailyNote()
+            _ = try? await drainCaptureInbox()
+        case .capture:
+            selectedRoute = .capture
+            _ = try? await drainCaptureInbox()
+        case .unknown:
+            break
+        }
+    }
+
     public var status: SyncStatus {
         get async {
             await sync.currentStatus()
