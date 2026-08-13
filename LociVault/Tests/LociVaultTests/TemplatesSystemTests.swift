@@ -225,7 +225,7 @@ final class TemplatesSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR14() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr14"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr14"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr14") || LociVaultModule.version.contains("pr15"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr14") || LociIndexModule.version.contains("pr15"))
     }
 }

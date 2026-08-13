@@ -14,4 +14,8 @@ public struct ObjectTypeID: Hashable, Sendable, Codable, RawRepresentable {
 
     public static let page = ObjectTypeID("page")
     public static let daily = ObjectTypeID("daily")
+    /// PARA Project type (PR15 starter pack).
+    public static let project = ObjectTypeID("project")
+    /// PARA Area type (PR15 starter pack).
+    public static let area = ObjectTypeID("area")
 }

@@ -79,8 +79,8 @@ export const PANELS: Record<PanelId, Panel> = {
   settings: {
     id: "settings",
     title: "Settings",
-    body: "Vault root, local Documents fallback, and sync status (PR04). Create vault writes .loci/space.json.",
-    inspector: "iCloud vs local Documents — index never stored in the vault.",
+    body: "Vault root + Apply PARA pack (PR15). Project/Area types; Resource=#resource; Archive=#archive filter (no folder move).",
+    inspector: "iCloud vs local Documents — index never stored in the vault. PARA explainer in Settings.",
   },
   gallery: {
     id: "gallery",
