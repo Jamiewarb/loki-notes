@@ -31,7 +31,7 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 
 **Branch:** `cursor/pr30-ai-d2c1`  
 **Based on:** `cursor/pr29-editor-rich-d2c1`  
-**Tip:** `3535848cd78e4915a7bbc1187e16adf5780fc632` (**281** tests)
+**Tip:** `a0e593a0e54d91d1d5377b711e2818020a53e43b` (**281** tests; evidence under `evidence/pr30/` @ `3535848`)
 
 ### What landed
 
