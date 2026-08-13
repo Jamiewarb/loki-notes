@@ -141,6 +141,8 @@ Playwright config sketch:
 5. **Pinned Inbox stub is `disabled`.** Do not click it.
 6. **Date drift.** Fixtures are frozen; “today” in JSON may not equal CI’s calendar day. Read `dayNav.today` from the fixture or the rendered `daily-today` node.
 7. **Parametrized panel smoke.** Keep assertions to “destination appeared / not stuck on Loading”. Panel-specific proofs live in domain specs.
+8. **Playwright 1.62 has no `test.each`.** Use `for...of` at module scope to register isolated tests.
+9. **`getByRole('button', { name: 'Daily' })` is not unique.** Calendar’s subtitle is “Daily notes · dots”. Scope to `getByRole('navigation', { name: 'Navigate' })` then the button.
 
 If a test flakes: open the trace, confirm whether the panel was still on `*-status` loading, then tighten the wait. Do not add sleep.
 
