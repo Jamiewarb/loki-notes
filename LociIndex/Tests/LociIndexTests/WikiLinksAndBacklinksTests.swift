@@ -232,6 +232,7 @@ final class WikiLinksAndBacklinksTests: XCTestCase {
     func testObjectSelectBrokenIDStillOutgoing() async throws {
         try await boot()
         let bookID = UUID(uuidString: "dddddddd-dddd-4ddd-8ddd-ddddddddddd4")!
+        let missing = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee5"
         let created = ISO8601DateFormatter().date(from: "2026-08-13T10:00:00Z")!
         try await vault.writeFile(
             Data(
@@ -245,7 +246,7 @@ final class WikiLinksAndBacklinksTests: XCTestCase {
                 tags: []
                 properties:
                   author:
-                    - missing-object-zzzz
+                    - \(missing)
                 ---
 
                 No wiki in body.
@@ -257,7 +258,7 @@ final class WikiLinksAndBacklinksTests: XCTestCase {
 
         let outgoing = try await index.outgoingLinks(from: ObjectID(bookID))
         XCTAssertEqual(outgoing.count, 1)
-        XCTAssertEqual(outgoing.first?.target, "missing-object-zzzz")
+        XCTAssertEqual(outgoing.first?.target, missing)
         XCTAssertTrue(outgoing.first?.isBroken == true)
     }
 }
