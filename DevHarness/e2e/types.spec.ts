@@ -74,3 +74,31 @@ test("type convert refuses Daily and keeps ObjectID stable", async ({ page }) =>
   await expect(harness(page, "type-convert-proof-refusedDaily")).toHaveText("yes ✓");
   await expect(harness(page, "type-convert-proof-idStable")).toHaveText("yes ✓");
 });
+
+test("object-select picker shows selected title and proof flags", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "object-select-picker")).toBeVisible();
+  await expect(harness(page, "object-select-picker")).toContainText("Cal Newport");
+  await expect(harness(page, "object-select-proof-pickerUsesIndexCandidates")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "object-select-proof-storesObjectIDs")).toHaveText("yes ✓");
+  await expect(harness(page, "object-select-proof-createsRealLinks")).toHaveText("yes ✓");
+  await expect(harness(page, "object-select-proof-doesNotRewriteBody")).toHaveText("yes ✓");
+  await expect(harness(page, "object-select-proof-indexInsideVault")).toHaveText("NO");
+});
+
+test("object-select does not rewrite the book body with wiki-links", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "object-select-note")).toBeVisible();
+  await expect(harness(page, "object-select-note")).toHaveAttribute(
+    "data-daily-unchanged",
+    "true",
+  );
+  await expect(harness(page, "object-select-note")).toHaveAttribute(
+    "data-index-inside-vault",
+    "false",
+  );
+});

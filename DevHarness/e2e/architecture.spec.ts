@@ -20,6 +20,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-macos-ci/macos-ci.json",
   "/demo-media/media.json",
   "/demo-objects/pages.json",
+  "/demo-object-select/object-select.json",
   "/demo-para/para.json",
   "/demo-pins/pins.json",
   "/demo-properties/properties.json",
@@ -158,6 +159,25 @@ test("demo fixtures never store the index inside the vault", async ({
         .soft(proof.dynamicTypeScales, `${url} proof.dynamicTypeScales`)
         .toBe(true);
     }
+    if (proof && "pickerUsesIndexCandidates" in proof) {
+      expect
+        .soft(
+          proof.pickerUsesIndexCandidates,
+          `${url} proof.pickerUsesIndexCandidates`,
+        )
+        .toBe(true);
+    }
+    if (proof && "storesObjectIDs" in proof) {
+      expect.soft(proof.storesObjectIDs, `${url} proof.storesObjectIDs`).toBe(true);
+    }
+    if (proof && "createsRealLinks" in proof) {
+      expect.soft(proof.createsRealLinks, `${url} proof.createsRealLinks`).toBe(true);
+    }
+    if (proof && "doesNotRewriteBody" in proof) {
+      expect
+        .soft(proof.doesNotRewriteBody, `${url} proof.doesNotRewriteBody`)
+        .toBe(true);
+    }
     if (proof && "noteBodyHasAbsolutePath" in proof) {
       expect
         .soft(
@@ -196,5 +216,22 @@ test("macos-ci demo fixture records workflow, shortcuts, a11y, and no index in v
   expect(proof?.shortcutsCatalogued).toBe(true);
   expect(proof?.voiceOverLabelsPresent).toBe(true);
   expect(proof?.dynamicTypeScales).toBe(true);
+  expect(proof?.indexInsideVault).toBe(false);
+});
+
+test("object-select demo fixture stores ObjectIDs and creates real links", async ({
+  request,
+}) => {
+  const response = await request.get("/demo-object-select/object-select.json");
+  expect(response.ok()).toBeTruthy();
+  const data = asRecord(await response.json());
+  expect(data?.indexInsideVault).toBe(false);
+  expect(data?.dailyUnchanged).toBe(true);
+  expect(data?.bookBodyContainsWikiLink).toBe(false);
+  const proof = asRecord(data?.proof);
+  expect(proof?.pickerUsesIndexCandidates).toBe(true);
+  expect(proof?.storesObjectIDs).toBe(true);
+  expect(proof?.createsRealLinks).toBe(true);
+  expect(proof?.doesNotRewriteBody).toBe(true);
   expect(proof?.indexInsideVault).toBe(false);
 });

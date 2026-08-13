@@ -22,7 +22,7 @@ public enum PropertyValueFormatting: Sendable {
     }
 
     /// Coerce a draft string into a `PropertyValue` for the given kind.
-    /// Object-select stays a stub: comma-separated ids stored as `.objectSelect`.
+    /// Object-select: comma-separated ObjectID strings (lowercase UUID / daily key).
     public static func coerce(draft: String, kind: PropertyKind) -> PropertyValue {
         let trimmed = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         switch kind {
@@ -62,10 +62,7 @@ public enum PropertyValueFormatting: Sendable {
         case .url:
             return trimmed.isEmpty ? .null : .url(trimmed)
         case .objectSelect:
-            // Stub: store comma-separated object id / path refs.
-            let parts = trimmed.split(separator: ",").map {
-                $0.trimmingCharacters(in: .whitespacesAndNewlines)
-            }.filter { !$0.isEmpty }
+            let parts = ObjectSelectID.parseList(trimmed)
             return parts.isEmpty ? .null : .objectSelect(parts)
         }
     }

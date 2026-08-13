@@ -4,6 +4,47 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR40 — object-select picker (creates real links)
+
+**Branch:** `cursor/pr40-object-select-d2c1`  
+**Based on:** `cursor/pr39-macos-ci-d2c1`  
+**Vault module:** `0.40.0-pr40`  
+**Swift tests / Playwright:** see evidence/pr40 after the test run. Evidence: `evidence/pr40/`
+
+### Feature design
+- Domain folder: `App/Features/Properties/` — `ObjectSelectPickerView` + thin `ObjectSelectStore`. **Does not import** `App/Features/Links` (`LinkPickerView` is duplicated locally).
+- Writes vault? yes — YAML frontmatter `PropertyValue.objectSelect([ObjectID strings])` via `ObjectServing.save`. Never absolute disk paths. Does **not** insert `[[wiki-links]]` into the body.
+- Reads index? yes — `IndexQuerying.linkCandidates` (debounced, async). Typing in the editor body does not wait on picker I/O.
+- Protocols: `IndexQuerying`, `ObjectServing`. Shared protocol only — no feature→feature imports.
+- Core: `ObjectSelectProof`, `ObjectSelectID`. Markdown: `ObjectSelectLinks.wikiLinks` / `merge` (pure; XCTest needs no GRDB). Index: `ObjectIndexer.extract` merges object-select into `doc.wikiLinks` before `LinkIndexer.replaceLinks`.
+- Demo: `scripts/demo-object-select.sh` → `DevHarness/public/demo-object-select/object-select.json`. Harness: `?panel=types` object-select section (`data-harness=object-select-picker`).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-object-select.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=types — pickerUsesIndexCandidates / storesObjectIDs / createsRealLinks / doesNotRewriteBody
+```
+
+### Pitfalls
+- Properties must not import `LinkPickerView`. Duplicate a small picker; share `IndexQuerying.linkCandidates`.
+- Persist ObjectID `frontMatterIDString` (lowercase UUID / daily key), never vault-absolute paths.
+- Merge object-select into the `links` table; do not rewrite daily/object markdown with `[[id]]`.
+- Broken/missing IDs stay in YAML; outgoing can be broken (same as wiki-links).
+- Picker search is async + debounced. Do not block editor typing on index/network.
+- Stacked vault version assertions (`contains("pr39")`) must also accept `pr40`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave F **PR41** dashboard filter/sort/group, stacked on PR40 (`cursor/pr40-object-select-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR39 — macOS CI + keyboard shortcuts + VoiceOver / Dynamic Type
 
 **Branch:** `cursor/pr39-macos-ci-d2c1`  
