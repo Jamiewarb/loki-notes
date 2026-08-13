@@ -4,22 +4,22 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR09 — Block editor MVP
+## PR10 — Daily notes
 
-**Branch:** `cursor/pr09-block-editor-d2c1`  
-**Based on:** `cursor/pr08-object-crud-d2c1` @ `af741c6`
+**Branch:** `cursor/pr10-daily-notes-d2c1`  
+**Based on:** `cursor/pr09-block-editor-d2c1` @ `c23060f`
 
 ### What landed
 
-- **`EditorSession` in `LociMarkdown`** (Linux-testable): owns BlockAST, `isDirty`, `revisionToken`; `applyLocalEdit`, `applySlashCommand`, `markSaved`, `proposeRemoteReload` (never clobbers if dirty), `serializeBody()`
-- **`BlockEdit` / `SlashBlockKind`**: paragraph, h1–h4, bullet/numbered/task lists, quote, code; paste markdown; split/delete/toggle task
-- **`BlockASTHTML`**: fixture HTML preview for harness
-- **Apple UI** `App/Features/BlockEditor/`: `BlockEditorView`, `SlashMenuView`, `Keymap`, `EditorSessionBridge` (debounce 500ms + 5s max → `ObjectServing.save`)
-- **`ObjectEditorView`**: title + BlockEditor (replaced plain TextEditor)
-- **DevHarness Studio → Editor** (`?panel=editor`): slash simulation + AST HTML (tasks/headings/lists)
-- **CLI:** `loci-editor-demo` + `scripts/demo-editor.sh`
-- **Tests:** **84** package tests (was 78)
-- Evidence: `evidence/pr09/`
+- **`DailyNoteService`** in `LociVault` (Linux-testable): `ensure` / `ensureToday` / `open` + prev/next/select
+- **Identity:** path `daily/YYYY-MM-DD.md`; frontmatter id `daily-YYYY-MM-DD`; deterministic UUID `d01aYYYY-MMDD-4000-8000-6461696c7900`
+- **`DailyNoteIdentity` + `DailyNoteServing` + `ObjectID.daily` / `parsing:`** in `LociCore`; FrontMatter + Index accept date keys
+- **Schema:** built-in Daily type seeded with Page on `ensureSkeleton` / bootstrap
+- **App:** `Features/DailyNotes/{DailyNoteFeature,DailyNoteView,DaySwitcher}` — BlockEditor body; Daily destination live
+- **Launch:** `AppServices` defaults `.daily`; `LociApp` bootstraps vault + ensure today; iOS Daily tab first
+- **DevHarness:** Daily panel (`?panel=daily`) via `scripts/demo-daily.sh` / `loci-daily-demo`
+- **Tests:** **95** package tests (was 84)
+- Evidence: `evidence/pr10/`
 
 ### How to run checks
 
@@ -27,37 +27,34 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-editor.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=editor
+./scripts/demo-daily.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=daily
 ```
 
-### Pitfalls for PR10 (Daily notes)
+### Pitfalls for PR11 (Created today)
 
-- Daily feature folder: `Features/DailyNotes/{DailyNoteService,DailyNoteView,DaySwitcher}`
-- Deterministic file `daily/YYYY-MM-DD.md` and stable id scheme (`daily-{yyyy-mm-dd}` per PLAN)
-- Open/create today on launch (esp. iOS); sidebar Daily destination becomes live
-- Reuse EditorSession for body — do not reintroduce TextEditor
-- Created-today list is **PR11** (inspector only); do not auto-write derived lists into daily markdown
-- Local vault fallback must work for daily create without iCloud
+- Panel only: `IndexQuerying.created(on:)` → inspector links — **never** rewrite daily `.md` on object create
+- Co-locate as `Features/DailyNotes/CreatedTodayPanel.swift` (or inspector module registered centrally)
+- Daily note bytes must stay stable when creating Pages elsewhere
+- Reuse existing `created(on:)` index query (PR07); wire publishers later if needed
 
-### Next: PR10 — Daily notes
+### Next: PR11 — Created-today auto links
 
-- Branch: `cursor/pr10-daily-notes-d2c1`
+- Branch: `cursor/pr11-created-today-d2c1`
 
 ---
 
-## PR08 — Object CRUD end-to-end (Wave A complete)
+## PR09 — Block editor MVP
 
-**Branch:** `cursor/pr08-object-crud-d2c1`
+**Branch:** `cursor/pr09-block-editor-d2c1`
 
-`ObjectService` create/open/save/delete; AppServices wiring; Page list; debounced save design. See `evidence/pr08/`.
+`EditorSession` + Apple BlockEditor; ObjectEditor uses BlockAST. See `evidence/pr09/`.
 
 ### Still relevant
 
-- `ObjectServing.save(meta:bodyMarkdown:)` is the persist boundary after editor serialize
-- Index updates async after vault write; never block typing
-- Types → Page list navigates to object editor route
+- Debounced save via `EditorSessionBridge` → `ObjectServing.save`
+- DailyNoteView reuses the same bridge — do not reintroduce TextEditor
 
 ---
 
-## Wave A (PR01–PR08) — complete · Wave B starts at PR09
+## Wave A (PR01–PR08) — complete · Wave B: PR09–PR10 done · next PR11

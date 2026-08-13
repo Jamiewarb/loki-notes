@@ -1,0 +1,37 @@
+{
+  "dayNav" : {
+    "next" : "2026-08-14",
+    "prev" : "2026-08-12",
+    "today" : "2026-08-13"
+  },
+  "idempotent" : true,
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-daily-demo-db-2026-08-13T10-28-20Z\/vb5565ab8a4a3f63a\/index.sqlite",
+  "markdown" : "---\nid: daily-2026-08-13\ntype: daily\ntitle: 2026-08-13\ncreated: \"2026-08-13T00:00:00Z\"\nupdated: \"2026-08-13T10:28:20Z\"\n---\n\n## Inbox\n\nMorning capture from DailyNoteService.\n\n- [ ] Review yesterday\n- [x] Land PR10\n\n#daily\n",
+  "moduleVersion" : "0.10.0-pr10",
+  "note" : "DailyNoteService ensure today\/yesterday; deterministic path+id; body via BlockEditor later. Created-today is PR11.",
+  "scheme" : {
+    "exampleId" : "daily-2026-08-13",
+    "examplePath" : "daily\/2026-08-13.md",
+    "exampleUUID" : "d01a2026-0813-4000-8000-6461696c7900",
+    "logicalId" : "daily-YYYY-MM-DD",
+    "path" : "daily\/YYYY-MM-DD.md"
+  },
+  "today" : {
+    "bodyPreview" : "## Inbox\n\nMorning capture from DailyNoteService.\n\n- [ ] Review yesterday\n- [x] Land PR10\n\n#daily",
+    "id" : "daily-2026-08-13",
+    "relativePath" : "daily\/2026-08-13.md",
+    "title" : "2026-08-13",
+    "type" : "daily",
+    "uuid" : "d01a2026-0813-4000-8000-6461696c7900"
+  },
+  "vaultRoot" : "\/tmp\/loci-daily-demo-vault-2026-08-13T10-28-20Z\/LociVault",
+  "yesterday" : {
+    "bodyPreview" : "",
+    "id" : "daily-2026-08-12",
+    "relativePath" : "daily\/2026-08-12.md",
+    "title" : "2026-08-12",
+    "type" : "daily",
+    "uuid" : "d01a2026-0812-4000-8000-6461696c7900"
+  }
+}
