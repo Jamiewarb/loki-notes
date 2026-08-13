@@ -10,7 +10,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Based on:** `cursor/pr42-kanban-d2c1`  
 **Vault module:** `0.43.0-pr43`  
 **MARKETING_VERSION:** `0.43.0`  
-**Swift tests:** **TBD** green (was 396). **Playwright:** **TBD** green (was 91). Evidence: `evidence/pr43/`
+**Swift tests:** **412** green (was 396). **Playwright:** **94** green (was 91). Evidence: `evidence/pr43/`
 
 ### Feature design
 - Domain folder: `App/Features/Weblinks/` — inspector card via `WeblinksFeature.preview(...)`. Compose from `InspectorHostView`. **Does not import** other feature folders. ObjectEditor does not import Weblinks.

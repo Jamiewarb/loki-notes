@@ -1,0 +1,8 @@
+==> loci-weblink-preview-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-weblink-preview-demo' complete! (0.59s)
+parsesOpenGraph cacheOutsideVault noFetchOnType dailyUnchanged cacheInsideVault=false indexInsideVault=false
+==> wrote /workspace/DevHarness/public/demo-weblink-preview/weblink-preview.json
+==> demo-weblink-preview complete

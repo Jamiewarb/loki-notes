@@ -1,0 +1,26 @@
+{
+  "cacheInsideVault" : false,
+  "cachePath" : "\/tmp\/loci-weblink-demo-db-2026-08-13T21-49-24Z\/v8cec9e5ae8091b7c\/previews.json",
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dailyUnchanged" : true,
+  "fetchCountAfterOpen" : 1,
+  "fetchCountAfterTypingSave" : 1,
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-weblink-demo-db-2026-08-13T21-49-24Z\/v8cec9e5ae8091b7c\/index.sqlite",
+  "moduleVersion" : "0.43.0-pr43",
+  "note" : "PR43: Weblink url + fake OG fetch on fixture HTML. Cache is Application Support JSON next to the index, never in the vault. Typing save does not fetch. Daily markdown unchanged. OG is cache-only (not YAML).",
+  "previewDescription" : "A clipped paragraph from the page.",
+  "previewImageURL" : "https:\/\/example.com\/og.png",
+  "previewTitle" : "Example Article",
+  "proof" : {
+    "cacheOutsideVault" : true,
+    "indexInsideVault" : false,
+    "noFetchOnType" : true,
+    "parsesOpenGraph" : true
+  },
+  "vaultRoot" : "\/tmp\/loci-weblink-demo-vault-2026-08-13T21-49-24Z\/LociVault",
+  "weblinkPath" : "objects\/weblink\/example-article.md",
+  "weblinkURL" : "https:\/\/example.com\/article",
+  "yamlContainsOgTitle" : false
+}
