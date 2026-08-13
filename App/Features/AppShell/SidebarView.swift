@@ -88,7 +88,12 @@ struct SidebarView: View {
                         systemImage: destination.systemImage,
                         isSelected: isSelected(destination)
                     ) {
-                        Task { await services.open(route: destination.route) }
+                        Task {
+                            if destination == .tags {
+                                services.focusedTag = nil
+                            }
+                            await services.open(route: destination.route)
+                        }
                     }
                 }
             }
@@ -133,6 +138,9 @@ struct SidebarView: View {
     private func isSelected(_ destination: AppRoute) -> Bool {
         if destination == .types {
             return services.selectedRoute == .types && services.focusedTypeID == nil
+        }
+        if destination == .tags {
+            return services.selectedRoute == .tags
         }
         return AppRoute(route: services.selectedRoute) == destination
     }

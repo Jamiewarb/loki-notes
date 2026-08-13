@@ -16,6 +16,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var inspectedDailyDay: Date
     /// Type dashboard focus inside Types destination (`nil` = type list). PR12.
     public var focusedTypeID: ObjectTypeID?
+    /// Tag browse focus inside Tags destination (`nil` = all tags). PR17.
+    public var focusedTag: String?
     /// Live editor session for the open object — property inspector shares saves (PR13).
     @ObservationIgnored
     public weak var activeEditorSession: EditorSessionBridge?
@@ -24,7 +26,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).
     public let schema: SchemaStore
     /// Local SQLite projection (Application Support) — never inside the vault.
-    /// Created lazily after vault root is known; nil until `ensureIndex()` succeeds.
+    /// Created lazily after `ensureIndex()` succeeds.
     public private(set) var index: IndexService?
     /// Object CRUD orchestration (`ObjectServing`). Nil until index is ready.
     public private(set) var objects: ObjectService?
@@ -37,6 +39,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         selectedRoute: Route = .daily,
         inspectedDailyDay: Date = DailyNoteIdentity.startOfDay(Date()),
         focusedTypeID: ObjectTypeID? = nil,
+        focusedTag: String? = nil,
         vault: VaultService? = nil,
         schema: SchemaStore? = nil,
         index: IndexService? = nil,
@@ -47,6 +50,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.selectedRoute = selectedRoute
         self.inspectedDailyDay = inspectedDailyDay
         self.focusedTypeID = focusedTypeID
+        self.focusedTag = focusedTag
         let resolvedVault =
             vault
             ?? (try? VaultService(forceLocal: false))
@@ -163,6 +167,16 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public func openTypeDashboard(_ typeID: ObjectTypeID) async {
         focusedTypeID = typeID
         selectedRoute = .types
+    }
+
+    /// Open Tags browse, optionally focused on one tag (PR17).
+    public func openTag(_ tag: String?) async {
+        if let tag {
+            focusedTag = TagNormalization.normalize(tag)
+        } else {
+            focusedTag = nil
+        }
+        selectedRoute = .tags
     }
 
     public func ensureObjectService() async throws -> ObjectService {

@@ -153,6 +153,34 @@ public final class EditorSession: @unchecked Sendable {
         return true
     }
 
+    /// Replace an incomplete `#…` trigger with a completed `#tag` (trailing space for continued typing).
+    @discardableResult
+    public func insertTag(
+        blockIndex: Int,
+        tag: String,
+        trigger: TagTrigger? = nil,
+        trailingSpace: Bool = true
+    ) -> Bool {
+        guard blocks.indices.contains(blockIndex) else { return false }
+        let plain = Self.plainText(of: blocks[blockIndex])
+        let resolvedTrigger = trigger ?? TagTriggerDetector.detect(in: plain)
+        let markdown = TagSyntax.markdown(tag) + (trailingSpace ? " " : "")
+
+        let next: String
+        if let resolvedTrigger {
+            let start = plain.index(plain.startIndex, offsetBy: resolvedTrigger.replaceStartOffset)
+            let prefix = String(plain[..<start])
+            next = prefix + markdown
+        } else if plain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            next = markdown
+        } else {
+            next = plain + markdown
+        }
+
+        applyLocalEdit(.setPlainText(blockIndex: blockIndex, text: next))
+        return true
+    }
+
     public func markSaved(revision: UInt64? = nil) {
         isDirty = false
         if let revision {

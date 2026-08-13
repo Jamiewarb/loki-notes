@@ -17,6 +17,10 @@ struct TypeDashboardView: View {
     @State private var showRename = false
     @State private var hideArchived = false
     @State private var archivedHiddenCount = 0
+    @State private var tagFilterDraft: String = ""
+    @State private var activeTagFilter: String?
+    @State private var tagAliases = TagAliasTable.empty
+    @State private var tagFilterHiddenCount = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
@@ -53,6 +57,31 @@ struct TypeDashboardView: View {
                 .font(LociTypography.font(.body))
                 .foregroundStyle(LociColors.inkSoft)
                 .frame(maxWidth: 520, alignment: .leading)
+
+            HStack(spacing: LociSpacing.stack(.sm)) {
+                TextField("Filter by #tag", text: $tagFilterDraft)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: 220)
+                    .onSubmit { applyTagFilter() }
+                LociButton("Filter", style: .secondary) { applyTagFilter() }
+                if activeTagFilter != nil {
+                    LociButton("Clear", style: .secondary) {
+                        tagFilterDraft = ""
+                        activeTagFilter = nil
+                        Task { await reload() }
+                    }
+                }
+            }
+
+            if let activeTagFilter {
+                Text(
+                    tagFilterHiddenCount > 0
+                        ? "Showing \(TagNormalization.display(activeTagFilter)) · \(tagFilterHiddenCount) hidden."
+                        : "Showing \(TagNormalization.display(activeTagFilter))."
+                )
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+            }
 
             if hideArchived {
                 Text(
@@ -173,15 +202,24 @@ struct TypeDashboardView: View {
             type = try await services.schema.loadType(typeID)
             let space = try? await services.schema.loadSpaceSettings()
             hideArchived = (type?.dashboard.hideArchived == true) || (space?.hideArchived == true)
+            tagAliases = space?.tagAliasTable ?? .empty
             let all = try await services.index?.objects(typeID: typeID) ?? []
-            let visible = ArchiveFilter.visible(all, hideArchived: hideArchived)
-            archivedHiddenCount = all.count - visible.count
-            objects = visible
+            let unarchived = ArchiveFilter.visible(all, hideArchived: hideArchived)
+            archivedHiddenCount = all.count - unarchived.count
+            let filtered = TagFilter.visible(unarchived, tag: activeTagFilter, aliases: tagAliases)
+            tagFilterHiddenCount = unarchived.count - filtered.count
+            objects = filtered
             // Daily notes use deterministic paths; still list from index when viewing Daily type.
             errorMessage = nil
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func applyTagFilter() {
+        let n = TagNormalization.normalize(tagFilterDraft)
+        activeTagFilter = n.isEmpty ? nil : n
+        Task { await reload() }
     }
 
     private func createObject() async {

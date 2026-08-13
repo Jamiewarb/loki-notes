@@ -14,6 +14,8 @@ public struct SpaceSettings: Hashable, Sendable, Codable, Equatable {
     public var resourceApproach: String?
     /// Documented approach: `tag:#archive` (never a folder move).
     public var archiveApproach: String?
+    /// Tag aliases: canonical → alternate spellings (PR17). Example: `health: ["wellness"]`.
+    public var tagAliases: [String: [String]]
 
     public init(
         name: String = "Loci",
@@ -22,7 +24,8 @@ public struct SpaceSettings: Hashable, Sendable, Codable, Equatable {
         paraPackApplied: Bool = false,
         hideArchived: Bool = false,
         resourceApproach: String? = nil,
-        archiveApproach: String? = nil
+        archiveApproach: String? = nil,
+        tagAliases: [String: [String]] = [:]
     ) {
         self.name = name
         self.schemaVersion = schemaVersion
@@ -31,11 +34,17 @@ public struct SpaceSettings: Hashable, Sendable, Codable, Equatable {
         self.hideArchived = hideArchived
         self.resourceApproach = resourceApproach
         self.archiveApproach = archiveApproach
+        self.tagAliases = TagAliasTable(aliasesByCanonical: tagAliases).aliasesByCanonical
+    }
+
+    /// Typed alias table for queries / UI.
+    public var tagAliasTable: TagAliasTable {
+        TagAliasTable(aliasesByCanonical: tagAliases)
     }
 
     private enum CodingKeys: String, CodingKey {
         case name, schemaVersion, pins, paraPackApplied, hideArchived, resourceApproach,
-            archiveApproach
+            archiveApproach, tagAliases
     }
 
     public init(from decoder: Decoder) throws {
@@ -47,5 +56,8 @@ public struct SpaceSettings: Hashable, Sendable, Codable, Equatable {
         hideArchived = try container.decodeIfPresent(Bool.self, forKey: .hideArchived) ?? false
         resourceApproach = try container.decodeIfPresent(String.self, forKey: .resourceApproach)
         archiveApproach = try container.decodeIfPresent(String.self, forKey: .archiveApproach)
+        let rawAliases =
+            try container.decodeIfPresent([String: [String]].self, forKey: .tagAliases) ?? [:]
+        tagAliases = TagAliasTable(aliasesByCanonical: rawAliases).aliasesByCanonical
     }
 }

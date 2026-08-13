@@ -12,6 +12,7 @@ import { renderDailyPanel } from "./panels/DailyPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
 import { renderEditorPanel } from "./panels/EditorPanel";
 import { renderLinksPanel } from "./panels/LinksPanel";
+import { renderTagsPanel } from "./panels/TagsPanel";
 import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
 import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
@@ -41,6 +42,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   markdown: "¶",
   editor: "✎",
   links: "⇉",
+  tags: "#",
 };
 
 function renderNavSection(
@@ -104,6 +106,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
     void renderLinksPanel(detail);
     return;
   }
+  if (panelId === "tags") {
+    void renderTagsPanel(detail);
+    return;
+  }
   if (panelId === "search") {
     void renderSearchIndex(detail);
     return;
@@ -164,6 +170,9 @@ function render(): void {
   }
   if (inspectorRoot && active === "links") {
     void renderBacklinksInspector(inspectorRoot);
+  }
+  if (inspectorRoot && active === "tags") {
+    void renderTagsInspector(inspectorRoot);
   }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
@@ -391,6 +400,8 @@ function inspectorTitle(id: PanelId): string {
       return "Slash · keymap";
     case "links":
       return "Backlinks";
+    case "tags":
+      return "Object tags · aliases";
   }
 }
 
@@ -440,6 +451,35 @@ async function renderBacklinksInspector(root: HTMLElement): Promise<void> {
     `;
   } catch {
     root.innerHTML = `<p>Missing links fixture. Run <code>./scripts/demo-links.sh</code>.</p>`;
+  }
+}
+
+/** Tags inspector: object-level tags + aliases from demo-tags fixture (PR17). */
+async function renderTagsInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-tags-loading">Loading tags…</p>`;
+  try {
+    const res = await fetch("/demo-tags/tags.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      page?: { title?: string; tags?: string[] };
+      aliases?: Record<string, string[]>;
+      note?: string;
+    };
+    const tags = (data.page?.tags ?? []).map((t) => `#${t}`).join(" ") || "(none)";
+    const aliasBits = Object.entries(data.aliases ?? {})
+      .map(([k, v]) => `${k} ← ${(v || []).join(", ")}`)
+      .join(" · ");
+    root.innerHTML = `
+      <p>Object tags on <strong>${escapeAttr(data.page?.title ?? "Page")}</strong> (frontmatter).</p>
+      <p class="vault-card-body" data-harness="inspector-object-tags" style="margin-top:0.75rem">${escapeAttr(tags)}</p>
+      <p class="vault-kicker" style="margin-top:0.75rem">Aliases (space.json)</p>
+      <p class="vault-card-body" data-harness="inspector-tag-aliases">${escapeAttr(aliasBits || "(none)")}</p>
+      <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
+        data.note ?? "Do not auto-write derived tag lists into markdown.",
+      )}</p>
+    `;
+  } catch {
+    root.innerHTML = `<p>Missing tags fixture. Run <code>./scripts/demo-tags.sh</code>.</p>`;
   }
 }
 

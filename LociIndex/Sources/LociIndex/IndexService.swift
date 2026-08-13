@@ -121,6 +121,32 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func allTags(aliases: TagAliasTable, limit: Int) async throws -> [TagSummary] {
+        try await dbQueue.read { db in
+            try TagsQuery.allTags(db: db, aliases: aliases, limit: limit)
+        }
+    }
+
+    public func objects(
+        tagged tag: String,
+        typeID: ObjectTypeID?,
+        aliases: TagAliasTable
+    ) async throws -> [LociObjectMeta] {
+        try await dbQueue.read { db in
+            try TagsQuery.objects(db: db, tagged: tag, typeID: typeID, aliases: aliases)
+        }
+    }
+
+    public func tagCandidates(
+        matching query: String,
+        aliases: TagAliasTable,
+        limit: Int
+    ) async throws -> [TagSummary] {
+        try await dbQueue.read { db in
+            try TagsQuery.candidates(db: db, matching: query, aliases: aliases, limit: limit)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {
@@ -204,9 +230,11 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
             )
 
             for tag in meta.tags {
+                let normalized = TagNormalization.normalize(tag)
+                guard !normalized.isEmpty else { continue }
                 try db.execute(
                     sql: "INSERT OR IGNORE INTO tags (object_id, tag) VALUES (?, ?)",
-                    arguments: [id, tag]
+                    arguments: [id, normalized]
                 )
             }
 

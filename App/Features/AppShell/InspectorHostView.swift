@@ -24,10 +24,29 @@ struct InspectorHostView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
                         PropertiesFeature.editor(services: services, objectID: id)
+                        TagsFeature.objectTags(services: services, objectID: id)
                         LinksFeature.backlinks(services: services, objectID: id)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            } else if case .tags = route {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
+                        Text("Tag aliases")
+                            .font(LociTypography.font(.overline))
+                            .tracking(0.08)
+                            .foregroundStyle(LociColors.inkSoft)
+                        Text(
+                            "Aliases live in `.loci/space.json` (`tagAliases`). Queries expand them so #wellness finds #health."
+                        )
+                        .font(LociTypography.font(.callout))
+                        .foregroundStyle(LociColors.inkSoft)
+                    }
+                    .padding(LociSpacing.stack(.lg))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(LociColors.panel.opacity(0.55))
+                .lociAppear(.panel)
             } else if case .types = route, let typeID = services.focusedTypeID {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
@@ -82,6 +101,7 @@ struct InspectorHostView: View {
         case .types: return "Type metadata"
         case .settings: return "Sync status"
         case .designGallery: return "Tokens"
+        case .tags: return "Aliases"
         case .object: return "Properties"
         }
     }
@@ -98,8 +118,10 @@ struct InspectorHostView: View {
             return "iCloud vs local Documents — index never stored in the vault."
         case .designGallery:
             return "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent."
+        case .tags:
+            return "Tag aliases in space.json expand queries across spellings."
         case .object:
-            return "Properties & backlinks from the local links index."
+            return "Properties, object tags, and backlinks from the local index."
         }
     }
 

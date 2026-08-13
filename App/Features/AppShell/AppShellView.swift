@@ -95,6 +95,15 @@ struct AppShellView: View {
             }
             Section("Studio") {
                 NavigationLink {
+                    TagsFeature.browse(services: services)
+                        .navigationTitle("Tags")
+                        .onAppear {
+                            Task { await services.open(route: .tags) }
+                        }
+                } label: {
+                    Label("Tags", systemImage: Route.tags.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {

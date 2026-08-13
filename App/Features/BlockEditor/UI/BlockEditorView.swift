@@ -61,10 +61,20 @@ struct BlockEditorView: View {
                     }
                 )
                 .transition(.opacity.combined(with: .move(edge: .top)))
+            } else if let trigger = session.tagTrigger, let services {
+                TagsFeature.completer(
+                    services: services,
+                    query: trigger.query,
+                    onSelect: { summary in
+                        session.insertTag(summary)
+                    }
+                )
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
         .animation(.easeOut(duration: 0.18), value: session.slashQuery)
         .animation(.easeOut(duration: 0.18), value: session.linkTrigger?.query)
+        .animation(.easeOut(duration: 0.18), value: session.tagTrigger?.query)
         .animation(.easeOut(duration: 0.2), value: session.editEpoch)
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .task(id: session.editEpoch) {
@@ -164,7 +174,7 @@ private struct BlockRowView: View {
         case .blockQuote: return "Quote"
         case .bulletList(let items) where items.first?.isTask == true: return "Task"
         case .bulletList, .numberedList: return "List item"
-        default: return "Type / for blocks · @ or [[ to link"
+        default: return "Type / for blocks · @ or [[ to link · # for tags"
         }
     }
 

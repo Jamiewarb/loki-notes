@@ -82,7 +82,7 @@ struct ObjectEditorView: View {
                 }
 
                 Text(
-                    "Block editor · / slash · @ / [[ link picker · autosave 500ms. Index updates after save."
+                    "Block editor · / slash · @ / [[ link · # tags · autosave 500ms. Index updates after save."
                 )
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)
