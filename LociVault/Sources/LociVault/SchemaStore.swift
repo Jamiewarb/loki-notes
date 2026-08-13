@@ -1,8 +1,10 @@
 import Foundation
 import LociCore
+import LociMarkdown
 
 /// Loads/saves `.loci/space.json` and per-type `.loci/types/<slug>.json` via `VaultServing`.
 /// Merge-friendly: one type per file — never a monolithic schema.json.
+/// Templates live under `.loci/templates/<id>.md` (PR14).
 public final class SchemaStore: SchemaServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let encoder: JSONEncoder
@@ -203,10 +205,158 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return type
     }
 
+    // MARK: - Templates (PR14)
+
+    public func listTemplates(typeID: ObjectTypeID) async throws -> [ObjectTemplate] {
+        _ = try await loadType(typeID) // ensure type exists
+        let slugs = try await listTemplateFileIDs()
+        var result: [ObjectTemplate] = []
+        for fileID in slugs where fileID.hasPrefix("\(typeID.rawValue).") {
+            if let template = try? await loadTemplate(fileID), template.typeID == typeID {
+                result.append(template)
+            }
+        }
+        // Also include ids registered on the type that may use non-prefix naming.
+        let type = try await loadType(typeID)
+        for registered in type.templateIDs where !result.contains(where: { $0.id == registered }) {
+            if let template = try? await loadTemplate(registered), template.typeID == typeID {
+                result.append(template)
+            }
+        }
+        return result.sorted { $0.id < $1.id }
+    }
+
+    public func loadTemplate(_ id: String) async throws -> ObjectTemplate {
+        let path = Self.templateRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.templateNotFound(id)
+        }
+        let data = try await vault.readFile(atRelativePath: path)
+        guard let markdown = String(data: data, encoding: .utf8) else {
+            throw LociError.templateNotFound(id)
+        }
+        do {
+            return try TemplateCodec.decode(markdown)
+        } catch {
+            throw LociError.templateNotFound(id)
+        }
+    }
+
+    @discardableResult
+    public func saveTemplate(_ template: ObjectTemplate) async throws -> ObjectTemplate {
+        guard TemplateID.isValid(template.id) else {
+            throw LociError.invalidTemplateID(template.id)
+        }
+        // Ensure type exists.
+        var type = try await loadType(template.typeID)
+        let markdown = TemplateCodec.encode(template)
+        guard let data = markdown.data(using: .utf8) else {
+            throw LociError.coordinationFailed("utf8 encode failed for template \(template.id)")
+        }
+        try await vault.writeFile(data, atRelativePath: Self.templateRelativePath(for: template.id))
+        if !type.templateIDs.contains(template.id) {
+            type.templateIDs.append(template.id)
+            type.templateIDs.sort()
+            try await saveType(type)
+        }
+        return template
+    }
+
+    @discardableResult
+    public func createTemplate(
+        typeID: ObjectTypeID,
+        name: String,
+        bodyMarkdown: String = "",
+        defaultProperties: [String: PropertyValue] = [:],
+        slug: String? = nil,
+        makeDefault: Bool = false
+    ) async throws -> ObjectTemplate {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw LociError.invalidTemplateID("(empty name)")
+        }
+        _ = try await loadType(typeID)
+        let id = try TemplateID.make(typeID: typeID, name: trimmed, explicitSlug: slug)
+        if try await vault.fileExists(atRelativePath: Self.templateRelativePath(for: id)) {
+            throw LociError.templateAlreadyExists(id)
+        }
+        let template = ObjectTemplate(
+            id: id,
+            typeID: typeID,
+            name: trimmed,
+            bodyMarkdown: bodyMarkdown,
+            defaultProperties: defaultProperties
+        )
+        _ = try await saveTemplate(template)
+        if makeDefault {
+            _ = try await setDefaultTemplate(typeID: typeID, templateID: id)
+        }
+        return template
+    }
+
+    public func deleteTemplate(_ id: String) async throws {
+        let path = Self.templateRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.templateNotFound(id)
+        }
+        // Prefer typeID from file; fall back to id prefix.
+        let typeID: ObjectTypeID
+        if let loaded = try? await loadTemplate(id) {
+            typeID = loaded.typeID
+        } else if let prefix = id.split(separator: ".", maxSplits: 1).first {
+            typeID = ObjectTypeID(String(prefix))
+        } else {
+            throw LociError.invalidTemplateID(id)
+        }
+        try await vault.deleteFile(atRelativePath: path)
+        if var type = try? await loadType(typeID) {
+            type.templateIDs.removeAll { $0 == id }
+            if type.defaultTemplateID == id {
+                type.defaultTemplateID = nil
+            }
+            try await saveType(type)
+        }
+    }
+
+    @discardableResult
+    public func setDefaultTemplate(typeID: ObjectTypeID, templateID: String?) async throws
+        -> ObjectType
+    {
+        var type = try await loadType(typeID)
+        if let templateID {
+            guard TemplateID.isValid(templateID) else {
+                throw LociError.invalidTemplateID(templateID)
+            }
+            let template = try await loadTemplate(templateID)
+            guard template.typeID == typeID else {
+                throw LociError.invalidTemplateID(templateID)
+            }
+            if !type.templateIDs.contains(templateID) {
+                type.templateIDs.append(templateID)
+                type.templateIDs.sort()
+            }
+            type.defaultTemplateID = templateID
+        } else {
+            type.defaultTemplateID = nil
+        }
+        try await saveType(type)
+        return type
+    }
+
+    public func defaultTemplate(for typeID: ObjectTypeID) async throws -> ObjectTemplate? {
+        let type = try await loadType(typeID)
+        guard let id = type.defaultTemplateID else { return nil }
+        return try await loadTemplate(id)
+    }
+
     // MARK: - Paths
 
     public static func typeRelativePath(for id: ObjectTypeID) -> String {
         "\(VaultLayout.typesDirectory)/\(id.rawValue).json"
+    }
+
+    public static func templateRelativePath(for id: String) -> String {
+        "\(VaultLayout.templatesDirectory)/\(id).md"
     }
 
     public static func objectsFolderRelativePath(for id: ObjectTypeID) -> String {
@@ -258,6 +408,26 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         )
         return urls
             .filter { $0.pathExtension.lowercased() == "json" }
+            .map { $0.deletingPathExtension().lastPathComponent }
+            .sorted()
+    }
+
+    private func listTemplateFileIDs() async throws -> [String] {
+        let root = try await vault.vaultRootURL
+        let dir = root.appendingPathComponent(VaultLayout.templatesDirectory, isDirectory: true)
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: dir.path, isDirectory: &isDir),
+            isDir.boolValue
+        else {
+            return []
+        }
+        let urls = try FileManager.default.contentsOfDirectory(
+            at: dir,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        return urls
+            .filter { $0.pathExtension.lowercased() == "md" }
             .map { $0.deletingPathExtension().lastPathComponent }
             .sorted()
     }

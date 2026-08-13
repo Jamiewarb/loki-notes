@@ -55,6 +55,8 @@ struct TypeDashboardView: View {
             if let type {
                 PropertiesFeature.defsEditor(services: services, typeID: type.id)
                     .padding(.vertical, LociSpacing.stack(.sm))
+                TemplatesFeature.editor(services: services, typeID: type.id)
+                    .padding(.vertical, LociSpacing.stack(.sm))
             }
 
             if showRename {

@@ -10,6 +10,7 @@ import Foundation
 /// Apple `EditorSessionBridge` (PR09).
 public protocol ObjectServing: Sendable {
     /// Create a new object file under `objects/<type>/`, index it, return metadata.
+    /// Applies the type's default template (body + property defaults) when schema is wired.
     func create(typeID: ObjectTypeID, title: String) async throws -> LociObjectMeta
 
     /// Resolve id via index → vault read → parse markdown → meta + body.
@@ -20,4 +21,8 @@ public protocol ObjectServing: Sendable {
 
     /// Soft-delete: trash + tombstone + index remove.
     func delete(id: ObjectID) async throws
+
+    /// Re-apply a template to an object only when body is empty / whitespace (PR14).
+    @discardableResult
+    func applyTemplateIfEmpty(id: ObjectID, templateID: String) async throws -> OpenedObject
 }

@@ -57,14 +57,18 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         if let objects {
             self.objects = objects
         } else if let index {
-            self.objects = ObjectService(vault: resolvedVault, index: index)
+            self.objects = ObjectService(vault: resolvedVault, index: index, schema: self.schema)
         } else {
             self.objects = nil
         }
         if let dailyNotes {
             self.dailyNotes = dailyNotes
         } else if let index {
-            self.dailyNotes = DailyNoteService(vault: resolvedVault, index: index)
+            self.dailyNotes = DailyNoteService(
+                vault: resolvedVault,
+                index: index,
+                schema: self.schema
+            )
         } else {
             self.dailyNotes = nil
         }
@@ -76,10 +80,10 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public func ensureIndex() async throws -> IndexService {
         if let index {
             if objects == nil {
-                objects = ObjectService(vault: vault, index: index)
+                objects = ObjectService(vault: vault, index: index, schema: schema)
             }
             if dailyNotes == nil {
-                dailyNotes = DailyNoteService(vault: vault, index: index)
+                dailyNotes = DailyNoteService(vault: vault, index: index, schema: schema)
             }
             return index
         }
@@ -91,8 +95,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         #endif
         let service = try await IndexService(vault: vault, indexDirectory: directory)
         self.index = service
-        self.objects = ObjectService(vault: vault, index: service)
-        self.dailyNotes = DailyNoteService(vault: vault, index: service)
+        self.objects = ObjectService(vault: vault, index: service, schema: schema)
+        self.dailyNotes = DailyNoteService(vault: vault, index: service, schema: schema)
         return service
     }
 

@@ -20,6 +20,12 @@ public enum LociError: Error, Sendable, Equatable {
     case invalidPropertyID(String)
     /// Property def not found on the type.
     case propertyNotFound(String)
+    /// Template id empty, malformed, or reserved shape.
+    case invalidTemplateID(String)
+    /// Template file / id not found under `.loci/templates/`.
+    case templateNotFound(String)
+    /// Template id already exists.
+    case templateAlreadyExists(String)
     case invalidRelativePath(String)
     case fileNotFound(String)
     case pathOutsideVault(String)

@@ -15,14 +15,14 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         Type dashboards list All objects; recently opened is a stub until navigation polish.
       </p>
       <section class="vault-card" data-harness="types-status" aria-label="Schema types">
-        <p class="vault-kicker">PR13 · SchemaServing + properties</p>
+        <p class="vault-kicker">PR14 · SchemaServing + templates</p>
         <h3 class="vault-card-title">Object types</h3>
         <p class="vault-card-body" data-harness="types-loading">Loading demo fixtures…</p>
         <ul class="schema-type-list" data-harness="type-list" hidden></ul>
         <p class="vault-note" data-harness="types-note" hidden></p>
       </section>
       <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
-        <p class="vault-kicker">PR13 · Type dashboard + properties</p>
+        <p class="vault-kicker">PR14 · Type dashboard + templates</p>
         <h3 class="vault-card-title">Books</h3>
         <p class="vault-card-body" data-harness="books-loading">Loading demo-types fixture…</p>
         <ul class="schema-type-list" data-harness="books-list" hidden></ul>
@@ -130,6 +130,9 @@ async function renderTypesSection(root: HTMLElement): Promise<void> {
     if (manifest?.pageDeleteBlocked) bits.push("Page delete guarded ✓");
     if (manifest?.appearsOnlyUnderBooks) bits.push("Deep Work only under Books ✓");
     if (manifest?.survivedReload) bits.push("Properties survive reload ✓");
+    if ((book as { defaultTemplateID?: string } | undefined)?.defaultTemplateID) {
+      bits.push(`Book default template: ${(book as { defaultTemplateID?: string }).defaultTemplateID}`);
+    }
     note.textContent = bits.join(" · ") || (manifest?.note ?? "");
     note.dataset.pagePresent = page ? "true" : "false";
     note.dataset.bookPresent = book ? "true" : "false";
@@ -162,6 +165,8 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
         relativePath?: string;
         tags?: string[];
         properties?: Record<string, string | number | boolean>;
+        bodyMarkdown?: string;
+        prefilledHeadings?: boolean;
       };
       booksCount?: number;
       pagesCount?: number;
@@ -172,6 +177,11 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
       survivedReload?: boolean;
       statusIndexed?: boolean;
       ratingIndexed?: boolean;
+      bookPrefill?: boolean;
+      dailyPrefill?: boolean;
+      bookTemplate?: { id?: string; name?: string; path?: string; bodyPreview?: string };
+      dailyTemplate?: { id?: string; name?: string; path?: string; bodyPreview?: string };
+      dailyObject?: { bodyMarkdown?: string; title?: string; relativePath?: string };
       propertiesIdx?: Array<{ key?: string; valueText?: string; valueNumber?: number }>;
       frontmatterSnippet?: string;
       moduleVersion?: string;
@@ -220,29 +230,35 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
             )}</dd></div>`,
         )
         .join("");
-      const idxBits = (data.propertiesIdx ?? [])
-        .map((r) => {
-          const val =
-            r.valueText ??
-            (r.valueNumber !== undefined ? String(r.valueNumber) : "?");
-          return `${r.key}=${val}`;
-        })
-        .join(", ");
       detail.hidden = false;
       detail.innerHTML = `
-        <p class="vault-kicker">PR13 · Object properties</p>
+        <p class="vault-kicker">PR14 · Templates + properties</p>
         <p class="vault-card-body" data-harness="book-detail-title">${escapeHtml(
           book.title ?? "Untitled",
         )} · ${escapeHtml(book.relativePath ?? "")}</p>
         <dl class="vault-meta" data-harness="book-properties">${
           propRows || "<div><dt>—</dt><dd>none</dd></div>"
         }</dl>
-        <p class="vault-note" data-harness="book-props-proof">
-          survivedReload=${data.survivedReload === true ? "yes" : "no"} ·
-          statusIndexed=${data.statusIndexed === true ? "yes" : "no"} ·
-          ratingIndexed=${data.ratingIndexed === true ? "yes" : "no"} ·
-          idx=[${escapeHtml(idxBits)}]
+        <p class="vault-note" data-harness="book-template-proof">
+          bookPrefill=${data.bookPrefill === true ? "yes" : "no"} ·
+          dailyPrefill=${data.dailyPrefill === true ? "yes" : "no"} ·
+          template=${escapeHtml(data.bookTemplate?.id ?? "?")} ·
+          survivedReload=${data.survivedReload === true ? "yes" : "no"}
         </p>
+        ${
+          book.bodyMarkdown
+            ? `<pre class="md-pre" data-harness="book-body" style="max-height:10rem;overflow:auto">${escapeHtml(
+                book.bodyMarkdown,
+              )}</pre>`
+            : ""
+        }
+        ${
+          data.dailyObject?.bodyMarkdown
+            ? `<p class="vault-kicker">Daily template body</p><pre class="md-pre" data-harness="daily-body" style="max-height:8rem;overflow:auto">${escapeHtml(
+                data.dailyObject.bodyMarkdown,
+              )}</pre>`
+            : ""
+        }
         ${
           data.frontmatterSnippet
             ? `<pre class="md-pre" data-harness="book-frontmatter" style="max-height:12rem;overflow:auto">${escapeHtml(
@@ -257,10 +273,12 @@ async function renderBooksDashboard(root: HTMLElement): Promise<void> {
     note.hidden = false;
     note.textContent =
       data.note ??
-      "Book status + rating in YAML frontmatter; properties_idx on save (PR13).";
+      "Default Book template prefills headings; new daily uses daily template (PR14).";
     note.dataset.appearsOnlyUnderBooks = String(data.appearsOnlyUnderBooks === true);
     note.dataset.pageDeleteBlocked = String(data.pageDeleteBlocked === true);
     note.dataset.survivedReload = String(data.survivedReload === true);
+    note.dataset.bookPrefill = String(data.bookPrefill === true);
+    note.dataset.dailyPrefill = String(data.dailyPrefill === true);
   } catch (err) {
     loading.textContent =
       err instanceof Error ? err.message : "Failed to load demo-types fixture";

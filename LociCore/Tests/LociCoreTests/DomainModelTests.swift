@@ -138,6 +138,25 @@ final class DomainModelTests: XCTestCase {
         XCTAssertFalse(TypeSlug.isProtected(ObjectTypeID("book")))
     }
 
+    func testObjectTemplateCodableAndTemplateID() throws {
+        let template = ObjectTemplate(
+            id: "book.default",
+            typeID: ObjectTypeID("book"),
+            name: "Default Book",
+            bodyMarkdown: "## Summary\n",
+            defaultProperties: ["status": .select("To Read")]
+        )
+        let data = try JSONEncoder().encode(template)
+        let decoded = try JSONDecoder().decode(ObjectTemplate.self, from: data)
+        XCTAssertEqual(decoded, template)
+        XCTAssertEqual(
+            try TemplateID.make(typeID: ObjectTypeID("daily"), name: "Default", explicitSlug: "default"),
+            "daily.default"
+        )
+        XCTAssertTrue(TemplateID.isValid("book.default"))
+        XCTAssertFalse(TemplateID.isValid("invalid"))
+    }
+
     func testOpenedObjectCodable() throws {
         let meta = LociObjectMeta(
             id: ObjectID(),

@@ -166,7 +166,7 @@ final class PropertiesSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR13() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr13"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr13"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr13") || LociVaultModule.version.contains("pr14"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr13") || LociIndexModule.version.contains("pr14"))
     }
 }
