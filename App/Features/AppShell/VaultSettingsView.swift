@@ -68,6 +68,9 @@ struct VaultSettingsView: View {
             AIFeature.settingsSection(services: services)
                 .padding(.top, LociSpacing.stack(.md))
 
+            AppleIntegrationsFeature.settingsSection(services: services)
+                .padding(.top, LociSpacing.stack(.md))
+
             if let statusMessage {
                 Text(statusMessage)
                     .font(LociTypography.font(.caption))

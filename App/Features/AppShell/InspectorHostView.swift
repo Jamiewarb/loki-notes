@@ -20,6 +20,10 @@ struct InspectorHostView: View {
                             services: services,
                             day: services.inspectedDailyDay
                         )
+                        AppleIntegrationsFeature.dailyEvents(
+                            services: services,
+                            day: services.inspectedDailyDay
+                        )
                     }
                     .padding(LociSpacing.stack(.lg))
                 }
@@ -69,6 +73,8 @@ struct InspectorHostView: View {
                 TypeConversionFeature.inspector(services: services)
             } else if case .ai = route {
                 AIFeature.inspector(services: services)
+            } else if case .apple = route {
+                AppleIntegrationsFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -149,6 +155,7 @@ struct InspectorHostView: View {
         case .importExport: return "Dry-run · apply"
         case .typeConvert: return "Property map · move"
         case .ai: return "Assist · BYOK"
+        case .apple: return "Calendar · Reminders"
         case .object: return "Properties"
         }
     }
@@ -156,7 +163,7 @@ struct InspectorHostView: View {
     private var blurb: String {
         switch route {
         case .daily:
-            return "Created today + open tasks are index-only — never rewritten into the daily .md."
+            return "Created today + open tasks + calendar events are chrome — never rewritten into the daily .md."
         case .tasks:
             return "Today / Open lists read IndexQuerying; toggles persist through ObjectServing.save."
         case .search:
@@ -181,6 +188,8 @@ struct InspectorHostView: View {
             return "Map PropertyDefs, move objects/<type>/, keep ObjectID; index via ObjectServing."
         case .ai:
             return "Summarize / rewrite / translate / autofill — on-device by default; BYOK never uploads without opt-in."
+        case .apple:
+            return "Event list is chrome; Create Meeting writes objects/meeting/. Reminders sync is explicit + opt-in."
         case .object:
             return "Properties, object tags, backlinks, type conversion, and AI assist from the local index."
         }

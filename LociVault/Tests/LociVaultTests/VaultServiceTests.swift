@@ -58,6 +58,10 @@ final class VaultServiceTests: XCTestCase {
             atRelativePath: SchemaStore.typeRelativePath(for: .image)
         )
         XCTAssertTrue(imageExists, "ensureSkeleton should seed .loci/types/image.json")
+        let meetingExists = try await service.fileExists(
+            atRelativePath: SchemaStore.typeRelativePath(for: .meeting)
+        )
+        XCTAssertTrue(meetingExists, "ensureSkeleton should seed .loci/types/meeting.json")
 
         // Idempotent — second call does not wipe space.json
         try await service.ensureSkeleton(spaceName: "Other")
@@ -204,7 +208,7 @@ final class ModuleVersionTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31")
         )
     }
 }

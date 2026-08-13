@@ -195,7 +195,7 @@ final class ImportSystemTests: XCTestCase {
 
     func testModuleVersionMentionsPR27() {
         XCTAssertTrue(
-            LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30"),
+            LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31"),
             LociVaultModule.version
         )
     }

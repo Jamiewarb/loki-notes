@@ -162,6 +162,15 @@ struct AppShellView: View {
                     Label("AI", systemImage: Route.ai.systemImage)
                 }
                 NavigationLink {
+                    AppleIntegrationsFeature.destination(services: services)
+                        .navigationTitle("Apple")
+                        .onAppear {
+                            Task { await services.open(route: .apple) }
+                        }
+                } label: {
+                    Label("Apple", systemImage: Route.apple.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {

@@ -150,6 +150,15 @@ AI assist (PR30) extras:
 
 Side-panel summarize / rewrite / translate / property autofill. On-device heuristics by default; BYOK never uploads without opt-in. Credentials in Application Support — never the vault. Apply via ObjectServing / EditorSession only.
 
+Apple Calendar / Reminders (PR31) extras:
+
+```bash
+./scripts/demo-apple.sh
+# harness: http://127.0.0.1:5173/?panel=apple
+```
+
+Event list on daily is UI chrome (daily .md unchanged). Create Meeting → `objects/meeting/` via ObjectServing. Optional Reminders sync is explicit + settings outside vault.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

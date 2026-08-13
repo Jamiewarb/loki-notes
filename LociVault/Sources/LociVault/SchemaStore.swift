@@ -69,12 +69,13 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return result
     }
 
-    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily** + **Image**.
+    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily** + **Image** + **Meeting**.
     public func bootstrapSchema(spaceName: String = "Loci") async throws {
         try await vault.ensureSkeleton(spaceName: spaceName)
         try await seedBuiltInPageIfNeeded()
         try await seedBuiltInDailyIfNeeded()
         try await seedBuiltInImageIfNeeded()
+        try await seedBuiltInMeetingIfNeeded()
     }
 
     /// Write `page.json` when absent (idempotent). Safe to call after `ensureSkeleton`.
@@ -98,11 +99,19 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
     /// Write `image.json` when absent (idempotent). Blobs live under `media/`; objects under `objects/image/`.
     public func seedBuiltInImageIfNeeded() async throws {
         let path = Self.typeRelativePath(for: .image)
-        if try await vault.fileExists(atRelativePath: path) {
-            return
+        if !(try await vault.fileExists(atRelativePath: path)) {
+            try await saveType(.builtInImage)
         }
-        try await saveType(.builtInImage)
         try await ensureObjectsFolder(for: .image)
+    }
+
+    /// Write `meeting.json` when absent (idempotent). Objects under `objects/meeting/` (PR31).
+    public func seedBuiltInMeetingIfNeeded() async throws {
+        let path = Self.typeRelativePath(for: .meeting)
+        if !(try await vault.fileExists(atRelativePath: path)) {
+            try await saveType(.builtInMeeting)
+        }
+        try await ensureObjectsFolder(for: .meeting)
     }
 
     // MARK: - Custom types (PR12)

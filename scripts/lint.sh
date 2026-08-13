@@ -136,6 +136,11 @@ if [[ -d "$ROOT/App/Features/AI" ]]; then
 else
   fail "App/Features/AI missing"
 fi
+if [[ -d "$ROOT/App/Features/AppleIntegrations" ]]; then
+  pass "App/Features/AppleIntegrations present"
+else
+  fail "App/Features/AppleIntegrations missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1
