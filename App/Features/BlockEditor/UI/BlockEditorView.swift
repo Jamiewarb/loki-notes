@@ -1,36 +1,44 @@
 #if canImport(SwiftUI)
 import SwiftUI
+import LociCore
 import LociDesignSystem
 import LociMarkdown
 
-/// BlockAST editor UI — paragraphs, headings, lists, tasks, quotes, code + slash menu (PR09).
+/// BlockAST editor UI — paragraphs, headings, lists, tasks, quotes, code + slash / link pickers.
 struct BlockEditorView: View {
     @Bindable var session: EditorSessionBridge
+    var services: AppServices?
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
             ForEach(Array(session.blocks.enumerated()), id: \.offset) { index, block in
-                BlockRowView(
-                    index: index,
-                    block: block,
-                    text: session.plainText(at: index),
-                    onFocus: { session.focusedBlockIndex = index },
-                    onChange: { session.setPlainText(at: index, text: $0) },
-                    onEnter: { before, after in
-                        session.applyEdit(
-                            .splitBlock(blockIndex: index, before: before, after: after)
-                        )
-                        session.focusedBlockIndex = index + 1
-                    },
-                    onConvert: { kind in
-                        session.focusedBlockIndex = index
-                        session.applyEdit(.convertBlock(blockIndex: index, to: kind))
-                    },
-                    onToggleTask: {
-                        session.applyEdit(.toggleTask(blockIndex: index, itemIndex: 0))
+                VStack(alignment: .leading, spacing: 4) {
+                    BlockRowView(
+                        index: index,
+                        block: block,
+                        text: session.plainText(at: index),
+                        onFocus: { session.focusedBlockIndex = index },
+                        onChange: { session.setPlainText(at: index, text: $0) },
+                        onEnter: { before, after in
+                            session.applyEdit(
+                                .splitBlock(blockIndex: index, before: before, after: after)
+                            )
+                            session.focusedBlockIndex = index + 1
+                        },
+                        onConvert: { kind in
+                            session.focusedBlockIndex = index
+                            session.applyEdit(.convertBlock(blockIndex: index, to: kind))
+                        },
+                        onToggleTask: {
+                            session.applyEdit(.toggleTask(blockIndex: index, itemIndex: 0))
+                        }
+                    )
+                    .id("\(session.editEpoch)-\(index)")
+
+                    if let styles = session.wikiLinkStylesByBlock[index], !styles.isEmpty {
+                        WikiLinkStatusView(styles: styles)
                     }
-                )
-                .id("\(session.editEpoch)-\(index)")
+                }
             }
 
             if let query = session.slashQuery {
@@ -42,10 +50,26 @@ struct BlockEditorView: View {
                 )
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
+
+            if let trigger = session.linkTrigger, let services {
+                LinksFeature.picker(
+                    services: services,
+                    query: trigger.query,
+                    excluding: session.objectID,
+                    onSelect: { meta in
+                        session.insertWikiLink(to: meta)
+                    }
+                )
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
         }
         .animation(.easeOut(duration: 0.18), value: session.slashQuery)
+        .animation(.easeOut(duration: 0.18), value: session.linkTrigger?.query)
         .animation(.easeOut(duration: 0.2), value: session.editEpoch)
         .frame(maxWidth: .infinity, alignment: .topLeading)
+        .task(id: session.editEpoch) {
+            await session.refreshWikiLinkStyles(using: services)
+        }
         .accessibilityIdentifier("block-editor")
         .modifier(BlockEditorKeymapModifier(session: session))
     }
@@ -140,7 +164,7 @@ private struct BlockRowView: View {
         case .blockQuote: return "Quote"
         case .bulletList(let items) where items.first?.isTask == true: return "Task"
         case .bulletList, .numberedList: return "List item"
-        default: return "Type / for blocks"
+        default: return "Type / for blocks · @ or [[ to link"
         }
     }
 

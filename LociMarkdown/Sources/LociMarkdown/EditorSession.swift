@@ -123,6 +123,36 @@ public final class EditorSession: @unchecked Sendable {
         }
     }
 
+    /// Replace an `@` / `[[` trigger in the focused block with a serialized wiki-link.
+    /// Prefer ObjectID as `target` (LinkResolver identity-first).
+    @discardableResult
+    public func insertWikiLink(
+        blockIndex: Int,
+        target: String,
+        label: String? = nil,
+        trigger: WikiLinkTrigger? = nil
+    ) -> Bool {
+        guard blocks.indices.contains(blockIndex) else { return false }
+        let plain = Self.plainText(of: blocks[blockIndex])
+        let resolvedTrigger = trigger ?? WikiLinkTriggerDetector.detect(in: plain)
+        let link = WikiLink(target: target, label: label)
+        let markdown = link.markdown
+
+        let next: String
+        if let resolvedTrigger {
+            let start = plain.index(plain.startIndex, offsetBy: resolvedTrigger.replaceStartOffset)
+            let prefix = String(plain[..<start])
+            next = prefix + markdown
+        } else if plain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            next = markdown
+        } else {
+            next = plain + markdown
+        }
+
+        applyLocalEdit(.setPlainText(blockIndex: blockIndex, text: next))
+        return true
+    }
+
     public func markSaved(revision: UInt64? = nil) {
         isDirty = false
         if let revision {

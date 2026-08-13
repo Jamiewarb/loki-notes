@@ -14,7 +14,8 @@ export type PanelId =
   | "settings"
   | "gallery"
   | "markdown"
-  | "editor";
+  | "editor"
+  | "links";
 
 export interface NavItem {
   id: PanelId;
@@ -52,6 +53,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "gallery", label: "Design", subtitle: "Tokens & primitives", section: "studio" },
   { id: "markdown", label: "Markdown", subtitle: "AST round-trip", section: "studio" },
   { id: "editor", label: "Editor", subtitle: "Block session + slash", section: "studio" },
+  { id: "links", label: "Links", subtitle: "Wiki-links + backlinks", section: "studio" },
 ];
 
 /** Flat list for click wiring (primary + studio). */
@@ -99,5 +101,11 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Editor",
     body: "EditorSession BlockAST + slash insert simulation (PR09). HTML preview of tasks/headings/lists.",
     inspector: "Autosave debounced to ObjectServing; index never on keystroke.",
+  },
+  links: {
+    id: "links",
+    title: "Links",
+    body: "Wiki-links [[id|title]] + @ picker (PR16). LinkResolver prefers ObjectID; backlinks from links table.",
+    inspector: "Backlinks panel · broken-link styling (is-broken) · index never in vault.",
   },
 };

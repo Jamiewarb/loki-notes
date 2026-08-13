@@ -88,6 +88,39 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func resolve(wikiTarget: String) async throws -> LociObjectMeta? {
+        try await dbQueue.read { db in
+            try LinkResolver.resolve(db: db, target: wikiTarget)
+        }
+    }
+
+    public func backlinks(to objectID: ObjectID) async throws -> [BacklinkRecord] {
+        try await dbQueue.read { db in
+            try LinksQuery.backlinks(db: db, to: objectID)
+        }
+    }
+
+    public func outgoingLinks(from objectID: ObjectID) async throws -> [ResolvedWikiLink] {
+        try await dbQueue.read { db in
+            try LinksQuery.outgoing(db: db, from: objectID)
+        }
+    }
+
+    public func linkCandidates(
+        matching query: String,
+        excluding excludeID: ObjectID?,
+        limit: Int
+    ) async throws -> [LociObjectMeta] {
+        try await dbQueue.read { db in
+            try LinksQuery.candidates(
+                db: db,
+                matching: query,
+                excluding: excludeID,
+                limit: limit
+            )
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {

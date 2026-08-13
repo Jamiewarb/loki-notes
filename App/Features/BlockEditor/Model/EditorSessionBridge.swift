@@ -18,6 +18,9 @@ final class EditorSessionBridge {
     var isSaving: Bool = false
     var focusedBlockIndex: Int = 0
     var slashQuery: String?
+    var linkTrigger: WikiLinkTrigger?
+    /// Per-block resolved/broken wiki-link styles (PR16).
+    var wikiLinkStylesByBlock: [Int: [WikiLinkStyle]] = [:]
     /// Bumped on each local edit so SwiftUI re-reads block text.
     private(set) var editEpoch: UInt64 = 0
 
@@ -68,6 +71,7 @@ final class EditorSessionBridge {
         noteDirtyClock()
         scheduleSave()
         updateSlashQueryIfNeeded()
+        updateLinkTriggerIfNeeded()
     }
 
     func applySlash(kind: SlashBlockKind) {
@@ -77,6 +81,24 @@ final class EditorSessionBridge {
             queryText: slashQuery ?? ""
         )
         slashQuery = nil
+        linkTrigger = nil
+        editEpoch &+= 1
+        noteDirtyClock()
+        scheduleSave()
+    }
+
+    /// Insert `[[id|title]]` replacing the active `@` / `[[` trigger.
+    func insertWikiLink(to meta: LociObjectMeta) {
+        let target = meta.id.frontMatterIDString
+        let label = meta.title.isEmpty ? nil : meta.title
+        _ = editor.insertWikiLink(
+            blockIndex: focusedBlockIndex,
+            target: target,
+            label: label,
+            trigger: linkTrigger
+        )
+        slashQuery = nil
+        linkTrigger = nil
         editEpoch &+= 1
         noteDirtyClock()
         scheduleSave()
@@ -90,6 +112,34 @@ final class EditorSessionBridge {
     func setPlainText(at index: Int, text: String) {
         applyEdit(.setPlainText(blockIndex: index, text: text))
         focusedBlockIndex = index
+    }
+
+    /// Resolve wiki-links in each block for broken-link styling chips.
+    func refreshWikiLinkStyles(using services: AppServices?) async {
+        guard let services else {
+            wikiLinkStylesByBlock = [:]
+            return
+        }
+        do {
+            let index = try await services.ensureIndex()
+            var map: [Int: [WikiLinkStyle]] = [:]
+            for (i, _) in editor.blocks.enumerated() {
+                let plain = plainText(at: i)
+                let links = WikiLinkSyntax.extract(from: plain)
+                guard !links.isEmpty else { continue }
+                var titles: [String: String] = [:]
+                for link in links {
+                    if let meta = try await index.resolve(wikiTarget: link.target) {
+                        titles[link.target] = meta.title
+                        titles[link.target.lowercased()] = meta.title
+                    }
+                }
+                map[i] = WikiLinkStyle.classify(links: links, resolvedTitlesByTarget: titles)
+            }
+            wikiLinkStylesByBlock = map
+        } catch {
+            wikiLinkStylesByBlock = [:]
+        }
     }
 
     func scheduleSave() {
@@ -147,11 +197,21 @@ final class EditorSessionBridge {
 
     private func updateSlashQueryIfNeeded() {
         let text = plainText(at: focusedBlockIndex)
-        if text.hasPrefix("/") {
+        // Slash menu only when `/` leads the block (link triggers take `@` / `[[`).
+        if text.hasPrefix("/"), WikiLinkTriggerDetector.detect(in: text) == nil {
             slashQuery = String(text.dropFirst())
         } else {
             slashQuery = nil
         }
+    }
+
+    private func updateLinkTriggerIfNeeded() {
+        let text = plainText(at: focusedBlockIndex)
+        if text.hasPrefix("/") {
+            linkTrigger = nil
+            return
+        }
+        linkTrigger = WikiLinkTriggerDetector.detect(in: text)
     }
 }
 #endif

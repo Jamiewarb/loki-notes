@@ -87,7 +87,7 @@ struct DailyNoteView: View {
                 .foregroundStyle(LociColors.ink)
                 .textFieldStyle(.plain)
 
-                BlockEditorFeature.editor(session: session)
+                BlockEditorFeature.editor(session: session, services: services)
 
                 HStack(spacing: LociSpacing.stack(.md)) {
                     LociButton("Save now", style: .secondary) {

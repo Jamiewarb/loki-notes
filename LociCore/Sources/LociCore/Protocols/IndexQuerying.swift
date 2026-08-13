@@ -17,6 +17,24 @@ public protocol IndexQuerying: Sendable {
 
     /// Scalar columns from `properties_idx` for an object (filter/sort foundation).
     func propertyIndex(objectID: ObjectID) async throws -> [PropertyIndexRow]
+
+    // MARK: - Wiki-links / backlinks (PR16)
+
+    /// Resolve a wiki-link target: ObjectID first, then path/slug, then title.
+    func resolve(wikiTarget: String) async throws -> LociObjectMeta?
+
+    /// Objects that contain a wiki-link pointing at `objectID` (by id / path / title aliases).
+    func backlinks(to objectID: ObjectID) async throws -> [BacklinkRecord]
+
+    /// Outgoing wiki-links from an object, each optionally resolved.
+    func outgoingLinks(from objectID: ObjectID) async throws -> [ResolvedWikiLink]
+
+    /// Picker candidates (`@` / `[[` search). Empty query → recent by `updated`.
+    func linkCandidates(
+        matching query: String,
+        excluding excludeID: ObjectID?,
+        limit: Int
+    ) async throws -> [LociObjectMeta]
 }
 
 /// One row from the disposable `properties_idx` projection.

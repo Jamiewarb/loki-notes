@@ -63,7 +63,7 @@ struct ObjectEditorView: View {
                     .font(LociTypography.font(.caption))
                     .foregroundStyle(LociColors.inkSoft)
 
-                BlockEditorFeature.editor(session: session)
+                BlockEditorFeature.editor(session: session, services: services)
 
                 HStack(spacing: LociSpacing.stack(.md)) {
                     LociButton("Save now", style: .secondary) {
@@ -82,7 +82,7 @@ struct ObjectEditorView: View {
                 }
 
                 Text(
-                    "Block editor · / slash menu · autosave 500ms (max 5s). Index updates after save."
+                    "Block editor · / slash · @ / [[ link picker · autosave 500ms. Index updates after save."
                 )
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)

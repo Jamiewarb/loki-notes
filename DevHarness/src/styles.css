@@ -859,6 +859,23 @@ body {
   overflow-x: auto;
 }
 
+/* PR16 wiki-links — resolved (accent) vs broken (danger + dash underline) */
+.wiki-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.wiki-link.is-resolved {
+  color: var(--loci-accent, #0f6b5c);
+  text-decoration-style: solid;
+}
+
+.wiki-link.is-broken {
+  color: var(--loci-danger, #9b3a2f);
+  text-decoration-style: dashed;
+}
+
 @media (max-width: 900px) {
   .md-columns {
     grid-template-columns: 1fr;
