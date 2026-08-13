@@ -1,0 +1,66 @@
+# Swift / Xcode / SPM / Node
+.build/
+.swiftpm/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+**/xcuserdata/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+
+# SwiftPM
+Package.resolved
+# keep Package.resolved if/when we pin deps; none yet
+
+# Node / DevHarness
+node_modules/
+Dist/
+dist/
+DevHarness/dist/
+*.local
+.npm/
+.cache/
+
+# OS / editor
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.xcuserstate
+
+# Tooling installs / caches
+/opt/swift-download/
+*.tar.gz
+.swift-version
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Evidence may include large binaries; logs/html are fine to commit
+evidence/**/*.png
+evidence/**/*.webm
+!evidence/**/.gitkeep
+
+# Coverage
+coverage/
+*.xcresult

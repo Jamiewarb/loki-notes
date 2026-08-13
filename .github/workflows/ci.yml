@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: ["main", "master", "cursor/**"]
+  pull_request:
+
+jobs:
+  linux-swift:
+    name: Lint + Test (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Swift 6.2
+        run: |
+          set -euo pipefail
+          curl -L -o /tmp/swift.tar.gz \
+            "https://download.swift.org/swift-6.2-release/ubuntu2404/swift-6.2-RELEASE/swift-6.2-RELEASE-ubuntu24.04.tar.gz"
+          sudo tar -xzf /tmp/swift.tar.gz -C /opt
+          sudo ln -sfn /opt/swift-6.2-RELEASE-ubuntu24.04 /opt/swift
+          echo "/opt/swift/usr/bin" >> "$GITHUB_PATH"
+          swift --version
+
+      - name: Lint
+        run: ./scripts/lint.sh
+
+      - name: Test
+        run: ./scripts/test.sh
+
+  harness-smoke:
+    name: DevHarness smoke
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: DevHarness/package-lock.json
+
+      - name: Install + build harness
+        working-directory: DevHarness
+        run: |
+          npm install
+          npx vite build
