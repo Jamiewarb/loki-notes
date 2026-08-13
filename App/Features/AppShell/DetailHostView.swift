@@ -84,6 +84,15 @@ struct DetailHostView: View {
                         message: "Month/week calendar around daily notes (PR25). Index dots · jump to daily."
                     )
                 }
+            case .capture:
+                if let services {
+                    CaptureFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .capture,
+                        message: "Quick capture (PR26). Extensions enqueue .loci/inbox/; app drains → today / typed object."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -113,6 +122,7 @@ struct DetailHostView: View {
         case .tags: return "tags-\(services?.focusedTag ?? "all")"
         case .graph: return "graph"
         case .calendar: return "calendar"
+        case .capture: return "capture"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

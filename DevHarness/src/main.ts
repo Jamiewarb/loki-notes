@@ -21,6 +21,7 @@ import { renderTasksPanel } from "./panels/TasksPanel";
 import { renderMediaPanel } from "./panels/MediaPanel";
 import { renderGraphPanel } from "./panels/GraphPanel";
 import { renderCalendarPanel } from "./panels/CalendarPanel";
+import { renderCapturePanel } from "./panels/CapturePanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -51,6 +52,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   media: "▣",
   graph: "⬡",
   calendar: "▦",
+  capture: "⬇",
 };
 
 function renderNavSection(
@@ -136,6 +138,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "calendar") {
     void renderCalendarPanel(detail);
+    return;
+  }
+  if (panelId === "capture") {
+    void renderCapturePanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -502,6 +508,8 @@ function inspectorTitle(id: PanelId): string {
       return "Caps · Navigating";
     case "calendar":
       return "Dots · daily jump";
+    case "capture":
+      return "Inbox · surfaces";
     case "tags":
       return "Object tags · aliases";
     case "media":

@@ -20,7 +20,8 @@ export type PanelId =
   | "tags"
   | "media"
   | "graph"
-  | "calendar";
+  | "calendar"
+  | "capture";
 
 export interface NavItem {
   id: PanelId;
@@ -62,6 +63,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "links", label: "Links", subtitle: "Wiki-links + backlinks", section: "studio" },
   { id: "graph", label: "Graph", subtitle: "Wiki-link network", section: "studio" },
   { id: "calendar", label: "Calendar", subtitle: "Daily notes · dots", section: "studio" },
+  { id: "capture", label: "Capture", subtitle: "Share · widget · menu bar", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -135,6 +137,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Calendar",
     body: "Month/week calendar (PR25). Anchored to daily/YYYY-MM-DD.md · index dots for content/creations · jump via DailyNoteServing.ensure.",
     inspector: "Dots from IndexQuerying.calendarMarkers · never rewrite vault for chrome.",
+  },
+  capture: {
+    id: "capture",
+    title: "Capture",
+    body: "Share / widget / menu bar (PR26). Extensions enqueue .loci/inbox/*.json; main app drains → today or typed object. Index on foreground only.",
+    inspector: "Staging inbox is transient — daily remains the user-facing inbox.",
   },
   tags: {
     id: "tags",

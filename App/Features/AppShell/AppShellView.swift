@@ -126,6 +126,15 @@ struct AppShellView: View {
                     Label("Calendar", systemImage: Route.calendar.systemImage)
                 }
                 NavigationLink {
+                    CaptureFeature.destination(services: services)
+                        .navigationTitle("Capture")
+                        .onAppear {
+                            Task { await services.open(route: .capture) }
+                        }
+                } label: {
+                    Label("Capture", systemImage: Route.capture.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {
