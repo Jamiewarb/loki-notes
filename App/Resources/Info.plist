@@ -26,5 +26,16 @@
 	<string>Loci can sync Reminders with daily note tasks when you enable Reminders sync and tap Sync.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.loci.Loci</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>loci</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

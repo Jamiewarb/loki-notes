@@ -34,5 +34,5 @@ public enum VaultLayout: Sendable {
 
 /// Module marker + version for diagnostics / harness copy.
 public enum LociVaultModule {
-    public static let version = "0.36.0-pr36"
+    public static let version = "0.37.0-pr37"
 }

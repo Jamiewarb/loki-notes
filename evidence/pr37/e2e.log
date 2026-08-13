@@ -1,0 +1,18 @@
+
+Running 9 tests using 2 workers
+
+(node:45367) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45366) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › e2e/architecture.spec.ts:41:1 › demo fixtures never store the index inside the vault (121ms)
+  ✓  1 [chromium] › e2e/architecture.spec.ts:143:1 › daily panel shows the index is never in the vault (474ms)
+  ✓  3 [chromium] › e2e/architecture.spec.ts:151:1 › ai panel shows upload refused without opt-in (597ms)
+  ✓  4 [chromium] › e2e/work.spec.ts:4:1 › today and open task lists are visible (629ms)
+  ✓  5 [chromium] › e2e/work.spec.ts:18:1 › tasks proof records page toggle completed without persisting checkbox clicks (420ms)
+  ✓  7 [chromium] › e2e/work.spec.ts:42:1 › media picker proofs are wired and note body stays vault-relative (498ms)
+  ✓  6 [chromium] › e2e/work.spec.ts:31:1 › media attachment paths live under media/ (556ms)
+  ✓  9 [chromium] › e2e/work.spec.ts:74:1 › capture drain empties inbox and indexes on foreground only (689ms)
+  ✓  8 [chromium] › e2e/work.spec.ts:57:1 › clicking a calendar day updates selection to daily/<key>.md (897ms)
+
+  9 passed (3.2s)

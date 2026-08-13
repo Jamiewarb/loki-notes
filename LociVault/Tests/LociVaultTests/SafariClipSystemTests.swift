@@ -142,6 +142,6 @@ final class SafariClipSystemTests: XCTestCase {
         let root = try await vault.vaultRootURL
         let folder = root.appendingPathComponent("objects/weblink", isDirectory: true)
         XCTAssertTrue(FileManager.default.fileExists(atPath: folder.path))
-        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37"))
     }
 }

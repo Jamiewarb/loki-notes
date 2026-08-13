@@ -2,9 +2,10 @@
 # Generate on a Mac: brew install xcodegen && xcodegen generate
 # Cloud Linux agents do not use this file — they run SPM tests + DevHarness.
 #
-# PR26: Share extension + Widget + (sources for) menu bar capture are stub targets.
+# PR26/PR37: Share extension + Widget + (sources for) menu bar capture.
 # They write `.loci/inbox/` staging files; the main app drains on foreground.
 # PR32: Safari App Extension stub (macOS) — same inbox path.
+# PR37: Share extracts text/URL; widget Open today is loci://daily/today.
 
 name: Loci
 options:
@@ -16,7 +17,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "0.32.0"
+    MARKETING_VERSION: "0.37.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
   Loci:
@@ -70,12 +71,16 @@ targets:
             NSUbiquitousContainerIsDocumentScopePublic: true
             NSUbiquitousContainerName: Loci
             NSUbiquitousContainerSupportedFolderLevels: Any
+        CFBundleURLTypes:
+          - CFBundleURLName: app.loci.Loci
+            CFBundleURLSchemes:
+              - loci
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci
         CODE_SIGN_ENTITLEMENTS: App/Resources/Loci.entitlements
 
-  # PR26 — iOS Share extension stub (enqueue .loci/inbox/*.json)
+  # PR37 — iOS Share extension (extract text/URL → .loci/inbox/*.json)
   LociShareExtension:
     type: app-extension
     platform: iOS
@@ -86,14 +91,17 @@ targets:
         product: LociCore
       - package: Loci
         product: LociVault
+    entitlements:
+      path: App/Platform/iOS/ShareExtension/ShareExtension.entitlements
     info:
       path: App/Platform/iOS/ShareExtension/Info.plist
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci.ShareExtension
+        CODE_SIGN_ENTITLEMENTS: App/Platform/iOS/ShareExtension/ShareExtension.entitlements
         SKIP_INSTALL: true
 
-  # PR26 — Home Screen widget stub (Open today / Quick add)
+  # PR37 — Home Screen widget (Open today / Quick add)
   LociWidgets:
     type: app-extension
     platform: iOS
@@ -102,11 +110,16 @@ targets:
     dependencies:
       - package: Loci
         product: LociCore
+      - package: Loci
+        product: LociVault
+    entitlements:
+      path: App/Platform/iOS/Widget/Widget.entitlements
     info:
       path: App/Platform/iOS/Widget/Info.plist
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.loci.Loci.Widgets
+        CODE_SIGN_ENTITLEMENTS: App/Platform/iOS/Widget/Widget.entitlements
         SKIP_INSTALL: true
 
   # PR32 — macOS Safari App Extension stub (enqueue .loci/inbox/*.json)

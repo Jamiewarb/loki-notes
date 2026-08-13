@@ -4,12 +4,17 @@ import LociCore
 #if canImport(WidgetKit)
 import WidgetKit
 import SwiftUI
+import LociVault
 
-/// Home Screen widget stub (PR26) — Open today / Quick add.
+#if canImport(AppIntents)
+import AppIntents
+#endif
+
+/// Home Screen widget (PR37) — Open today / Quick add.
 ///
-/// Quick add enqueues `.loci/inbox/` (or deep-links into the app). Open today
-/// uses the deterministic `daily/YYYY-MM-DD.md` route. Full WidgetKit target
-/// is Apple-only; Linux agents keep these sources as stubs.
+/// Open today uses `loci://daily/today` (main app `onOpenURL`). Quick add
+/// enqueues `.loci/inbox/` via `CaptureInboxWriter` when a vault resolves;
+/// otherwise deep-links into capture. Does **not** touch SQLite.
 struct LociWidgetEntry: TimelineEntry {
     let date: Date
     let dayKey: String
@@ -24,7 +29,8 @@ struct LociWidgetProvider: TimelineProvider {
         completion(placeholder(in: context))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<LociWidgetEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<LociWidgetEntry>) -> Void)
+    {
         let entry = placeholder(in: context)
         completion(Timeline(entries: [entry], policy: .atEnd))
     }
@@ -39,10 +45,20 @@ struct LociWidgetView: View {
                 .font(.headline)
             Text("Today · \(entry.dayKey)")
                 .font(.caption)
-            Text("Open today · Quick add")
+            Link("Open today", destination: LociDeepLink.dailyTodayURL)
+                .font(.caption)
+            #if canImport(AppIntents)
+            Button(intent: LociQuickAddIntent()) {
+                Text("Quick add")
+            }
+            .font(.caption2)
+            #else
+            Link("Quick add", destination: LociDeepLink.captureURL)
                 .font(.caption2)
+            #endif
         }
         .padding()
+        .widgetURL(LociDeepLink.dailyTodayURL)
     }
 }
 
@@ -65,10 +81,65 @@ struct LociTodayWidget: Widget {
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
+
+#if canImport(AppIntents)
+/// Enqueue a line via `CaptureInboxWriter` when the vault resolves; else open capture.
+struct LociQuickAddIntent: AppIntent {
+    static var title: LocalizedStringResource = "Quick add"
+    static var description = IntentDescription("Add a line to today’s Loci inbox.")
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "Note")
+    var text: String
+
+    init() {
+        text = ""
+    }
+
+    init(text: String) {
+        self.text = text
+    }
+
+    func perform() async throws -> some IntentResult {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            throw $text.needsValueError("What should Loci capture?")
+        }
+        if let path = try await Self.enqueueIfPossible(text: trimmed) {
+            _ = path
+            return .result()
+        }
+        throw $text.needsValueError(
+            "Loci vault is unavailable. Open Loci and use Capture (\(LociDeepLink.captureAbsoluteString))."
+        )
+    }
+
+    /// Widget-process enqueue — vault JSON only, no index.
+    static func enqueueIfPossible(text: String) async throws -> String? {
+        let item = ShareInboxFactory.inboxItem(text: text, url: nil, source: .widget)
+        guard let vault = CaptureVaultResolver.resolve() else { return nil }
+        return try await CaptureInboxWriter.enqueue(item, vault: vault)
+    }
+}
+
+/// Opens the main app on today’s daily note (`loci://daily/today`).
+struct LociOpenTodayIntent: AppIntent {
+    static var title: LocalizedStringResource = "Open today"
+    static var description = IntentDescription("Open today’s Loci daily note.")
+    static var openAppWhenRun: Bool = true
+
+    func perform() async throws -> some IntentResult {
+        .result()
+    }
+}
+#endif
+
 #else
-/// Linux / non-WidgetKit stub — documents the widget surface for PR26.
+/// Linux / non-WidgetKit stub — documents the widget surface for PR37.
 public enum LociWidgetStub {
     public static let kind = "LociTodayWidget"
     public static let actions = ["openToday", "quickAdd"]
+    public static let openTodayURL = LociDeepLink.dailyTodayAbsoluteString
+    public static let quickAddFallbackURL = LociDeepLink.captureAbsoluteString
 }
 #endif

@@ -1,0 +1,7 @@
+==> loci-capture-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-capture-demo' complete! (0.54s)
+day=2026-08-13 daily=daily/2026-08-13.md drain=3 pendingAfter=0
+wrote DevHarness/public/demo-capture/capture.json

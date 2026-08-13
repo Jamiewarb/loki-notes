@@ -4,6 +4,49 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR37 — Share extension + Widget
+
+**Branch:** `cursor/pr37-share-widget-d2c1`  
+**Based on:** `cursor/pr36-eventkit-d2c1`  
+**Vault module:** `0.37.0-pr37`  
+**Swift tests:** **336** green (was 325). **Playwright:** **79** green (`work.spec.ts` capture proofs + full suite). Evidence: `evidence/pr37/`
+
+### Feature design
+- Domain folder: `App/Platform/iOS/ShareExtension`, `App/Platform/iOS/Widget` (no feature→feature imports)
+- Writes vault? yes — `.loci/inbox/*.json` only from the extension process. Main app drains on foreground / `loci://` open.
+- Reads index? **no** — Share and Widget must not open SQLite.
+- Protocols: `VaultServing` via `CaptureInboxWriter`; `Navigating` for `loci://daily/today` and `loci://capture`.
+- Pure helpers in LociCore: `ShareInboxFactory` (text-only → append; URL+title → create Page), `LociDeepLink`, `ShareWidgetProof`.
+- Vault resolve: `CaptureVaultResolver` — ubiquity then local Documents; `nil` instead of crash.
+- Apple: UIKit extraction stays in `ShareViewController` (`#if canImport(UIKit)`). WidgetKit + AppIntents in `LociWidgets.swift`. Linux `#else` stub stays.
+- URL scheme `loci` registered on the main app. `LociApp` drains inbox on `scenePhase == .active`.
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-capture.sh
+./scripts/demo-share-widget.sh
+cd DevHarness && npx playwright test e2e/work.spec.ts
+./scripts/run-harness.sh   # ?panel=capture — shareExtractsText / widgetOpenToday / inboxNotIndex
+```
+
+### Pitfalls
+- Extension process must never import LociIndex or open `index.sqlite`.
+- Share extension Documents sandbox ≠ main app Documents unless iCloud ubiquity (same container) is available. Local fallback still must not crash.
+- `ShareInboxFactory` is the only mapping logic — do not fork a second inbox format.
+- Widget Quick add enqueues when vault resolves; otherwise tell the user to open `loci://capture`.
+- Linux SPM tests stay green without UIKit / WidgetKit / AppIntents.
+- `shareExtractsText` / `widgetOpenToday` are factory + URL proofs on Linux (“code present” + mapping), not a Simulator share-sheet run.
+
+### Next
+
+Stacked after PR36. Parent opens the GitHub PR.
+
+---
+
 ## PR36 — EventKit
 
 **Branch:** `cursor/pr36-eventkit-d2c1`  

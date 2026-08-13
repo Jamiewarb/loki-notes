@@ -10,6 +10,7 @@ import LociDesignSystem
 @main
 struct LociApp: App {
     @State private var services = AppServices()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -22,6 +23,14 @@ struct LociApp: App {
                     if services.selectedRoute == .daily {
                         _ = try? await services.ensureTodayDailyNote()
                     }
+                }
+                .onOpenURL { url in
+                    Task { await services.handleOpenURL(url) }
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    guard phase == .active else { return }
+                    // Share / widget enqueue `.loci/inbox/`; drain on foreground (no index in extensions).
+                    Task { _ = try? await services.drainCaptureInbox() }
                 }
         }
         #if os(macOS)

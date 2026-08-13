@@ -11,7 +11,7 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.26.0</string>
+	<string>0.37.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSExtension</key>
@@ -20,6 +20,6 @@
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
 	<key>LociCaptureNote</key>
-	<string>PR26 stub — Open today / Quick add via CaptureServing.</string>
+	<string>PR37 — Open today loci://daily/today; Quick add enqueues .loci/inbox/*.json. No SQLite.</string>
 </dict>
 </plist>
