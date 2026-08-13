@@ -15,7 +15,8 @@ Next stack: **Wave C** starting at **PR22 Collections**.
 ## PR21 — Sync UX and resilience
 
 **Branch:** `cursor/pr21-sync-ux-d2c1`  
-**Based on:** `cursor/pr20-media-d2c1` @ `6d513cc`
+**Based on:** `cursor/pr20-media-d2c1` @ `6d513cc`  
+**Tip:** see `git rev-parse HEAD` on branch (evidence at `evidence/pr21/`)
 
 ### What landed
 
