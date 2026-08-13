@@ -14,11 +14,11 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr29-editor-rich-d2c1`  
 **Based on:** `cursor/pr28-type-convert-d2c1` tip `d74c90491b188c9404ed08143121f25b5cf2ad6c`  
-**Tip:** 
+**Tip:** `c54059da87d562d2d330af89ce19c38019f19651`
 
 ### What landed
 
-- **Markdown:** `BlockNode.table` / `.toggle` / `.callout`; GFM pipe tables; HTML `<details>` toggles; `> [!kind] title` callouts; Mermaid stays ` ```mermaid `; `CodeSyntaxHighlight` for harness HTML
+- **Markdown:** `BlockNode.table` / `.toggle` / `.callout`; GFM pipe tables; HTML `<details>` toggles; `> [!kind] title` callouts; Mermaid stays fenced `mermaid`; `CodeSyntaxHighlight` for harness HTML
 - **EditorSession:** slash kinds `table` / `toggle` / `callout` / `mermaid`; `replaceBlockWithObjectLink` + `objectTitleCandidate` (ObjectServing.create happens in UI host)
 - **Apple:** BlockEditor chrome + context menu **Turn into…** via schema types; bridge `turnFocusedBlockIntoObject`
 - **Harness:** Editor panel PR29 card + CSS for table/toggle/callout/tokens/mermaid stub
@@ -55,7 +55,7 @@ export PATH=/opt/swift/usr/bin:$PATH
 ## PR28 — Type conversion
 
 **Branch:** `cursor/pr28-type-convert-d2c1`  
-**Tip:** 
+**Tip:** `d74c90491b188c9404ed08143121f25b5cf2ad6c`
 
 Type convert with property mapping; ObjectID stable; daily notes cannot convert. See `evidence/pr28/`.
 
