@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -914,3 +924,166 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="search">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="page">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="false">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="links" aria-current="false">
+          <span class="nav-btn-label">Links</span>
+          <span class="nav-btn-sub">Wiki-links + backlinks</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tags" aria-current="false">
+          <span class="nav-btn-label">Tags</span>
+          <span class="nav-btn-sub">Cross-type #tags</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="search" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination search-index" data-harness="destination" data-destination="search">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">⌕</span>
+          <h2 class="destination-title">Search</h2>
+        </header>
+        <p class="destination-lead">
+          Global FTS (<code>IndexQuerying.search</code>) · 0.2.0-pr18 · GRDB.
+        </p>
+
+        <section class="vault-card" data-harness="search-meta" aria-label="Index status">
+          <p class="vault-kicker">PR18 · ⌘K / SearchView</p>
+          <h3 class="vault-card-title">Local projection</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Query</dt>
+              <dd data-harness="search-query"><code>focus</code> → <code>"focus"*</code></dd>
+            </div>
+            <div>
+              <dt>Objects indexed</dt>
+              <dd data-harness="search-object-count">4</dd>
+            </div>
+            <div>
+              <dt>Hits</dt>
+              <dd data-harness="search-hit-count">3</dd>
+            </div>
+            <div>
+              <dt>Index inside vault?</dt>
+              <dd data-harness="search-index-in-vault">no ✓</dd>
+            </div>
+          </dl>
+          <p class="vault-note" data-harness="search-proof">title hit ✓ · body hit ✓ · grouped by type ✓ · title ranked first ✓ · index outside vault ✓</p>
+        </section>
+
+        
+              <section class="vault-card" data-harness="search-group" data-type="page" aria-label="Page">
+                <p class="vault-kicker">Page</p>
+                <h3 class="vault-card-title">2 hits</h3>
+                <ul class="schema-type-list" data-harness="search-hit-list">
+                  
+                <li class="schema-type-row" data-harness="search-hit" data-object-id="51dc4e9b-8b23-4e17-ba4d-96ae94775c0b" data-type="page">
+                  <span class="schema-type-name">Focus Rituals <em class="search-title-badge">title</em></span>
+                  <span class="schema-type-meta">objects/page/focus-rituals.md</span>
+                </li>
+                <li class="schema-type-row" data-harness="search-hit" data-object-id="7dd7ea05-46dd-4314-a411-4b50c1553e96" data-type="page">
+                  <span class="schema-type-name">Weekend Notes</span>
+                  <span class="schema-type-meta">objects/page/weekend-notes.md</span>
+                </li>
+                </ul>
+              </section>
+              <section class="vault-card" data-harness="search-group" data-type="book" aria-label="Book">
+                <p class="vault-kicker">Book</p>
+                <h3 class="vault-card-title">1 hit</h3>
+                <ul class="schema-type-list" data-harness="search-hit-list">
+                  
+                <li class="schema-type-row" data-harness="search-hit" data-object-id="ee70c3f8-6078-4ab0-8c23-3d0521a0b893" data-type="book">
+                  <span class="schema-type-name">Deep Work</span>
+                  <span class="schema-type-meta">objects/book/deep-work.md</span>
+                </li>
+                </ul>
+              </section>
+
+        <p class="vault-note" data-harness="search-note">
+          PR18: IndexQuerying.search FTS5 — title + body hits, grouped by type. ⌘K / SearchView reads index only.
+          Fixture: <code>demo-search</code> · regenerate with <code>./scripts/demo-search.sh</code>.
+        </p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Filters</p>
+        <div data-inspector-root="">
+          <p>Recent queries · type filters · index in Application Support only.</p>
+        </div>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786622201347"></script>
+  
+
+</body></html>

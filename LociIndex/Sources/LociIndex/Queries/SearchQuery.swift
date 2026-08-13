@@ -3,7 +3,7 @@ import GRDB
 import LociCore
 
 /// FTS5 search helpers over `blocks_fts` + `objects`.
-enum SearchQuery {
+public enum SearchQuery {
     static func search(db: Database, query: String, limit: Int = 50) throws -> [LociObjectMeta] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }
@@ -25,8 +25,10 @@ enum SearchQuery {
     }
 
     /// Escape user text into a safe FTS5 MATCH expression (prefix token search).
-    static func ftsMatchQuery(_ raw: String) -> String {
-        let tokens = raw
+    /// Public for Linux unit tests (ranking / MATCH construction).
+    public static func ftsMatchQuery(_ raw: String) -> String {
+        let normalized = SearchRanking.normalizeQuery(raw)
+        let tokens = normalized
             .split(whereSeparator: { $0.isWhitespace || $0.isPunctuation })
             .map(String.init)
             .filter { !$0.isEmpty }

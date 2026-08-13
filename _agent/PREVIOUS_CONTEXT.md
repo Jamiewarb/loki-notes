@@ -4,25 +4,22 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR17 — Tags
+## PR18 — Global FTS search
 
-**Branch:** `cursor/pr17-tags-d2c1`  
-**Based on:** `cursor/pr16-wikilinks-d2c1` @ `ef6dd39`
+**Branch:** `cursor/pr18-search-d2c1`  
+**Based on:** `cursor/pr17-tags-d2c1` @ `3fb51ef`
 
 ### What landed
 
-- **Object-level tags** in YAML frontmatter (inspector `ObjectTagsEditorView`) + body `#tag` via editor completer
-- **`TagTriggerDetector` / `EditorSession.insertTag`** — `#` completer mirrors `@` / `[[` picker
-- **`IndexQuerying`:** `allTags`, `objects(tagged:)`, `tagCandidates` (+ `TagsQuery`)
-- **`TagNormalization` / `TagAliasTable` / `TagFilter`** in Core; aliases on `SpaceSettings.tagAliases`
-- **`Features/Tags/`:** `TagBrowseView`, `TagCompleterView`, `ObjectTagsEditorView`, `TagsFeature`
-- **Route.tags** (Studio) + type-dashboard **filter by #tag**
-- **Demo:** `loci-tags-demo` / `scripts/demo-tags.sh` → `DevHarness/public/demo-tags/`
-- **Harness:** Studio → Tags (`?panel=tags`)
-- **Tests:** **152** package tests (was 139)
-- Evidence: `evidence/pr17/`
-- Version: Index / Markdown → `*-pr17`; Vault → `0.17.0-pr17`
-- **AST `#tag` case preserved** in markdown; index lowercases via `TagNormalization`
+- **`Features/Search/`:** `SearchFeature`, `SearchView` (destination + ⌘K), `SearchInspectorView` (recent queries)
+- **Core:** `SearchGrouping` / `SearchRanking` / `RecentSearchStore` (`SearchModels.swift`) — Linux-tested
+- **Index:** `SearchQuery.ftsMatchQuery` public; title+body FTS tests
+- **App shell:** Search destination wired; macOS ⌘K → `openSearch()`; iOS Search tab focuses field
+- **Demo:** `loci-search-demo` / `scripts/demo-search.sh` → `DevHarness/public/demo-search/`
+- **Harness:** Search panel loads grouped FTS fixture (`?panel=search`)
+- **Tests:** **159** package tests (was 152)
+- Evidence: `evidence/pr18/`
+- Version: Index / Markdown → `*-pr18`; Vault → `0.18.0-pr18`
 
 ### How to run checks
 
@@ -30,37 +27,37 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-tags.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=tags
+./scripts/demo-search.sh
+# optional stress: LOCI_SEARCH_BULK=1000 ./scripts/demo-search.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=search
 ```
 
-### Pitfalls for PR18 (search)
+### Pitfalls for PR19 (tasks)
 
-- FTS already exists (`blocks_fts` + `IndexQuerying.search`) — PR18 is ⌘K / Search UI polish
-- Do not block typing on index; search reads `IndexQuerying` only
-- Do not put SQLite / index inside the vault
-- Tag browse is Studio (`Route.tags`); Search remains primary for FTS
-- Alias expansion lives on queries, not rewritten into markdown
+- Task list blocks already exist in markdown/editor AST — PR19 is aggregation + Today view
+- Do not block typing on index; task toggles persist via ObjectServing.save
+- Search reads `IndexQuerying` only; Tasks will need index projection for open tasks (may extend schema)
+- Index never inside the vault
 
-### Next: PR18 — Global search
+### Next: PR19 — Tasks
 
-- Branch: `cursor/pr18-search-d2c1`
-- ⌘K / SearchView over existing FTS; filters; never blocks typing
-- Depends on: PR07 (index FTS already present)
+- Branch: `cursor/pr19-tasks-d2c1`
+- Task completion toggles persist; Today / Open tasks from index; daily note side panel
+- Depends on: PR09, PR07
 
 ---
 
-## PR16 — Wiki-links and backlinks
+## PR17 — Tags
 
-**Branch:** `cursor/pr16-wikilinks-d2c1`
+**Branch:** `cursor/pr17-tags-d2c1`
 
-LinkResolver, `@`/`[[` picker, backlinks panel. See `evidence/pr16/`.
+Object-level + body `#tags`, aliases, TagBrowseView. See `evidence/pr17/`.
 
 ### Still relevant
 
-- Preferred wiki target = ObjectID
-- Broken-link styling `is-broken` / `is-resolved`
+- Alias expansion on queries, not rewritten into markdown
+- Tag browse is Studio (`Route.tags`); Search is primary for FTS
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR17 done · next PR18
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR18 done · next PR19

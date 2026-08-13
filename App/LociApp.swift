@@ -26,6 +26,14 @@ struct LociApp: App {
         }
         #if os(macOS)
         .defaultSize(width: 1100, height: 720)
+        .commands {
+            CommandGroup(after: .sidebar) {
+                Button("Search") {
+                    Task { await services.openSearch() }
+                }
+                .keyboardShortcut("k", modifiers: .command)
+            }
+        }
         #endif
     }
 }

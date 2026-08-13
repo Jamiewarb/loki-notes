@@ -151,7 +151,13 @@ struct AppShellView: View {
                 return mapped ?? .daily
             },
             set: { route in
-                Task { await services.open(route: route.route) }
+                Task {
+                    if route == .search {
+                        await services.openSearch()
+                    } else {
+                        await services.open(route: route.route)
+                    }
+                }
             }
         )
     }

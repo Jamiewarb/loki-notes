@@ -18,6 +18,14 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var focusedTypeID: ObjectTypeID?
     /// Tag browse focus inside Tags destination (`nil` = all tags). PR17.
     public var focusedTag: String?
+    /// Draft query shared between Search destination + inspector (PR18).
+    public var searchQueryDraft: String = ""
+    /// Optional type chip filter for Search (`nil` = all).
+    public var searchFilterTypeID: ObjectTypeID?
+    /// Bumped by ⌘K / inspector to re-focus the Search field.
+    public var searchFocusNonce: Int = 0
+    /// Recent FTS queries (in-memory only — not vault / not index).
+    public var recentSearches = RecentSearchStore()
     /// Live editor session for the open object — property inspector shares saves (PR13).
     @ObservationIgnored
     public weak var activeEditorSession: EditorSessionBridge?
@@ -177,6 +185,31 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
             focusedTag = nil
         }
         selectedRoute = .tags
+    }
+
+    /// Open Search destination and focus the query field (⌘K / iOS Search tab). PR18.
+    public func openSearch(query: String? = nil) async {
+        if let query {
+            searchQueryDraft = SearchRanking.normalizeQuery(query)
+        }
+        searchFocusNonce &+= 1
+        selectedRoute = .search
+    }
+
+    public func requestSearchFocus() {
+        searchFocusNonce &+= 1
+    }
+
+    public func recordRecentSearch(_ query: String) {
+        var store = recentSearches
+        store.record(query)
+        recentSearches = store
+    }
+
+    public func clearRecentSearches() {
+        var store = recentSearches
+        store.clear()
+        recentSearches = store
     }
 
     public func ensureObjectService() async throws -> ObjectService {

@@ -20,10 +20,14 @@ struct DetailHostView: View {
                     )
                 }
             case .search:
-                DestinationPlaceholderView(
-                    route: .search,
-                    message: "Local index FTS (PR07/PR18). Reads IndexQuerying only — never blocks typing. Index never lives in the vault."
-                )
+                if let services {
+                    SearchFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .search,
+                        message: "Local index FTS (PR07/PR18). Reads IndexQuerying only — never blocks typing. Index never lives in the vault."
+                    )
+                }
             case .types:
                 if let services {
                     ObjectTypesFeature.root(services: services)

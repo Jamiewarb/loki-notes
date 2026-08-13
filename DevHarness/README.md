@@ -20,7 +20,7 @@ Browser-runnable **visual test shell** for Loci Cloud agents (no Xcode / Simulat
 - **Settings** vault status panel (PR04) — localDocuments copy + Create vault instructions (`?panel=settings`)
 - **Types** schema panel (PR05/PR12/PR13/PR14) — loads `public/demo-types/` + `public/demo-schema/` + `public/demo-templates/` (`?panel=types`); generate with `./scripts/demo-templates.sh`
 - **Markdown** debug panel (PR06) — `?panel=markdown`; `./scripts/demo-markdown.sh`
-- **Search** index panel (PR07) — FTS + created(on:) from `public/demo-index/search.json` (`?panel=search`); `./scripts/demo-index.sh`
+- **Search** index panel (PR18) — FTS title+body hits grouped by type from `public/demo-search/search.json` (`?panel=search`); `./scripts/demo-search.sh` (optional `LOCI_SEARCH_BULK=1000`)
 - **Editor** panel (PR09) — BlockAST slash simulation (`?panel=editor`); `./scripts/demo-editor.sh`
 - CLI proof: `./scripts/demo-vault.sh` / `./scripts/demo-schema.sh` / `./scripts/demo-markdown.sh` / `./scripts/demo-index.sh` / `./scripts/demo-objects.sh` / `./scripts/demo-editor.sh` / `./scripts/demo-daily.sh` / `./scripts/demo-created-today.sh` / `./scripts/demo-types.sh` / `./scripts/demo-properties.sh` / `./scripts/demo-templates.sh`
 
