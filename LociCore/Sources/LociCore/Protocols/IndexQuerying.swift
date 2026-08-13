@@ -29,6 +29,11 @@ public protocol IndexQuerying: Sendable {
     /// Outgoing wiki-links from an object, each optionally resolved.
     func outgoingLinks(from objectID: ObjectID) async throws -> [ResolvedWikiLink]
 
+    /// Other notes whose plain body text mentions this object’s title but do not
+    /// already wiki-link to it. Derived UI only — never run on the typing path.
+    /// Bounded to `UnlinkedMentionScanner.resultLimit` (50).
+    func unlinkedMentions(to objectID: ObjectID) async throws -> [UnlinkedMention]
+
     /// Picker candidates (`@` / `[[` search). Empty query → recent by `updated`.
     func linkCandidates(
         matching query: String,

@@ -34,6 +34,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-templates/templates.json",
   "/demo-type-convert/type-convert.json",
   "/demo-weblink-preview/weblink-preview.json",
+  "/demo-unlinked-mentions/unlinked-mentions.json",
 ] as const;
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -179,6 +180,19 @@ test("demo fixtures never store the index inside the vault", async ({
     if (proof && "doesNotRewriteBody" in proof) {
       expect
         .soft(proof.doesNotRewriteBody, `${url} proof.doesNotRewriteBody`)
+        .toBe(true);
+    }
+    if (proof && "detectsPlainTitle" in proof) {
+      expect
+        .soft(proof.detectsPlainTitle, `${url} proof.detectsPlainTitle`)
+        .toBe(true);
+    }
+    if (proof && "ignoresExistingWikiLink" in proof) {
+      expect
+        .soft(
+          proof.ignoresExistingWikiLink,
+          `${url} proof.ignoresExistingWikiLink`,
+        )
         .toBe(true);
     }
     if (proof && "noteBodyHasAbsolutePath" in proof) {

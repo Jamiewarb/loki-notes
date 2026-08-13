@@ -21,6 +21,11 @@ public struct MarkdownParser: Sendable {
         return LociDocument(frontMatter: frontMatter, blocks: blocks)
     }
 
+    /// Body markdown after the YAML frontmatter fence (or the full text when none).
+    public static func bodyMarkdown(from markdown: String) throws -> String {
+        try splitFrontMatter(markdown).1
+    }
+
     // MARK: - Front matter
 
     static func splitFrontMatter(_ text: String) throws -> (String?, String) {

@@ -106,6 +106,38 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func unlinkedMentions(to objectID: ObjectID) async throws -> [UnlinkedMention] {
+        guard let target = try await object(id: objectID) else { return [] }
+        let title = target.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard UnlinkedMentionScanner.isTitleScannable(title) else { return [] }
+
+        let candidates = try await dbQueue.read { db in
+            try UnlinkedMentionsQuery.candidates(db: db, target: target, title: title)
+        }
+
+        var results: [UnlinkedMention] = []
+        for candidate in candidates {
+            if candidate.alreadyLinksToTarget { continue }
+            guard let data = try? await vault.readFile(atRelativePath: candidate.meta.relativePath),
+                let markdown = String(data: data, encoding: .utf8)
+            else { continue }
+            let body = (try? MarkdownParser.bodyMarkdown(from: markdown)) ?? markdown
+            guard UnlinkedMentionScanner.mentions(
+                body,
+                title: title,
+                existingWikiTargets: candidate.wikiTargets
+            ) else { continue }
+            let snippet = UnlinkedMentionScanner.snippet(
+                from: body,
+                title: title,
+                existingWikiTargets: candidate.wikiTargets
+            )
+            results.append(UnlinkedMention(source: candidate.meta, snippet: snippet))
+            if results.count >= UnlinkedMentionScanner.resultLimit { break }
+        }
+        return results
+    }
+
     public func linkCandidates(
         matching query: String,
         excluding excludeID: ObjectID?,

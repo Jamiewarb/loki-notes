@@ -133,8 +133,8 @@ export const PANELS: Record<PanelId, Panel> = {
   links: {
     id: "links",
     title: "Links",
-    body: "Wiki-links [[id|title]] + @ picker (PR16). LinkResolver prefers ObjectID; backlinks from links table.",
-    inspector: "Backlinks panel · broken-link styling (is-broken) · index never in vault.",
+    body: "Wiki-links [[id|title]] + @ picker (PR16). Unlinked mentions scan titles (PR44). LinkResolver prefers ObjectID; backlinks from links table.",
+    inspector: "Backlinks panel · unlinked mentions (title scan) · broken-link styling · index never in vault.",
   },
   graph: {
     id: "graph",

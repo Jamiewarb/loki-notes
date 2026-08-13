@@ -46,4 +46,17 @@ final class WikiLinkAndTagTests: XCTestCase {
         }
         XCTAssertEqual(tag, "ship")
     }
+
+    func testBodyMarkdownStripsFrontMatter() throws {
+        let md = """
+            ---
+            title: Notes
+            ---
+
+            I read Deep Work yesterday
+            """
+        let body = try MarkdownParser.bodyMarkdown(from: md)
+        XCTAssertTrue(body.contains("I read Deep Work yesterday"))
+        XCTAssertFalse(body.contains("title: Notes"))
+    }
 }

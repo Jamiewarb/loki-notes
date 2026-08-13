@@ -253,7 +253,16 @@ Weblink preview metadata cache (PR43) extras:
 # harness: http://127.0.0.1:5173/?panel=safari
 ```
 
-OG title/description/image are parsed from HTML (`OpenGraphHTMLParser`) and cached as JSON next to the index (Application Support) — **never** inside the vault and not written to weblink YAML. Fetch on weblink open / Refresh preview / after create; **never** on editor typing. Linux uses `FakeLinkPreviewFetcher` (fixture HTML, no live network). Proof flags `parsesOpenGraph` / `cacheOutsideVault` / `noFetchOnType` / `indexInsideVault: false`. **Unlinked mentions are PR44.**
+OG title/description/image are parsed from HTML (`OpenGraphHTMLParser`) and cached as JSON next to the index (Application Support) — **never** inside the vault and not written to weblink YAML. Fetch on weblink open / Refresh preview / after create; **never** on editor typing. Linux uses `FakeLinkPreviewFetcher` (fixture HTML, no live network). Proof flags `parsesOpenGraph` / `cacheOutsideVault` / `noFetchOnType` / `indexInsideVault: false`.
+
+Unlinked mentions (PR44) extras:
+
+```bash
+./scripts/demo-unlinked-mentions.sh
+# harness: http://127.0.0.1:5173/?panel=links
+```
+
+Other notes whose **plain body text** contains this object’s **title** but do not already wiki-link to it. Scanner is pure (`UnlinkedMentionScanner`); `IndexQuerying.unlinkedMentions` is bounded (50) and **never** runs on the typing path. Derived UI only — do not auto-rewrite markdown. Optional **Link** tap replaces the first occurrence with `[[id|title]]` via `ObjectServing.save`. Proof flags `detectsPlainTitle` / `ignoresExistingWikiLink` / `doesNotRewriteBody` / `indexInsideVault: false`. **Graph polish is PR45.**
 
 Object-select picker (PR40) extras:
 

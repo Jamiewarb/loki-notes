@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR44 — unlinked mentions (scan titles)
+
+**Branch:** `cursor/pr44-unlinked-mentions-d2c1`  
+**Based on:** `cursor/pr43-weblink-preview-d2c1`  
+**Vault module:** `0.44.0-pr44`  
+**MARKETING_VERSION:** `0.44.0`  
+**Swift tests:** pending (was 412). **Playwright:** pending (was 94). Evidence: `evidence/pr44/`
+
+### Feature design
+- Domain folder: `App/Features/Links/` — `UnlinkedMentionsPanel` via `LinksFeature.unlinkedMentions(...)`. Compose from `InspectorHostView` alongside `BacklinksPanel`. **Does not import** other feature folders.
+- Writes vault? **no** on scan/list. Explicit **Link** tap writes the source object body via `ObjectServing.save` (`[[id|title]]` for the first unlinked occurrence only). Does **not** rewrite daily notes or the target object. Does **not** auto-link on save.
+- Reads index? yes — `IndexQuerying.unlinkedMentions(to:)` (FTS candidates, exclude resolved outgoing + self, verify with scanner). Bounded to 50. **Never** on the typing path.
+- Protocols: `IndexQuerying`, `ObjectServing`, `Navigating`. Shared protocol only — no new feature→feature imports.
+- Core: `UnlinkedMention`, `UnlinkedMentionScanner` (pure; skip `[[...]]`, word-boundary / phrase, skip titles &lt; 3 chars), `UnlinkedMentionProof`.
+- Demo: `scripts/demo-unlinked-mentions.sh` → `DevHarness/public/demo-unlinked-mentions/unlinked-mentions.json`. Harness: `?panel=links` (`data-harness=unlinked-mentions-panel`).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-unlinked-mentions.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=links — detectsPlainTitle / ignoresExistingWikiLink / doesNotRewriteBody
+```
+
+### Pitfalls
+- Do not auto-rewrite markdown for mentions. Derived UI only. Link is an explicit tap.
+- Typing must never wait on mention scan. Inspector `.task` is async after open.
+- Skip matches inside `[[...]]`. FTS body flattens wiki-links to display text — exclude resolved outgoing links *before* trusting FTS, then verify on vault markdown.
+- Short titles (&lt; 3 chars) are skipped to avoid noise. Prefer word-boundary / phrase match so “deep working” ≠ “Deep Work”.
+- Do not write mention lists into daily.md or the target object.
+- Stacked vault version assertions (`contains("pr43")`) must also accept `pr44`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave F **PR45** graph polish, stacked on PR44 (`cursor/pr44-unlinked-mentions-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR43 — weblink preview metadata cache
 
 **Branch:** `cursor/pr43-weblink-preview-d2c1`  

@@ -614,7 +614,7 @@ function inspectorTitle(id: PanelId): string {
     case "editor":
       return "Slash · keymap";
     case "links":
-      return "Backlinks";
+      return "Backlinks · unlinked mentions";
     case "graph":
       return "Caps · Navigating";
     case "calendar":
@@ -678,12 +678,46 @@ async function renderBacklinksInspector(root: HTMLElement): Promise<void> {
       <ul class="schema-type-list" data-harness="inspector-outgoing-list">${
         outgoing || "<li>none</li>"
       }</ul>
+      ${await renderUnlinkedMentionsInspector()}
       <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
         data.note ?? "Tap navigates via Navigating.open in the app.",
       )}</p>
     `;
   } catch {
     root.innerHTML = `<p>Missing links fixture. Run <code>./scripts/demo-links.sh</code>.</p>`;
+  }
+}
+
+/** Links inspector: unlinked title mentions from demo-unlinked-mentions (PR44). */
+async function renderUnlinkedMentionsInspector(): Promise<string> {
+  try {
+    const res = await fetch("/demo-unlinked-mentions/unlinked-mentions.json", {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      target?: { title?: string };
+      mentions?: Array<{ sourceId: string; sourceTitle: string; snippet: string }>;
+    };
+    const rows = (data.mentions ?? [])
+      .map(
+        (m) => `
+        <li class="schema-type-row" data-harness="inspector-unlinked-row">
+          <span class="schema-type-name">${escapeAttr(m.sourceTitle)}</span>
+          <span class="schema-type-meta">${escapeAttr(m.snippet)}</span>
+        </li>`,
+      )
+      .join("");
+    return `
+      <p class="vault-kicker" style="margin-top:0.75rem">Unlinked mentions of ${escapeAttr(
+        data.target?.title ?? "Deep Work",
+      )}</p>
+      <ul class="schema-type-list" data-harness="inspector-unlinked-list">${
+        rows || "<li>none</li>"
+      }</ul>
+    `;
+  } catch {
+    return `<p class="inspector-hint" style="margin-top:0.75rem">Missing unlinked mentions fixture. Run <code>./scripts/demo-unlinked-mentions.sh</code>.</p>`;
   }
 }
 
