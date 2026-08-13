@@ -16,7 +16,7 @@ Next stack: **PR29 Richer editor**.
 
 **Branch:** `cursor/pr28-type-convert-d2c1`  
 **Based on:** `cursor/pr27-import-d2c1` tip `34e3c2dda0`  
-**Tip:** (see latest commit on branch after evidence)
+**Tip:** `b90dd4ef73df7295838dfa3c42a8151be4e8e2c1`
 
 ### What landed
 
