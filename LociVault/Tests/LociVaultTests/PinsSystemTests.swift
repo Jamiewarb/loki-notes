@@ -99,7 +99,7 @@ final class PinsSystemTests: XCTestCase {
         }
         XCTAssertFalse(sqliteInVault)
 
-        let indexRoot = indexParent
+        let indexRoot = try XCTUnwrap(indexParent)
         XCTAssertFalse(indexRoot.path.hasPrefix(vaultRoot.path))
     }
 
