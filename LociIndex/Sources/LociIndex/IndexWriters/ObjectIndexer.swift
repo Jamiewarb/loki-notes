@@ -37,7 +37,10 @@ enum ObjectIndexer {
                 properties: meta.properties
             ),
             bodyText: walk.plainText,
-            wikiLinks: walk.wikiLinks,
+            wikiLinks: ObjectSelectLinks.merge(
+                body: walk.wikiLinks,
+                properties: meta.properties
+            ),
             bodyTags: walk.tags,
             tasks: walk.tasks
         )

@@ -165,4 +165,100 @@ final class WikiLinksAndBacklinksTests: XCTestCase {
         let vaultRoot = try await vault.vaultRootURL
         XCTAssertFalse(index.databaseURL.path.hasPrefix(vaultRoot.path))
     }
+
+    func testObjectSelectPropertyCreatesRealLinksWithoutBodyWikiLink() async throws {
+        try await boot()
+        let personID = UUID(uuidString: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1")!
+        let bookID = UUID(uuidString: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb2")!
+        let created = ISO8601DateFormatter().date(from: "2026-08-13T10:00:00Z")!
+
+        try await vault.writeFile(
+            Data(
+                """
+                ---
+                id: \(personID.uuidString.lowercased())
+                type: page
+                title: Cal Newport
+                created: \(iso(created))
+                updated: \(iso(created))
+                tags: []
+                ---
+
+                Author.
+                """.utf8
+            ),
+            atRelativePath: "objects/page/cal-newport.md"
+        )
+        try await vault.writeFile(
+            Data(
+                """
+                ---
+                id: \(bookID.uuidString.lowercased())
+                type: page
+                title: Deep Work
+                created: \(iso(created))
+                updated: \(iso(created))
+                tags: []
+                properties:
+                  author:
+                    - \(personID.uuidString.lowercased())
+                ---
+
+                Focus is a skill.
+                """.utf8
+            ),
+            atRelativePath: "objects/page/deep-work.md"
+        )
+        try await index.rebuild()
+
+        let backs = try await index.backlinks(to: ObjectID(personID))
+        XCTAssertEqual(backs.count, 1)
+        XCTAssertEqual(backs.first?.source.id, ObjectID(bookID))
+        XCTAssertEqual(backs.first?.source.title, "Deep Work")
+
+        let outgoing = try await index.outgoingLinks(from: ObjectID(bookID))
+        XCTAssertEqual(outgoing.count, 1)
+        XCTAssertEqual(outgoing.first?.resolved?.id, ObjectID(personID))
+        XCTAssertFalse(outgoing.first?.isBroken == true)
+
+        let bookData = try await vault.readFile(atRelativePath: "objects/page/deep-work.md")
+        let bookText = String(data: bookData, encoding: .utf8) ?? ""
+        let parts = bookText.split(separator: "---", maxSplits: 2, omittingEmptySubsequences: false)
+        let body = parts.count >= 3 ? String(parts[2]) : bookText
+        XCTAssertFalse(body.contains("[["), body)
+        XCTAssertTrue(bookText.contains(personID.uuidString.lowercased()))
+    }
+
+    func testObjectSelectBrokenIDStillOutgoing() async throws {
+        try await boot()
+        let bookID = UUID(uuidString: "dddddddd-dddd-4ddd-8ddd-ddddddddddd4")!
+        let missing = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee5"
+        let created = ISO8601DateFormatter().date(from: "2026-08-13T10:00:00Z")!
+        try await vault.writeFile(
+            Data(
+                """
+                ---
+                id: \(bookID.uuidString.lowercased())
+                type: page
+                title: Ghost Author
+                created: \(iso(created))
+                updated: \(iso(created))
+                tags: []
+                properties:
+                  author:
+                    - \(missing)
+                ---
+
+                No wiki in body.
+                """.utf8
+            ),
+            atRelativePath: "objects/page/ghost-author.md"
+        )
+        try await index.rebuild()
+
+        let outgoing = try await index.outgoingLinks(from: ObjectID(bookID))
+        XCTAssertEqual(outgoing.count, 1)
+        XCTAssertEqual(outgoing.first?.target, missing)
+        XCTAssertTrue(outgoing.first?.isBroken == true)
+    }
 }

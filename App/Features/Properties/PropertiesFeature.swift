@@ -1,7 +1,7 @@
 import SwiftUI
 import LociCore
 
-/// Public entry for Properties feature (PR13).
+/// Public entry for Properties feature (PR13 / PR40 object-select picker).
 enum PropertiesFeature {
     /// Object inspector: edit property values for an open object.
     @MainActor

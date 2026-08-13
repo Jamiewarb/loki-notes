@@ -93,9 +93,11 @@ struct PropertyDefsEditorView: View {
             }
 
             if draft.kind == .objectSelect {
-                Text("Object-select is a stub — values store id refs; link picker arrives later.")
-                    .font(LociTypography.font(.caption))
-                    .foregroundStyle(LociColors.inkSoft)
+                Text(
+                    "Picker in the inspector; values are ObjectIDs in YAML; they also become index links."
+                )
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
             }
 
             HStack(spacing: LociSpacing.stack(.md)) {

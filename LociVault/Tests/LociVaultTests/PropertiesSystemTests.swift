@@ -165,8 +165,51 @@ final class PropertiesSystemTests: XCTestCase {
         XCTAssertEqual(PropertyValueFormatting.displayString(.multiSelect(["a", "b"])), "a, b")
     }
 
+    func testObjectSelectSaveCreatesBacklinksWithoutRewritingBody() async throws {
+        try await boot()
+        let personType = try await schema.createType(
+            name: "Person",
+            icon: "person",
+            color: "#5C6B3D",
+            slug: "person"
+        )
+        let book = try await schema.createType(
+            name: "Books",
+            icon: "book",
+            color: "#8B5A2B",
+            slug: "book"
+        )
+        _ = try await schema.upsertProperty(
+            book.id,
+            def: PropertyDef(id: "author", name: "Author", kind: .objectSelect)
+        )
+
+        let person = try await objects.create(typeID: personType.id, title: "Cal Newport")
+        try await objects.save(meta: person, bodyMarkdown: "Author of Deep Work.\n")
+
+        var deepWork = try await objects.create(typeID: book.id, title: "Deep Work")
+        deepWork.properties = [
+            "author": .objectSelect([person.id.frontMatterIDString])
+        ]
+        let body = "Focus is a skill.\n"
+        try await objects.save(meta: deepWork, bodyMarkdown: body)
+
+        let reopened = try await objects.open(id: deepWork.id)
+        XCTAssertEqual(
+            reopened.meta.properties["author"],
+            .objectSelect([person.id.frontMatterIDString])
+        )
+        XCTAssertFalse(reopened.bodyMarkdown.contains("[["))
+
+        let backs = try await index.backlinks(to: person.id)
+        XCTAssertTrue(backs.contains { $0.source.id == deepWork.id })
+
+        let outgoing = try await index.outgoingLinks(from: deepWork.id)
+        XCTAssertTrue(outgoing.contains { $0.resolved?.id == person.id })
+    }
+
     func testModuleVersionIsPR13() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr13") || LociVaultModule.version.contains("pr14") || LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr13") || LociVaultModule.version.contains("pr14") || LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38") || LociVaultModule.version.contains("pr39") || LociVaultModule.version.contains("pr40"))
         XCTAssertTrue(LociIndexModule.version.contains("pr13") || LociIndexModule.version.contains("pr14") || LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr17") || LociIndexModule.version.contains("pr18") || LociIndexModule.version.contains("pr19") || LociIndexModule.version.contains("pr20") || LociIndexModule.version.contains("pr21") || LociIndexModule.version.contains("pr22") || LociIndexModule.version.contains("pr23") || LociIndexModule.version.contains("pr24") || LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27") || LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29") || LociIndexModule.version.contains("pr30"))
     }
 }

@@ -100,15 +100,17 @@ struct PropertyEditorView: View {
                 .pickerStyle(.menu)
                 #endif
             case .objectSelect:
-                TextField(
-                    "Object ids (stub, comma-separated)",
-                    text: Binding(
-                        get: { draft.fields[def.id] ?? "" },
-                        set: { draft.fields[def.id] = $0; scheduleSave() }
-                    )
+                ObjectSelectPickerView(
+                    services: services,
+                    excluding: objectID,
+                    selectedIDs: Binding(
+                        get: { ObjectSelectID.parseList(draft.fields[def.id] ?? "") },
+                        set: { ids in
+                            draft.fields[def.id] = ObjectSelectID.draftString(from: ids)
+                        }
+                    ),
+                    onChange: { scheduleSave() }
                 )
-                .textFieldStyle(.roundedBorder)
-                .font(LociTypography.font(.body))
             default:
                 TextField(
                     placeholder(for: def),

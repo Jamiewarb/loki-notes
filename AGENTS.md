@@ -228,6 +228,15 @@ macOS CI + shortcuts + VoiceOver (PR39) extras:
 
 GitHub Actions `macos-xcode` job (`runs-on: macos-14`) generates the Xcode project and builds iOS Simulator + macOS unsigned Debug. Linux cannot run `xcodebuild` — YAML is the Mac deliverable. macOS `.commands`: New Page ⌘N, Search ⌘K, Go to Today ⌘T, Quick Capture ⌘⇧N. VoiceOver identifiers on Daily / Editor / Search / Settings; typography uses `Font.custom(_:size:relativeTo:)`. Proof flags `macosCIWorkflowPresent` / `shortcutsCatalogued` / `voiceOverLabelsPresent` / `dynamicTypeScales` / `indexInsideVault: false`.
 
+Object-select picker (PR40) extras:
+
+```bash
+./scripts/demo-object-select.sh
+# harness: http://127.0.0.1:5173/?panel=types
+```
+
+Inspector picker queries `IndexQuerying.linkCandidates` (Properties must not import `Features/Links`). Values are ObjectID UUID strings in YAML (`PropertyValue.objectSelect`); indexing merges them into the `links` table so backlinks/outgoing work. Do **not** rewrite the markdown body with `[[id]]`. Proof flags `pickerUsesIndexCandidates` / `storesObjectIDs` / `createsRealLinks` / `doesNotRewriteBody` / `indexInsideVault: false`.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

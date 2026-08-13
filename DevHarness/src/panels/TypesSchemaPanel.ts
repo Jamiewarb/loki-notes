@@ -59,6 +59,19 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
         <pre class="md-pre" data-harness="queries-snippet" style="max-height:10rem;overflow:auto" hidden></pre>
         <p class="vault-note" data-harness="queries-note" hidden></p>
       </section>
+      <section class="vault-card" data-harness="object-select-status" aria-label="Object-select picker">
+        <p class="vault-kicker">PR40 · Object-select picker</p>
+        <h3 class="vault-card-title">Object-select</h3>
+        <p class="vault-card-body" data-harness="object-select-loading">Loading demo-object-select…</p>
+        <div data-harness="object-select-picker" hidden>
+          <p class="vault-kicker">Selected</p>
+          <div data-harness="object-select-chips"></div>
+          <p class="vault-kicker" style="margin-top:0.75rem">Candidates</p>
+          <ul class="schema-type-list" data-harness="object-select-rows"></ul>
+        </div>
+        <dl class="vault-meta capture-proof-grid" data-harness="object-select-meta" hidden></dl>
+        <p class="vault-note" data-harness="object-select-note" hidden></p>
+      </section>
       <section class="vault-card" data-harness="pages-status" aria-label="Pages">
         <p class="vault-kicker">PR08 · ObjectService</p>
         <h3 class="vault-card-title">Pages</h3>
@@ -78,6 +91,7 @@ export async function renderTypesSchema(root: HTMLElement): Promise<void> {
   await renderBooksDashboard(root);
   await renderCollectionsSection(root);
   await renderQueriesSection(root);
+  await renderObjectSelectSection(root);
   await renderPagesSection(root);
 }
 
@@ -659,6 +673,91 @@ async function renderQueriesSection(root: HTMLElement): Promise<void> {
       err instanceof Error ? err.message : "Failed to load queries fixtures";
     note.hidden = false;
     note.textContent = "Run: ./scripts/demo-queries.sh then refresh (?panel=types).";
+  }
+}
+
+async function renderObjectSelectSection(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='object-select-loading']");
+  const picker = root.querySelector<HTMLElement>("[data-harness='object-select-picker']");
+  const chips = root.querySelector<HTMLElement>("[data-harness='object-select-chips']");
+  const rows = root.querySelector<HTMLUListElement>("[data-harness='object-select-rows']");
+  const meta = root.querySelector<HTMLElement>("[data-harness='object-select-meta']");
+  const note = root.querySelector<HTMLElement>("[data-harness='object-select-note']");
+  if (!loading || !picker || !chips || !rows || !meta || !note) return;
+
+  try {
+    const res = await fetch("/demo-object-select/object-select.json", { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} — run ./scripts/demo-object-select.sh`);
+    }
+    const data = (await res.json()) as {
+      person?: { id?: string; title?: string; type?: string; relativePath?: string };
+      book?: { id?: string; title?: string; bodyMarkdown?: string };
+      authorIDs?: string[];
+      candidates?: Array<{
+        id?: string;
+        title?: string;
+        type?: string;
+        relativePath?: string;
+      }>;
+      proof?: Record<string, boolean>;
+      dailyUnchanged?: boolean;
+      note?: string;
+      moduleVersion?: string;
+    };
+
+    const person = data.person;
+    const authorIDs = data.authorIDs ?? [];
+    const candidates = data.candidates ?? [];
+    const proof = data.proof ?? {};
+
+    loading.textContent = `Book “${data.book?.title ?? "Deep Work"}” · author → ${
+      person?.title ?? "?"
+    } · daily unchanged=${data.dailyUnchanged === true ? "yes" : "no"}`;
+
+    picker.hidden = false;
+    chips.innerHTML = authorIDs
+      .map((id) => {
+        const title = id === person?.id ? person?.title ?? id : id;
+        return `<span class="schema-type-meta" data-harness="object-select-chip-${escapeHtml(
+          id,
+        )}">${escapeHtml(title ?? id)}</span>`;
+      })
+      .join(" ");
+    rows.innerHTML = candidates
+      .map(
+        (c) => `
+        <li class="schema-type-row" data-harness="object-select-row-${escapeHtml(c.id ?? "")}">
+          <span class="schema-type-name">${escapeHtml(c.title ?? "Untitled")}</span>
+          <span class="schema-type-meta">${escapeHtml(c.type ?? "")} · ${escapeHtml(
+            c.relativePath ?? "",
+          )}</span>
+        </li>`,
+      )
+      .join("");
+
+    meta.hidden = false;
+    meta.innerHTML = Object.entries(proof)
+      .map(
+        ([k, v]) => `
+          <div>
+            <dt>${escapeHtml(k)}</dt>
+            <dd data-harness="object-select-proof-${escapeHtml(k)}">${v ? "yes ✓" : "NO"}</dd>
+          </div>`,
+      )
+      .join("");
+
+    note.hidden = false;
+    note.textContent =
+      data.note ??
+      "Object-select stores ObjectIDs in YAML and creates real index links without rewriting the body.";
+    note.dataset.dailyUnchanged = String(data.dailyUnchanged === true);
+    note.dataset.indexInsideVault = String(proof.indexInsideVault === true);
+  } catch (err) {
+    loading.textContent =
+      err instanceof Error ? err.message : "Failed to load demo-object-select fixture";
+    note.hidden = false;
+    note.textContent = "Run: ./scripts/demo-object-select.sh then refresh (?panel=types).";
   }
 }
 

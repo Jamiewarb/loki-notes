@@ -1,0 +1,8 @@
+==> loci-object-select-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-object-select-demo' complete! (0.58s)
+pickerUsesIndexCandidates storesObjectIDs createsRealLinks doesNotRewriteBody dailyUnchanged indexInsideVault=false
+==> wrote /workspace/DevHarness/public/demo-object-select/object-select.json
+==> demo-object-select complete
