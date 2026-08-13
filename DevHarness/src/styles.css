@@ -869,6 +869,87 @@ body {
   overflow-x: auto;
 }
 
+/* PR29 richer blocks */
+.ast-html table.loci-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.95em;
+}
+
+.ast-html table.loci-table th,
+.ast-html table.loci-table td {
+  border: 1px solid var(--loci-line);
+  padding: 0.35em 0.55em;
+  text-align: left;
+}
+
+.ast-html table.loci-table th {
+  background: color-mix(in srgb, var(--loci-accent-soft) 55%, white);
+  font-weight: 600;
+}
+
+.ast-html details.loci-toggle {
+  margin: 0.5em 0;
+  padding: 0.35em 0.6em;
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-panel) 80%, white);
+}
+
+.ast-html details.loci-toggle summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--loci-accent);
+}
+
+.ast-html aside.loci-callout {
+  margin: 0.5em 0;
+  padding: 0.55em 0.75em;
+  border-left: 4px solid var(--loci-accent);
+  background: color-mix(in srgb, var(--loci-accent-soft) 40%, white);
+  border-radius: 0 var(--loci-radius) var(--loci-radius) 0;
+}
+
+.ast-html aside.loci-callout .callout-title {
+  margin: 0 0 0.35em;
+  font-weight: 700;
+}
+
+.ast-html aside.callout-warning,
+.ast-html aside.callout-caution {
+  border-left-color: var(--loci-danger);
+  background: color-mix(in srgb, var(--loci-danger) 12%, white);
+}
+
+.ast-html .tok-keyword {
+  color: var(--loci-accent);
+  font-weight: 600;
+}
+
+.ast-html .tok-string {
+  color: #6b4f1d;
+}
+
+.ast-html .tok-comment {
+  color: var(--loci-ink-soft);
+  font-style: italic;
+}
+
+.ast-html .mermaid-block {
+  margin: 0.5em 0;
+  padding: 0.5em 0.65em;
+  border: 1px dashed var(--loci-line);
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-meadow) 35%, white);
+}
+
+.ast-html .mermaid-hint {
+  margin: 0.35em 0 0;
+  font-size: 0.85em;
+  color: var(--loci-ink-soft);
+}
+
 /* PR16 wiki-links — resolved (accent) vs broken (danger + dash underline) */
 .wiki-link {
   font-weight: 600;

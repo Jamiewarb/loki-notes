@@ -1,7 +1,7 @@
 import Foundation
 import LociCore
 
-/// Slash-menu / insertable block kinds for the MVP editor (PR09).
+/// Slash-menu / insertable block kinds for the editor (PR09 + PR29 rich blocks).
 public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
     case paragraph
     case heading1
@@ -15,6 +15,10 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
     case code
     case image
     case query
+    case table
+    case toggle
+    case callout
+    case mermaid
 
     public var title: String {
         switch self {
@@ -30,6 +34,10 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .code: return "Code"
         case .image: return "Image"
         case .query: return "Query embed"
+        case .table: return "Table"
+        case .toggle: return "Toggle"
+        case .callout: return "Callout"
+        case .mermaid: return "Mermaid"
         }
     }
 
@@ -47,6 +55,10 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .code: return "code"
         case .image: return "image"
         case .query: return "query"
+        case .table: return "table"
+        case .toggle: return "toggle"
+        case .callout: return "callout"
+        case .mermaid: return "mermaid"
         }
     }
 
@@ -94,6 +106,33 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
             // Slug only — live results come from IndexQuerying at render time.
             let slug = TypeSlug.normalize(plainText)
             return .queryEmbed(queryID: slug.isEmpty ? "query" : slug)
+        case .table:
+            let cell = plainText.isEmpty ? "A" : plainText
+            return .table(
+                headers: [cell, "B"],
+                alignments: [.none, .none],
+                rows: [["", ""]]
+            )
+        case .toggle:
+            let summary: [InlineNode] = plainText.isEmpty ? [.text("Toggle")] : inlines
+            return .toggle(
+                summary: summary,
+                children: [.paragraph([.text("")])],
+                collapsed: true
+            )
+        case .callout:
+            let title: [InlineNode] = plainText.isEmpty ? [.text("Note")] : inlines
+            return .callout(
+                kind: .note,
+                title: title,
+                children: [.paragraph([.text("")])]
+            )
+        case .mermaid:
+            let sample =
+                plainText.isEmpty
+                ? "flowchart LR\n  A[Start] --> B[Done]"
+                : plainText
+            return .codeBlock(language: "mermaid", code: sample)
         }
     }
 }

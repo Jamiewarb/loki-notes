@@ -4,10 +4,12 @@ import LociCore
 import LociDesignSystem
 import LociMarkdown
 
-/// BlockAST editor UI — paragraphs, headings, lists, tasks, quotes, code + slash / link pickers.
+/// BlockAST editor UI — rich blocks (PR29) + slash / link / tag pickers + turn-into-object.
 struct BlockEditorView: View {
     @Bindable var session: EditorSessionBridge
     var services: AppServices?
+
+    @State private var objectTypes: [ObjectType] = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
@@ -27,6 +29,7 @@ struct BlockEditorView: View {
                                 index: index,
                                 block: block,
                                 text: session.plainText(at: index),
+                                objectTypes: objectTypes,
                                 onFocus: { session.focusedBlockIndex = index },
                                 onChange: { session.setPlainText(at: index, text: $0) },
                                 onEnter: { before, after in
@@ -41,6 +44,10 @@ struct BlockEditorView: View {
                                 },
                                 onToggleTask: {
                                     session.applyEdit(.toggleTask(blockIndex: index, itemIndex: 0))
+                                },
+                                onTurnInto: { typeID in
+                                    session.focusedBlockIndex = index
+                                    Task { _ = await session.turnFocusedBlockIntoObject(typeID: typeID) }
                                 }
                             )
                         }
@@ -92,6 +99,10 @@ struct BlockEditorView: View {
         .task(id: session.editEpoch) {
             await session.refreshWikiLinkStyles(using: services)
         }
+        .task {
+            guard let services else { return }
+            objectTypes = (try? await services.schema.allTypes()) ?? []
+        }
         .accessibilityIdentifier("block-editor")
         .modifier(BlockEditorKeymapModifier(session: session))
     }
@@ -101,11 +112,13 @@ private struct BlockRowView: View {
     let index: Int
     let block: BlockNode
     let text: String
+    let objectTypes: [ObjectType]
     let onFocus: () -> Void
     let onChange: (String) -> Void
     let onEnter: (_ before: String, _ after: String) -> Void
     let onConvert: (SlashBlockKind) -> Void
     let onToggleTask: () -> Void
+    let onTurnInto: (ObjectTypeID) -> Void
 
     @State private var draft: String = ""
 
@@ -138,7 +151,21 @@ private struct BlockRowView: View {
                     onConvert(kind)
                 }
             }
+            if !turnIntoCandidates.isEmpty {
+                Divider()
+                Menu("Turn into…") {
+                    ForEach(turnIntoCandidates, id: \.id.rawValue) { type in
+                        Button("\(type.icon) \(type.name)") {
+                            onTurnInto(type.id)
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private var turnIntoCandidates: [ObjectType] {
+        objectTypes.filter { $0.id != .daily && $0.id != .image }
     }
 
     @ViewBuilder
@@ -164,10 +191,29 @@ private struct BlockRowView: View {
                 .fill(LociColors.accent)
                 .frame(width: 3)
                 .padding(.trailing, 4)
-            case .codeBlock:
+        case .codeBlock(let language, _) where language?.lowercased() == "mermaid":
+            Text("◇")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.accent)
+                .frame(width: 28)
+        case .codeBlock:
             Text("{ }")
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)
+                .frame(width: 28)
+        case .table:
+            Text("▦")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.accent)
+                .frame(width: 28)
+        case .toggle:
+            Image(systemName: "chevron.right.circle")
+                .foregroundStyle(LociColors.accent)
+                .frame(width: 28)
+        case .callout(let kind, _, _):
+            Text(String(kind.rawValue.prefix(1)).uppercased())
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.accent)
                 .frame(width: 28)
         case .image:
             Image(systemName: "photo")
@@ -191,10 +237,15 @@ private struct BlockRowView: View {
     private var placeholder: String {
         switch block {
         case .heading: return "Heading"
+        case .codeBlock(let lang, _) where lang?.lowercased() == "mermaid":
+            return "Mermaid diagram"
         case .codeBlock: return "Code"
         case .queryEmbed: return "query-slug"
         case .image: return "Image alt"
         case .blockQuote: return "Quote"
+        case .table: return "Table header"
+        case .toggle: return "Toggle title"
+        case .callout: return "Callout title"
         case .bulletList(let items) where items.first?.isTask == true: return "Task"
         case .bulletList, .numberedList: return "List item"
         default: return "Type / for blocks · @ or [[ to link · # for tags"
@@ -209,7 +260,7 @@ private struct BlockRowView: View {
             case 2: return LociTypography.font(.title)
             default: return LociTypography.font(.headline)
             }
-        case .codeBlock, .queryEmbed:
+        case .codeBlock, .queryEmbed, .table:
             return .system(.body, design: .monospaced)
         default:
             return LociTypography.font(.body)

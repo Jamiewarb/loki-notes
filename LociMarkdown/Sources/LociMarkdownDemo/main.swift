@@ -61,6 +61,10 @@ struct LociMarkdownDemo {
         case .blockQuote: return "blockQuote"
         case .codeBlock(let lang, _): return "codeBlock(\(lang ?? "-"))"
         case .queryEmbed(let id): return "queryEmbed(\(id))"
+        case .table(let headers, _, let rows):
+            return "table(\(headers.count)x\(rows.count))"
+        case .toggle: return "toggle"
+        case .callout(let kind, _, _): return "callout(\(kind.rawValue))"
         case .image: return "image"
         case .thematicBreak: return "thematicBreak"
         }

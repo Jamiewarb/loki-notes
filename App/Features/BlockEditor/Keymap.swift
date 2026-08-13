@@ -52,5 +52,10 @@ enum BlockEditorKeymap {
         ("Task list", "⌘⇧T", "taskList"),
         ("Quote", "⌘⇧'", "quote"),
         ("Code", "⌘⌥C", "code"),
+        ("Table", "/table", "table"),
+        ("Toggle", "/toggle", "toggle"),
+        ("Callout", "/callout", "callout"),
+        ("Mermaid", "/mermaid", "mermaid"),
+        ("Turn into object", "context menu", "blockToObject"),
     ]
 }
