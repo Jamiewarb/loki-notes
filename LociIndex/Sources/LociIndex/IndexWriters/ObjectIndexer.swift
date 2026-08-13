@@ -50,6 +50,7 @@ private struct ASTWalker {
     var tags: [String] = []
     var tasks: [ExtractedTask] = []
     private var blockIndex: Int = 0
+    private var captureTasks = true
 
     static func walk(_ blocks: [BlockNode]) -> ASTWalker {
         var walker = ASTWalker()
@@ -101,8 +102,6 @@ private struct ASTWalker {
             break
         }
     }
-
-    private var captureTasks = true
 
     mutating func visitInlines(_ inlines: [InlineNode]) {
         for node in inlines {

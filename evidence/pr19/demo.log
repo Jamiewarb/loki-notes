@@ -1,0 +1,8 @@
+==> loci-tasks-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-tasks-demo' complete! (0.32s)
+open=2 today=2 completed=3 pageToggle=True indexOutsideVault=True
+==> wrote /agent/DevHarness/public/demo-tasks/tasks.json
+==> demo-tasks complete
