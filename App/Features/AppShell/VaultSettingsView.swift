@@ -89,6 +89,9 @@ struct VaultSettingsView: View {
         .padding(LociSpacing.stack(.xl))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task { await refreshStatus() }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(LociAccessibilityCatalog.settings)
+        .accessibilityLabel(LociAccessibilityCatalog.settingsLabel)
     }
 
     private func refreshStatus() async {

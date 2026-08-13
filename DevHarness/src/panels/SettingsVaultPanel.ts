@@ -111,11 +111,25 @@ export function renderSettingsVault(root: HTMLElement): void {
           In the app: Settings → <strong>Apply PARA pack</strong> (idempotent).
         </p>
       </section>
+
+      <section class="vault-card" data-harness="macos-ci-proof" aria-label="macOS CI and accessibility">
+        <p class="vault-kicker">PR39 · macOS CI + shortcuts + a11y</p>
+        <h3 class="vault-card-title">macOS CI / VoiceOver / shortcuts</h3>
+        <p class="vault-card-body" data-harness="macos-ci-loading">Loading demo-macos-ci fixture…</p>
+        <dl class="vault-meta capture-proof-grid" data-harness="macos-ci-meta" hidden></dl>
+        <p class="vault-note" data-harness="macos-ci-note" hidden></p>
+        <p class="vault-note">
+          Run <code>./scripts/demo-macos-ci.sh</code> → <code>/demo-macos-ci/macos-ci.json</code>.
+          Linux cannot run <code>xcodebuild</code>; the YAML <code>macos-14</code> job is the Mac deliverable.
+          Index never lives in the vault.
+        </p>
+      </section>
     </div>
   `;
 
   void loadSync(root);
   void loadPARA(root);
+  void loadMacOSCI(root);
 }
 
 async function loadSync(root: HTMLElement): Promise<void> {
@@ -296,5 +310,41 @@ async function loadPARA(root: HTMLElement): Promise<void> {
     note.textContent = data.note ?? data.resourceGuidance ?? "";
   } catch {
     loading.textContent = "Missing demo-para fixture. Run ./scripts/demo-para.sh";
+  }
+}
+
+async function loadMacOSCI(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='macos-ci-loading']");
+  const meta = root.querySelector<HTMLElement>("[data-harness='macos-ci-meta']");
+  const note = root.querySelector<HTMLElement>("[data-harness='macos-ci-note']");
+  if (!loading || !meta || !note) return;
+
+  try {
+    const res = await fetch("/demo-macos-ci/macos-ci.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      proof?: Record<string, boolean>;
+      workflowRunner?: string;
+      linuxCannotRunXcodebuild?: boolean;
+      note?: string;
+    };
+    const proof = data.proof ?? {};
+    loading.textContent = `macOS CI ${data.workflowRunner ?? ""} · Linux xcodebuild: ${
+      data.linuxCannotRunXcodebuild ? "cannot run (YAML is the deliverable)" : "?"
+    }`;
+    meta.hidden = false;
+    meta.innerHTML = Object.entries(proof)
+      .map(
+        ([k, v]) => `
+          <div>
+            <dt>${escapeAttr(k)}</dt>
+            <dd data-harness="macos-ci-proof-${escapeAttr(k)}">${v ? "yes ✓" : "NO"}</dd>
+          </div>`,
+      )
+      .join("");
+    note.hidden = false;
+    note.textContent = data.note ?? "";
+  } catch {
+    loading.textContent = "Missing demo-macos-ci fixture. Run ./scripts/demo-macos-ci.sh";
   }
 }

@@ -5,6 +5,9 @@
 # PR26/PR37/PR38: Share + Widget + menu bar + Safari clipper.
 # They write `.loci/inbox/` staging files; the main app drains on foreground.
 # PR38: menu bar install() + Safari messageReceived (url/title/selection).
+# PR39: GitHub Actions macos-14 job builds unsigned Debug
+#   (CODE_SIGNING_ALLOWED=NO on the xcodebuild invocation). Extensions stay
+#   in this project; unsigned Debug should skip real signing.
 
 name: Loci
 options:
@@ -16,7 +19,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "0.38.0"
+    MARKETING_VERSION: "0.39.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
   Loci:

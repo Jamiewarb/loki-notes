@@ -86,3 +86,23 @@ test("settings sync chip and live status load from demo-sync", async ({
   await expect(harness(page, "sync-live-status")).toBeVisible();
   await expect(harness(page, "sync-live-status")).not.toHaveText("—");
 });
+
+test("settings shows macOS CI shortcut and VoiceOver proofs", async ({
+  page,
+}) => {
+  await gotoPanel(page, "settings");
+  await expect(harness(page, "macos-ci-proof")).toBeVisible();
+  await expect(harness(page, "macos-ci-proof-macosCIWorkflowPresent")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "macos-ci-proof-shortcutsCatalogued")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "macos-ci-proof-voiceOverLabelsPresent")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "macos-ci-proof-dynamicTypeScales")).toHaveText(
+    "yes ✓",
+  );
+  await expect(harness(page, "macos-ci-proof-indexInsideVault")).toHaveText("NO");
+});

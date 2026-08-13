@@ -219,6 +219,15 @@ Menu bar + Safari clipper (PR38) extras:
 
 macOS menu bar `install()` from app launch: Quick capture → `CaptureServing.appendToToday` or inbox enqueue if vault-only; Open today → `Navigating` / `loci://daily/today`. Safari `messageReceived` reads JS payload keys `url` / `title` / `selection` via `SafariClipFactory` → `CaptureInboxWriter` (same `.loci/inbox/`). Missing vault is a no-op. No EventKit/SafariServices types in LociCore. Proof flags `menuBarWired` / `safariExtractsPage` / `inboxNotIndex` / `indexInsideVault: false`.
 
+macOS CI + shortcuts + VoiceOver (PR39) extras:
+
+```bash
+./scripts/demo-macos-ci.sh
+# harness: http://127.0.0.1:5173/?panel=settings
+```
+
+GitHub Actions `macos-xcode` job (`runs-on: macos-14`) generates the Xcode project and builds iOS Simulator + macOS unsigned Debug. Linux cannot run `xcodebuild` — YAML is the Mac deliverable. macOS `.commands`: New Page ⌘N, Search ⌘K, Go to Today ⌘T, Quick Capture ⌘⇧N. VoiceOver identifiers on Daily / Editor / Search / Settings; typography uses `Font.custom(_:size:relativeTo:)`. Proof flags `macosCIWorkflowPresent` / `shortcutsCatalogued` / `voiceOverLabelsPresent` / `dynamicTypeScales` / `indexInsideVault: false`.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

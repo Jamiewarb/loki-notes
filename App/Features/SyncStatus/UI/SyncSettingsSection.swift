@@ -26,7 +26,7 @@ struct SyncSettingsSection: View {
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.ink)
                 .textSelection(.enabled)
-                .accessibilityIdentifier("vault-path-display")
+                .accessibilityIdentifier(LociAccessibilityCatalog.vaultPath)
 
             HStack(spacing: LociSpacing.stack(.sm)) {
                 LociButton("Reveal vault path", style: .secondary) {

@@ -37,6 +37,9 @@ struct DailyNoteView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task(id: dayTaskID) { await loadSelectedDay() }
         .onAppear { syncInspectedDay() }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(LociAccessibilityCatalog.dailyNote)
+        .accessibilityLabel(LociAccessibilityCatalog.dailyNoteLabel)
     }
 
     private func syncInspectedDay() {
@@ -86,6 +89,8 @@ struct DailyNoteView: View {
                 .font(LociTypography.font(.headline))
                 .foregroundStyle(LociColors.ink)
                 .textFieldStyle(.plain)
+                .accessibilityLabel(LociAccessibilityCatalog.dailyTitleLabel)
+                .accessibilityIdentifier(LociAccessibilityCatalog.dailyTitle)
 
                 BlockEditorFeature.editor(session: session, services: services)
 
