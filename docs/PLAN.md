@@ -77,7 +77,7 @@ todos:
     status: pending
   - id: pr23-queries
     content: 'PR23: Saved queries + embeddable query blocks'
-    status: pending
+    status: completed
   - id: pr24-graph
     content: 'PR24: Graph view'
     status: pending

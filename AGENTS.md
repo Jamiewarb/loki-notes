@@ -77,6 +77,16 @@ Collections (PR22) extras:
 
 Membership is vault JSON under `.loci/collections/<type>.<slug>.json` (not index-only).
 
+Queries (PR23) extras:
+
+```bash
+./scripts/demo-queries.sh
+# harness: http://127.0.0.1:5173/?panel=types  (pinned queries)
+#          http://127.0.0.1:5173/?panel=editor ( /query embed)
+```
+
+Saved definitions live under `.loci/queries/<slug>.json`; results are derived from the index.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

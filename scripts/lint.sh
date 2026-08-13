@@ -101,6 +101,11 @@ if [[ -d "$ROOT/App/Features/Collections" ]]; then
 else
   fail "App/Features/Collections missing"
 fi
+if [[ -d "$ROOT/App/Features/Queries" ]]; then
+  pass "App/Features/Queries present"
+else
+  fail "App/Features/Queries missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

@@ -1,4 +1,5 @@
 import Foundation
+import LociCore
 
 /// Slash-menu / insertable block kinds for the MVP editor (PR09).
 public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
@@ -13,6 +14,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
     case quote
     case code
     case image
+    case query
 
     public var title: String {
         switch self {
@@ -27,6 +29,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .quote: return "Quote"
         case .code: return "Code"
         case .image: return "Image"
+        case .query: return "Query embed"
         }
     }
 
@@ -43,6 +46,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .quote: return "quote"
         case .code: return "code"
         case .image: return "image"
+        case .query: return "query"
         }
     }
 
@@ -86,6 +90,10 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
             // Placeholder until MediaServing attaches a real vault path (PR20).
             let alt = plainText.isEmpty ? "image" : plainText
             return .image(alt: alt, url: "../media/images/placeholder.png", title: nil)
+        case .query:
+            // Slug only — live results come from IndexQuerying at render time.
+            let slug = TypeSlug.normalize(plainText)
+            return .queryEmbed(queryID: slug.isEmpty ? "query" : slug)
         }
     }
 }

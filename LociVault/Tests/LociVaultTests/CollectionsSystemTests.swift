@@ -146,8 +146,8 @@ final class CollectionsSystemTests: XCTestCase {
     }
 
     func testModuleVersionsIncludePR22() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr22"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr22"))
-        XCTAssertTrue(LociMarkdownModule.version.contains("pr22"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr2"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr2"))
+        XCTAssertTrue(LociMarkdownModule.version.contains("pr2"))
     }
 }

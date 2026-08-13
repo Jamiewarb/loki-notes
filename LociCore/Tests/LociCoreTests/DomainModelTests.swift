@@ -228,6 +228,48 @@ final class DomainModelTests: XCTestCase {
         XCTAssertEqual(CollectionID.typeID(from: "book.favorites"), ObjectTypeID("book"))
     }
 
+    func testSavedQueryCodableAndQueryID() throws {
+        let definition = QueryDefinition(
+            typeID: ObjectTypeID("book"),
+            tags: ["focus"],
+            tagMode: .all,
+            properties: [.equals("status", text: "Reading")],
+            created: DateRangeFilter(from: Date(timeIntervalSince1970: 1_700_000_000)),
+            limit: 25,
+            sort: .updatedDesc
+        )
+        let query = SavedQuery(
+            id: "reading-books",
+            name: "Reading books",
+            definition: definition,
+            pinnedTypeID: ObjectTypeID("book")
+        )
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.sortedKeys]
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let data = try encoder.encode(query)
+        let decoded = try decoder.decode(SavedQuery.self, from: data)
+        XCTAssertEqual(decoded.id, "reading-books")
+        XCTAssertEqual(decoded.name, "Reading books")
+        XCTAssertEqual(decoded.pinnedTypeID, ObjectTypeID("book"))
+        XCTAssertEqual(decoded.definition.typeID, ObjectTypeID("book"))
+        XCTAssertEqual(decoded.definition.tags, ["focus"])
+        XCTAssertEqual(decoded.definition.properties.first?.key, "status")
+        XCTAssertEqual(decoded.definition.limit, 25)
+        // Definition only — no live results in vault JSON.
+        let json = String(data: data, encoding: .utf8) ?? ""
+        XCTAssertFalse(json.contains("results"))
+        XCTAssertFalse(json.contains("memberIDs"))
+        XCTAssertEqual(
+            try QueryID.make(name: "Reading Books", explicitSlug: nil),
+            "reading-books"
+        )
+        XCTAssertTrue(QueryID.isValid("reading-books"))
+        XCTAssertFalse(QueryID.isValid("Bad Slug"))
+    }
+
     func testOpenedObjectCodable() throws {
         let meta = LociObjectMeta(
             id: ObjectID(),

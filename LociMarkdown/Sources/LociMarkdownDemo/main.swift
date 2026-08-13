@@ -60,6 +60,7 @@ struct LociMarkdownDemo {
         case .numberedList(_, let items): return "numberedList(\(items.count))"
         case .blockQuote: return "blockQuote"
         case .codeBlock(let lang, _): return "codeBlock(\(lang ?? "-"))"
+        case .queryEmbed(let id): return "queryEmbed(\(id))"
         case .image: return "image"
         case .thematicBreak: return "thematicBreak"
         }

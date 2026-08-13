@@ -34,6 +34,12 @@ public enum LociError: Error, Sendable, Equatable {
     case collectionAlreadyExists(String)
     /// Object is not a member of the collection (remove no-op failure).
     case collectionMemberNotFound(String)
+    /// Query id empty or malformed.
+    case invalidQueryID(String)
+    /// Query file / id not found under `.loci/queries/`.
+    case queryNotFound(String)
+    /// Query id already exists.
+    case queryAlreadyExists(String)
     case invalidRelativePath(String)
     case fileNotFound(String)
     case pathOutsideVault(String)

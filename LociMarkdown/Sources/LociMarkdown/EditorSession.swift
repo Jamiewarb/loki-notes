@@ -219,6 +219,8 @@ public final class EditorSession: @unchecked Sendable {
             return plainText(of: first)
         case .codeBlock(_, let code):
             return code
+        case .queryEmbed(let queryID):
+            return queryID
         case .image(let alt, _, _):
             return alt
         case .thematicBreak:
@@ -255,6 +257,9 @@ public final class EditorSession: @unchecked Sendable {
             return .blockQuote([.paragraph(inlines)])
         case .codeBlock(let language, _):
             return .codeBlock(language: language, code: text)
+        case .queryEmbed:
+            let slug = TypeSlug.normalize(text)
+            return .queryEmbed(queryID: slug.isEmpty ? "query" : slug)
         case .image(_, let url, let title):
             return .image(alt: text, url: url, title: title)
         case .thematicBreak:

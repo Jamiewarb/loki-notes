@@ -13,26 +13,38 @@ struct BlockEditorView: View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
             ForEach(Array(session.blocks.enumerated()), id: \.offset) { index, block in
                 VStack(alignment: .leading, spacing: 4) {
-                    BlockRowView(
-                        index: index,
-                        block: block,
-                        text: session.plainText(at: index),
-                        onFocus: { session.focusedBlockIndex = index },
-                        onChange: { session.setPlainText(at: index, text: $0) },
-                        onEnter: { before, after in
-                            session.applyEdit(
-                                .splitBlock(blockIndex: index, before: before, after: after)
+                    Group {
+                        if case .queryEmbed(let queryID) = block, let services {
+                            QueryEmbedBlockRow(
+                                services: services,
+                                queryID: queryID,
+                                index: index,
+                                onFocus: { session.focusedBlockIndex = index },
+                                onChangeSlug: { session.setPlainText(at: index, text: $0) }
                             )
-                            session.focusedBlockIndex = index + 1
-                        },
-                        onConvert: { kind in
-                            session.focusedBlockIndex = index
-                            session.applyEdit(.convertBlock(blockIndex: index, to: kind))
-                        },
-                        onToggleTask: {
-                            session.applyEdit(.toggleTask(blockIndex: index, itemIndex: 0))
+                        } else {
+                            BlockRowView(
+                                index: index,
+                                block: block,
+                                text: session.plainText(at: index),
+                                onFocus: { session.focusedBlockIndex = index },
+                                onChange: { session.setPlainText(at: index, text: $0) },
+                                onEnter: { before, after in
+                                    session.applyEdit(
+                                        .splitBlock(blockIndex: index, before: before, after: after)
+                                    )
+                                    session.focusedBlockIndex = index + 1
+                                },
+                                onConvert: { kind in
+                                    session.focusedBlockIndex = index
+                                    session.applyEdit(.convertBlock(blockIndex: index, to: kind))
+                                },
+                                onToggleTask: {
+                                    session.applyEdit(.toggleTask(blockIndex: index, itemIndex: 0))
+                                }
+                            )
                         }
-                    )
+                    }
                     .id("\(session.editEpoch)-\(index)")
 
                     if let styles = session.wikiLinkStylesByBlock[index], !styles.isEmpty {
@@ -161,6 +173,11 @@ private struct BlockRowView: View {
             Image(systemName: "photo")
                 .foregroundStyle(LociColors.accent)
                 .frame(width: 28)
+        case .queryEmbed:
+            Text("/q")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.accent)
+                .frame(width: 28)
         case .heading(let level, _):
             Text("H\(level)")
                 .font(LociTypography.font(.caption))
@@ -175,6 +192,7 @@ private struct BlockRowView: View {
         switch block {
         case .heading: return "Heading"
         case .codeBlock: return "Code"
+        case .queryEmbed: return "query-slug"
         case .image: return "Image alt"
         case .blockQuote: return "Quote"
         case .bulletList(let items) where items.first?.isTask == true: return "Task"
@@ -191,11 +209,52 @@ private struct BlockRowView: View {
             case 2: return LociTypography.font(.title)
             default: return LociTypography.font(.headline)
             }
-        case .codeBlock:
+        case .codeBlock, .queryEmbed:
             return .system(.body, design: .monospaced)
         default:
             return LociTypography.font(.body)
         }
+    }
+}
+
+/// Query embed row: editable slug + live results panel (PR23).
+private struct QueryEmbedBlockRow: View {
+    var services: AppServices
+    let queryID: String
+    let index: Int
+    let onFocus: () -> Void
+    let onChangeSlug: (String) -> Void
+
+    @State private var draft: String = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: LociSpacing.stack(.sm)) {
+            HStack(alignment: .center, spacing: LociSpacing.stack(.sm)) {
+                Text("/query")
+                    .font(LociTypography.font(.caption))
+                    .foregroundStyle(LociColors.accent)
+                    .frame(width: 48, alignment: .leading)
+                TextField("query-slug", text: $draft)
+                    .font(.system(.body, design: .monospaced))
+                    .textFieldStyle(.plain)
+                    .onAppear { draft = queryID }
+                    .onChange(of: queryID) { _, newValue in
+                        if draft != newValue { draft = newValue }
+                    }
+                    .onChange(of: draft) { _, newValue in
+                        onFocus()
+                        if newValue != queryID {
+                            onChangeSlug(newValue)
+                        }
+                    }
+            }
+            QueriesFeature.embed(
+                services: services,
+                queryID: queryID,
+                onOpen: { id in await services.open(objectID: id) }
+            )
+        }
+        .padding(.vertical, 4)
     }
 }
 #endif

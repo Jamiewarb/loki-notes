@@ -30,7 +30,49 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
       isDirty: boolean;
       slashSimulated: string[];
       note: string;
+      queryEmbed?: {
+        serialized?: string;
+        html?: string;
+        queryID?: string;
+        storesResultsInBody?: boolean;
+        roundTripKind?: string;
+      };
     };
+
+    const embed = data.queryEmbed;
+    const embedSection = embed
+      ? `
+        <section class="vault-card" data-harness="query-embed-demo" aria-label="Query embed">
+          <p class="vault-kicker">PR23 · /query embed</p>
+          <h3 class="vault-card-title">Live query block</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Slug</dt>
+              <dd data-harness="query-embed-id">${escapeHtml(embed.queryID ?? "?")}</dd>
+            </div>
+            <div>
+              <dt>Stores results in body</dt>
+              <dd data-harness="query-embed-stores">${embed.storesResultsInBody ? "yes" : "no"}</dd>
+            </div>
+            <div>
+              <dt>Round-trip kind</dt>
+              <dd>${escapeHtml(embed.roundTripKind ?? "?")}</dd>
+            </div>
+          </dl>
+          <div class="md-columns" aria-label="Query embed markdown and HTML">
+            <div class="md-pane">
+              <h3 class="md-pane-title">Serialized embed</h3>
+              <pre class="md-pre" data-harness="query-embed-serialized">${escapeHtml(
+                (embed.serialized ?? "").trimEnd(),
+              )}</pre>
+            </div>
+            <div class="md-pane">
+              <h3 class="md-pane-title">AST HTML</h3>
+              <div class="ast-html" data-harness="query-embed-html">${embed.html ?? ""}</div>
+            </div>
+          </div>
+        </section>`
+      : "";
 
     root.innerHTML = `
       <div class="destination editor-panel" data-harness="destination" data-destination="editor">
@@ -40,7 +82,7 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
         </header>
         <p class="destination-lead">
           Slash-style inserts via <code>EditorSession</code> (${escapeHtml(data.moduleVersion)}).
-          Typing never awaits the index.
+          Typing never awaits the index. <code>/query</code> embeds store a slug only.
         </p>
 
         <section class="vault-card" data-harness="editor-meta" aria-label="Editor session status">
@@ -81,8 +123,10 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
           </div>
         </section>
 
+        ${embedSection}
+
         <p class="vault-note">
-          Regenerate with <code>./scripts/demo-editor.sh</code>. Daily notes (PR10) build on this session.
+          Regenerate with <code>./scripts/demo-editor.sh</code> and <code>./scripts/demo-queries.sh</code>.
         </p>
       </div>
     `;

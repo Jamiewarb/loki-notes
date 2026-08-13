@@ -8,6 +8,7 @@ public enum VaultLayout: Sendable {
     public static let typesDirectory = ".loci/types"
     public static let templatesDirectory = ".loci/templates"
     public static let collectionsDirectory = ".loci/collections"
+    public static let queriesDirectory = ".loci/queries"
     public static let trashDirectory = ".loci/trash"
     public static let dailyDirectory = "daily"
     public static let objectsDirectory = "objects"
@@ -20,6 +21,7 @@ public enum VaultLayout: Sendable {
         typesDirectory,
         templatesDirectory,
         collectionsDirectory,
+        queriesDirectory,
         trashDirectory,
         dailyDirectory,
         objectsDirectory,
@@ -30,5 +32,5 @@ public enum VaultLayout: Sendable {
 
 /// Module marker + version for diagnostics / harness copy.
 public enum LociVaultModule {
-    public static let version = "0.22.0-pr22"
+    public static let version = "0.23.0-pr23"
 }

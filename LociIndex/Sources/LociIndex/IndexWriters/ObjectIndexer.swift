@@ -95,6 +95,10 @@ private struct ASTWalker {
         case .codeBlock(_, let code):
             plainText.append(code)
             plainText.append("\n")
+        case .queryEmbed(let queryID):
+            // Slug only — do not invent result titles into the indexed body.
+            plainText.append(queryID)
+            plainText.append("\n")
         case .image(let alt, _, _):
             plainText.append(alt)
             plainText.append("\n")

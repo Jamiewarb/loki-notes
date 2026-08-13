@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset='utf-8'><title>PR23 harness types/queries evidence</title></head>
+<body>
+<div data-harness='destination' data-destination='types'>
+  <h2>Types · Queries (PR23)</h2>
+  <section data-harness='queries-status'>
+    <p class='vault-kicker'>PR23 · Saved queries + embeds</p>
+    <h3>Pinned queries</h3>
+    <p data-harness='queries-loading'>Pinned · .loci/queries/reading-focus.json · 2 live hits · 0.23.0-pr23</p>
+    <div data-harness='pinned-query-tabs'><button class='is-active'>Reading + focus</button></div>
+    <ul data-harness='queries-results'>
+      <li data-harness='query-result-row'><span>Deep Work</span></li><li data-harness='query-result-row'><span>Range</span></li>
+    </ul>
+    <pre data-harness='queries-snippet'>{
+  "definition" : {
+    "properties" : [
+      {
+        "key" : "status",
+        "op" : "equals",
+        "text" : "Reading"
+      }
+    ],
+    "sort" : "titleAsc",
+    "tagMode" : "all",
+    "tags" : [
+      "focus"
+    ],
+    "typeID" : "book"
+  },
+  "id" : "reading-focus",
+  "name" : "Reading + focus",
+  "pinnedT</pre>
+    <p data-harness='queries-note' data-query-id='reading-focus' data-result-count='2' data-definition-is-vault-file='true'>PR23: QueryEngine DSL; saved defs in .loci/queries/<slug>.json; pin to type dashboard; /query embed stores slug only.</p>
+  </section>
+  <section data-harness='query-embed-demo'>
+    <p class='vault-kicker'>PR23 · /query embed</p>
+    <dd data-harness='query-embed-id'>reading-focus</dd>
+    <dd data-harness='query-embed-stores'>no</dd>
+    <pre data-harness='query-embed-serialized'>Notes
+
+```query
+reading-focus
+```</pre>
+    <div data-harness='query-embed-html'><article class="loci-ast" data-harness="block-ast-html">
+<p>Notes</p>
+<div class="query-embed" data-query-id="reading-focus" data-harness="query-embed"><span class="query-embed-label">/query</span> <code>reading-focus</code> <span class="query-embed-hint">live results</span></div>
+</article></div>
+  </section>
+</div>
+</body></html>

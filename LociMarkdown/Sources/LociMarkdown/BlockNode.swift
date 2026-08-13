@@ -11,5 +11,7 @@ public enum BlockNode: Hashable, Sendable, Equatable {
     case codeBlock(language: String?, code: String)
     /// Standalone image block (serialized as its own paragraph-like line).
     case image(alt: String, url: String, title: String?)
+    /// Live query embed — stores only the saved-query slug; results are derived at render time (PR23).
+    case queryEmbed(queryID: String)
     case thematicBreak
 }

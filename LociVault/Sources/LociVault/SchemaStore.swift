@@ -6,6 +6,7 @@ import LociMarkdown
 /// Merge-friendly: one type per file — never a monolithic schema.json.
 /// Templates live under `.loci/templates/<id>.md` (PR14).
 /// Collections live under `.loci/collections/<type>.<slug>.json` (PR22).
+/// Saved queries live under `.loci/queries/<slug>.json` (PR23) — definitions only.
 public final class SchemaStore: SchemaServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let encoder: JSONEncoder
@@ -459,6 +460,97 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return try await saveCollection(collection)
     }
 
+    // MARK: - Saved queries (PR23)
+
+    public func listQueries() async throws -> [SavedQuery] {
+        let ids = try await listQueryFileIDs()
+        var result: [SavedQuery] = []
+        for fileID in ids {
+            if let query = try? await loadQuery(fileID) {
+                result.append(query)
+            }
+        }
+        return result.sorted { $0.id < $1.id }
+    }
+
+    public func listPinnedQueries(typeID: ObjectTypeID) async throws -> [SavedQuery] {
+        let all = try await listQueries()
+        return all.filter { $0.pinnedTypeID == typeID }
+    }
+
+    public func loadQuery(_ id: String) async throws -> SavedQuery {
+        let path = Self.queryRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.queryNotFound(id)
+        }
+        let data = try await vault.readFile(atRelativePath: path)
+        do {
+            return try decoder.decode(SavedQuery.self, from: data)
+        } catch {
+            throw LociError.queryNotFound(id)
+        }
+    }
+
+    @discardableResult
+    public func saveQuery(_ query: SavedQuery) async throws -> SavedQuery {
+        guard QueryID.isValid(query.id) else {
+            throw LociError.invalidQueryID(query.id)
+        }
+        if let pinned = query.pinnedTypeID {
+            _ = try await loadType(pinned)
+        }
+        var stored = query
+        stored.updatedAt = Date()
+        let data = try encoder.encode(stored)
+        try await vault.writeFile(data, atRelativePath: Self.queryRelativePath(for: stored.id))
+        return stored
+    }
+
+    @discardableResult
+    public func createQuery(
+        name: String,
+        definition: QueryDefinition,
+        slug: String? = nil,
+        pinnedTypeID: ObjectTypeID? = nil
+    ) async throws -> SavedQuery {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw LociError.invalidQueryID("(empty name)")
+        }
+        if let pinnedTypeID {
+            _ = try await loadType(pinnedTypeID)
+        }
+        let id = try QueryID.make(name: trimmed, explicitSlug: slug)
+        if try await vault.fileExists(atRelativePath: Self.queryRelativePath(for: id)) {
+            throw LociError.queryAlreadyExists(id)
+        }
+        let query = SavedQuery(
+            id: id,
+            name: trimmed,
+            definition: definition,
+            pinnedTypeID: pinnedTypeID
+        )
+        return try await saveQuery(query)
+    }
+
+    public func deleteQuery(_ id: String) async throws {
+        let path = Self.queryRelativePath(for: id)
+        guard try await vault.fileExists(atRelativePath: path) else {
+            throw LociError.queryNotFound(id)
+        }
+        try await vault.deleteFile(atRelativePath: path)
+    }
+
+    @discardableResult
+    public func setQueryPinned(_ id: String, typeID: ObjectTypeID?) async throws -> SavedQuery {
+        var query = try await loadQuery(id)
+        if let typeID {
+            _ = try await loadType(typeID)
+        }
+        query.pinnedTypeID = typeID
+        return try await saveQuery(query)
+    }
+
     // MARK: - Paths
 
     public static func typeRelativePath(for id: ObjectTypeID) -> String {
@@ -471,6 +563,10 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
 
     public static func collectionRelativePath(for id: String) -> String {
         "\(VaultLayout.collectionsDirectory)/\(id).json"
+    }
+
+    public static func queryRelativePath(for id: String) -> String {
+        "\(VaultLayout.queriesDirectory)/\(id).json"
     }
 
     public static func objectsFolderRelativePath(for id: ObjectTypeID) -> String {
@@ -549,6 +645,26 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
     private func listCollectionFileIDs() async throws -> [String] {
         let root = try await vault.vaultRootURL
         let dir = root.appendingPathComponent(VaultLayout.collectionsDirectory, isDirectory: true)
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: dir.path, isDirectory: &isDir),
+            isDir.boolValue
+        else {
+            return []
+        }
+        let urls = try FileManager.default.contentsOfDirectory(
+            at: dir,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        return urls
+            .filter { $0.pathExtension.lowercased() == "json" }
+            .map { $0.deletingPathExtension().lastPathComponent }
+            .sorted()
+    }
+
+    private func listQueryFileIDs() async throws -> [String] {
+        let root = try await vault.vaultRootURL
+        let dir = root.appendingPathComponent(VaultLayout.queriesDirectory, isDirectory: true)
         var isDir: ObjCBool = false
         guard FileManager.default.fileExists(atPath: dir.path, isDirectory: &isDir),
             isDir.boolValue

@@ -1,0 +1,18 @@
+{
+  "id": "reading-focus",
+  "name": "Reading + focus",
+  "pinnedTypeID": "book",
+  "definition": {
+    "typeID": "book",
+    "tags": [
+      "focus"
+    ],
+    "properties": [
+      {
+        "key": "status",
+        "op": "equals",
+        "text": "Reading"
+      }
+    ]
+  }
+}

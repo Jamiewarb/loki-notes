@@ -65,6 +65,12 @@ public protocol IndexQuerying: Sendable {
 
     /// Tasks whose source object is the daily note for `day` (`daily/YYYY-MM-DD.md`).
     func tasks(inDailyNoteOn day: Date, calendar: Calendar) async throws -> [IndexedTask]
+
+    // MARK: - QueryEngine (PR23)
+
+    /// Execute a filter DSL against the index. Results are derived — callers must
+    /// not write them into vault markdown unless the user explicitly inserts an embed.
+    func execute(_ definition: QueryDefinition) async throws -> [LociObjectMeta]
 }
 
 /// One row from the disposable `properties_idx` projection.
