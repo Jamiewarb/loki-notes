@@ -1,0 +1,9 @@
+{
+  "color": "#8B5A2B",
+  "icon": "book",
+  "id": "book",
+  "isBuiltIn": false,
+  "isDaily": false,
+  "name": "Books",
+  "properties": []
+}

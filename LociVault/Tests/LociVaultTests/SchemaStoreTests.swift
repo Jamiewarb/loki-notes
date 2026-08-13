@@ -163,7 +163,8 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertFalse(book.isBuiltIn)
 
         let typePath = SchemaStore.typeRelativePath(for: book.id)
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: typePath))
+        let typeExists = try await vault.fileExists(atRelativePath: typePath)
+        XCTAssertTrue(typeExists)
 
         let root = try await vault.vaultRootURL
         let folder = root.appendingPathComponent(
