@@ -60,10 +60,10 @@ public final class VaultService: VaultServing, @unchecked Sendable {
             monitor.noteLocalWrite(relativePath: VaultLayout.spaceJSON, kind: .created)
         }
 
-        // Seed built-in Page + Daily types (merge-friendly per-type files). Idempotent.
+        // Seed built-in Page + Daily + Image types (merge-friendly per-type files). Idempotent.
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        for type in [ObjectType.builtInPage, ObjectType.builtInDaily] {
+        for type in [ObjectType.builtInPage, ObjectType.builtInDaily, ObjectType.builtInImage] {
             let relative = SchemaStore.typeRelativePath(for: type.id)
             let url = try absoluteURLSync(forRelativePath: relative)
             if !coordinator.fileExists(at: url) {
@@ -104,6 +104,19 @@ public final class VaultService: VaultServing, @unchecked Sendable {
     public func fileExists(atRelativePath path: String) async throws -> Bool {
         let url = try absoluteURLSync(forRelativePath: path)
         return coordinator.fileExists(at: url)
+    }
+
+    public func putMedia(
+        _ data: Data,
+        kind: MediaKind,
+        preferredFileName: String
+    ) async throws -> MediaAttachment {
+        try await MediaStore.put(
+            data: data,
+            kind: kind,
+            preferredFileName: preferredFileName,
+            vault: self
+        )
     }
 
     @discardableResult

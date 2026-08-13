@@ -40,6 +40,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public private(set) var objects: ObjectService?
     /// Daily note ensure/open (`DailyNoteServing`). Nil until index is ready.
     public private(set) var dailyNotes: DailyNoteService?
+    /// Media attach into vault `media/` (PR20). Always available — no index required.
+    public let media: MediaService
 
     public init(
         spaceName: String = "Loci",
@@ -52,7 +54,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         schema: SchemaStore? = nil,
         index: IndexService? = nil,
         objects: ObjectService? = nil,
-        dailyNotes: DailyNoteService? = nil
+        dailyNotes: DailyNoteService? = nil,
+        media: MediaService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -65,6 +68,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
             ?? (try! VaultService(forceLocal: true))
         self.vault = resolvedVault
         self.schema = schema ?? SchemaStore(vault: resolvedVault)
+        self.media = media ?? MediaService(vault: resolvedVault)
         self.index = index
         if let objects {
             self.objects = objects

@@ -54,6 +54,10 @@ final class VaultServiceTests: XCTestCase {
             atRelativePath: SchemaStore.typeRelativePath(for: .daily)
         )
         XCTAssertTrue(dailyExists, "ensureSkeleton should seed .loci/types/daily.json")
+        let imageExists = try await service.fileExists(
+            atRelativePath: SchemaStore.typeRelativePath(for: .image)
+        )
+        XCTAssertTrue(imageExists, "ensureSkeleton should seed .loci/types/image.json")
 
         // Idempotent — second call does not wipe space.json
         try await service.ensureSkeleton(spaceName: "Other")
@@ -200,7 +204,7 @@ final class ModuleVersionTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20")
         )
     }
 }

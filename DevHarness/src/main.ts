@@ -18,6 +18,7 @@ import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 import { renderTasksPanel } from "./panels/TasksPanel";
+import { renderMediaPanel } from "./panels/MediaPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -45,6 +46,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   editor: "✎",
   links: "⇉",
   tags: "#",
+  media: "▣",
 };
 
 function renderNavSection(
@@ -120,6 +122,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
     void renderTasksPanel(detail);
     return;
   }
+  if (panelId === "media") {
+    void renderMediaPanel(detail);
+    return;
+  }
   renderDestinationPlaceholder(detail, {
     id: panelId,
     title: panel.title,
@@ -182,6 +188,9 @@ function render(): void {
   }
   if (inspectorRoot && active === "tags") {
     void renderTagsInspector(inspectorRoot);
+  }
+  if (inspectorRoot && active === "media") {
+    void renderMediaInspector(inspectorRoot);
   }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
@@ -479,6 +488,8 @@ function inspectorTitle(id: PanelId): string {
       return "Backlinks";
     case "tags":
       return "Object tags · aliases";
+    case "media":
+      return "media/ listing";
   }
 }
 
@@ -557,6 +568,45 @@ async function renderTagsInspector(root: HTMLElement): Promise<void> {
     `;
   } catch {
     root.innerHTML = `<p>Missing tags fixture. Run <code>./scripts/demo-tags.sh</code>.</p>`;
+  }
+}
+
+/** Media inspector: proof from demo-media fixture (PR20). */
+async function renderMediaInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-media-loading">Loading media…</p>`;
+  try {
+    const res = await fetch("/demo-media/media.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      proof?: Record<string, boolean>;
+      mediaListing?: { images?: string[]; files?: string[] };
+      note?: string;
+    };
+    const proof = data.proof ?? {};
+    const images = (data.mediaListing?.images ?? []).join(", ") || "(none)";
+    const files = (data.mediaListing?.files ?? []).join(", ") || "(none)";
+    root.innerHTML = `
+      <p>media/ is truth · index holds metadata only.</p>
+      <ul class="schema-type-list" style="margin-top:0.75rem" data-harness="inspector-media-proof">
+        <li class="schema-type-row"><span class="schema-type-name">Markdown image</span><span class="schema-type-meta">${
+          proof.pageHasMarkdownImage ? "✓" : "?"
+        }</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">Blob not in index</span><span class="schema-type-meta">${
+          proof.blobNotInIndex ? "✓" : "?"
+        }</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">Images</span><span class="schema-type-meta">${escapeAttr(
+          images,
+        )}</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">Files</span><span class="schema-type-meta">${escapeAttr(
+          files,
+        )}</span></li>
+      </ul>
+      <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
+        data.note ?? "Attach via MediaServing; Photos/drop are Apple stubs.",
+      )}</p>
+    `;
+  } catch {
+    root.innerHTML = `<p>Missing media fixture. Run <code>./scripts/demo-media.sh</code>.</p>`;
   }
 }
 
