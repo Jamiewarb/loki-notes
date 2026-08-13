@@ -48,3 +48,11 @@ jobs:
         run: |
           npm install
           npx vite build
+
+      - name: Install Playwright Chromium
+        working-directory: DevHarness
+        run: npx playwright install --with-deps chromium
+
+      - name: Feature tests
+        working-directory: DevHarness
+        run: npx playwright test

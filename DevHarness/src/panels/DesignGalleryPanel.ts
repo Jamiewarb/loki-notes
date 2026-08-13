@@ -37,7 +37,7 @@ const TYPE_ROLES = [
 
 export function renderDesignGallery(root: HTMLElement): void {
   root.innerHTML = `
-    <div class="gallery" data-harness="design-gallery">
+    <div class="gallery" data-harness="destination" data-destination="gallery">
       <header class="gallery-intro">
         <p class="gallery-kicker">LociDesignSystem · PR02</p>
         <h2 class="gallery-title">Design gallery</h2>

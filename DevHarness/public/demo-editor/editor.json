@@ -45,5 +45,13 @@
     "toggle",
     "callout",
     "mermaid"
-  ]
+  ],
+  "queryEmbed" : {
+    "html" : "<article class=\"loci-ast\" data-harness=\"block-ast-html\">\n<p>Notes<\/p>\n<div class=\"query-embed\" data-query-id=\"reading-focus\" data-harness=\"query-embed\"><span class=\"query-embed-label\">\/query<\/span> <code>reading-focus<\/code> <span class=\"query-embed-hint\">live results<\/span><\/div>\n<\/article>",
+    "queryID" : "reading-focus",
+    "roundTripKind" : "reading-focus",
+    "serialized" : "Notes\n\n```query\nreading-focus\n```",
+    "storesResultsInBody" : false
+  },
+  "queryModuleVersion" : "0.2.0-pr23"
 }

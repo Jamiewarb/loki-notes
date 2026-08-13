@@ -30,6 +30,9 @@ Dist/
 dist/
 DevHarness/dist/
 DevHarness/.vite/
+DevHarness/playwright-report/
+DevHarness/test-results/
+DevHarness/blob-report/
 *.local
 .npm/
 .cache/
