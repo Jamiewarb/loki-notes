@@ -10,8 +10,11 @@ struct LociApp: App {
 
     var body: some Scene {
         WindowGroup {
-            DesignGalleryView()
+            AppShellView(services: services)
                 .environment(services)
         }
+        #if os(macOS)
+        .defaultSize(width: 1100, height: 720)
+        #endif
     }
 }
