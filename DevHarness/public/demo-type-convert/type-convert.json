@@ -1,0 +1,54 @@
+{
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr28",
+  "moduleVersion" : "0.28.0-pr28",
+  "note" : "PR28: Type conversion remaps PropertyDefs, moves objects\/<type>\/, keeps ObjectID, reindexes. Daily notes refused.",
+  "object" : {
+    "droppedCount" : 1,
+    "id" : "53890686-6b4a-4ba9-9ddc-38f53fda4922",
+    "mappedCount" : 2,
+    "newPath" : "objects\/person\/deep-work.md",
+    "oldPath" : "objects\/book\/deep-work.md",
+    "properties" : {
+      "score" : "5",
+      "status" : "Reading"
+    },
+    "sourceType" : "book",
+    "targetType" : "person",
+    "title" : "Deep Work"
+  },
+  "plan" : {
+    "dropped" : [
+      "isbn"
+    ],
+    "mappings" : [
+      {
+        "source" : "status",
+        "target" : "status"
+      },
+      {
+        "source" : "rating",
+        "target" : "score"
+      },
+      {
+        "source" : "isbn",
+        "target" : "(drop)"
+      }
+    ],
+    "proposedPath" : "objects\/person\/deep-work.md"
+  },
+  "proof" : {
+    "idStable" : true,
+    "indexOutsideVault" : true,
+    "indexPathUpdated" : true,
+    "indexTypeUpdated" : true,
+    "isbnDropped" : true,
+    "movedFolder" : true,
+    "newPathExists" : true,
+    "oldPathGone" : true,
+    "planDroppedISBN" : true,
+    "ratingToScore" : true,
+    "refusedDaily" : true,
+    "statusMapped" : true
+  }
+}

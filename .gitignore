@@ -29,6 +29,7 @@ node_modules/
 Dist/
 dist/
 DevHarness/dist/
+DevHarness/.vite/
 *.local
 .npm/
 .cache/

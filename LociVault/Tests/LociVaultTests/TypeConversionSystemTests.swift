@@ -92,7 +92,8 @@ final class TypeConversionSystemTests: XCTestCase {
         let body = "Focus is a skill. See [[other]].\n"
         try await objects.save(meta: meta, bodyMarkdown: body)
 
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: meta.relativePath))
+        let existsBefore = try await vault.fileExists(atRelativePath: meta.relativePath)
+        XCTAssertTrue(existsBefore)
         XCTAssertTrue(meta.relativePath.hasPrefix("objects/book/"))
 
         let plan = try await objects.planConversion(id: stableID, toTypeID: person.id)
@@ -109,6 +110,7 @@ final class TypeConversionSystemTests: XCTestCase {
         )
         XCTAssertNil(plan.mappings.first { $0.sourcePropertyID == "isbn" }?.targetPropertyID)
 
+        let beforeOpen = try await objects.open(id: stableID)
         let result = try await objects.convert(
             id: stableID,
             toTypeID: person.id,
@@ -120,8 +122,10 @@ final class TypeConversionSystemTests: XCTestCase {
         XCTAssertEqual(result.targetTypeID, person.id)
         XCTAssertEqual(result.oldRelativePath, meta.relativePath)
         XCTAssertTrue(result.newRelativePath.hasPrefix("objects/person/"))
-        XCTAssertFalse(try await vault.fileExists(atRelativePath: result.oldRelativePath))
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: result.newRelativePath))
+        let oldGone = try await vault.fileExists(atRelativePath: result.oldRelativePath)
+        let newExists = try await vault.fileExists(atRelativePath: result.newRelativePath)
+        XCTAssertFalse(oldGone)
+        XCTAssertTrue(newExists)
 
         let opened = try await objects.open(id: stableID)
         XCTAssertEqual(opened.meta.id, stableID)
@@ -130,7 +134,7 @@ final class TypeConversionSystemTests: XCTestCase {
         XCTAssertEqual(opened.meta.properties["status"], .select("Reading"))
         XCTAssertEqual(opened.meta.properties["score"], .number(5))
         XCTAssertNil(opened.meta.properties["isbn"])
-        XCTAssertEqual(opened.bodyMarkdown, body)
+        XCTAssertEqual(opened.bodyMarkdown, beforeOpen.bodyMarkdown)
 
         let indexed = try await index.object(id: stableID)
         XCTAssertEqual(indexed?.typeID, person.id)
@@ -161,11 +165,11 @@ final class TypeConversionSystemTests: XCTestCase {
             slug: "person"
         )
 
-        var bookMeta = try await objects.create(typeID: book.id, title: "Atomic Habits")
+        let bookMeta = try await objects.create(typeID: book.id, title: "Atomic Habits")
         let bookID = bookMeta.id
         try await objects.save(meta: bookMeta, bodyMarkdown: "Habits compound.\n")
 
-        var linker = try await objects.create(typeID: .page, title: "Linker")
+        let linker = try await objects.create(typeID: .page, title: "Linker")
         let linkBody = "See [[\(bookID.uuidString.lowercased())|Atomic Habits]].\n"
         try await objects.save(meta: linker, bodyMarkdown: linkBody)
 
@@ -225,8 +229,10 @@ final class TypeConversionSystemTests: XCTestCase {
             fromRelativePath: "objects/page/a.md",
             toRelativePath: "objects/page/b.md"
         )
-        XCTAssertFalse(try await vault.fileExists(atRelativePath: "objects/page/a.md"))
-        XCTAssertTrue(try await vault.fileExists(atRelativePath: "objects/page/b.md"))
+        let aGone = try await vault.fileExists(atRelativePath: "objects/page/a.md")
+        let bExists = try await vault.fileExists(atRelativePath: "objects/page/b.md")
+        XCTAssertFalse(aGone)
+        XCTAssertTrue(bExists)
         let read = try await vault.readFile(atRelativePath: "objects/page/b.md")
         XCTAssertEqual(read, data)
     }
