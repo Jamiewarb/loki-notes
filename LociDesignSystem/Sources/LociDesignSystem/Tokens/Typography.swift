@@ -50,29 +50,56 @@ public enum LociTypography: Sendable {
         case .headline, .body, .callout, .caption, .overline: return false
         }
     }
+
+    /// SwiftUI `Font.custom(_:size:relativeTo:)` text-style name (Linux-testable).
+    /// Numeric `size(for:)` values remain the unscaled defaults.
+    public static let usesDynamicTypeRelativeTo = true
+
+    public static func dynamicTypeTextStyleName(for role: Role) -> String {
+        switch role {
+        case .brand: return "largeTitle"
+        case .display: return "title"
+        case .title: return "title2"
+        case .headline: return "headline"
+        case .body: return "body"
+        case .callout: return "callout"
+        case .caption, .overline: return "caption"
+        }
+    }
 }
 
 #if canImport(SwiftUI)
 import SwiftUI
 
 extension LociTypography {
-    /// Prefer custom faces when bundled; otherwise use system serif/sans with matching weight.
+    /// Prefer custom faces when bundled. `relativeTo:` lets Dynamic Type scale
+    /// from the numeric token size (the unscaled default).
+    public static func textStyle(for role: Role) -> Font.TextStyle {
+        switch role {
+        case .brand: return .largeTitle
+        case .display: return .title
+        case .title: return .title2
+        case .headline: return .headline
+        case .body: return .body
+        case .callout: return .callout
+        case .caption, .overline: return .caption
+        }
+    }
+
     public static func font(_ role: Role, weight: Font.Weight = .regular) -> Font {
         let size = size(for: role)
         let family = isDisplayRole(role) ? displayFamily : bodyFamily
-        let custom = Font.custom(family, size: size)
-        // `.weight` on custom fonts is best-effort; system fallbacks below for previews.
+        let custom = Font.custom(family, size: CGFloat(size), relativeTo: textStyle(for: role))
+        // `.weight` on custom fonts is best-effort.
         switch role {
         case .brand:
             return custom.weight(weight == .regular ? .bold : weight)
-        case .display, .title:
+        case .display, .title, .headline:
             return custom.weight(weight == .regular ? .semibold : weight)
-        case .headline:
-            return .system(size: size, weight: weight == .regular ? .semibold : weight, design: .default)
         case .body, .callout:
-            return .system(size: size, weight: weight, design: .default)
+            return custom.weight(weight)
         case .caption, .overline:
-            return .system(size: size, weight: weight == .regular ? .medium : weight, design: .default)
+            return custom.weight(weight == .regular ? .medium : weight)
         }
     }
 }

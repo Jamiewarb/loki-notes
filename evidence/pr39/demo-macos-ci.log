@@ -1,0 +1,7 @@
+==> loci-macos-ci-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-macos-ci-demo' complete! (0.54s)
+workflow: macos-14 + xcodebuild present
+macosCIWorkflowPresent shortcutsCatalogued voiceOverLabelsPresent dynamicTypeScales indexInsideVault=false

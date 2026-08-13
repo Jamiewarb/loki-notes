@@ -1,0 +1,88 @@
+{
+  "accessibilityIdentifiers" : [
+    "daily-note",
+    "object-editor",
+    "search-destination",
+    "vault-settings"
+  ],
+  "accessibilityLabels" : {
+    "daily-note" : "Daily note",
+    "object-editor" : "Object editor",
+    "search-destination" : "Search",
+    "vault-settings" : "Settings"
+  },
+  "dynamicType" : [
+    {
+      "role" : "brand",
+      "textStyle" : "largeTitle"
+    },
+    {
+      "role" : "display",
+      "textStyle" : "title"
+    },
+    {
+      "role" : "title",
+      "textStyle" : "title2"
+    },
+    {
+      "role" : "headline",
+      "textStyle" : "headline"
+    },
+    {
+      "role" : "body",
+      "textStyle" : "body"
+    },
+    {
+      "role" : "callout",
+      "textStyle" : "callout"
+    },
+    {
+      "role" : "caption",
+      "textStyle" : "caption"
+    },
+    {
+      "role" : "overline",
+      "textStyle" : "caption"
+    }
+  ],
+  "indexInsideVault" : false,
+  "iosSimulatorDestination" : "platform=iOS Simulator,name=iPhone 15",
+  "linuxCannotRunXcodebuild" : true,
+  "macosDestination" : "platform=macOS",
+  "note" : "Linux cannot execute xcodebuild; YAML macos-14 job is the CI deliverable. Index never in vault.",
+  "proof" : {
+    "dynamicTypeScales" : true,
+    "indexInsideVault" : false,
+    "macosCIWorkflowPresent" : true,
+    "shortcutsCatalogued" : true,
+    "voiceOverLabelsPresent" : true
+  },
+  "shortcuts" : [
+    {
+      "actionID" : "newPage",
+      "key" : "n",
+      "modifiers" : "command",
+      "title" : "New Page"
+    },
+    {
+      "actionID" : "search",
+      "key" : "k",
+      "modifiers" : "command",
+      "title" : "Search"
+    },
+    {
+      "actionID" : "goToday",
+      "key" : "t",
+      "modifiers" : "command",
+      "title" : "Go to Today"
+    },
+    {
+      "actionID" : "quickCapture",
+      "key" : "n",
+      "modifiers" : "command+shift",
+      "title" : "Quick Capture"
+    }
+  ],
+  "workflowPath" : ".github\/workflows\/ci.yml",
+  "workflowRunner" : "macos-14"
+}

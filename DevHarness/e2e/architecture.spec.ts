@@ -17,6 +17,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-import/import.json",
   "/demo-index/search.json",
   "/demo-links/links.json",
+  "/demo-macos-ci/macos-ci.json",
   "/demo-media/media.json",
   "/demo-objects/pages.json",
   "/demo-para/para.json",
@@ -137,6 +138,26 @@ test("demo fixtures never store the index inside the vault", async ({
         .soft(proof.safariExtractsPage, `${url} proof.safariExtractsPage`)
         .toBe(true);
     }
+    if (proof && "macosCIWorkflowPresent" in proof) {
+      expect
+        .soft(proof.macosCIWorkflowPresent, `${url} proof.macosCIWorkflowPresent`)
+        .toBe(true);
+    }
+    if (proof && "shortcutsCatalogued" in proof) {
+      expect
+        .soft(proof.shortcutsCatalogued, `${url} proof.shortcutsCatalogued`)
+        .toBe(true);
+    }
+    if (proof && "voiceOverLabelsPresent" in proof) {
+      expect
+        .soft(proof.voiceOverLabelsPresent, `${url} proof.voiceOverLabelsPresent`)
+        .toBe(true);
+    }
+    if (proof && "dynamicTypeScales" in proof) {
+      expect
+        .soft(proof.dynamicTypeScales, `${url} proof.dynamicTypeScales`)
+        .toBe(true);
+    }
     if (proof && "noteBodyHasAbsolutePath" in proof) {
       expect
         .soft(
@@ -160,4 +181,20 @@ test("ai panel shows upload refused without opt-in", async ({ page }) => {
   await gotoPanel(page, "ai");
   await expect(harness(page, "ai-upload-refused")).toBeVisible();
   await expect(harness(page, "ai-upload-refused")).toHaveText("yes ✓");
+});
+
+test("macos-ci demo fixture records workflow, shortcuts, a11y, and no index in vault", async ({
+  request,
+}) => {
+  const response = await request.get("/demo-macos-ci/macos-ci.json");
+  expect(response.ok()).toBeTruthy();
+  const data = asRecord(await response.json());
+  expect(data?.indexInsideVault).toBe(false);
+  expect(data?.linuxCannotRunXcodebuild).toBe(true);
+  const proof = asRecord(data?.proof);
+  expect(proof?.macosCIWorkflowPresent).toBe(true);
+  expect(proof?.shortcutsCatalogued).toBe(true);
+  expect(proof?.voiceOverLabelsPresent).toBe(true);
+  expect(proof?.dynamicTypeScales).toBe(true);
+  expect(proof?.indexInsideVault).toBe(false);
 });

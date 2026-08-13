@@ -47,6 +47,21 @@ final class DesignTokenTests: XCTestCase {
         XCTAssertFalse(LociTypography.isDisplayRole(.body))
     }
 
+    func testDynamicTypeTextStyleMapping() {
+        XCTAssertTrue(LociTypography.usesDynamicTypeRelativeTo)
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .brand), "largeTitle")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .display), "title")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .title), "title2")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .headline), "headline")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .body), "body")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .callout), "callout")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .caption), "caption")
+        XCTAssertEqual(LociTypography.dynamicTypeTextStyleName(for: .overline), "caption")
+        XCTAssertEqual(LociTypography.size(for: .brand), 44)
+        XCTAssertEqual(LociTypography.size(for: .display), 28)
+        XCTAssertEqual(LociTypography.size(for: .caption), 12)
+    }
+
     func testRadiusAndElevationTokens() {
         XCTAssertEqual(LociRadius.scale, [0, 6, 10, 14, 20])
         XCTAssertEqual(LociElevation.restOpacity, 0.08, accuracy: 0.0001)

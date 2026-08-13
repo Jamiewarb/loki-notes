@@ -41,6 +41,7 @@ let package = Package(
         .executable(name: "loci-apple-demo", targets: ["loci-apple-demo"]),
         .executable(name: "loci-safari-demo", targets: ["loci-safari-demo"]),
         .executable(name: "loci-pins-demo", targets: ["loci-pins-demo"]),
+        .executable(name: "loci-macos-ci-demo", targets: ["loci-macos-ci-demo"]),
     ],
     dependencies: [
         // GRDB builds on Swift 6.2 Linux (confirmed PR07) and Apple platforms.
@@ -56,6 +57,11 @@ let package = Package(
             name: "LociCoreTests",
             dependencies: ["LociCore"],
             path: "LociCore/Tests/LociCoreTests"
+        ),
+        .executableTarget(
+            name: "loci-macos-ci-demo",
+            dependencies: ["LociCore"],
+            path: "LociCore/Sources/LociMacOSCIDemo"
         ),
 
         // Vault: ubiquity/local roots, coordinated I/O, trash/tombstones (PR04) + ObjectService (PR08)

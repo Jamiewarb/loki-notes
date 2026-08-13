@@ -65,6 +65,8 @@ struct ObjectEditorView: View {
                     .font(LociTypography.font(.display))
                     .foregroundStyle(LociColors.ink)
                     .textFieldStyle(.plain)
+                    .accessibilityLabel(LociAccessibilityCatalog.editorTitleLabel)
+                    .accessibilityIdentifier(LociAccessibilityCatalog.editorTitle)
 
                     if session.isDirty {
                         Text(session.isSaving ? "Saving…" : "Edited")
@@ -113,7 +115,8 @@ struct ObjectEditorView: View {
             }
             .padding(LociSpacing.stack(.xl))
         }
-        .accessibilityIdentifier("object-editor")
+        .accessibilityIdentifier(LociAccessibilityCatalog.objectEditor)
+        .accessibilityLabel(LociAccessibilityCatalog.objectEditorLabel)
         .modifier(
             MediaFeature.dropAttachModifier(
                 services: services,

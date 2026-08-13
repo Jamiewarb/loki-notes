@@ -31,6 +31,7 @@ public struct LociTextField: View {
                     RoundedRectangle(cornerRadius: LociRadius.control, style: .continuous)
                         .strokeBorder(LociColors.line, lineWidth: 1)
                 )
+                .accessibilityLabel(title)
         }
     }
 }

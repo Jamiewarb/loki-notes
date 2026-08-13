@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR39 — macOS CI + keyboard shortcuts + VoiceOver / Dynamic Type
+
+**Branch:** `cursor/pr39-macos-ci-d2c1`  
+**Based on:** `cursor/pr38-menubar-safari-d2c1`  
+**Vault module:** `0.39.0-pr39`  
+**Swift tests:** **353** green (was 346). **Playwright:** **82** green (was 80). Evidence: `evidence/pr39/`
+
+### Feature design
+- Domain folder: `App/` shell (`.commands` + a11y on Daily / Editor / Search / Settings). No feature→feature imports.
+- Writes vault? **no** for shortcuts/a11y/CI. New Page ⌘N uses existing `createPage()`. Go to Today uses `handleOpenURL(LociDeepLink.dailyTodayURL)` (ensure today + drain inbox). Capture ⌘⇧N opens `.capture`.
+- Reads index? Search ⌘K already did. Typing still does not wait on index/network.
+- Protocols: existing `Navigating` / `ObjectServing` / `DailyNoteServing`. Catalogs live in LociCore so Linux XCTest never imports SwiftUI.
+- Core: `KeyboardShortcutCatalog`, `LociAccessibilityCatalog`, `LociDynamicTypeCatalog`, `MacOSCIProof`.
+- CI: `.github/workflows/ci.yml` job `macos-xcode` on `macos-14` — xcodegen + unsigned Debug iOS Simulator (`iPhone 15`) + macOS. Linux jobs unchanged.
+- Dynamic Type: `LociTypography.font` uses `Font.custom(_:size:relativeTo:)`. Numeric token Doubles unchanged.
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-macos-ci.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=settings — macosCIWorkflowPresent / shortcutsCatalogued / voiceOverLabelsPresent / dynamicTypeScales
+```
+
+### Pitfalls
+- Linux **cannot** run `xcodebuild`. Do not fake a passing macos-14 log. YAML + catalogs are the proof.
+- iPhone 15 destination is typical on macos-14 / Xcode 15.4. If a later runner drops the name, use `generic/platform=iOS Simulator`.
+- Unsigned Debug flags belong on the workflow `xcodebuild` invocation first; extensions stay in `project.yml`.
+- Do not invent a second capture inbox. ⌘⇧N opens the existing Capture route.
+- Do not rewrite daily.md for VoiceOver chrome. Identifiers/labels are SwiftUI only.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+- Stacked vault version assertions (`contains("pr38")`) must also accept `pr39`.
+
+### Next
+
+Wave F **PR40** object-select picker, stacked on PR39 (`cursor/pr39-macos-ci-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR38 — Menu bar + Safari clipper
 
 **Branch:** `cursor/pr38-menubar-safari-d2c1`  

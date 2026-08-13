@@ -36,7 +36,8 @@ struct SearchView: View {
 
             LociTextField("Query", text: $query, placeholder: "Search titles and bodies…")
                 .focused($fieldFocused)
-                .accessibilityIdentifier("search-query-field")
+                .accessibilityIdentifier(LociAccessibilityCatalog.searchQuery)
+                .accessibilityLabel(LociAccessibilityCatalog.searchQueryLabel)
                 .onSubmit { Task { await runSearch(recordRecent: true) } }
 
             typeFilterChips
@@ -71,7 +72,8 @@ struct SearchView: View {
         .onChange(of: filterTypeID) { _, newValue in
             services.searchFilterTypeID = newValue
         }
-        .accessibilityIdentifier("search-destination")
+        .accessibilityIdentifier(LociAccessibilityCatalog.search)
+        .accessibilityLabel(LociAccessibilityCatalog.searchLabel)
     }
 
     private var queryTaskID: String {

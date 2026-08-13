@@ -48,11 +48,27 @@ struct LociApp: App {
         #if os(macOS)
         .defaultSize(width: 1100, height: 720)
         .commands {
+            CommandGroup(replacing: .newItem) {
+                Button("New Page") {
+                    Task { _ = try? await services.createPage() }
+                }
+                .keyboardShortcut("n", modifiers: .command)
+            }
+            CommandGroup(after: .newItem) {
+                Button("Quick Capture") {
+                    Task { await services.open(route: .capture) }
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+            }
             CommandGroup(after: .sidebar) {
                 Button("Search") {
                     Task { await services.openSearch() }
                 }
                 .keyboardShortcut("k", modifiers: .command)
+                Button("Go to Today") {
+                    Task { await services.handleOpenURL(LociDeepLink.dailyTodayURL) }
+                }
+                .keyboardShortcut("t", modifiers: .command)
             }
         }
         #endif
