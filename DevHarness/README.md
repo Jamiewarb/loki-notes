@@ -23,8 +23,9 @@ Browser-runnable **visual test shell** for Loci Cloud agents (no Xcode / Simulat
 - **Search** index panel (PR18) — FTS title+body hits grouped by type from `public/demo-search/search.json` (`?panel=search`); `./scripts/demo-search.sh` (optional `LOCI_SEARCH_BULK=1000`)
 - **Tasks** panel (PR19) — Today/Open from `public/demo-tasks/` (`?panel=tasks`); `./scripts/demo-tasks.sh`
 - **Media** panel (PR20) — attach into `media/` + Image objects from `public/demo-media/` (`?panel=media`); `./scripts/demo-media.sh`
+- **Settings** sync panel (PR21) — status chip, conflicts (incl. media), rebuild index, reveal path from `public/demo-sync/` (`?panel=settings`); `./scripts/demo-sync.sh`
 - **Editor** panel (PR09) — BlockAST slash simulation (`?panel=editor`); `./scripts/demo-editor.sh`
-- CLI proof: `./scripts/demo-vault.sh` / `./scripts/demo-schema.sh` / `./scripts/demo-markdown.sh` / `./scripts/demo-index.sh` / `./scripts/demo-objects.sh` / `./scripts/demo-editor.sh` / `./scripts/demo-daily.sh` / `./scripts/demo-created-today.sh` / `./scripts/demo-types.sh` / `./scripts/demo-properties.sh` / `./scripts/demo-templates.sh` / `./scripts/demo-tasks.sh` / `./scripts/demo-media.sh`
+- CLI proof: `./scripts/demo-vault.sh` / `./scripts/demo-schema.sh` / `./scripts/demo-markdown.sh` / `./scripts/demo-index.sh` / `./scripts/demo-objects.sh` / `./scripts/demo-editor.sh` / `./scripts/demo-daily.sh` / `./scripts/demo-created-today.sh` / `./scripts/demo-types.sh` / `./scripts/demo-properties.sh` / `./scripts/demo-templates.sh` / `./scripts/demo-tasks.sh` / `./scripts/demo-media.sh` / `./scripts/demo-sync.sh`
 
 ## Adding a panel in a later PR
 

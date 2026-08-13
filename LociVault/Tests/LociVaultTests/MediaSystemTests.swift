@@ -151,8 +151,8 @@ final class MediaSystemTests: XCTestCase {
     }
 
     func testModuleVersionsPR20() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr20"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr20"))
-        XCTAssertTrue(LociMarkdownModule.version.contains("pr20"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr20") || LociIndexModule.version.contains("pr21"))
+        XCTAssertTrue(LociMarkdownModule.version.contains("pr20") || LociMarkdownModule.version.contains("pr21"))
     }
 }

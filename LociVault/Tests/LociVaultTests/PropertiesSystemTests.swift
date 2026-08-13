@@ -166,7 +166,7 @@ final class PropertiesSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR13() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr13") || LociVaultModule.version.contains("pr14") || LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr13") || LociIndexModule.version.contains("pr14") || LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr17") || LociIndexModule.version.contains("pr18") || LociIndexModule.version.contains("pr19") || LociIndexModule.version.contains("pr20"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr13") || LociVaultModule.version.contains("pr14") || LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16") || LociVaultModule.version.contains("pr17") || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr13") || LociIndexModule.version.contains("pr14") || LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr17") || LociIndexModule.version.contains("pr18") || LociIndexModule.version.contains("pr19") || LociIndexModule.version.contains("pr20") || LociIndexModule.version.contains("pr21"))
     }
 }

@@ -154,6 +154,19 @@ public final class VaultService: VaultServing, @unchecked Sendable {
         try absoluteURLSync(forRelativePath: path)
     }
 
+    public func ensureDownloaded(atRelativePath path: String) async throws {
+        let url = try absoluteURLSync(forRelativePath: path)
+        // Local roots: no-op. Ubiquity: Apple stub via DownloadOnDemand.
+        if root.kind == .localDocuments {
+            return
+        }
+        try DownloadOnDemand.ensureDownloaded(at: url)
+    }
+
+    public func listConflictedCopies() async throws -> [SyncConflictItem] {
+        ConflictScanner.listConflictedCopies(under: root.url)
+    }
+
     // MARK: - Path helpers
 
     private func absoluteURLSync(forRelativePath path: String) throws -> URL {

@@ -126,6 +126,8 @@ struct SidebarView: View {
                 .foregroundStyle(LociColors.inkSoft)
                 .fixedSize(horizontal: false, vertical: true)
                 .lociAppear(.soft)
+            SyncStatusFeature.chip(services: services)
+                .padding(.top, LociSpacing.stack(.xs))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(LociDesignSystem.brandName) app shell")

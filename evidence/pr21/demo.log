@@ -1,0 +1,13 @@
+==> loci-sync-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+[1/4] Write sources
+[3/6] Compiling loci_sync_demo main.swift
+[4/6] Emitting module loci_sync_demo
+[5/7] Write Objects.LinkFileList
+[6/7] Linking loci-sync-demo
+Build of product 'loci-sync-demo' complete! (0.90s)
+status=conflict conflicts=2 simulated=6 rebuild=True
+==> wrote /agent/DevHarness/public/demo-sync/sync.json
+==> demo-sync complete

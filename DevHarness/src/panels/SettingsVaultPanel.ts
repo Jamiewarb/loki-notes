@@ -1,6 +1,5 @@
 /**
- * Settings / vault status panel — mirrors VaultSettingsView (PR04 + PR15 PARA).
- * Explains local Documents fallback + Apply PARA pack.
+ * Settings / vault + sync status panel — mirrors VaultSettingsView (PR04 + PR15 + PR21).
  */
 export function renderSettingsVault(root: HTMLElement): void {
   root.innerHTML = `
@@ -10,9 +9,43 @@ export function renderSettingsVault(root: HTMLElement): void {
         <h2 class="destination-title">Settings</h2>
       </header>
       <p class="destination-lead">
-        Vault root, local Documents fallback, and sync status.
+        Vault root, sync status chip, conflict list, rebuild index, and reveal vault path.
         Files are truth; the SQLite index never lives inside the vault.
       </p>
+
+      <section class="vault-card" data-harness="sync-status" aria-label="Sync status">
+        <p class="vault-kicker">PR21 · Sync UX</p>
+        <h3 class="vault-card-title">Sync status</h3>
+        <p class="vault-card-body" data-harness="sync-loading">Loading demo-sync fixture…</p>
+        <div class="sync-chip-row" data-harness="sync-chip-row" hidden></div>
+        <dl class="vault-meta" data-harness="sync-meta" hidden>
+          <div>
+            <dt>Live status (Linux)</dt>
+            <dd data-harness="sync-live-status">—</dd>
+          </div>
+          <div>
+            <dt>Vault path</dt>
+            <dd data-harness="sync-vault-path">—</dd>
+          </div>
+          <div>
+            <dt>Ensure downloaded</dt>
+            <dd data-harness="sync-ensure">—</dd>
+          </div>
+          <div>
+            <dt>Rebuild index</dt>
+            <dd data-harness="sync-rebuild">—</dd>
+          </div>
+        </dl>
+        <p class="vault-kicker" style="margin-top:0.75rem">Conflicts (markdown + media)</p>
+        <ul class="schema-type-list" data-harness="sync-conflicts" hidden></ul>
+        <p class="vault-kicker" style="margin-top:0.75rem">Simulated chip states</p>
+        <div class="sync-sim-row" data-harness="sync-sim-row" hidden></div>
+        <p class="vault-note" data-harness="sync-note" hidden></p>
+        <p class="vault-note">
+          Run <code>./scripts/demo-sync.sh</code> → <code>/demo-sync/sync.json</code>.
+          In the app: Settings → Sync &amp; resilience · sidebar sync chip.
+        </p>
+      </section>
 
       <section class="vault-card" data-harness="vault-status" aria-label="Vault status">
         <p class="vault-kicker">PR04 · LociVault</p>
@@ -35,15 +68,9 @@ export function renderSettingsVault(root: HTMLElement): void {
             <dd>Application Support only — never inside the vault</dd>
           </div>
         </dl>
-        <ol class="vault-steps">
-          <li>Run package tests: <code>./scripts/test.sh</code> (VaultService + SchemaStore).</li>
-          <li>Schema demo: <code>./scripts/demo-schema.sh</code> → writes Page type + harness fixtures.</li>
-          <li>Optional CLI: <code>./scripts/demo-vault.sh</code> → prints vault path + sample daily note.</li>
-          <li>macOS/iOS: open Settings and tap Create vault when iCloud or local sandbox is available.</li>
-        </ol>
         <p class="vault-note">
           Identity is ObjectID (frontmatter), not absolute ubiquity URLs.
-          Conflicted-copy filenames are detected via <code>ConflictedCopyDetector</code> for SyncStatus (PR21).
+          Conflicted-copy filenames surface in SyncStatus conflict list (PR21).
         </p>
       </section>
 
@@ -87,7 +114,100 @@ export function renderSettingsVault(root: HTMLElement): void {
     </div>
   `;
 
+  void loadSync(root);
   void loadPARA(root);
+}
+
+async function loadSync(root: HTMLElement): Promise<void> {
+  const loading = root.querySelector<HTMLElement>("[data-harness='sync-loading']");
+  const chipRow = root.querySelector<HTMLElement>("[data-harness='sync-chip-row']");
+  const meta = root.querySelector<HTMLElement>("[data-harness='sync-meta']");
+  const conflictsEl = root.querySelector<HTMLElement>("[data-harness='sync-conflicts']");
+  const simRow = root.querySelector<HTMLElement>("[data-harness='sync-sim-row']");
+  const note = root.querySelector<HTMLElement>("[data-harness='sync-note']");
+  if (!loading || !chipRow || !meta || !conflictsEl || !simRow || !note) return;
+
+  try {
+    const res = await fetch("/demo-sync/sync.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      status?: string;
+      statusLabel?: string;
+      vaultPath?: string;
+      ensureDownloaded?: boolean;
+      rebuildIndex?: boolean;
+      conflicts?: Array<{ relativePath: string; kind: string; filename: string }>;
+      simulatedStatuses?: Array<{ id: string; label: string }>;
+      proof?: Record<string, boolean>;
+      note?: string;
+      moduleVersion?: string;
+    };
+
+    const proof = data.proof ?? {};
+    loading.textContent = `Sync UX ${data.moduleVersion ?? ""} · ${
+      proof.conflictStatusFromCopies ? "conflicts ✓" : "?"
+    }`;
+
+    chipRow.hidden = false;
+    chipRow.innerHTML = `
+      <span class="sync-chip is-live" data-harness="sync-chip" data-status="${escapeAttr(
+        data.status ?? "localOnly",
+      )}">${escapeAttr(data.statusLabel ?? "Local only")}</span>
+    `;
+
+    meta.hidden = false;
+    const live = root.querySelector<HTMLElement>("[data-harness='sync-live-status']");
+    const pathEl = root.querySelector<HTMLElement>("[data-harness='sync-vault-path']");
+    const ensureEl = root.querySelector<HTMLElement>("[data-harness='sync-ensure']");
+    const rebuildEl = root.querySelector<HTMLElement>("[data-harness='sync-rebuild']");
+    if (live) live.textContent = `${data.statusLabel ?? "?"} (${data.status ?? "?"})`;
+    if (pathEl) pathEl.textContent = data.vaultPath ?? "—";
+    if (ensureEl) {
+      ensureEl.textContent = proof.ensureDownloadedNoOp ? "no-op success ✓" : "?";
+    }
+    if (rebuildEl) {
+      rebuildEl.textContent = proof.rebuildIndexOk ? "ok ✓" : "?";
+    }
+
+    const conflicts = data.conflicts ?? [];
+    conflictsEl.hidden = false;
+    conflictsEl.innerHTML =
+      conflicts
+        .map(
+          (c) => `
+        <li class="schema-type-row" data-harness="sync-conflict-row" data-kind="${escapeAttr(
+          c.kind,
+        )}">
+          <span class="schema-type-name">${escapeAttr(c.filename)}</span>
+          <span class="schema-type-meta">${escapeAttr(c.kind)} · ${escapeAttr(c.relativePath)}</span>
+        </li>`,
+        )
+        .join("") || `<li class="schema-type-row">None</li>`;
+
+    const sims = data.simulatedStatuses ?? [];
+    simRow.hidden = false;
+    simRow.innerHTML = sims
+      .map(
+        (s) =>
+          `<button type="button" class="sync-chip" data-harness="sync-sim-chip" data-status="${escapeAttr(
+            s.id,
+          )}">${escapeAttr(s.label)}</button>`,
+      )
+      .join("");
+
+    note.hidden = false;
+    note.textContent = data.note ?? "";
+  } catch {
+    loading.textContent = "Missing demo-sync fixture. Run ./scripts/demo-sync.sh";
+  }
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 async function loadPARA(root: HTMLElement): Promise<void> {

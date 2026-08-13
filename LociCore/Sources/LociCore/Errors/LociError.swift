@@ -30,4 +30,6 @@ public enum LociError: Error, Sendable, Equatable {
     case fileNotFound(String)
     case pathOutsideVault(String)
     case coordinationFailed(String)
+    /// Ubiquity download / ensure-local failed (Apple).
+    case downloadFailed(String)
 }
