@@ -804,6 +804,50 @@ body {
   color: var(--loci-ink);
 }
 
+.ast-html {
+  padding: var(--loci-space-md);
+  background: color-mix(in srgb, var(--loci-panel) 90%, white);
+  border: 1px solid var(--loci-line);
+  border-radius: var(--loci-radius);
+  font-family: var(--loci-font-body);
+  color: var(--loci-ink);
+  line-height: 1.45;
+  animation: panel-in var(--loci-motion-panel) ease both;
+}
+
+.ast-html h1,
+.ast-html h2,
+.ast-html h3,
+.ast-html h4 {
+  font-family: var(--loci-font-display);
+  margin: 0.4em 0 0.25em;
+}
+
+.ast-html ul,
+.ast-html ol,
+.ast-html blockquote,
+.ast-html pre {
+  margin: 0.4em 0;
+}
+
+.ast-html blockquote {
+  border-left: 3px solid var(--loci-accent);
+  padding-left: var(--loci-space-md);
+  color: var(--loci-ink-soft);
+}
+
+.ast-html li[data-task] {
+  list-style: none;
+  margin-left: -0.5em;
+}
+
+.ast-html pre {
+  background: color-mix(in srgb, var(--loci-paper-deep) 55%, white);
+  padding: var(--loci-space-sm);
+  border-radius: var(--loci-radius);
+  overflow-x: auto;
+}
+
 @media (max-width: 900px) {
   .md-columns {
     grid-template-columns: 1fr;

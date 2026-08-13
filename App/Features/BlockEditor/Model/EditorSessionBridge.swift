@@ -1,0 +1,147 @@
+#if canImport(SwiftUI)
+import Foundation
+import Observation
+import LociCore
+import LociMarkdown
+
+/// Apple-side bridge: owns `EditorSession` BlockAST + title + debounced `ObjectServing.save`.
+///
+/// Typing calls `applyLocalEdit` synchronously — never awaits index. Flush runs after idle debounce
+/// (500ms) and serializes via `LociMarkdown` before `ObjectServing.save`.
+@Observable
+@MainActor
+final class EditorSessionBridge {
+    var title: String
+    var relativePath: String
+    var objectID: ObjectID
+    var lastError: String?
+    var isSaving: Bool = false
+    var focusedBlockIndex: Int = 0
+    var slashQuery: String?
+    /// Bumped on each local edit so SwiftUI re-reads block text.
+    private(set) var editEpoch: UInt64 = 0
+
+    /// Debounce idle interval before autosave (UI-side).
+    var debounceNanoseconds: UInt64 = 500_000_000
+    /// Max interval between flushes while continuously typing (5s).
+    var maxDirtyNanoseconds: UInt64 = 5_000_000_000
+
+    let editor: EditorSession
+    private var meta: LociObjectMeta
+    private var saveGeneration: UInt64 = 0
+    private var firstDirtyDate: Date?
+    private let objects: any ObjectServing
+
+    var isDirty: Bool { editor.isDirty || title != meta.title }
+    var blocks: [BlockNode] { editor.blocks }
+
+    init(opened: OpenedObject, objects: any ObjectServing) throws {
+        self.objectID = opened.meta.id
+        self.relativePath = opened.meta.relativePath
+        self.title = opened.meta.title
+        self.meta = opened.meta
+        self.objects = objects
+        self.editor = try EditorSession(
+            bodyMarkdown: opened.bodyMarkdown,
+            objectID: opened.meta.id,
+            relativePath: opened.meta.relativePath
+        )
+    }
+
+    func applyTitle(_ value: String) {
+        title = value
+        scheduleSave()
+    }
+
+    func applyEdit(_ edit: BlockEdit) {
+        editor.applyLocalEdit(edit)
+        editEpoch &+= 1
+        noteDirtyClock()
+        scheduleSave()
+        updateSlashQueryIfNeeded()
+    }
+
+    func applySlash(kind: SlashBlockKind) {
+        editor.applySlashCommand(
+            blockIndex: focusedBlockIndex,
+            kind: kind,
+            queryText: slashQuery ?? ""
+        )
+        slashQuery = nil
+        editEpoch &+= 1
+        noteDirtyClock()
+        scheduleSave()
+    }
+
+    func plainText(at index: Int) -> String {
+        guard editor.blocks.indices.contains(index) else { return "" }
+        return EditorSession.plainText(of: editor.blocks[index])
+    }
+
+    func setPlainText(at index: Int, text: String) {
+        applyEdit(.setPlainText(blockIndex: index, text: text))
+        focusedBlockIndex = index
+    }
+
+    func scheduleSave() {
+        saveGeneration &+= 1
+        let generation = saveGeneration
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: debounceNanoseconds)
+            guard generation == saveGeneration else { return }
+            await flushSave()
+        }
+        if let firstDirtyDate {
+            let elapsed = Date().timeIntervalSince(firstDirtyDate)
+            if elapsed >= Double(maxDirtyNanoseconds) / 1_000_000_000 {
+                Task { @MainActor in
+                    await flushSave()
+                }
+            }
+        }
+    }
+
+    func flushSave() async {
+        guard isDirty else { return }
+        isSaving = true
+        defer { isSaving = false }
+        var next = meta
+        next.title = title
+        next.updated = Date()
+        let body = editor.serializeBody()
+        do {
+            try await objects.save(meta: next, bodyMarkdown: body)
+            meta = next
+            editor.markSaved()
+            firstDirtyDate = nil
+            lastError = nil
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func proposeRemoteReload(opened: OpenedObject) {
+        guard !isDirty else { return }
+        meta = opened.meta
+        title = opened.meta.title
+        relativePath = opened.meta.relativePath
+        try? editor.proposeRemoteReload(bodyMarkdown: opened.bodyMarkdown)
+        editEpoch &+= 1
+    }
+
+    private func noteDirtyClock() {
+        if firstDirtyDate == nil {
+            firstDirtyDate = Date()
+        }
+    }
+
+    private func updateSlashQueryIfNeeded() {
+        let text = plainText(at: focusedBlockIndex)
+        if text.hasPrefix("/") {
+            slashQuery = String(text.dropFirst())
+        } else {
+            slashQuery = nil
+        }
+    }
+}
+#endif
