@@ -52,6 +52,7 @@ struct InspectorHostView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
                         PropertiesFeature.editor(services: services, objectID: id)
+                        WeblinksFeature.preview(services: services, objectID: id)
                         PinsFeature.toggle(services: services, objectID: id)
                         TagsFeature.objectTags(services: services, objectID: id)
                         LinksFeature.backlinks(services: services, objectID: id)
@@ -197,7 +198,7 @@ struct InspectorHostView: View {
         case .safari:
             return "Safari extension enqueues .loci/inbox/; drain → today (`· safari`) or Weblink with url property."
         case .object:
-            return "Properties, pins, object tags, backlinks, type conversion, and AI assist from the local index."
+            return "Properties, weblink preview (cache-only), pins, object tags, backlinks, type conversion, and AI assist from the local index."
         }
     }
 

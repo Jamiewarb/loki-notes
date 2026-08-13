@@ -56,6 +56,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let apple: AppleIntegrationService
     /// Safari web clipper (PR32). Nil until CaptureServing + ObjectServing are ready.
     public private(set) var safariClipper: SafariClipService?
+    /// Weblink OG preview cache (PR43) — Application Support JSON, never the vault.
+    public let linkPreviews: LinkPreviewService
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
     /// Bumped when the pin list in space.json changes (PR34).
@@ -80,7 +82,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         ai: AIService? = nil,
         aiCredentials: AICredentialStore? = nil,
         apple: AppleIntegrationService? = nil,
-        safariClipper: SafariClipService? = nil
+        safariClipper: SafariClipService? = nil,
+        linkPreviews: LinkPreviewService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -180,6 +183,24 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         } else {
             self.safariClipper = nil
         }
+        let previewDir: URL = {
+            if let linkPreviews { return linkPreviews.cacheDirectoryURL }
+            #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            if let base = try? IndexDatabase.defaultApplicationSupportDirectory() {
+                return base.appendingPathComponent("previews", isDirectory: true)
+            }
+            #endif
+            return FileManager.default.temporaryDirectory.appendingPathComponent(
+                "Loci/previews",
+                isDirectory: true
+            )
+        }()
+        self.linkPreviews =
+            linkPreviews
+            ?? LinkPreviewService(
+                cacheDirectory: previewDir,
+                fetcher: LinkPreviewFetcherFactory.makeFetcher()
+            )
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
@@ -196,6 +217,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
             wireCaptureIfPossible()
             wireSafariClipperIfPossible()
             wireImporterIfPossible()
+            relocateLinkPreviewCache(nextTo: index)
             return index
         }
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -211,6 +233,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         wireCaptureIfPossible()
         wireSafariClipperIfPossible()
         wireImporterIfPossible()
+        relocateLinkPreviewCache(nextTo: service)
         return service
     }
 
@@ -420,7 +443,19 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     @discardableResult
     public func drainCaptureInbox(calendar: Calendar = .current) async throws -> [CaptureResult] {
         let service = try await ensureCaptureService()
-        return try await service.drainInbox(calendar: calendar)
+        let results = try await service.drainInbox(calendar: calendar)
+        for result in results {
+            await prefetchWeblinkPreview(objectID: result.objectID)
+        }
+        return results
+    }
+
+    /// Fetch OG metadata after weblink create / open — never from editor typing.
+    public func prefetchWeblinkPreview(objectID: ObjectID) async {
+        guard let objects else { return }
+        guard let opened = try? await objects.open(id: objectID) else { return }
+        guard let url = WeblinkURL.from(opened.meta) else { return }
+        _ = try? await linkPreviews.preview(for: url)
     }
 
     private func wireCaptureIfPossible() {
@@ -437,6 +472,11 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     private func wireImporterIfPossible() {
         guard importer == nil, let index else { return }
         importer = ImportService(vault: vault, index: index, schema: schema, media: media)
+    }
+
+    /// Keep preview JSON next to index.sqlite (Application Support) — never the vault.
+    private func relocateLinkPreviewCache(nextTo index: IndexService) {
+        linkPreviews.setCacheDirectory(index.databaseURL.deletingLastPathComponent())
     }
 
     /// Ensure today’s daily note exists (auto-create). Used on Daily open / iOS launch path.
