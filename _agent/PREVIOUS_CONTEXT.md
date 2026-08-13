@@ -9,7 +9,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Branch:** `cursor/pr40-object-select-d2c1`  
 **Based on:** `cursor/pr39-macos-ci-d2c1`  
 **Vault module:** `0.40.0-pr40`  
-**Swift tests / Playwright:** see evidence/pr40 after the test run. Evidence: `evidence/pr40/`
+**Swift tests:** **366** green (was 353). **Playwright:** **85** green (was 82). Evidence: `evidence/pr40/`
 
 ### Feature design
 - Domain folder: `App/Features/Properties/` — `ObjectSelectPickerView` + thin `ObjectSelectStore`. **Does not import** `App/Features/Links` (`LinkPickerView` is duplicated locally).

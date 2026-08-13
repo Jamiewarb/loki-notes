@@ -1,0 +1,61 @@
+{
+  "authorIDs" : [
+    "233a8662-7a26-4140-b84a-2ceb79799e0e"
+  ],
+  "backlinksOnPerson" : [
+    {
+      "label" : "author",
+      "sourceId" : "4d32e030-586b-4b51-97b1-1ecf8dbfaed4",
+      "sourceTitle" : "Deep Work",
+      "target" : "233a8662-7a26-4140-b84a-2ceb79799e0e"
+    }
+  ],
+  "book" : {
+    "bodyMarkdown" : "Cal Newport — focus is a skill.",
+    "id" : "4d32e030-586b-4b51-97b1-1ecf8dbfaed4",
+    "relativePath" : "objects\/book\/deep-work.md",
+    "title" : "Deep Work",
+    "type" : "book"
+  },
+  "bookBodyContainsWikiLink" : false,
+  "candidates" : [
+    {
+      "id" : "233a8662-7a26-4140-b84a-2ceb79799e0e",
+      "relativePath" : "objects\/person\/cal-newport.md",
+      "title" : "Cal Newport",
+      "type" : "person"
+    }
+  ],
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dailyUnchanged" : true,
+  "frontmatterSnippet" : "id: 4d32e030-586b-4b51-97b1-1ecf8dbfaed4\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T21:23:53Z\"\nupdated: \"2026-08-13T21:23:53Z\"\nproperties:\n  author: [233a8662-7a26-4140-b84a-2ceb79799e0e]",
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-object-select-demo-db-2026-08-13T21-23-53Z\/v6a024d4a138516ce\/index.sqlite",
+  "moduleVersion" : "0.40.0-pr40",
+  "note" : "PR40: object-select picker stores ObjectIDs in YAML and creates real index links. Body is not rewritten with [[wiki-links]]. Index never in vault.",
+  "outgoingFromBook" : [
+    {
+      "isBroken" : false,
+      "label" : "author",
+      "resolvedTitle" : "Cal Newport",
+      "target" : "233a8662-7a26-4140-b84a-2ceb79799e0e"
+    }
+  ],
+  "person" : {
+    "bodyMarkdown" : "Author of Deep Work.\n",
+    "id" : "233a8662-7a26-4140-b84a-2ceb79799e0e",
+    "relativePath" : "objects\/person\/cal-newport.md",
+    "title" : "Cal Newport",
+    "type" : "person"
+  },
+  "proof" : {
+    "createsRealLinks" : true,
+    "doesNotRewriteBody" : true,
+    "indexInsideVault" : false,
+    "pickerUsesIndexCandidates" : true,
+    "storesObjectIDs" : true
+  },
+  "vaultRoot" : "\/tmp\/loci-object-select-demo-vault-2026-08-13T21-23-53Z\/LociVault",
+  "yamlContainsAbsolutePath" : false
+}
