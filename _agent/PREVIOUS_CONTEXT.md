@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR42 — kanban by label (select / tag)
+
+**Branch:** `cursor/pr42-kanban-d2c1`  
+**Based on:** `cursor/pr41-dashboard-d2c1`  
+**Vault module:** `0.42.0-pr42`  
+**MARKETING_VERSION:** `0.42.0`  
+**Swift tests:** see evidence/pr42 (was 383). **Playwright:** see evidence/pr42 (was 88). Evidence: `evidence/pr42/`
+
+### Feature design
+- Domain folder: `App/Features/ObjectTypes/` — `TypeDashboardBoard` + `TypeDashboardStore.moveCard`. **Not** a new feature module. **Does not import** other feature folders for the board (same QueryEngine list as PR41).
+- Writes vault? yes — object YAML property/tag via `ObjectServing.open` + `save` when a card moves; type schema `defaultView` / `defaultGroupBy` on `.loci/types/<slug>.json`. Does **not** rewrite object bodies or daily notes. Does **not** persist column pixel layout.
+- Reads index? yes — `IndexQuerying.execute` (reload after save). Typing in the editor does not wait on board I/O.
+- Protocols: `ObjectServing`, `IndexQuerying`, `SchemaServing`, `Navigating`. Shared protocol only — no new feature→feature imports.
+- Core: `KanbanMove` (pure properties/tags; no body parameter), `KanbanProof`. Columns: select `PropertyDef.options` order then Empty if needed; tags = observed + Untagged.
+- Demo: `scripts/demo-kanban.sh` → `DevHarness/public/demo-kanban/kanban.json`. Harness: `?panel=types` (`data-harness=kanban-column`, `kanban-card`).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-kanban.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=types — boardColumnsFromGroup / moveUpdatesVaultYAML / layoutNotWrittenToMarkdown
+```
+
+### Pitfalls
+- Never write kanban layout into markdown. Only YAML frontmatter (property/tag) and type schema JSON may change on a move / view toggle.
+- Move must work without drag: VoiceOver “Move to …” on every card. `.onDrag`/`.onDrop` is Apple-only and optional.
+- Do not import Features/Queries for the board. Reuse `TypeDashboardStore` + `IndexQuerying.execute`.
+- Select columns use schema option order (To Read, Reading, Done), not alphabetical grouping keys.
+- Tag move: destination becomes the primary tag; previous grouping tag is removed; remaining tags stay.
+- Stacked vault version assertions (`contains("pr41")`) must also accept `pr42`.
+- Index stays in Application Support. Demo JSON `indexInsideVault: false`.
+
+### Next
+
+Wave F **PR43** weblink preview cache, stacked on PR42 (`cursor/pr42-kanban-d2c1`). Parent opens the GitHub PR.
+
+---
+
 ## PR41 — type dashboard filter / sort / group
 
 **Branch:** `cursor/pr41-dashboard-d2c1`  

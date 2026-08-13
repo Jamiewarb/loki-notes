@@ -14,6 +14,11 @@ public struct TypeDashboardConfig: Hashable, Sendable, Codable, Equatable {
     public var defaultFilterKey: String?
     /// Equals-text for `defaultFilterKey` (PR41).
     public var defaultFilterText: String?
+    /// `"list"` or `"board"` (PR42). Missing / unknown JSON decodes as `"list"`.
+    public var defaultView: String
+
+    public static let listView = "list"
+    public static let boardView = "board"
 
     public init(
         cardPreviewPropertyIDs: [String] = [],
@@ -21,7 +26,8 @@ public struct TypeDashboardConfig: Hashable, Sendable, Codable, Equatable {
         hideArchived: Bool = false,
         defaultGroupBy: String? = nil,
         defaultFilterKey: String? = nil,
-        defaultFilterText: String? = nil
+        defaultFilterText: String? = nil,
+        defaultView: String = TypeDashboardConfig.listView
     ) {
         self.cardPreviewPropertyIDs = cardPreviewPropertyIDs
         self.defaultSort = defaultSort
@@ -29,11 +35,12 @@ public struct TypeDashboardConfig: Hashable, Sendable, Codable, Equatable {
         self.defaultGroupBy = defaultGroupBy
         self.defaultFilterKey = defaultFilterKey
         self.defaultFilterText = defaultFilterText
+        self.defaultView = Self.normalizedView(defaultView)
     }
 
     private enum CodingKeys: String, CodingKey {
         case cardPreviewPropertyIDs, defaultSort, hideArchived
-        case defaultGroupBy, defaultFilterKey, defaultFilterText
+        case defaultGroupBy, defaultFilterKey, defaultFilterText, defaultView
     }
 
     public init(from decoder: Decoder) throws {
@@ -45,6 +52,9 @@ public struct TypeDashboardConfig: Hashable, Sendable, Codable, Equatable {
         defaultGroupBy = try container.decodeIfPresent(String.self, forKey: .defaultGroupBy)
         defaultFilterKey = try container.decodeIfPresent(String.self, forKey: .defaultFilterKey)
         defaultFilterText = try container.decodeIfPresent(String.self, forKey: .defaultFilterText)
+        defaultView = Self.normalizedView(
+            try container.decodeIfPresent(String.self, forKey: .defaultView)
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -55,5 +65,12 @@ public struct TypeDashboardConfig: Hashable, Sendable, Codable, Equatable {
         try container.encodeIfPresent(defaultGroupBy, forKey: .defaultGroupBy)
         try container.encodeIfPresent(defaultFilterKey, forKey: .defaultFilterKey)
         try container.encodeIfPresent(defaultFilterText, forKey: .defaultFilterText)
+        try container.encode(defaultView, forKey: .defaultView)
+    }
+
+    /// `"list"` | `"board"`; anything else (including nil / empty) → list.
+    public static func normalizedView(_ raw: String?) -> String {
+        let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        return trimmed == boardView ? boardView : listView
     }
 }

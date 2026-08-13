@@ -9,6 +9,7 @@ final class TypeDashboardStore {
         var type: ObjectType?
         var allObjects: [LociObjectMeta]
         var sections: [DashboardSection]
+        var columns: [DashboardSection]
         var hideArchived: Bool
         var archivedHiddenCount: Int
     }
@@ -56,10 +57,16 @@ final class TypeDashboardStore {
             groupBy: state.groupBy,
             properties: type.properties
         )
+        let columns = KanbanMove.columns(
+            objects: listed,
+            groupBy: state.groupBy,
+            properties: type.properties
+        )
         return Snapshot(
             type: type,
             allObjects: unarchived,
             sections: sections,
+            columns: columns,
             hideArchived: hideArchived,
             archivedHiddenCount: archivedHiddenCount
         )
@@ -70,7 +77,8 @@ final class TypeDashboardStore {
         sortKey: String,
         groupBy: String?,
         filterKey: String?,
-        filterText: String
+        filterText: String,
+        defaultView: String
     ) async throws -> ObjectType {
         var updated = type
         let sort = sortKey.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -81,8 +89,30 @@ final class TypeDashboardStore {
         updated.dashboard.defaultFilterKey = key.isEmpty ? nil : key
         let text = filterText.trimmingCharacters(in: .whitespacesAndNewlines)
         updated.dashboard.defaultFilterText = text.isEmpty ? nil : text
+        updated.dashboard.defaultView = TypeDashboardConfig.normalizedView(defaultView)
         try await services.schema.saveType(updated)
         return updated
+    }
+
+    /// Move a card: open + save YAML property/tag via ObjectServing. Body is unchanged.
+    func moveCard(
+        objectID: ObjectID,
+        groupBy: String?,
+        destinationKey: String,
+        properties: [PropertyDef]
+    ) async throws {
+        let objects = try await services.ensureObjectService()
+        let opened = try await objects.open(id: objectID)
+        var meta = opened.meta
+        let next = KanbanMove.next(
+            meta: meta,
+            groupBy: groupBy,
+            destinationKey: destinationKey,
+            properties: properties
+        )
+        meta.properties = next.properties
+        meta.tags = next.tags
+        try await objects.save(meta: meta, bodyMarkdown: opened.bodyMarkdown)
     }
 
     func loadCollection(_ id: String?) async throws -> ObjectCollection? {

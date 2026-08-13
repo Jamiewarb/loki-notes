@@ -17,6 +17,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-graph/graph.json",
   "/demo-import/import.json",
   "/demo-index/search.json",
+  "/demo-kanban/kanban.json",
   "/demo-links/links.json",
   "/demo-macos-ci/macos-ci.json",
   "/demo-media/media.json",
@@ -234,6 +235,23 @@ test("dashboard demo fixture records filter sort group without writing markdown"
   expect(proof?.sortApplied).toBe(true);
   expect(proof?.groupApplied).toBe(true);
   expect(proof?.resultsNotWrittenToMarkdown).toBe(true);
+  expect(proof?.indexInsideVault).toBe(false);
+});
+
+test("kanban demo fixture records board columns and YAML move without writing layout", async ({
+  request,
+}) => {
+  const response = await request.get("/demo-kanban/kanban.json");
+  expect(response.ok()).toBeTruthy();
+  const data = asRecord(await response.json());
+  expect(data?.indexInsideVault).toBe(false);
+  expect(data?.dailyUnchanged).toBe(true);
+  expect(data?.objectMarkdownUnchanged).toBe(true);
+  expect(data?.yamlStatusDone).toBe(true);
+  const proof = asRecord(data?.proof);
+  expect(proof?.boardColumnsFromGroup).toBe(true);
+  expect(proof?.moveUpdatesVaultYAML).toBe(true);
+  expect(proof?.layoutNotWrittenToMarkdown).toBe(true);
   expect(proof?.indexInsideVault).toBe(false);
 });
 

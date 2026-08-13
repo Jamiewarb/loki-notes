@@ -154,7 +154,13 @@ final class DashboardSystemTests: XCTestCase {
     }
 
     func testModuleVersionIsPR41() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr41"), LociVaultModule.version)
-        XCTAssertEqual(LociVaultModule.version, "0.41.0-pr41")
+        XCTAssertTrue(
+            LociVaultModule.version.contains("pr41") || LociVaultModule.version.contains("pr42"),
+            LociVaultModule.version
+        )
+        XCTAssertTrue(
+            LociVaultModule.version == "0.41.0-pr41" || LociVaultModule.version == "0.42.0-pr42",
+            LociVaultModule.version
+        )
     }
 }

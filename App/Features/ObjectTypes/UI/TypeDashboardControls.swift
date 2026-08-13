@@ -2,13 +2,14 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Sort / property-filter / group-by chrome for a type dashboard (PR41).
+/// Sort / filter / group-by / List|Board chrome for a type dashboard (PR41 / PR42).
 struct TypeDashboardControls: View {
     let properties: [PropertyDef]
     @Binding var sortKey: String
     @Binding var groupByKey: String
     @Binding var filterKey: String
     @Binding var filterText: String
+    @Binding var dashboardView: String
     var onApplyFilter: () -> Void
     var onClearFilter: () -> Void
 
@@ -38,6 +39,14 @@ struct TypeDashboardControls: View {
                 }
                 .pickerStyle(.menu)
                 .accessibilityIdentifier("type-dashboard-group")
+                .frame(maxWidth: 180)
+
+                Picker("View", selection: $dashboardView) {
+                    Text("List").tag(TypeDashboardConfig.listView)
+                    Text("Board").tag(TypeDashboardConfig.boardView)
+                }
+                .pickerStyle(.segmented)
+                .accessibilityIdentifier("type-dashboard-view")
                 .frame(maxWidth: 180)
             }
 

@@ -44,6 +44,7 @@ let package = Package(
         .executable(name: "loci-macos-ci-demo", targets: ["loci-macos-ci-demo"]),
         .executable(name: "loci-object-select-demo", targets: ["loci-object-select-demo"]),
         .executable(name: "loci-dashboard-demo", targets: ["loci-dashboard-demo"]),
+        .executable(name: "loci-kanban-demo", targets: ["loci-kanban-demo"]),
     ],
     dependencies: [
         // GRDB builds on Swift 6.2 Linux (confirmed PR07) and Apple platforms.
@@ -206,6 +207,11 @@ let package = Package(
             name: "loci-dashboard-demo",
             dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
             path: "LociVault/Sources/LociDashboardDemo"
+        ),
+        .executableTarget(
+            name: "loci-kanban-demo",
+            dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
+            path: "LociVault/Sources/LociKanbanDemo"
         ),
         .testTarget(
             name: "LociVaultTests",

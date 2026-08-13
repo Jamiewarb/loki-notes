@@ -115,6 +115,38 @@ test("type dashboard does not write filter results into markdown", async ({ page
   await expect(harness(page, "dashboard-note")).toHaveAttribute("data-index-inside-vault", "false");
 });
 
+test("kanban board columns show moved Deep Work in Done", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "kanban-board")).toBeVisible();
+  await expect(
+    harness(page, "kanban-column").filter({ hasText: "To Read" }),
+  ).toBeVisible();
+  await expect(
+    harness(page, "kanban-column").filter({ hasText: "Reading" }),
+  ).toBeVisible();
+  const done = harness(page, "kanban-column").filter({ hasText: "Done" });
+  await expect(done).toBeVisible();
+  await expect(done.getByTestId("kanban-card").filter({ hasText: "Deep Work" })).toBeVisible();
+  await expect(harness(page, "kanban-proof-boardColumnsFromGroup")).toHaveText("yes ✓");
+  await expect(harness(page, "kanban-proof-moveUpdatesVaultYAML")).toHaveText("yes ✓");
+  await expect(harness(page, "kanban-proof-layoutNotWrittenToMarkdown")).toHaveText("yes ✓");
+  await expect(harness(page, "kanban-proof-indexInsideVault")).toHaveText("NO");
+});
+
+test("kanban layout is not written into markdown", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "kanban-note")).toBeVisible();
+  await expect(harness(page, "kanban-note")).toHaveAttribute("data-daily-unchanged", "true");
+  await expect(harness(page, "kanban-note")).toHaveAttribute(
+    "data-layout-not-written-to-markdown",
+    "true",
+  );
+  await expect(harness(page, "kanban-note")).toHaveAttribute("data-yaml-status-done", "true");
+  await expect(harness(page, "kanban-note")).toHaveAttribute("data-index-inside-vault", "false");
+});
+
 test("object-select does not rewrite the book body with wiki-links", async ({ page }) => {
   await gotoPanel(page, "types");
 
