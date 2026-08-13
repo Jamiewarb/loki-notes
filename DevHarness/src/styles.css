@@ -1072,6 +1072,35 @@ button.sync-chip:focus-visible {
   stroke-width: 1.5;
 }
 
+.graph-edge.is-incident {
+  stroke: var(--loci-accent);
+  stroke-width: 2.6;
+}
+
+.graph-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+}
+
+.graph-controls .loci-chip {
+  border: 1px solid var(--loci-line);
+  background: var(--loci-panel);
+  color: var(--loci-ink);
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.graph-controls .loci-chip.is-selected {
+  background: var(--loci-accent);
+  color: var(--loci-paper);
+  border-color: transparent;
+}
+
 .graph-node circle {
   fill: var(--loci-ink);
   stroke: var(--loci-paper);

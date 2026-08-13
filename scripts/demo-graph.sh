@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/demo-graph.sh — Link graph fixtures for DevHarness (PR24).
+# scripts/demo-graph.sh — Link graph fixtures for DevHarness (PR24 / PR45 polish).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -40,11 +40,23 @@ proof = data.get("proof") or {}
 assert proof.get("hubLinksToBooks") is True, proof
 assert proof.get("booksLinkInternally") is True, proof
 assert proof.get("unresolvedCounted") is True, proof
+assert proof.get("hidesHighDegree") is True, proof
+assert proof.get("focusNeighbors") is True, proof
+assert proof.get("layoutNotWrittenToVault") is True, proof
+assert proof.get("indexInsideVault") is False, proof
+hide = data.get("hideHubs") or {}
+assert hide.get("hiddenHubs") is True, hide
+assert "Deep Work" not in (hide.get("titles") or []), hide
+focus = data.get("focusNeighbors") or {}
+assert focus.get("isolatedFocus") is True, focus
+assert "Focus Notes" not in (focus.get("titles") or []), focus
+assert data.get("layoutNotWrittenToVault") is True, data
 print(
     f"nodes={g.get('nodeCount')} edges={g.get('edgeCount')} "
     f"books={books.get('nodeCount')}/{books.get('edgeCount')} "
     f"capped={cap.get('nodeCount')}/{cap.get('edgeCount')} "
-    f"unresolved={g.get('unresolvedLinkCount')}"
+    f"unresolved={g.get('unresolvedLinkCount')} "
+    f"hide={hide.get('nodeCount')} focus={focus.get('nodeCount')}"
 )
 PY
 

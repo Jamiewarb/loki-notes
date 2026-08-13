@@ -106,6 +106,119 @@ final class GraphModelsTests: XCTestCase {
         XCTAssertEqual(snap.resolvedEdgeCount, 5)
     }
 
+    func testHideDegreeDropsHubsBeforeCaps() {
+        let hub = ObjectID(UUID(uuidString: "11111111-1111-4111-8111-111111111111")!)
+        let a = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222221")!)
+        let b = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222222")!)
+        let c = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222223")!)
+        let d = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222224")!)
+        let e = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333331")!)
+        let f = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333332")!)
+
+        var nodes: [ObjectID: GraphNode] = [:]
+        for (id, title) in [
+            (hub, "Hub"), (a, "A"), (b, "B"), (c, "C"), (d, "D"), (e, "E"), (f, "F"),
+        ] {
+            nodes[id] = GraphNode(id: id, title: title, typeID: .page)
+        }
+        let edges = [
+            GraphEdge(from: hub, to: a),
+            GraphEdge(from: hub, to: b),
+            GraphEdge(from: hub, to: c),
+            GraphEdge(from: hub, to: d),
+            GraphEdge(from: e, to: f),
+        ]
+
+        let hidden = GraphAssembly.assemble(
+            nodesByID: nodes,
+            edges: edges,
+            unresolvedLinkCount: 0,
+            options: GraphBuildOptions(hideDegreeAtOrAbove: 4)
+        )
+        XCTAssertTrue(hidden.hiddenHubs)
+        XCTAssertFalse(hidden.truncated)
+        XCTAssertFalse(hidden.nodes.contains(where: { $0.id == hub }))
+        XCTAssertEqual(Set(hidden.nodes.map(\.id)), [a, b, c, d, e, f])
+        XCTAssertEqual(hidden.edges.count, 1)
+        XCTAssertEqual(hidden.edges.first?.from, e)
+        XCTAssertEqual(hidden.edges.first?.to, f)
+
+        // Caps keep hubs; hide-before-caps must drop the hub even when maxNodes would keep it.
+        let hiddenThenCapped = GraphAssembly.assemble(
+            nodesByID: nodes,
+            edges: edges,
+            unresolvedLinkCount: 0,
+            options: GraphBuildOptions(maxNodes: 3, hideDegreeAtOrAbove: 4)
+        )
+        XCTAssertTrue(hiddenThenCapped.hiddenHubs)
+        XCTAssertFalse(hiddenThenCapped.nodes.contains(where: { $0.id == hub }))
+        XCTAssertLessThanOrEqual(hiddenThenCapped.nodes.count, 3)
+    }
+
+    func testFocusKeepsNodeAndOneHopNeighbors() {
+        let hub = ObjectID(UUID(uuidString: "11111111-1111-4111-8111-111111111111")!)
+        let a = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222221")!)
+        let b = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222222")!)
+        let e = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333331")!)
+        let f = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333332")!)
+
+        var nodes: [ObjectID: GraphNode] = [:]
+        for (id, title) in [(hub, "Hub"), (a, "A"), (b, "B"), (e, "E"), (f, "F")] {
+            nodes[id] = GraphNode(id: id, title: title, typeID: .page)
+        }
+        let edges = [
+            GraphEdge(from: hub, to: a),
+            GraphEdge(from: hub, to: b),
+            GraphEdge(from: e, to: f),
+        ]
+
+        let focused = GraphAssembly.assemble(
+            nodesByID: nodes,
+            edges: edges,
+            unresolvedLinkCount: 0,
+            options: GraphBuildOptions(focusObjectID: a)
+        )
+        XCTAssertTrue(focused.isolatedFocus)
+        XCTAssertEqual(Set(focused.nodes.map(\.id)), [hub, a])
+        XCTAssertEqual(focused.edges.count, 1)
+        XCTAssertEqual(focused.degree(of: a), 1)
+        XCTAssertEqual(focused.neighborCount(of: a), 1)
+        XCTAssertFalse(focused.nodes.contains(where: { $0.id == e }))
+    }
+
+    func testFocusProtectsHubFromHide() {
+        let hub = ObjectID(UUID(uuidString: "11111111-1111-4111-8111-111111111111")!)
+        let a = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222221")!)
+        let b = ObjectID(UUID(uuidString: "22222222-2222-4222-8222-222222222222")!)
+        let e = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333331")!)
+        let f = ObjectID(UUID(uuidString: "33333333-3333-4333-8333-333333333332")!)
+
+        var nodes: [ObjectID: GraphNode] = [:]
+        for (id, title) in [(hub, "Hub"), (a, "A"), (b, "B"), (e, "E"), (f, "F")] {
+            nodes[id] = GraphNode(id: id, title: title, typeID: .page)
+        }
+        let edges = [
+            GraphEdge(from: hub, to: a),
+            GraphEdge(from: hub, to: b),
+            GraphEdge(from: e, to: f),
+        ]
+
+        let snap = GraphAssembly.assemble(
+            nodesByID: nodes,
+            edges: edges,
+            unresolvedLinkCount: 0,
+            options: GraphBuildOptions(
+                hideDegreeAtOrAbove: 2,
+                focusObjectID: hub
+            )
+        )
+        XCTAssertTrue(snap.isolatedFocus)
+        XCTAssertTrue(snap.nodes.contains(where: { $0.id == hub }))
+        XCTAssertEqual(Set(snap.nodes.map(\.id)), [hub, a, b])
+        XCTAssertFalse(snap.nodes.contains(where: { $0.id == e }))
+        XCTAssertEqual(GraphBuildOptions.defaultHideHubDegree, 8)
+    }
+
     func testLayoutIsDeterministic() {
         let a = ObjectID(UUID(uuidString: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1")!)
         let b = ObjectID(UUID(uuidString: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb2")!)

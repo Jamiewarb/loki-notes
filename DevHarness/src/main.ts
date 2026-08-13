@@ -18,7 +18,7 @@ import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 import { renderTasksPanel } from "./panels/TasksPanel";
 import { renderMediaPanel } from "./panels/MediaPanel";
-import { renderGraphPanel } from "./panels/GraphPanel";
+import { renderGraphPanel, renderGraphInspector } from "./panels/GraphPanel";
 import { renderCalendarPanel } from "./panels/CalendarPanel";
 import { renderCapturePanel } from "./panels/CapturePanel";
 import { renderImportPanel } from "./panels/ImportPanel";
@@ -319,6 +319,9 @@ function render(): void {
   if (inspectorRoot && active === "media") {
     void renderMediaInspector(inspectorRoot);
   }
+  if (inspectorRoot && active === "graph") {
+    void renderGraphInspector(inspectorRoot);
+  }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -616,7 +619,7 @@ function inspectorTitle(id: PanelId): string {
     case "links":
       return "Backlinks · unlinked mentions";
     case "graph":
-      return "Caps · Navigating";
+      return "Selected · hide hubs · focus";
     case "calendar":
       return "Dots · daily jump";
     case "capture":

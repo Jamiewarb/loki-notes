@@ -44,17 +44,33 @@ public struct GraphBuildOptions: Hashable, Sendable, Equatable, Codable {
     public var maxNodes: Int
     /// Soft cap on edges after filter.
     public var maxEdges: Int
+    /// Drop nodes whose degree is ≥ this value **before** caps (nil = off).
+    /// Hubs clutter the view; this is the PLAN “hide high-degree nodes” control.
+    public var hideDegreeAtOrAbove: Int?
+    /// When set, keep this node and its 1-hop neighbors only (isolate).
+    public var focusObjectID: ObjectID?
+
+    /// Session UI default for “Hide hubs” (not persisted to vault markdown).
+    public static let defaultHideHubDegree = 8
 
     public static let `default` = GraphBuildOptions()
 
     public init(
         typeFilter: ObjectTypeID? = nil,
         maxNodes: Int = 150,
-        maxEdges: Int = 400
+        maxEdges: Int = 400,
+        hideDegreeAtOrAbove: Int? = nil,
+        focusObjectID: ObjectID? = nil
     ) {
         self.typeFilter = typeFilter
         self.maxNodes = max(1, maxNodes)
         self.maxEdges = max(1, maxEdges)
+        if let hideDegreeAtOrAbove, hideDegreeAtOrAbove >= 1 {
+            self.hideDegreeAtOrAbove = hideDegreeAtOrAbove
+        } else {
+            self.hideDegreeAtOrAbove = nil
+        }
+        self.focusObjectID = focusObjectID
     }
 }
 
@@ -64,26 +80,62 @@ public struct GraphSnapshot: Hashable, Sendable, Equatable, Codable {
     public var edges: [GraphEdge]
     /// True when node or edge caps trimmed the full filtered graph.
     public var truncated: Bool
-    /// Resolved edges considered before caps (post type-filter).
+    /// Resolved edges considered before caps (post type-filter / hide / focus).
     public var resolvedEdgeCount: Int
     /// Wiki-link rows skipped because the target did not resolve.
     public var unresolvedLinkCount: Int
+    /// True when `hideDegreeAtOrAbove` dropped at least one node.
+    public var hiddenHubs: Bool
+    /// True when `focusObjectID` isolated the graph to a 1-hop neighborhood.
+    public var isolatedFocus: Bool
 
     public init(
         nodes: [GraphNode] = [],
         edges: [GraphEdge] = [],
         truncated: Bool = false,
         resolvedEdgeCount: Int = 0,
-        unresolvedLinkCount: Int = 0
+        unresolvedLinkCount: Int = 0,
+        hiddenHubs: Bool = false,
+        isolatedFocus: Bool = false
     ) {
         self.nodes = nodes
         self.edges = edges
         self.truncated = truncated
         self.resolvedEdgeCount = resolvedEdgeCount
         self.unresolvedLinkCount = unresolvedLinkCount
+        self.hiddenHubs = hiddenHubs
+        self.isolatedFocus = isolatedFocus
     }
 
     public var isEmpty: Bool { nodes.isEmpty }
+
+    public func node(id: ObjectID) -> GraphNode? {
+        nodes.first { $0.id == id }
+    }
+
+    /// Incident edge count (A→B and B→A both count).
+    public func degree(of id: ObjectID) -> Int {
+        edges.reduce(0) { count, edge in
+            count + ((edge.from == id || edge.to == id) ? 1 : 0)
+        }
+    }
+
+    public func neighborIDs(of id: ObjectID) -> Set<ObjectID> {
+        var ids = Set<ObjectID>()
+        for edge in edges {
+            if edge.from == id { ids.insert(edge.to) }
+            if edge.to == id { ids.insert(edge.from) }
+        }
+        return ids
+    }
+
+    public func neighborCount(of id: ObjectID) -> Int {
+        neighborIDs(of: id).count
+    }
+
+    public func isIncident(_ edge: GraphEdge, to id: ObjectID) -> Bool {
+        edge.from == id || edge.to == id
+    }
 }
 
 /// 2D layout coordinate (pure math — Linux-testable).
@@ -292,7 +344,7 @@ public enum GraphLayoutEngine: Sendable {
 
 /// Pure graph build helpers (cap / filter) used by Index and unit tests.
 public enum GraphAssembly: Sendable {
-    /// Apply type filter + degree-based caps to resolved edges.
+    /// Apply type filter, hide-hubs, 1-hop focus, then degree-based caps.
     public static func assemble(
         nodesByID: [ObjectID: GraphNode],
         edges: [GraphEdge],
@@ -310,15 +362,48 @@ public enum GraphAssembly: Sendable {
             }
         }
 
+        var hiddenHubs = false
+        if let threshold = options.hideDegreeAtOrAbove, threshold >= 1 {
+            let degree = degreeMap(edges: filteredEdges)
+            let drop = Set(
+                nodes.keys.filter { id in
+                    if id == options.focusObjectID { return false }
+                    return degree[id, default: 0] >= threshold
+                }
+            )
+            if !drop.isEmpty {
+                hiddenHubs = true
+                nodes = nodes.filter { !drop.contains($0.key) }
+                filteredEdges = filteredEdges.filter {
+                    !drop.contains($0.from) && !drop.contains($0.to)
+                }
+            }
+        }
+
+        var isolatedFocus = false
+        if let focus = options.focusObjectID {
+            isolatedFocus = true
+            if nodes[focus] == nil {
+                nodes = [:]
+                filteredEdges = []
+            } else {
+                var keep: Set<ObjectID> = [focus]
+                for edge in filteredEdges {
+                    if edge.from == focus { keep.insert(edge.to) }
+                    if edge.to == focus { keep.insert(edge.from) }
+                }
+                nodes = nodes.filter { keep.contains($0.key) }
+                filteredEdges = filteredEdges.filter {
+                    keep.contains($0.from) && keep.contains($0.to)
+                }
+            }
+        }
+
         let resolvedCount = filteredEdges.count
         var truncated = false
 
-        // Degree map for cap preference.
-        var degree: [ObjectID: Int] = [:]
-        for edge in filteredEdges {
-            degree[edge.from, default: 0] += 1
-            degree[edge.to, default: 0] += 1
-        }
+        // Degree map for cap preference (after hide / focus).
+        var degree = degreeMap(edges: filteredEdges)
 
         if nodes.count > options.maxNodes {
             truncated = true
@@ -361,7 +446,18 @@ public enum GraphAssembly: Sendable {
             edges: filteredEdges,
             truncated: truncated,
             resolvedEdgeCount: resolvedCount,
-            unresolvedLinkCount: unresolvedLinkCount
+            unresolvedLinkCount: unresolvedLinkCount,
+            hiddenHubs: hiddenHubs,
+            isolatedFocus: isolatedFocus
         )
+    }
+
+    private static func degreeMap(edges: [GraphEdge]) -> [ObjectID: Int] {
+        var degree: [ObjectID: Int] = [:]
+        for edge in edges {
+            degree[edge.from, default: 0] += 1
+            degree[edge.to, default: 0] += 1
+        }
+        return degree
     }
 }

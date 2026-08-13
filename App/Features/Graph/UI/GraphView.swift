@@ -2,14 +2,13 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Force-directed link graph from the local index (PR24).
+/// Force-directed link graph from the local index (PR24 / PR45 polish).
 struct GraphView: View {
-    var services: AppServices
+    @Bindable var services: AppServices
 
     @State private var snapshot = GraphSnapshot()
     @State private var layout = GraphLayoutResult()
     @State private var typeFilter: ObjectTypeID?
-    @State private var selectedID: ObjectID?
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var availableTypes: [ObjectTypeID] = []
@@ -31,17 +30,24 @@ struct GraphView: View {
                         .foregroundStyle(LociColors.inkSoft)
                         .accessibilityIdentifier("graph-truncated-badge")
                 }
+                if snapshot.hiddenHubs {
+                    Text("hubs hidden")
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.inkSoft)
+                        .accessibilityIdentifier("graph-hidden-hubs-badge")
+                }
             }
             .lociAppear(.soft)
 
             Text(
-                "Wiki-link network from the local links index. Tap a node to open the object."
+                "Wiki-link network from the local links index. Tap a node to open the object. Hide hubs and focus are session-only — never written to the vault."
             )
             .font(LociTypography.font(.body))
             .foregroundStyle(LociColors.inkSoft)
             .frame(maxWidth: 520, alignment: .leading)
 
             typeFilterChips
+            polishControls
 
             graphCanvas
                 .frame(maxWidth: .infinity)
@@ -71,7 +77,12 @@ struct GraphView: View {
     }
 
     private var reloadToken: String {
-        "\(typeFilter?.rawValue ?? "all")|\(services.index == nil ? "0" : "1")"
+        let hide = services.graphHideHubs ? "\(services.graphHideDegree)" : "off"
+        let focus =
+            services.graphFocusNeighbors
+            ? (services.graphSelectedObjectID?.uuidString.lowercased() ?? "none")
+            : "off"
+        return "\(typeFilter?.rawValue ?? "all")|\(hide)|\(focus)|\(services.index == nil ? "0" : "1")"
     }
 
     @ViewBuilder
@@ -89,6 +100,31 @@ struct GraphView: View {
                     typeFilter = typeID
                 }
             }
+            Spacer(minLength: 0)
+        }
+    }
+
+    @ViewBuilder
+    private var polishControls: some View {
+        HStack(spacing: LociSpacing.stack(.md)) {
+            Toggle("Hide hubs", isOn: $services.graphHideHubs)
+                .font(LociTypography.font(.caption))
+                .tint(LociColors.accent)
+                .accessibilityIdentifier("graph-hide-hubs")
+            if services.graphHideHubs {
+                Stepper(
+                    "degree ≥ \(services.graphHideDegree)",
+                    value: $services.graphHideDegree,
+                    in: 2...24
+                )
+                .font(LociTypography.font(.caption))
+                .accessibilityIdentifier("graph-hide-degree")
+            }
+            Toggle("Focus neighbors", isOn: $services.graphFocusNeighbors)
+                .font(LociTypography.font(.caption))
+                .tint(LociColors.accent)
+                .disabled(services.graphSelectedObjectID == nil)
+                .accessibilityIdentifier("graph-focus-neighbors")
             Spacer(minLength: 0)
         }
     }
@@ -111,6 +147,7 @@ struct GraphView: View {
         Canvas { context, size in
             let scaleX = size.width / max(layout.width, 1)
             let scaleY = size.height / max(layout.height, 1)
+            let selected = services.graphSelectedObjectID
 
             for edge in snapshot.edges {
                 guard
@@ -124,18 +161,21 @@ struct GraphView: View {
                 path.addLine(
                     to: CGPoint(x: to.x * scaleX, y: to.y * scaleY)
                 )
+                let incident = selected.map { snapshot.isIncident(edge, to: $0) } ?? false
                 context.stroke(
                     path,
-                    with: .color(LociColors.inkSoft.opacity(0.45)),
-                    lineWidth: 1.2
+                    with: .color(
+                        incident ? LociColors.accent : LociColors.inkSoft.opacity(0.45)
+                    ),
+                    lineWidth: incident ? 2.4 : 1.2
                 )
             }
 
             for node in snapshot.nodes {
                 guard let p = layout.point(for: node.id) else { continue }
                 let center = CGPoint(x: p.x * scaleX, y: p.y * scaleY)
-                let selected = selectedID == node.id
-                let radius: CGFloat = selected ? 14 : 11
+                let isSelected = selected == node.id
+                let radius: CGFloat = isSelected ? 14 : 11
                 let rect = CGRect(
                     x: center.x - radius,
                     y: center.y - radius,
@@ -144,7 +184,7 @@ struct GraphView: View {
                 )
                 context.fill(
                     Path(ellipseIn: rect),
-                    with: .color(selected ? LociColors.accent : LociColors.ink)
+                    with: .color(isSelected ? LociColors.accent : LociColors.ink)
                 )
                 context.draw(
                     Text(node.title)
@@ -159,7 +199,7 @@ struct GraphView: View {
             DragGesture(minimumDistance: 0)
                 .onEnded { value in
                     if let hit = hitTest(at: value.location, in: canvasSize) {
-                        selectedID = hit
+                        services.graphSelectedObjectID = hit
                         Task { await services.open(objectID: hit) }
                     }
                 }
@@ -214,6 +254,14 @@ struct GraphView: View {
         return best?.0
     }
 
+    private func buildOptions() -> GraphBuildOptions {
+        GraphBuildOptions(
+            typeFilter: typeFilter,
+            hideDegreeAtOrAbove: services.graphHideHubs ? services.graphHideDegree : nil,
+            focusObjectID: services.graphFocusNeighbors ? services.graphSelectedObjectID : nil
+        )
+    }
+
     private func reload() async {
         isLoading = true
         errorMessage = nil
@@ -221,8 +269,7 @@ struct GraphView: View {
         do {
             _ = try await services.ensureIndex()
             let store = GraphStore(index: services.index)
-            let options = GraphBuildOptions(typeFilter: typeFilter)
-            let next = try await store.load(options: options)
+            let next = try await store.load(options: buildOptions())
             snapshot = next
             layout = GraphLayoutEngine.layout(
                 next,
@@ -234,7 +281,6 @@ struct GraphView: View {
             var types = Set(next.nodes.map(\.typeID))
             if let typeFilter { types.insert(typeFilter) }
             availableTypes = types.sorted { $0.rawValue < $1.rawValue }
-            // Also surface types from schema so empty filter chips still work.
             if let schemaTypes = try? await services.schema.allTypes() {
                 for t in schemaTypes {
                     types.insert(t.id)

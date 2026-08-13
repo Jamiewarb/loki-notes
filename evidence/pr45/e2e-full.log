@@ -1,0 +1,156 @@
+==> playwright install chromium
+Installing dependencies...
+Switching to root user to install dependencies...
+Hit:1 https://dl.google.com/linux/chrome/deb stable InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Hit:3 https://dl.google.com/linux/chrome-stable/deb stable InRelease
+Hit:4 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+libcairo2 is already the newest version (1.18.0-3build1).
+libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.2).
+libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.8).
+libnspr4 is already the newest version (2:4.35-1.1build1).
+libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+libx11-6 is already the newest version (2:1.8.7-1build1).
+libxcb1 is already the newest version (1.15-1ubuntu2).
+libxcomposite1 is already the newest version (1:0.4.5-1build3).
+libxdamage1 is already the newest version (1:1.1.6-1build1).
+libxext6 is already the newest version (2:1.3.4-1build2).
+libxfixes3 is already the newest version (1:6.0.0-2build1).
+libxkbcommon0 is already the newest version (1.6.0-1build1).
+libxrandr2 is already the newest version (2:1.5.2-2build1).
+xvfb is already the newest version (2:21.1.12-1ubuntu1.6).
+fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+fonts-unifont is already the newest version (1:15.1.01-1build1).
+libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+xfonts-cyrillic is already the newest version (1:1.0.5+nmu1).
+xfonts-scalable is already the newest version (1:1.0.3-1.3).
+fonts-liberation is already the newest version (1:2.1.5-3).
+fonts-ipafont-gothic is already the newest version (00303-21ubuntu1).
+fonts-wqy-zenhei is already the newest version (0.9.45-8).
+fonts-tlwg-loma-otf is already the newest version (1:0.7.3-1).
+fonts-freefont-ttf is already the newest version (20211204+svn4273-2).
+0 upgraded, 0 newly installed, 0 to remove and 82 not upgraded.
+==> playwright test
+
+Running 99 tests using 2 workers
+
+(node:82982) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/architecture.spec.ts:47:1 › demo fixtures never store the index inside the vault (152ms)
+  ✓   2 [chromium] › e2e/architecture.spec.ts:223:1 › daily panel shows the index is never in the vault (381ms)
+  ✓   4 [chromium] › e2e/architecture.spec.ts:237:1 › macos-ci demo fixture records workflow, shortcuts, a11y, and no index in vault (20ms)
+  ✓   5 [chromium] › e2e/architecture.spec.ts:253:1 › dashboard demo fixture records filter sort group without writing markdown (13ms)
+  ✓   6 [chromium] › e2e/architecture.spec.ts:270:1 › kanban demo fixture records board columns and YAML move without writing layout (14ms)
+  ✓   7 [chromium] › e2e/architecture.spec.ts:287:1 › weblink preview fixture caches OG outside the vault without fetching on type (9ms)
+  ✓   8 [chromium] › e2e/architecture.spec.ts:305:1 › object-select demo fixture stores ObjectIDs and creates real links (5ms)
+  ✓   3 [chromium] › e2e/architecture.spec.ts:231:1 › ai panel shows upload refused without opt-in (377ms)
+  ✓   9 [chromium] › e2e/daily.spec.ts:4:1 › daily note uses deterministic daily/YYYY-MM-DD.md path (308ms)
+  ✓  10 [chromium] › e2e/daily.spec.ts:10:1 › daily note logical id is rendered (326ms)
+  ✓  11 [chromium] › e2e/daily.spec.ts:16:1 › idempotent ensure is yes (312ms)
+  ✓  12 [chromium] › e2e/daily.spec.ts:22:1 › day nav prev/today/next match the rendered fixture (577ms)
+  ✓  13 [chromium] › e2e/daily.spec.ts:32:1 › created-today list has rows (536ms)
+  ✓  15 [chromium] › e2e/daily.spec.ts:48:1 › created-today does not rewrite daily.md (613ms)
+  ✓  14 [chromium] › e2e/daily.spec.ts:37:1 › clicking a created-today row reveals detail (938ms)
+  ✓  16 [chromium] › e2e/daily.spec.ts:56:1 › index is never stored in the vault (425ms)
+  ✓  17 [chromium] › e2e/editor.spec.ts:4:1 › editor destination loads as an AST HTML preview (527ms)
+  ✓  18 [chromium] › e2e/editor.spec.ts:16:1 › rich block kinds list tables, toggles, and callouts (302ms)
+  ✓  19 [chromium] › e2e/editor.spec.ts:25:1 › slash simulation list is visible (528ms)
+  ✓  20 [chromium] › e2e/editor.spec.ts:35:1 › query embed does not store results in the body (613ms)
+  ✓  21 [chromium] › e2e/editor.spec.ts:42:1 › block-to-object conversion inserts a wiki-link (534ms)
+  ✓  22 [chromium] › e2e/integrations.spec.ts:4:1 › upload is refused without opt-in (559ms)
+  ✓  23 [chromium] › e2e/integrations.spec.ts:12:1 › credentials live outside the vault (503ms)
+  ✓  24 [chromium] › e2e/integrations.spec.ts:20:1 › event chrome does not rewrite daily.md (700ms)
+  ✓  25 [chromium] › e2e/integrations.spec.ts:35:1 › meetings are created via ObjectServing (486ms)
+  ✓  26 [chromium] › e2e/integrations.spec.ts:43:1 › apple index is never stored in the vault (597ms)
+  ✓  27 [chromium] › e2e/integrations.spec.ts:51:1 › safari clipper uses the same Capture inbox (762ms)
+  ✓  29 [chromium] › e2e/integrations.spec.ts:66:1 › safari inbox is empty after drain (445ms)
+  ✓  28 [chromium] › e2e/integrations.spec.ts:58:1 › weblink url property is rendered (687ms)
+  ✓  30 [chromium] › e2e/integrations.spec.ts:74:1 › safari index is never from the extension (532ms)
+  ✓  31 [chromium] › e2e/integrations.spec.ts:83:1 › safari extracts page payload and menu bar is wired (561ms)
+  ✓  32 [chromium] › e2e/integrations.spec.ts:95:1 › weblink preview card shows Open Graph title and description (456ms)
+  ✓  33 [chromium] › e2e/integrations.spec.ts:106:1 › weblink preview cache lives outside the vault and does not fetch on type (498ms)
+  ✓  35 [chromium] › e2e/retrieval.spec.ts:10:1 › graph has nodes from the links index (326ms)
+  ✓  34 [chromium] › e2e/retrieval.spec.ts:4:1 › backlinks list is visible on the links panel (463ms)
+  ✓  37 [chromium] › e2e/retrieval.spec.ts:26:1 › graph polish proof flags hide hubs, focus neighbors, and no layout in vault (747ms)
+  ✓  36 [chromium] › e2e/retrieval.spec.ts:15:1 › clicking a graph node updates selection text (981ms)
+  ✓  39 [chromium] › e2e/retrieval.spec.ts:49:1 › tag aliases are surfaced on the tags panel (404ms)
+  ✓  38 [chromium] › e2e/retrieval.spec.ts:39:1 › hide hubs control drops the high-degree Deep Work node (882ms)
+  ✓  40 [chromium] › e2e/retrieval.spec.ts:57:1 › search lists FTS hits from the demo fixture (533ms)
+  ✓  41 [chromium] › e2e/retrieval.spec.ts:66:1 › search index is never stored in the vault (443ms)
+  ✓  42 [chromium] › e2e/retrieval.spec.ts:72:1 › unlinked mentions list includes Notes for Deep Work (450ms)
+  ✓  43 [chromium] › e2e/retrieval.spec.ts:84:1 › unlinked mention scan does not rewrite Notes.md until Link (537ms)
+  ✓  44 [chromium] › e2e/retrieval.spec.ts:95:1 › explicit Link replaces the first unlinked title with a wiki-link (635ms)
+  ✓  45 [chromium] › e2e/shell.spec.ts:18:1 › default / loads Daily destination (541ms)
+  ✓  46 [chromium] › e2e/shell.spec.ts:23:1 › shell chrome shows loci-shell, sidebar, detail, and inspector (622ms)
+  ✓  47 [chromium] › e2e/shell.spec.ts:33:1 › ?panel=settings deep-links to settings destination (434ms)
+  ✓  48 [chromium] › e2e/shell.spec.ts:39:3 › primary nav Daily switches destination to daily (924ms)
+  ✓  49 [chromium] › e2e/shell.spec.ts:39:3 › primary nav Tasks switches destination to tasks (907ms)
+  ✓  50 [chromium] › e2e/shell.spec.ts:39:3 › primary nav Search switches destination to search (872ms)
+  ✓  51 [chromium] › e2e/shell.spec.ts:39:3 › primary nav Types switches destination to types (975ms)
+  ✓  53 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is daily (591ms)
+  ✓  52 [chromium] › e2e/shell.spec.ts:39:3 › primary nav Settings switches destination to settings (795ms)
+  ✓  54 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is tasks (489ms)
+  ✓  55 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is search (494ms)
+  ✓  56 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is types (576ms)
+  ✓  57 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is settings (504ms)
+  ✓  58 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is gallery (334ms)
+  ✓  59 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is markdown (453ms)
+  ✓  60 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is editor (310ms)
+  ✓  61 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is links (315ms)
+  ✓  62 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is tags (394ms)
+  ✓  63 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is media (575ms)
+  ✓  64 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is graph (341ms)
+  ✓  66 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is capture (304ms)
+  ✓  65 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is calendar (528ms)
+  ✓  67 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is import (599ms)
+  ✓  68 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is type-convert (459ms)
+  ✓  69 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is ai (299ms)
+  ✓  70 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is apple (513ms)
+  ✓  71 [chromium] › e2e/shell.spec.ts:56:3 › every panel leaves loading — destination is safari (637ms)
+  ✓  72 [chromium] › e2e/shell.spec.ts:65:1 › pinned rows are visible and enabled (588ms)
+  ✓  73 [chromium] › e2e/shell.spec.ts:73:1 › clicking a pin stays on the shell (941ms)
+  ✓  74 [chromium] › e2e/types.spec.ts:4:1 › PARA starter pack surfaces Project, Area, Resource, and Archive (980ms)
+  ✓  75 [chromium] › e2e/types.spec.ts:23:1 › type list and Books dashboard load from fixtures (699ms)
+  ✓  76 [chromium] › e2e/types.spec.ts:35:1 › collection tabs filter the Books list by vault membership (925ms)
+  ✓  77 [chromium] › e2e/types.spec.ts:49:1 › collections membership is surfaced as a vault JSON file (651ms)
+  ✓  78 [chromium] › e2e/types.spec.ts:62:1 › pinned query results are visible from the live index (716ms)
+  ✓  79 [chromium] › e2e/types.spec.ts:71:1 › type convert refuses Daily and keeps ObjectID stable (546ms)
+  ✓  81 [chromium] › e2e/types.spec.ts:92:1 › type dashboard groups filtered books and shows proof flags (817ms)
+  ✓  80 [chromium] › e2e/types.spec.ts:78:1 › object-select picker shows selected title and proof flags (914ms)
+  ✓  82 [chromium] › e2e/types.spec.ts:106:1 › type dashboard does not write filter results into markdown (795ms)
+  ✓  83 [chromium] › e2e/types.spec.ts:118:1 › kanban board columns show moved Deep Work in Done (843ms)
+  ✓  84 [chromium] › e2e/types.spec.ts:137:1 › kanban layout is not written into markdown (772ms)
+  ✓  85 [chromium] › e2e/types.spec.ts:150:1 › object-select does not rewrite the book body with wiki-links (901ms)
+  ✓  86 [chromium] › e2e/vault.spec.ts:4:1 › markdown round-trip input and serialized panes are visible (317ms)
+  ✓  88 [chromium] › e2e/vault.spec.ts:18:1 › markdown documents are readable files not a database (424ms)
+  ✓  87 [chromium] › e2e/vault.spec.ts:12:1 › markdown round-trip is stable (542ms)
+  ✓  90 [chromium] › e2e/vault.spec.ts:55:1 › imported vault paths are .md files not a database (447ms)
+  ✓  89 [chromium] › e2e/vault.spec.ts:30:1 › import proof flags from demo-import are yes (663ms)
+  ✓  91 [chromium] › e2e/vault.spec.ts:68:1 › settings shows local Documents fallback and index never in the vault (694ms)
+  ✓  92 [chromium] › e2e/vault.spec.ts:80:1 › settings sync chip and live status load from demo-sync (641ms)
+  ✓  93 [chromium] › e2e/vault.spec.ts:90:1 › settings shows macOS CI shortcut and VoiceOver proofs (312ms)
+  ✓  94 [chromium] › e2e/work.spec.ts:4:1 › today and open task lists are visible (596ms)
+  ✓  95 [chromium] › e2e/work.spec.ts:18:1 › tasks proof records page toggle completed without persisting checkbox clicks (464ms)
+  ✓  96 [chromium] › e2e/work.spec.ts:31:1 › media attachment paths live under media/ (336ms)
+  ✓  97 [chromium] › e2e/work.spec.ts:42:1 › media picker proofs are wired and note body stays vault-relative (594ms)
+  ✓  99 [chromium] › e2e/work.spec.ts:74:1 › capture drain empties inbox and indexes on foreground only (666ms)
+  ✓  98 [chromium] › e2e/work.spec.ts:57:1 › clicking a calendar day updates selection to daily/<key>.md (976ms)
+
+  99 passed (28.4s)

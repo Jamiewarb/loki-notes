@@ -195,6 +195,20 @@ test("demo fixtures never store the index inside the vault", async ({
         )
         .toBe(true);
     }
+    if (proof && "hidesHighDegree" in proof) {
+      expect.soft(proof.hidesHighDegree, `${url} proof.hidesHighDegree`).toBe(true);
+    }
+    if (proof && "focusNeighbors" in proof) {
+      expect.soft(proof.focusNeighbors, `${url} proof.focusNeighbors`).toBe(true);
+    }
+    if (proof && "layoutNotWrittenToVault" in proof) {
+      expect
+        .soft(
+          proof.layoutNotWrittenToVault,
+          `${url} proof.layoutNotWrittenToVault`,
+        )
+        .toBe(true);
+    }
     if (proof && "noteBodyHasAbsolutePath" in proof) {
       expect
         .soft(
