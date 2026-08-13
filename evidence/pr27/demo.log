@@ -1,0 +1,7 @@
+==> loci-import-demo
+[0/1] Planning build
+Building for debugging...
+[0/3] Write swift-version--166437D737243488.txt
+Build of product 'loci-import-demo' complete! (0.42s)
+runs=3 proof_ok=14/14 module=0.27.0-pr27
+wrote DevHarness/public/demo-import/import.json
