@@ -10,7 +10,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Based on:** `cursor/pr41-dashboard-d2c1`  
 **Vault module:** `0.42.0-pr42`  
 **MARKETING_VERSION:** `0.42.0`  
-**Swift tests:** see evidence/pr42 (was 383). **Playwright:** see evidence/pr42 (was 88). Evidence: `evidence/pr42/`
+**Swift tests:** **396** green (was 383). **Playwright:** **91** green (was 88). Evidence: `evidence/pr42/`
 
 ### Feature design
 - Domain folder: `App/Features/ObjectTypes/` — `TypeDashboardBoard` + `TypeDashboardStore.moveCard`. **Not** a new feature module. **Does not import** other feature folders for the board (same QueryEngine list as PR41).

@@ -1,0 +1,8 @@
+==> loci-kanban-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-kanban-demo' complete! (0.61s)
+boardColumnsFromGroup moveUpdatesVaultYAML layoutNotWrittenToMarkdown dailyUnchanged yamlStatusDone indexInsideVault=false
+==> wrote /workspace/DevHarness/public/demo-kanban/kanban.json
+==> demo-kanban complete

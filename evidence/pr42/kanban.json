@@ -1,0 +1,80 @@
+{
+  "books" : [
+    {
+      "bodyMarkdown" : "Tiny changes.",
+      "id" : "94e3b2aa-9bca-47fe-9021-4299baf28198",
+      "relativePath" : "objects\/book\/atomic-habits.md",
+      "status" : "Done",
+      "title" : "Atomic Habits"
+    },
+    {
+      "bodyMarkdown" : "Focus is a skill.",
+      "id" : "9365b960-e0a6-4afb-9e53-a7a06ef082de",
+      "relativePath" : "objects\/book\/deep-work.md",
+      "status" : "Done",
+      "title" : "Deep Work"
+    },
+    {
+      "bodyMarkdown" : "Generalists.",
+      "id" : "c34df736-1aeb-4cc1-aeff-846beb741dc6",
+      "relativePath" : "objects\/book\/range.md",
+      "status" : "Reading",
+      "title" : "Range"
+    },
+    {
+      "bodyMarkdown" : "Career capital.",
+      "id" : "c01f0ed5-8c5f-4d22-9a4d-b7b36b54710a",
+      "relativePath" : "objects\/book\/so-good-they-can-t-ignore-you.md",
+      "status" : "To Read",
+      "title" : "So Good They Can't Ignore You"
+    }
+  ],
+  "columns" : [
+    {
+      "key" : "To Read",
+      "titles" : [
+        "So Good They Can't Ignore You"
+      ]
+    },
+    {
+      "key" : "Reading",
+      "titles" : [
+        "Range"
+      ]
+    },
+    {
+      "key" : "Done",
+      "titles" : [
+        "Atomic Habits",
+        "Deep Work"
+      ]
+    }
+  ],
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dailyUnchanged" : true,
+  "dashboard" : {
+    "defaultGroupBy" : "status",
+    "defaultView" : "board",
+    "relativePath" : ".loci\/types\/book.json"
+  },
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-kanban-demo-db-2026-08-13T21-39-22Z\/v3728799c840d3378\/index.sqlite",
+  "moduleVersion" : "0.42.0-pr42",
+  "movedFrom" : "Reading",
+  "movedTitle" : "Deep Work",
+  "movedTo" : "Done",
+  "note" : "PR42: Board columns from DashboardGrouping (select option order). Moving Deep Work Reading→Done updates YAML status via ObjectServing.save. Body, daily notes, and board layout stay out of markdown. Index never in vault.",
+  "objectMarkdownUnchanged" : true,
+  "proof" : {
+    "boardColumnsFromGroup" : true,
+    "indexInsideVault" : false,
+    "layoutNotWrittenToMarkdown" : true,
+    "moveUpdatesVaultYAML" : true
+  },
+  "typeSchemaChanged" : true,
+  "typeSchemaSnippet" : "{\n  \"color\" : \"#8B5A2B\",\n  \"dashboard\" : {\n    \"cardPreviewPropertyIDs\" : [\n\n    ],\n    \"defaultGroupBy\" : \"status\",\n    \"defaultSort\" : \"titleAsc\",\n    \"defaultView\" : \"board\",\n    \"hideArchived\" : false\n  },\n  \"icon\" : \"book\",\n  \"id\" : \"book\",\n  \"isBuiltIn\" : false,\n  \"isDaily\" : false,\n  \"name\" : \"Books\",\n  \"properties\" : [\n    {\n      \"id\" : \"status\",\n      \"kind\" : \"select\",\n      \"name\" : \"Status\",\n      \"options\" : [\n        \"To Read\",\n        \"Reading\",\n        \"Done\"\n      ],\n      \"required\" : false\n    }\n  ],\n  \"templateIDs\" : [\n\n  ]\n}",
+  "vaultRoot" : "\/tmp\/loci-kanban-demo-vault-2026-08-13T21-39-22Z\/LociVault",
+  "yamlSnippet" : "\nid: 9365b960-e0a6-4afb-9e53-a7a06ef082de\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T21:39:22Z\"\nupdated: \"2026-08-13T21:39:22Z\"\nproperties:\n  status:\n    kind: select\n    value: Done",
+  "yamlStatusDone" : true
+}
