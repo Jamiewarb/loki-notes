@@ -20,6 +20,7 @@ import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 import { renderTasksPanel } from "./panels/TasksPanel";
 import { renderMediaPanel } from "./panels/MediaPanel";
 import { renderGraphPanel } from "./panels/GraphPanel";
+import { renderCalendarPanel } from "./panels/CalendarPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -49,6 +50,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   tags: "#",
   media: "▣",
   graph: "⬡",
+  calendar: "▦",
 };
 
 function renderNavSection(
@@ -130,6 +132,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "graph") {
     void renderGraphPanel(detail);
+    return;
+  }
+  if (panelId === "calendar") {
+    void renderCalendarPanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -494,6 +500,8 @@ function inspectorTitle(id: PanelId): string {
       return "Backlinks";
     case "graph":
       return "Caps · Navigating";
+    case "calendar":
+      return "Dots · daily jump";
     case "tags":
       return "Object tags · aliases";
     case "media":

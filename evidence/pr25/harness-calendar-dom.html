@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -1135,3 +1145,378 @@ button.sync-chip:focus-visible {
 .cal-week-day.is-selected .cal-dot {
   background: var(--loci-paper);
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="calendar">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tasks" aria-current="false">
+          <span class="nav-btn-label">Tasks</span>
+          <span class="nav-btn-sub">Today &amp; open</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="false">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="links" aria-current="false">
+          <span class="nav-btn-label">Links</span>
+          <span class="nav-btn-sub">Wiki-links + backlinks</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="graph" aria-current="false">
+          <span class="nav-btn-label">Graph</span>
+          <span class="nav-btn-sub">Wiki-link network</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="calendar" aria-current="page">
+          <span class="nav-btn-label">Calendar</span>
+          <span class="nav-btn-sub">Daily notes · dots</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="tags" aria-current="false">
+          <span class="nav-btn-label">Tags</span>
+          <span class="nav-btn-sub">Cross-type #tags</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="media" aria-current="false">
+          <span class="nav-btn-label">Media</span>
+          <span class="nav-btn-sub">Attach + image objects</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="calendar" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination calendar-panel" data-harness="destination" data-destination="calendar">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">▦</span>
+          <h2 class="destination-title">Calendar</h2>
+        </header>
+        <p class="destination-lead">
+          Index-derived dots
+          (0.25.0-pr25 / 0.2.0-pr25).
+        </p>
+
+        <section class="vault-card" data-harness="calendar-proof" aria-label="Calendar proof">
+          <p class="vault-kicker">PR25 · daily paths · index markers</p>
+          <h3 class="vault-card-title">August 2026</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Month cells</dt>
+              <dd data-harness="calendar-cell-count">42</dd>
+            </div>
+            <div>
+              <dt>Marked</dt>
+              <dd data-harness="calendar-marked-count">3</dd>
+            </div>
+            <div>
+              <dt>Week cells</dt>
+              <dd data-harness="calendar-week-count">7</dd>
+            </div>
+            <div>
+              <dt>Jump</dt>
+              <dd data-harness="calendar-jump-path">daily/2026-08-14.md</dd>
+            </div>
+            <div>
+              <dt>Daily 13 unchanged</dt>
+              <dd>yes ✓</dd>
+            </div>
+            <div>
+              <dt>Index in vault</dt>
+              <dd>no ✓</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="cal-grid-wrap" aria-label="Month grid">
+          <div class="cal-toolbar">
+            <span class="cal-title" data-harness="calendar-title">August 2026</span>
+            <span class="cal-scope">Month</span>
+          </div>
+          <div class="cal-weekdays"><span class="cal-weekday">S</span><span class="cal-weekday">M</span><span class="cal-weekday">T</span><span class="cal-weekday">W</span><span class="cal-weekday">T</span><span class="cal-weekday">F</span><span class="cal-weekday">S</span></div>
+          <div class="cal-grid" data-harness="calendar-grid">
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-26" data-shows-dot="false">
+            <span class="cal-day-num">26</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-27" data-shows-dot="false">
+            <span class="cal-day-num">27</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-28" data-shows-dot="false">
+            <span class="cal-day-num">28</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-29" data-shows-dot="false">
+            <span class="cal-day-num">29</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-30" data-shows-dot="false">
+            <span class="cal-day-num">30</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-07-31" data-shows-dot="false">
+            <span class="cal-day-num">31</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-01" data-shows-dot="false">
+            <span class="cal-day-num">1</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-02" data-shows-dot="false">
+            <span class="cal-day-num">2</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-03" data-shows-dot="false">
+            <span class="cal-day-num">3</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-04" data-shows-dot="false">
+            <span class="cal-day-num">4</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-05" data-shows-dot="false">
+            <span class="cal-day-num">5</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-06" data-shows-dot="false">
+            <span class="cal-day-num">6</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-07" data-shows-dot="false">
+            <span class="cal-day-num">7</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-08" data-shows-dot="false">
+            <span class="cal-day-num">8</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-09" data-shows-dot="false">
+            <span class="cal-day-num">9</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-10" data-shows-dot="false">
+            <span class="cal-day-num">10</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-11" data-shows-dot="false">
+            <span class="cal-day-num">11</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period has-dot" data-harness="calendar-day" data-day-key="2026-08-12" data-shows-dot="true">
+            <span class="cal-day-num">12</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period is-today is-selected has-dot" data-harness="calendar-day" data-day-key="2026-08-13" data-shows-dot="true">
+            <span class="cal-day-num">13</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period has-dot" data-harness="calendar-day" data-day-key="2026-08-14" data-shows-dot="true">
+            <span class="cal-day-num">14</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-15" data-shows-dot="false">
+            <span class="cal-day-num">15</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-16" data-shows-dot="false">
+            <span class="cal-day-num">16</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-17" data-shows-dot="false">
+            <span class="cal-day-num">17</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-18" data-shows-dot="false">
+            <span class="cal-day-num">18</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-19" data-shows-dot="false">
+            <span class="cal-day-num">19</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-20" data-shows-dot="false">
+            <span class="cal-day-num">20</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-21" data-shows-dot="false">
+            <span class="cal-day-num">21</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-22" data-shows-dot="false">
+            <span class="cal-day-num">22</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-23" data-shows-dot="false">
+            <span class="cal-day-num">23</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-24" data-shows-dot="false">
+            <span class="cal-day-num">24</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-25" data-shows-dot="false">
+            <span class="cal-day-num">25</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-26" data-shows-dot="false">
+            <span class="cal-day-num">26</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-27" data-shows-dot="false">
+            <span class="cal-day-num">27</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-28" data-shows-dot="false">
+            <span class="cal-day-num">28</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-29" data-shows-dot="false">
+            <span class="cal-day-num">29</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-30" data-shows-dot="false">
+            <span class="cal-day-num">30</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell in-period" data-harness="calendar-day" data-day-key="2026-08-31" data-shows-dot="false">
+            <span class="cal-day-num">31</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-09-01" data-shows-dot="false">
+            <span class="cal-day-num">1</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-09-02" data-shows-dot="false">
+            <span class="cal-day-num">2</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-09-03" data-shows-dot="false">
+            <span class="cal-day-num">3</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-09-04" data-shows-dot="false">
+            <span class="cal-day-num">4</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="cal-cell out-period" data-harness="calendar-day" data-day-key="2026-09-05" data-shows-dot="false">
+            <span class="cal-day-num">5</span>
+            <span class="cal-dot" aria-hidden="true"></span>
+          </button></div>
+          <p class="vault-note" data-harness="calendar-selection">
+            Click a day — DailyNoteServing.ensure + Navigating.open in the app.
+          </p>
+        </section>
+
+        <section class="vault-card" aria-label="Week strip">
+          <p class="vault-kicker">Week · 2026-08-09 – 2026-08-15</p>
+          <div class="cal-week-strip" data-harness="calendar-week">
+            
+              <div class="cal-week-day">
+                <span>9</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day">
+                <span>10</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day">
+                <span>11</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day has-dot">
+                <span>12</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day has-dot is-selected">
+                <span>13</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day has-dot">
+                <span>14</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cal-week-day">
+                <span>15</span>
+                <span class="cal-dot" aria-hidden="true"></span>
+              </div>
+          </div>
+        </section>
+
+        <p class="vault-note">PR25: Calendar from IndexQuerying.calendarMarkers. Dots = daily/content/creations. Day select → DailyNoteServing.ensure + Navigating.open.</p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Dots · daily jump</p>
+        <div data-inspector-root="">
+          <p>Dots from IndexQuerying.calendarMarkers · never rewrite vault for chrome.</p>
+        </div>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786626200895"></script>
+  
+
+</body></html>

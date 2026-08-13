@@ -6,29 +6,28 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ## Wave C (PR22–)
 
-**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph → Calendar…
+**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph → Calendar → Capture…
 
-Next stack: **PR25 Calendar UI**.
+Next stack: **PR26 Capture surfaces**.
 
 ---
 
-## PR24 — Graph view
+## PR25 — Calendar UI
 
-**Branch:** `cursor/pr24-graph-d2c1`  
-**Based on:** `cursor/pr23-queries-d2c1` @ `a2ad141`  
-**Tip:** `886b5aa7144ca8704853ff39011f8669f3f44c20`
+**Branch:** `cursor/pr25-calendar-d2c1`  
+**Based on:** `cursor/pr24-graph-d2c1` @ `68f7f7e`  
+**Tip:** `a8ab66ee07d32a8ea97484285a86e4b797d6b106`
 
 ### What landed
 
-- **Core:** `GraphNode` / `GraphEdge` / `GraphSnapshot` / `GraphBuildOptions`; `GraphAssembly` (type filter + degree caps); `GraphLayoutEngine` (deterministic force-directed, Linux-testable)
-- **Index:** `IndexQuerying.graph`; `GraphBuilder` over `links` table + `LinkResolver` (broken links counted, not drawn)
-- **Route.graph** + AppShell Studio wiring (sidebar / iOS Settings stack / inspector)
-- **Features/Graph/:** `GraphFeature`, `GraphStore`, `GraphView` (Canvas), `GraphInspectorView` — node tap → `Navigating.open`
-- **Demo:** `loci-graph-demo` / `scripts/demo-graph.sh` → `DevHarness/public/demo-graph/`
-- **Harness:** Studio **Graph** panel (SVG) at `?panel=graph`
-- **Tests:** GraphAssembly caps/filter + layout determinism + GraphBuilder index tests (+9 → **211** total)
-- Evidence: `evidence/pr24/`
-- Version: Index / Markdown → `*-pr24`; Vault → `0.24.0-pr24`
+- **Core:** `CalendarScope` / `CalendarDayMarker` / `CalendarCell` / `CalendarGrid`; `CalendarGridBuilder` (month/week, Linux-testable); `Route.calendar`
+- **Index:** `IndexQuerying.calendarMarkers`; `CalendarMarkersQuery` (daily presence + FTS content + creations in range)
+- **Features/Calendar/:** `CalendarFeature`, `CalendarStore`, `CalendarView` (month/week + dots), `CalendarInspectorView` — day select → `DailyNoteServing.ensure` + `Navigating.open`
+- **Demo:** `loci-calendar-demo` / `scripts/demo-calendar.sh` → `DevHarness/public/demo-calendar/`
+- **Harness:** Studio **Calendar** panel at `?panel=calendar`
+- **Tests:** CalendarGridBuilder (+6) + CalendarMarkersQuery (+2) → **219** total
+- Evidence: `evidence/pr25/`
+- Version: Index / Markdown → `*-pr25`; Vault → `0.25.0-pr25`
 
 ### How to run checks
 
@@ -36,35 +35,41 @@ Next stack: **PR25 Calendar UI**.
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-graph.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=graph
+./scripts/demo-calendar.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=calendar
 ```
 
-### Pitfalls for PR25 (Calendar)
+### Pitfalls for PR26 (Capture surfaces)
 
-- Calendar must use **deterministic daily paths** (`daily/YYYY-MM-DD.md`) + `IndexQuerying.created(on:)` / daily identity — do not invent parallel date indexes in the vault
-- Dots for “has content / creations” are **index-derived UI only**; never rewrite daily markdown for calendar chrome
-- No feature→feature imports; Calendar talks DailyNoteServing / Index / Navigating protocols
-- Graph Studio destination already occupies tooling nav — leave alone unless calendar needs its own route
+- Share / widget / menu bar must append to **today’s daily** via deterministic `daily/YYYY-MM-DD.md` + `DailyNoteServing.ensureToday` — do not invent parallel inbox files
+- Capture writes are real vault mutations (unlike calendar chrome); keep them coordinated and index-applied
+- No feature→feature imports; Capture talks ObjectServing / DailyNoteServing / VaultServing protocols
+- Extensions are Apple-only targets — keep Linux-testable core helpers in packages; DevHarness can stub the capture UX
 
-### Next: PR25 — Calendar UI
+### Next: PR26 — Capture surfaces
 
-- Branch: `cursor/pr25-calendar-d2c1`
-- Month/week calendar anchored to daily notes; dots for days with content/creations; jump to daily
-- Depends on: PR10, PR11
+- Branch: `cursor/pr26-capture-d2c1`
+- iOS Share extension (append to today or create typed object); home-screen widget (Open today / Quick add); macOS menu bar quick capture
+- Depends on: PR10, PR08
+
+---
+
+## PR24 — Graph view
+
+**Branch:** `cursor/pr24-graph-d2c1`
+
+Graph from links table; type filter + caps. See `evidence/pr24/`.
+
+### Still relevant
+
+- Calendar dots are index-only (done in PR25) — do not confuse with capture writes
+- Graph Studio destination remains; Calendar is a sibling Studio route
 
 ---
 
 ## PR23 — Saved queries + embeds
 
-**Branch:** `cursor/pr23-queries-d2c1`
-
 QueryEngine DSL; `.loci/queries/`; `/query` embeds. See `evidence/pr23/`.
-
-### Still relevant
-
-- Graph must not scrape markdown — links table only (done in PR24)
-- Query results remain derived; do not confuse with graph topology
 
 ---
 
@@ -74,4 +79,4 @@ Manual collections per type; membership vault JSON. See `evidence/pr22/`.
 
 ---
 
-## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR24 done · next PR25
+## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR25 done · next PR26

@@ -1,0 +1,7 @@
+==> loci-calendar-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-calendar-demo' complete! (0.39s)
+month=August 2026 cells=42 marked=3 week=7 jump=daily/2026-08-14.md
+wrote DevHarness/public/demo-calendar/calendar.json

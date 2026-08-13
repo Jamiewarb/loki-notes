@@ -178,6 +178,16 @@ public final class IndexService: IndexQuerying, IndexUpdating, @unchecked Sendab
         }
     }
 
+    public func calendarMarkers(
+        from: Date,
+        to: Date,
+        calendar: Calendar = .current
+    ) async throws -> [CalendarDayMarker] {
+        try await dbQueue.read { db in
+            try CalendarMarkersQuery.markers(db: db, from: from, to: to, calendar: calendar)
+        }
+    }
+
     // MARK: - IndexUpdating
 
     public func rebuild() async throws {

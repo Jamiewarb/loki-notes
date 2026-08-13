@@ -96,6 +96,15 @@ Graph (PR24) extras:
 
 Graph topology comes from the index `links` table (`IndexQuerying.graph`); type filter + node/edge caps apply.
 
+Calendar (PR25) extras:
+
+```bash
+./scripts/demo-calendar.sh
+# harness: http://127.0.0.1:5173/?panel=calendar
+```
+
+Calendar dots come from `IndexQuerying.calendarMarkers` (daily presence / FTS content / creations). Day select opens `daily/YYYY-MM-DD.md` via `DailyNoteServing.ensure` — never rewrite vault for chrome.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

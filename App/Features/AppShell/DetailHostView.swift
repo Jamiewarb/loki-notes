@@ -75,6 +75,15 @@ struct DetailHostView: View {
                         message: "Link graph from IndexQuerying.graph (PR24). Cap + type filter."
                     )
                 }
+            case .calendar:
+                if let services {
+                    CalendarFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .calendar,
+                        message: "Month/week calendar around daily notes (PR25). Index dots · jump to daily."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -103,6 +112,7 @@ struct DetailHostView: View {
         case .designGallery: return "designGallery"
         case .tags: return "tags-\(services?.focusedTag ?? "all")"
         case .graph: return "graph"
+        case .calendar: return "calendar"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }
