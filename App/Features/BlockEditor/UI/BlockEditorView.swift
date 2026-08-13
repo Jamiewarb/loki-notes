@@ -152,10 +152,14 @@ private struct BlockRowView: View {
                 .fill(LociColors.accent)
                 .frame(width: 3)
                 .padding(.trailing, 4)
-        case .codeBlock:
+            case .codeBlock:
             Text("{ }")
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)
+                .frame(width: 28)
+        case .image:
+            Image(systemName: "photo")
+                .foregroundStyle(LociColors.accent)
                 .frame(width: 28)
         case .heading(let level, _):
             Text("H\(level)")
@@ -171,6 +175,7 @@ private struct BlockRowView: View {
         switch block {
         case .heading: return "Heading"
         case .codeBlock: return "Code"
+        case .image: return "Image alt"
         case .blockQuote: return "Quote"
         case .bulletList(let items) where items.first?.isTask == true: return "Task"
         case .bulletList, .numberedList: return "List item"

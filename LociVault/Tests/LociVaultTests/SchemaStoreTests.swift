@@ -29,6 +29,7 @@ final class SchemaStoreTests: XCTestCase {
         let ids = try await store.knownTypeIDs()
         XCTAssertTrue(ids.contains(.page))
         XCTAssertTrue(ids.contains(.daily))
+        XCTAssertTrue(ids.contains(.image))
         let page = try await store.loadType(.page)
         XCTAssertEqual(page.name, "Page")
         XCTAssertTrue(page.isBuiltIn)
@@ -38,6 +39,11 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertEqual(daily.name, "Daily")
         XCTAssertTrue(daily.isDaily)
         XCTAssertTrue(daily.isBuiltIn)
+
+        let image = try await store.loadType(.image)
+        XCTAssertEqual(image.name, "Image")
+        XCTAssertTrue(image.isBuiltIn)
+        XCTAssertTrue(image.properties.contains { $0.id == "media-path" })
 
         let settings = try await store.loadSpaceSettings()
         XCTAssertEqual(settings.name, "Schema Lab")
@@ -94,7 +100,7 @@ final class SchemaStoreTests: XCTestCase {
         // Fresh store against the same vault root — proves disk persistence.
         let store2 = SchemaStore(vault: vault)
         let ids = try await store2.knownTypeIDs()
-        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "page"])
+        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "image", "page"])
         let loaded = try await store2.loadType(ObjectTypeID("book"))
         XCTAssertEqual(loaded.name, "Book")
         XCTAssertEqual(loaded.properties.count, 2)
@@ -108,8 +114,8 @@ final class SchemaStoreTests: XCTestCase {
             ObjectType(id: ObjectTypeID("project"), name: "Project", icon: "folder")
         )
         let all = try await store.allTypes()
-        XCTAssertEqual(all.count, 3)
-        XCTAssertEqual(Set(all.map(\.id.rawValue)), Set(["page", "daily", "project"]))
+        XCTAssertEqual(all.count, 4)
+        XCTAssertEqual(Set(all.map(\.id.rawValue)), Set(["page", "daily", "image", "project"]))
     }
 
     func testLoadMissingTypeThrowsSchemaNotFound() async throws {
@@ -264,7 +270,7 @@ final class SchemaStoreTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20")
         )
     }
 }

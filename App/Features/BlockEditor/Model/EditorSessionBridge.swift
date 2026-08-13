@@ -100,6 +100,13 @@ final class EditorSessionBridge {
         scheduleSave()
     }
 
+    /// Insert a markdown image line after the focused block (PR20 media attach).
+    func insertMarkdownImageLine(_ line: String) {
+        let idx = min(focusedBlockIndex + 1, editor.blocks.count)
+        applyEdit(.pasteMarkdown(at: idx, markdown: line))
+        focusedBlockIndex = min(idx, max(0, editor.blocks.count - 1))
+    }
+
     /// Insert `[[id|title]]` replacing the active `@` / `[[` trigger.
     func insertWikiLink(to meta: LociObjectMeta) {
         let target = meta.id.frontMatterIDString

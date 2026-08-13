@@ -1,0 +1,7 @@
+==> loci-media-demo
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-media-demo' complete! (0.09s)
+images=['hero.png', 'loci-demo-hero-6c548cd1-6120-4ecb-a581-c99008aa6.png'] files=['notes.txt'] pageImage=True blobNotInIndex=True
+==> wrote /agent/DevHarness/public/demo-media/media.json
+==> demo-media complete

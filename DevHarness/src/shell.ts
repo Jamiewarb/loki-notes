@@ -17,7 +17,8 @@ export type PanelId =
   | "markdown"
   | "editor"
   | "links"
-  | "tags";
+  | "tags"
+  | "media";
 
 export interface NavItem {
   id: PanelId;
@@ -58,6 +59,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "editor", label: "Editor", subtitle: "Block session + slash", section: "studio" },
   { id: "links", label: "Links", subtitle: "Wiki-links + backlinks", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
+  { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
 
 /** Flat list for click wiring (primary + studio). */
@@ -123,5 +125,11 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Tags",
     body: "Object-level + body #tags (PR17). Tag browse is cross-type; aliases in space.json; dashboard filter.",
     inspector: "Object tags editor · aliases · index never in vault.",
+  },
+  media: {
+    id: "media",
+    title: "Media",
+    body: "Attach image/file → media/ (PR20). Markdown ![alt](…) · Image object type · blobs never in SQLite.",
+    inspector: "media/images + media/files listing · Image object media-path property.",
   },
 };

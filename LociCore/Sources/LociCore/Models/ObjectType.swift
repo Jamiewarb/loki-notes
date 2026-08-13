@@ -84,4 +84,30 @@ public struct ObjectType: Hashable, Sendable, Codable, Equatable {
             isDaily: true
         )
     }
+
+    /// Built-in Image type — object markdown under `objects/image/`; bytes only under `media/`.
+    public static var builtInImage: ObjectType {
+        ObjectType(
+            id: .image,
+            name: "Image",
+            icon: "photo",
+            color: "#2F6F5E",
+            properties: [
+                PropertyDef(
+                    id: "media-path",
+                    name: "Media path",
+                    kind: .text,
+                    required: true
+                ),
+                PropertyDef(
+                    id: "mime",
+                    name: "MIME",
+                    kind: .text,
+                    required: false
+                ),
+            ],
+            isBuiltIn: true,
+            isDaily: false
+        )
+    }
 }

@@ -67,11 +67,12 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return result
     }
 
-    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily**.
+    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily** + **Image**.
     public func bootstrapSchema(spaceName: String = "Loci") async throws {
         try await vault.ensureSkeleton(spaceName: spaceName)
         try await seedBuiltInPageIfNeeded()
         try await seedBuiltInDailyIfNeeded()
+        try await seedBuiltInImageIfNeeded()
     }
 
     /// Write `page.json` when absent (idempotent). Safe to call after `ensureSkeleton`.
@@ -90,6 +91,16 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
             return
         }
         try await saveType(.builtInDaily)
+    }
+
+    /// Write `image.json` when absent (idempotent). Blobs live under `media/`; objects under `objects/image/`.
+    public func seedBuiltInImageIfNeeded() async throws {
+        let path = Self.typeRelativePath(for: .image)
+        if try await vault.fileExists(atRelativePath: path) {
+            return
+        }
+        try await saveType(.builtInImage)
+        try await ensureObjectsFolder(for: .image)
     }
 
     // MARK: - Custom types (PR12)

@@ -12,6 +12,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
     case taskList
     case quote
     case code
+    case image
 
     public var title: String {
         switch self {
@@ -25,6 +26,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .taskList: return "Task list"
         case .quote: return "Quote"
         case .code: return "Code"
+        case .image: return "Image"
         }
     }
 
@@ -40,6 +42,7 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
         case .taskList: return "task"
         case .quote: return "quote"
         case .code: return "code"
+        case .image: return "image"
         }
     }
 
@@ -79,6 +82,10 @@ public enum SlashBlockKind: String, Sendable, Hashable, CaseIterable {
             return .blockQuote([.paragraph(inlines)])
         case .code:
             return .codeBlock(language: nil, code: plainText)
+        case .image:
+            // Placeholder until MediaServing attaches a real vault path (PR20).
+            let alt = plainText.isEmpty ? "image" : plainText
+            return .image(alt: alt, url: "../media/images/placeholder.png", title: nil)
         }
     }
 }

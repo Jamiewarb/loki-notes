@@ -17,6 +17,13 @@ public protocol VaultServing: Sendable {
     func deleteFile(atRelativePath path: String) async throws
     func fileExists(atRelativePath path: String) async throws -> Bool
 
+    /// Coordinated media put into `media/images` or `media/files` (unique name). Prefer `MediaServing`.
+    func putMedia(
+        _ data: Data,
+        kind: MediaKind,
+        preferredFileName: String
+    ) async throws -> MediaAttachment
+
     /// Soft-delete: move into `.loci/trash/` and write a tombstone manifest.
     /// Pass `objectID` when known so the tombstone can be matched after delete.
     @discardableResult

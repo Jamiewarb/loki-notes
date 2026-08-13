@@ -65,6 +65,13 @@ struct ObjectEditorView: View {
 
                 BlockEditorFeature.editor(session: session, services: services)
 
+                MediaFeature.attachControls(
+                    services: services,
+                    objectRelativePath: session.relativePath
+                ) { line in
+                    session.insertMarkdownImageLine(line)
+                }
+
                 HStack(spacing: LociSpacing.stack(.md)) {
                     LociButton("Save now", style: .secondary) {
                         Task { await session.flushSave() }
@@ -82,7 +89,7 @@ struct ObjectEditorView: View {
                 }
 
                 Text(
-                    "Block editor · / slash · @ / [[ link · # tags · autosave 500ms. Index updates after save."
+                    "Block editor · / slash · @ / [[ link · # tags · media attach · autosave 500ms."
                 )
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)
