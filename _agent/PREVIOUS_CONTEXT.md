@@ -4,24 +4,22 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR08 — Object CRUD end-to-end (Wave A complete)
+## PR09 — Block editor MVP
 
-**Branch:** `cursor/pr08-object-crud-d2c1`  
-**Based on:** `cursor/pr07-indexer-d2c1` @ `57d5c4c`
+**Branch:** `cursor/pr09-block-editor-d2c1`  
+**Based on:** `cursor/pr08-object-crud-d2c1` @ `af741c6`
 
 ### What landed
 
-- **`ObjectService` (`ObjectServing`)** in `LociVault`:
-  - `create` → `objects/<type>/<slug-or-id>.md` via `ObjectPathAllocator` + `MarkdownSerializer` / frontmatter
-  - `open` → index lookup → vault read → parse → `OpenedObject` (meta + bodyMarkdown)
-  - `save` → vault write → `IndexUpdating.applyVaultEvent(.modified)`
-  - `delete` → `trashFile` + tombstone (with objectID) → index `.deleted`
-- **`AppServices`:** `objects`, `ensureIndex()`, `openVaultPipeline()` (skeleton + bootstrapSchema + ensureIndex/rebuild), `createPage()`
-- **Apple UI:** `Features/ObjectEditor/` (session + TextEditor host + PageListView), Types → Page list, sidebar **New Page**, `Features/Onboarding/`
-- **Debounced save:** `ObjectEditorSession` documents 500ms debounce; service save is immediate once invoked
-- **CLI / harness:** `loci-objects-demo` + `scripts/demo-objects.sh` → `DevHarness/public/demo-objects/pages.json`; Types panel lists Pages + detail placeholder
-- **Tests:** **78** package tests (was 73) — create→index→list→open→save→delete loop
-- Evidence: `evidence/pr08/` — `indexInsideVault: false`
+- **`EditorSession` in `LociMarkdown`** (Linux-testable): owns BlockAST, `isDirty`, `revisionToken`; `applyLocalEdit`, `applySlashCommand`, `markSaved`, `proposeRemoteReload` (never clobbers if dirty), `serializeBody()`
+- **`BlockEdit` / `SlashBlockKind`**: paragraph, h1–h4, bullet/numbered/task lists, quote, code; paste markdown; split/delete/toggle task
+- **`BlockASTHTML`**: fixture HTML preview for harness
+- **Apple UI** `App/Features/BlockEditor/`: `BlockEditorView`, `SlashMenuView`, `Keymap`, `EditorSessionBridge` (debounce 500ms + 5s max → `ObjectServing.save`)
+- **`ObjectEditorView`**: title + BlockEditor (replaced plain TextEditor)
+- **DevHarness Studio → Editor** (`?panel=editor`): slash simulation + AST HTML (tasks/headings/lists)
+- **CLI:** `loci-editor-demo` + `scripts/demo-editor.sh`
+- **Tests:** **84** package tests (was 78)
+- Evidence: `evidence/pr09/`
 
 ### How to run checks
 
@@ -29,41 +27,37 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-objects.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
+./scripts/demo-editor.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=editor
 ```
 
-### Pitfalls for PR09 (Block Editor)
+### Pitfalls for PR10 (Daily notes)
 
-- Replace plain `TextEditor` body with BlockAST editor; keep `ObjectEditorSession` as host or migrate to full `EditorSession` (PLAN 13.5)
-- Typing must never await index; keep debounce on UI side; `ObjectServing.save` after idle
-- `open` returns body markdown string today — parse to BlockAST in editor; save should serialize blocks → bodyMarkdown (or extend `save` later)
-- Slash menu / enter-split / paste markdown are PR09 scope — do not regress ObjectService paths
-- Wiki-link picker is PR16; only insert raw `[[…]]` text if needed for fixtures
-- Daily notes automation is PR10 — do not special-case `daily/` create here beyond existing type path rules
+- Daily feature folder: `Features/DailyNotes/{DailyNoteService,DailyNoteView,DaySwitcher}`
+- Deterministic file `daily/YYYY-MM-DD.md` and stable id scheme (`daily-{yyyy-mm-dd}` per PLAN)
+- Open/create today on launch (esp. iOS); sidebar Daily destination becomes live
+- Reuse EditorSession for body — do not reintroduce TextEditor
+- Created-today list is **PR11** (inspector only); do not auto-write derived lists into daily markdown
+- Local vault fallback must work for daily create without iCloud
 
-### Next: PR09 — Block editor MVP
+### Next: PR10 — Daily notes
 
-- `Features/BlockEditor/{BlockEditorView,SlashMenu,EditorSession,Keymap}`
-- Bind to BlockAST; autosave debounce to ObjectServing; macOS shortcuts
-- Branch: `cursor/pr09-block-editor-d2c1`
+- Branch: `cursor/pr10-daily-notes-d2c1`
 
 ---
 
-## PR07 — Indexer
+## PR08 — Object CRUD end-to-end (Wave A complete)
 
-**Branch:** `cursor/pr07-indexer-d2c1`
+**Branch:** `cursor/pr08-object-crud-d2c1`
 
-GRDB SQLite in Application Support; `IndexService` query/update; FTS5; never in vault. See evidence/pr07.
+`ObjectService` create/open/save/delete; AppServices wiring; Page list; debounced save design. See `evidence/pr08/`.
 
 ### Still relevant
 
-- List Pages via `IndexQuerying.objects(typeID: .page)`
-- Index DB only via `ensureIndex()` / `IndexDatabase`
-- Frontmatter `type` maps to `ObjectTypeID`; path is locator from ObjectService
+- `ObjectServing.save(meta:bodyMarkdown:)` is the persist boundary after editor serialize
+- Index updates async after vault write; never block typing
+- Types → Page list navigates to object editor route
 
 ---
 
-## Wave A (PR01–PR08) — complete
-
-Scaffold → design system → shell → vault I/O → schema → markdown → index → **object CRUD**. Unblocks Wave B product features.
+## Wave A (PR01–PR08) — complete · Wave B starts at PR09
