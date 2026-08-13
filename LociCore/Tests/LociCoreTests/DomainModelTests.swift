@@ -170,8 +170,10 @@ final class DomainModelTests: XCTestCase {
         XCTAssertTrue(TypeSlug.isProtected(.page))
         XCTAssertTrue(TypeSlug.isProtected(.daily))
         XCTAssertTrue(TypeSlug.isProtected(.image))
+        XCTAssertTrue(TypeSlug.isProtected(.meeting))
         XCTAssertFalse(TypeSlug.isProtected(ObjectTypeID("book")))
         XCTAssertThrowsError(try TypeSlug.resolve(explicit: "image", fromName: "X"))
+        XCTAssertThrowsError(try TypeSlug.resolve(explicit: "meeting", fromName: "X"))
     }
 
     func testObjectTemplateCodableAndTemplateID() throws {

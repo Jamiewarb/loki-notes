@@ -110,4 +110,23 @@ public struct ObjectType: Hashable, Sendable, Codable, Equatable {
             isDaily: false
         )
     }
+
+    /// Built-in Meeting type — created from Apple Calendar / fake events (PR31).
+    public static var builtInMeeting: ObjectType {
+        ObjectType(
+            id: .meeting,
+            name: "Meeting",
+            icon: "calendar",
+            color: "#0F6B5C",
+            properties: [
+                PropertyDef(id: "event-id", name: "Event ID", kind: .text, required: true),
+                PropertyDef(id: "start", name: "Start", kind: .date, required: false),
+                PropertyDef(id: "end", name: "End", kind: .date, required: false),
+                PropertyDef(id: "location", name: "Location", kind: .text, required: false),
+                PropertyDef(id: "calendar", name: "Calendar", kind: .text, required: false),
+            ],
+            isBuiltIn: true,
+            isDaily: false
+        )
+    }
 }

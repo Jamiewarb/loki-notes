@@ -24,7 +24,8 @@ export type PanelId =
   | "capture"
   | "import"
   | "type-convert"
-  | "ai";
+  | "ai"
+  | "apple";
 
 export interface NavItem {
   id: PanelId;
@@ -75,6 +76,7 @@ export const STUDIO_NAV: NavItem[] = [
     section: "studio",
   },
   { id: "ai", label: "AI", subtitle: "Assist · BYOK", section: "studio" },
+  { id: "apple", label: "Apple", subtitle: "Calendar · Reminders", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -172,6 +174,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "AI",
     body: "AI assist (PR30). Summarize · rewrite · translate · property autofill. On-device heuristics / BYOK with explicit upload opt-in. Apply via ObjectServing only.",
     inspector: "Credentials in Application Support · never vault · never upload without opt-in.",
+  },
+  apple: {
+    id: "apple",
+    title: "Apple",
+    body: "Apple Calendar / Reminders (PR31). Event list on daily is chrome · Create Meeting → objects/meeting/ · optional Reminders sync (explicit).",
+    inspector: "Settings in Application Support · daily .md unchanged by event list · index never in vault.",
   },
   tags: {
     id: "tags",

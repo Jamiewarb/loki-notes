@@ -16,6 +16,8 @@ public struct ObjectTypeID: Hashable, Sendable, Codable, RawRepresentable {
     public static let daily = ObjectTypeID("daily")
     /// Built-in Image object type (PR20) — metadata in `objects/image/`; blob in `media/`.
     public static let image = ObjectTypeID("image")
+    /// Built-in Meeting type (PR31) — created from Apple Calendar / fake events.
+    public static let meeting = ObjectTypeID("meeting")
     /// PARA Project type (PR15 starter pack).
     public static let project = ObjectTypeID("project")
     /// PARA Area type (PR15 starter pack).

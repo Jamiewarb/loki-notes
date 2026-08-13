@@ -25,6 +25,7 @@ import { renderCapturePanel } from "./panels/CapturePanel";
 import { renderImportPanel } from "./panels/ImportPanel";
 import { renderTypeConvertPanel } from "./panels/TypeConvertPanel";
 import { renderAIPanel } from "./panels/AIPanel";
+import { renderApplePanel } from "./panels/ApplePanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -59,6 +60,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   import: "⇩",
   "type-convert": "⟲",
   ai: "✧",
+  apple: "▦",
 };
 
 function renderNavSection(
@@ -160,6 +162,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "ai") {
     void renderAIPanel(detail);
+    return;
+  }
+  if (panelId === "apple") {
+    void renderApplePanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -534,6 +540,8 @@ function inspectorTitle(id: PanelId): string {
       return "Property map · move";
     case "ai":
       return "Assist · BYOK";
+    case "apple":
+      return "Calendar · Reminders";
     case "tags":
       return "Object tags · aliases";
     case "media":

@@ -120,6 +120,15 @@ struct DetailHostView: View {
                         message: "AI assist (PR30). Summarize · rewrite · translate · autofill — on-device / BYOK opt-in."
                     )
                 }
+            case .apple:
+                if let services {
+                    AppleIntegrationsFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .apple,
+                        message: "Apple Calendar / Reminders (PR31). Event chrome · Meeting objects · optional Reminders sync."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -153,6 +162,7 @@ struct DetailHostView: View {
         case .importExport: return "importExport"
         case .typeConvert: return "typeConvert"
         case .ai: return "ai"
+        case .apple: return "apple"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

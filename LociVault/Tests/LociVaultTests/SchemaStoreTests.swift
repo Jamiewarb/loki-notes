@@ -30,6 +30,7 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertTrue(ids.contains(.page))
         XCTAssertTrue(ids.contains(.daily))
         XCTAssertTrue(ids.contains(.image))
+        XCTAssertTrue(ids.contains(.meeting))
         let page = try await store.loadType(.page)
         XCTAssertEqual(page.name, "Page")
         XCTAssertTrue(page.isBuiltIn)
@@ -44,6 +45,11 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertEqual(image.name, "Image")
         XCTAssertTrue(image.isBuiltIn)
         XCTAssertTrue(image.properties.contains { $0.id == "media-path" })
+
+        let meeting = try await store.loadType(.meeting)
+        XCTAssertEqual(meeting.name, "Meeting")
+        XCTAssertTrue(meeting.isBuiltIn)
+        XCTAssertTrue(meeting.properties.contains { $0.id == "event-id" })
 
         let settings = try await store.loadSpaceSettings()
         XCTAssertEqual(settings.name, "Schema Lab")
@@ -270,7 +276,7 @@ final class SchemaStoreTests: XCTestCase {
                 || LociVaultModule.version.contains("pr14")
                 || LociVaultModule.version.contains("pr15")
                 || LociVaultModule.version.contains("pr17")
-                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30")
+                || LociVaultModule.version.contains("pr18") || LociVaultModule.version.contains("pr19") || LociVaultModule.version.contains("pr20") || LociVaultModule.version.contains("pr21") || LociVaultModule.version.contains("pr22") || LociVaultModule.version.contains("pr23") || LociVaultModule.version.contains("pr24") || LociVaultModule.version.contains("pr25") || LociVaultModule.version.contains("pr26") || LociVaultModule.version.contains("pr27") || LociVaultModule.version.contains("pr28") || LociVaultModule.version.contains("pr29") || LociVaultModule.version.contains("pr30") || LociVaultModule.version.contains("pr31")
         )
     }
 }

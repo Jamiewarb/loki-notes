@@ -23,9 +23,11 @@ public enum Route: Hashable, Sendable, Codable {
     case typeConvert
     /// AI assist (PR30) — Studio / tooling destination.
     case ai
+    /// Apple Calendar / Reminders integrations (PR31) — Studio / tooling destination.
+    case apple
     case object(ObjectID)
 
-    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture, import, type convert, AI).
+    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture, import, type convert, AI, apple).
     public static let primaryDestinations: [Route] = [
         .daily, .tasks, .search, .types, .settings,
     ]
@@ -45,6 +47,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .importExport: return "Import"
         case .typeConvert: return "Convert"
         case .ai: return "AI"
+        case .apple: return "Apple"
         case .object: return "Object"
         }
     }
@@ -64,6 +67,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .importExport: return "square.and.arrow.down.on.square"
         case .typeConvert: return "arrow.triangle.2.circlepath"
         case .ai: return "sparkles"
+        case .apple: return "calendar.badge.clock"
         case .object: return "doc.text"
         }
     }
@@ -83,6 +87,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .importExport: return "Markdown · Obsidian · Capacities"
         case .typeConvert: return "Type · property map"
         case .ai: return "Assist · BYOK"
+        case .apple: return "Calendar · Reminders"
         case .object: return "Open object"
         }
     }

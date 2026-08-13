@@ -52,6 +52,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let ai: AIService
     /// BYOK credential store (Application Support / Keychain) — never vault.
     public let aiCredentials: AICredentialStore
+    /// Apple Calendar / Reminders (PR31) — always available; settings outside vault.
+    public let apple: AppleIntegrationService
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
 
@@ -72,7 +74,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         capture: CaptureService? = nil,
         importer: ImportService? = nil,
         ai: AIService? = nil,
-        aiCredentials: AICredentialStore? = nil
+        aiCredentials: AICredentialStore? = nil,
+        apple: AppleIntegrationService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -146,6 +149,15 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
                 credentials: resolvedCredentials,
                 remote: nil
             )
+        let appleDir: URL = {
+            if let apple { return apple.settingsFileURL.deletingLastPathComponent() }
+            return (try? AppleIntegrationService.defaultDirectory())
+                ?? FileManager.default.temporaryDirectory.appendingPathComponent(
+                    "Loci/apple",
+                    isDirectory: true
+                )
+        }()
+        self.apple = apple ?? AppleIntegrationService(settingsDirectory: appleDir)
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
@@ -344,6 +356,12 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     @discardableResult
     public func ensureAIService() -> AIService {
         ai
+    }
+
+    /// Apple integrations are always wired (fake stores on Linux).
+    @discardableResult
+    public func ensureAppleService() -> AppleIntegrationService {
+        apple
     }
 
     /// Drain extension inbox staging files into today / typed objects (PR26).
