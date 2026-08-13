@@ -228,6 +228,15 @@ macOS CI + shortcuts + VoiceOver (PR39) extras:
 
 GitHub Actions `macos-xcode` job (`runs-on: macos-14`) generates the Xcode project and builds iOS Simulator + macOS unsigned Debug. Linux cannot run `xcodebuild` — YAML is the Mac deliverable. macOS `.commands`: New Page ⌘N, Search ⌘K, Go to Today ⌘T, Quick Capture ⌘⇧N. VoiceOver identifiers on Daily / Editor / Search / Settings; typography uses `Font.custom(_:size:relativeTo:)`. Proof flags `macosCIWorkflowPresent` / `shortcutsCatalogued` / `voiceOverLabelsPresent` / `dynamicTypeScales` / `indexInsideVault: false`.
 
+Type dashboard filter / sort / group (PR41) extras:
+
+```bash
+./scripts/demo-dashboard.sh
+# harness: http://127.0.0.1:5173/?panel=types
+```
+
+The type dashboard list uses `IndexQuerying.execute(QueryDefinition)` for type + property equals + sort. Group-by is derived UI (`DashboardGrouping`) — never written into object markdown. Collection tabs stay a post-filter on vault `memberIDs`. User defaults persist only to `.loci/types/<slug>.json` (`TypeDashboardConfig`). Proof flags `filterApplied` / `sortApplied` / `groupApplied` / `resultsNotWrittenToMarkdown` / `indexInsideVault: false`. **Kanban is PR42.**
+
 Object-select picker (PR40) extras:
 
 ```bash

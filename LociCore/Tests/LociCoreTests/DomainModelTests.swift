@@ -155,6 +155,23 @@ final class DomainModelTests: XCTestCase {
         XCTAssertTrue(dash.cardPreviewPropertyIDs.isEmpty)
         XCTAssertNil(dash.defaultSort)
         XCTAssertFalse(dash.hideArchived)
+        XCTAssertNil(dash.defaultGroupBy)
+        XCTAssertNil(dash.defaultFilterKey)
+        XCTAssertNil(dash.defaultFilterText)
+    }
+
+    func testTypeDashboardConfigDecodesLegacyJSON() throws {
+        let data = Data(
+            #"{"cardPreviewPropertyIDs":["status"],"defaultSort":"updated","hideArchived":true}"#
+                .utf8
+        )
+        let dash = try JSONDecoder().decode(TypeDashboardConfig.self, from: data)
+        XCTAssertEqual(dash.cardPreviewPropertyIDs, ["status"])
+        XCTAssertEqual(dash.defaultSort, "updated")
+        XCTAssertTrue(dash.hideArchived)
+        XCTAssertNil(dash.defaultGroupBy)
+        XCTAssertNil(dash.defaultFilterKey)
+        XCTAssertNil(dash.defaultFilterText)
     }
 
     func testTypeSlugFromName() throws {

@@ -89,6 +89,32 @@ test("object-select picker shows selected title and proof flags", async ({ page 
   await expect(harness(page, "object-select-proof-indexInsideVault")).toHaveText("NO");
 });
 
+test("type dashboard groups filtered books and shows proof flags", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "dashboard-groups")).toBeVisible();
+  await expect(harness(page, "dashboard-section-Reading")).toBeVisible();
+  await expect(harness(page, "dashboard-row").filter({ hasText: "Deep Work" })).toBeVisible();
+  await expect(harness(page, "dashboard-row").filter({ hasText: "Range" })).toBeVisible();
+  await expect(harness(page, "dashboard-proof-filterApplied")).toHaveText("yes ✓");
+  await expect(harness(page, "dashboard-proof-sortApplied")).toHaveText("yes ✓");
+  await expect(harness(page, "dashboard-proof-groupApplied")).toHaveText("yes ✓");
+  await expect(harness(page, "dashboard-proof-resultsNotWrittenToMarkdown")).toHaveText("yes ✓");
+  await expect(harness(page, "dashboard-proof-indexInsideVault")).toHaveText("NO");
+});
+
+test("type dashboard does not write filter results into markdown", async ({ page }) => {
+  await gotoPanel(page, "types");
+
+  await expect(harness(page, "dashboard-note")).toBeVisible();
+  await expect(harness(page, "dashboard-note")).toHaveAttribute("data-daily-unchanged", "true");
+  await expect(harness(page, "dashboard-note")).toHaveAttribute(
+    "data-object-markdown-unchanged",
+    "true",
+  );
+  await expect(harness(page, "dashboard-note")).toHaveAttribute("data-index-inside-vault", "false");
+});
+
 test("object-select does not rewrite the book body with wiki-links", async ({ page }) => {
   await gotoPanel(page, "types");
 

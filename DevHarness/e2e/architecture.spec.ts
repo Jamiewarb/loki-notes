@@ -13,6 +13,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-collections/collections.json",
   "/demo-created-today/created-today.json",
   "/demo-daily/daily.json",
+  "/demo-dashboard/dashboard.json",
   "/demo-graph/graph.json",
   "/demo-import/import.json",
   "/demo-index/search.json",
@@ -216,6 +217,23 @@ test("macos-ci demo fixture records workflow, shortcuts, a11y, and no index in v
   expect(proof?.shortcutsCatalogued).toBe(true);
   expect(proof?.voiceOverLabelsPresent).toBe(true);
   expect(proof?.dynamicTypeScales).toBe(true);
+  expect(proof?.indexInsideVault).toBe(false);
+});
+
+test("dashboard demo fixture records filter sort group without writing markdown", async ({
+  request,
+}) => {
+  const response = await request.get("/demo-dashboard/dashboard.json");
+  expect(response.ok()).toBeTruthy();
+  const data = asRecord(await response.json());
+  expect(data?.indexInsideVault).toBe(false);
+  expect(data?.dailyUnchanged).toBe(true);
+  expect(data?.objectMarkdownUnchanged).toBe(true);
+  const proof = asRecord(data?.proof);
+  expect(proof?.filterApplied).toBe(true);
+  expect(proof?.sortApplied).toBe(true);
+  expect(proof?.groupApplied).toBe(true);
+  expect(proof?.resultsNotWrittenToMarkdown).toBe(true);
   expect(proof?.indexInsideVault).toBe(false);
 });
 
