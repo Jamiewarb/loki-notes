@@ -6,7 +6,7 @@ Guidance for humans and Cloud agents working on this repository.
 
 **Loci** is an Apple-only (macOS + iOS), Capacities-inspired personal knowledge base. Every object is a markdown file (plus YAML frontmatter) inside a user-owned vault directory on iCloud Drive, with a mandatory **local Documents fallback** when iCloud is unavailable. Search, backlinks, and “created today” come from a **local SQLite index** under Application Support — the index is disposable, rebuildable, and **must never live inside the vault**.
 
-The product vision, vault format, package boundaries, and stacked PR plan live in [`docs/PLAN.md`](docs/PLAN.md). Architecture research: [`docs/architecture-best-practices.md`](docs/architecture-best-practices.md). Feature hard rules: [`.cursor/skills/loci-feature-architecture/SKILL.md`](.cursor/skills/loci-feature-architecture/SKILL.md).
+The product vision, vault format, package boundaries, and stacked PR plan live in [`docs/PLAN.md`](docs/PLAN.md). Architecture research: [`docs/architecture-best-practices.md`](docs/architecture-best-practices.md). Feature hard rules: [`.cursor/skills/loci-feature-architecture/SKILL.md`](.cursor/skills/loci-feature-architecture/SKILL.md). Playwright feature tests: [`.cursor/skills/loci-playwright-feature-tests/SKILL.md`](.cursor/skills/loci-playwright-feature-tests/SKILL.md).
 
 ## Architecture pointers
 
