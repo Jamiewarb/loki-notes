@@ -1,0 +1,63 @@
+{
+  "backlinksOnB" : [
+    {
+      "label" : "Page B",
+      "sourceId" : "7122ea10-0502-4b3a-a558-38b2fae1d316",
+      "sourceTitle" : "Page A",
+      "target" : "bb6b5f34-bbbb-4712-bfe6-27cebb2e6424"
+    }
+  ],
+  "html" : "<article class=\"loci-ast\" data-harness=\"block-ast-html\">\n<p>Notes from today <span class=\"wiki-link is-resolved\" data-wiki-target=\"bb6b5f34-bbbb-4712-bfe6-27cebb2e6424\">Page B<\/span> and <span class=\"wiki-link is-broken\" data-wiki-target=\"missing-object-zzzz\">Broken<\/span>.<\/p>\n<\/article>",
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-links-demo-db-2026-08-13T11-39-31Z\/v27540bfc2e5d188d\/index.sqlite",
+  "markdownModuleVersion" : "0.2.0-pr16",
+  "moduleVersion" : "0.2.0-pr16",
+  "note" : "PR16: Link A→B via [[ObjectID|title]]; open B → backlinks list A. Broken links styled is-broken.",
+  "outgoingFromA" : [
+    {
+      "isBroken" : false,
+      "label" : "Page B",
+      "resolvedTitle" : "Page B",
+      "styleClass" : "wiki-link is-resolved",
+      "target" : "bb6b5f34-bbbb-4712-bfe6-27cebb2e6424"
+    },
+    {
+      "isBroken" : true,
+      "label" : "Broken",
+      "resolvedTitle" : null,
+      "styleClass" : "wiki-link is-broken",
+      "target" : "missing-object-zzzz"
+    }
+  ],
+  "pageA" : {
+    "bodyMarkdown" : "Notes from today [[bb6b5f34-bbbb-4712-bfe6-27cebb2e6424|Page B]] and [[missing-object-zzzz|Broken]].",
+    "id" : "7122ea10-0502-4b3a-a558-38b2fae1d316",
+    "relativePath" : "objects\/page\/page-a.md",
+    "title" : "Page A"
+  },
+  "pageB" : {
+    "id" : "bb6b5f34-bbbb-4712-bfe6-27cebb2e6424",
+    "relativePath" : "objects\/page\/page-b.md",
+    "title" : "Page B"
+  },
+  "pickerCandidates" : [
+    {
+      "id" : "bb6b5f34-bbbb-4712-bfe6-27cebb2e6424",
+      "title" : "Page B",
+      "type" : "page"
+    }
+  ],
+  "proof" : {
+    "aLinksToB" : true,
+    "backlinkCount" : 1,
+    "brokenCount" : 1,
+    "preferredTargetIsObjectID" : true,
+    "resolvedCount" : 1
+  },
+  "resolve" : {
+    "brokenIsNil" : true,
+    "byId" : "Page B",
+    "byPath" : "Page B"
+  },
+  "vaultRoot" : "\/tmp\/loci-links-demo-vault-2026-08-13T11-39-31Z\/LociVault"
+}

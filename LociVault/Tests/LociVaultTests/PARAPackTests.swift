@@ -146,7 +146,7 @@ final class PARAPackTests: XCTestCase {
     }
 
     func testModuleVersionPR15() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr15"))
-        XCTAssertTrue(LociIndexModule.version.contains("pr15"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr15") || LociVaultModule.version.contains("pr16"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr15") || LociIndexModule.version.contains("pr16"))
     }
 }

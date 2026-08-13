@@ -22,7 +22,10 @@ struct InspectorHostView: View {
                 .lociAppear(.panel)
             } else if case .object(let id) = route {
                 ScrollView {
-                    PropertiesFeature.editor(services: services, objectID: id)
+                    VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
+                        PropertiesFeature.editor(services: services, objectID: id)
+                        LinksFeature.backlinks(services: services, objectID: id)
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             } else if case .types = route, let typeID = services.focusedTypeID {
@@ -96,7 +99,7 @@ struct InspectorHostView: View {
         case .designGallery:
             return "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent."
         case .object:
-            return "Property values persist in YAML frontmatter on save."
+            return "Properties & backlinks from the local links index."
         }
     }
 

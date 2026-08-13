@@ -1,4 +1,14 @@
-/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
+<!DOCTYPE html>
+<html lang="en"><head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci — DevHarness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+  <style type="text/css" data-vite-dev-id="/agent/DevHarness/src/styles.css">/* DevHarness — mirrors LociDesignSystem tokens (PR02) + AppShell chrome (PR03).
  * Keep :root variables aligned with LociColors / LociTypography / LociSpacing.
  */
 
@@ -904,3 +914,206 @@ body {
     border-top: 1px solid var(--loci-line);
   }
 }
+</style></head>
+  <body>
+    <div id="app">
+    <div class="shell" data-harness="loci-shell" data-active="links">
+      <header class="brand-bar">
+        <h1 class="brand">Loci</h1>
+        <p class="brand-tag">App shell — sidebar · detail · inspector. Vault is truth; index is local.</p>
+      </header>
+      <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Navigate</p>
+      <nav class="nav" aria-label="Navigate">
+        <button type="button" class="nav-btn" data-nav="daily" aria-current="false">
+          <span class="nav-btn-label">Daily</span>
+          <span class="nav-btn-sub">Today’s note</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="search" aria-current="false">
+          <span class="nav-btn-label">Search</span>
+          <span class="nav-btn-sub">Full-text index</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="types" aria-current="false">
+          <span class="nav-btn-label">Types</span>
+          <span class="nav-btn-sub">Object dashboards</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="settings" aria-current="false">
+          <span class="nav-btn-label">Settings</span>
+          <span class="nav-btn-sub">Vault &amp; sync</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned">
+        <button type="button" class="nav-btn is-stub" data-nav="pin-inbox" aria-current="false" disabled="">
+          <span class="nav-btn-label">Inbox</span>
+          <span class="nav-btn-sub">Pinned · coming later</span>
+        </button>
+      </nav>
+    </div>
+  
+        
+    <div class="nav-section">
+      <p class="nav-section-label">Studio</p>
+      <nav class="nav" aria-label="Studio">
+        <button type="button" class="nav-btn" data-nav="gallery" aria-current="false">
+          <span class="nav-btn-label">Design</span>
+          <span class="nav-btn-sub">Tokens &amp; primitives</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="markdown" aria-current="false">
+          <span class="nav-btn-label">Markdown</span>
+          <span class="nav-btn-sub">AST round-trip</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="editor" aria-current="false">
+          <span class="nav-btn-label">Editor</span>
+          <span class="nav-btn-sub">Block session + slash</span>
+        </button>
+      
+        <button type="button" class="nav-btn" data-nav="links" aria-current="page">
+          <span class="nav-btn-label">Links</span>
+          <span class="nav-btn-sub">Wiki-links + backlinks</span>
+        </button>
+      </nav>
+    </div>
+  
+        <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
+      </aside>
+      <main class="detail" data-panel="links" data-harness="detail">
+        <div data-detail-root="">
+      <div class="destination links-panel" data-harness="destination" data-destination="links">
+        <header class="destination-header">
+          <span class="destination-icon" aria-hidden="true">⇉</span>
+          <h2 class="destination-title">Links</h2>
+        </header>
+        <p class="destination-lead">
+          LinkResolver prefers ObjectID; path/slug/title are secondary locators
+          (0.2.0-pr16).
+        </p>
+
+        <section class="vault-card" data-harness="links-proof" aria-label="Wiki-link proof">
+          <p class="vault-kicker">PR16 · A → B → backlink</p>
+          <h3 class="vault-card-title">Page A links to Page B</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Backlinks on B</dt>
+              <dd data-harness="links-backlink-count">1</dd>
+            </div>
+            <div>
+              <dt>A → B</dt>
+              <dd data-harness="links-a-to-b">yes</dd>
+            </div>
+            <div>
+              <dt>Target is ObjectID</dt>
+              <dd>yes</dd>
+            </div>
+            <div>
+              <dt>Broken / resolved</dt>
+              <dd>1 / 1</dd>
+            </div>
+            <div>
+              <dt>Index in vault</dt>
+              <dd>no ✓</dd>
+            </div>
+            <div>
+              <dt>Resolve by id / path</dt>
+              <dd>Page B / Page B</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="md-columns" aria-label="Backlinks and outgoing">
+          <div class="md-pane">
+            <h3 class="md-pane-title">Backlinks on Page B</h3>
+            <ul class="schema-type-list" data-harness="backlinks-list">
+        <li class="schema-type-row" data-harness="backlink-row" data-source-id="7122ea10-0502-4b3a-a558-38b2fae1d316">
+          <span class="schema-type-name">Page A</span>
+          <span class="schema-type-meta">→ bb6b5f34-bbbb-4712-bfe6-27cebb2e6424</span>
+        </li></ul>
+          </div>
+          <div class="md-pane">
+            <h3 class="md-pane-title">Outgoing from Page A</h3>
+            <ul class="schema-type-list" data-harness="outgoing-list">
+        <li class="schema-type-row" data-harness="outgoing-row">
+          <span class="wiki-link is-resolved" data-wiki-target="bb6b5f34-bbbb-4712-bfe6-27cebb2e6424">
+            Page B
+          </span>
+          <span class="schema-type-meta">resolved</span>
+        </li>
+        <li class="schema-type-row" data-harness="outgoing-row">
+          <span class="wiki-link is-broken" data-wiki-target="missing-object-zzzz">
+            Broken
+          </span>
+          <span class="schema-type-meta">broken</span>
+        </li></ul>
+          </div>
+        </section>
+
+        <section class="vault-card" aria-label="Picker candidates">
+          <p class="vault-kicker">@ / [[ picker</p>
+          <h3 class="vault-card-title">Candidates matching “Page”</h3>
+          <ul class="schema-type-list" data-harness="picker-list">
+        <li class="schema-type-row" data-harness="picker-row">
+          <span class="schema-type-name">Page B</span>
+          <span class="schema-type-meta">page</span>
+        </li></ul>
+        </section>
+
+        <section class="md-columns" aria-label="Body and HTML">
+          <div class="md-pane">
+            <h3 class="md-pane-title">Page A body</h3>
+            <pre class="md-pre" data-harness="links-body">Notes from today [[bb6b5f34-bbbb-4712-bfe6-27cebb2e6424|Page B]] and [[missing-object-zzzz|Broken]].</pre>
+          </div>
+          <div class="md-pane">
+            <h3 class="md-pane-title">AST HTML (broken styling)</h3>
+            <div class="ast-html" data-harness="links-html"><article class="loci-ast" data-harness="block-ast-html">
+<p>Notes from today <span class="wiki-link is-resolved" data-wiki-target="bb6b5f34-bbbb-4712-bfe6-27cebb2e6424">Page B</span> and <span class="wiki-link is-broken" data-wiki-target="missing-object-zzzz">Broken</span>.</p>
+</article></div>
+          </div>
+        </section>
+
+        <p class="vault-note">PR16: Link A→B via [[ObjectID|title]]; open B → backlinks list A. Broken links styled is-broken.</p>
+      </div>
+    </div>
+      </main>
+      <aside class="inspector" aria-label="Inspector" data-harness="inspector">
+        <h3>Inspector</h3>
+        <p class="inspector-title">Backlinks</p>
+        <div data-inspector-root="">
+      <p>Backlinks on <strong>Page B</strong> · index-only.</p>
+      <ul class="schema-type-list" data-harness="inspector-backlinks-list" style="margin-top:0.75rem">
+        
+        <li class="schema-type-row" data-harness="inspector-backlink-row">
+          <span class="schema-type-name">Page A</span>
+          <span class="schema-type-meta">[[bb6b5f34-bbbb-4712-bfe6-27cebb2e6424]]</span>
+        </li>
+      </ul>
+      <p class="vault-kicker" style="margin-top:0.75rem">Outgoing</p>
+      <ul class="schema-type-list" data-harness="inspector-outgoing-list">
+        <li class="schema-type-row">
+          <span class="wiki-link is-resolved">Page B</span>
+          <span class="schema-type-meta">ok</span>
+        </li>
+        <li class="schema-type-row">
+          <span class="wiki-link is-broken">Broken</span>
+          <span class="schema-type-meta">broken</span>
+        </li></ul>
+      <p class="inspector-hint" style="margin-top:0.75rem">PR16: Link A→B via [[ObjectID|title]]; open B → backlinks list A. Broken links styled is-broken.</p>
+    </div>
+        <p class="inspector-hint">macOS: trailing split · iOS: sheet / secondary stack</p>
+      </aside>
+    </div>
+  </div>
+    <script type="module" src="/src/main.ts?t=1786621112634"></script>
+  
+
+</body></html>

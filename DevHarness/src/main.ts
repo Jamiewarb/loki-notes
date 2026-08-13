@@ -11,6 +11,7 @@ import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 import { renderDailyPanel } from "./panels/DailyPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
 import { renderEditorPanel } from "./panels/EditorPanel";
+import { renderLinksPanel } from "./panels/LinksPanel";
 import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
 import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
@@ -39,6 +40,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   gallery: "◈",
   markdown: "¶",
   editor: "✎",
+  links: "⇉",
 };
 
 function renderNavSection(
@@ -98,6 +100,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
     void renderEditorPanel(detail);
     return;
   }
+  if (panelId === "links") {
+    void renderLinksPanel(detail);
+    return;
+  }
   if (panelId === "search") {
     void renderSearchIndex(detail);
     return;
@@ -155,6 +161,9 @@ function render(): void {
   }
   if (inspectorRoot && active === "types") {
     void renderPropertiesInspector(inspectorRoot);
+  }
+  if (inspectorRoot && active === "links") {
+    void renderBacklinksInspector(inspectorRoot);
   }
 
   app.querySelectorAll<HTMLButtonElement>("[data-nav]:not(:disabled)").forEach((btn) => {
@@ -380,6 +389,57 @@ function inspectorTitle(id: PanelId): string {
       return "BlockAST";
     case "editor":
       return "Slash · keymap";
+    case "links":
+      return "Backlinks";
+  }
+}
+
+/** Links inspector: backlinks on Page B from demo-links fixture (PR16). */
+async function renderBacklinksInspector(root: HTMLElement): Promise<void> {
+  root.innerHTML = `<p data-harness="inspector-links-loading">Loading backlinks…</p>`;
+  try {
+    const res = await fetch("/demo-links/links.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as {
+      pageB?: { title?: string };
+      backlinksOnB?: Array<{ sourceId: string; sourceTitle: string; target: string }>;
+      outgoingFromA?: Array<{ isBroken: boolean; styleClass: string; label?: string; target: string }>;
+      note?: string;
+    };
+    const backs = data.backlinksOnB ?? [];
+    const rows = backs
+      .map(
+        (b) => `
+        <li class="schema-type-row" data-harness="inspector-backlink-row">
+          <span class="schema-type-name">${escapeAttr(b.sourceTitle)}</span>
+          <span class="schema-type-meta">[[${escapeAttr(b.target)}]]</span>
+        </li>`,
+      )
+      .join("");
+    const outgoing = (data.outgoingFromA ?? [])
+      .map(
+        (l) => `
+        <li class="schema-type-row">
+          <span class="${escapeAttr(l.styleClass)}">${escapeAttr(l.label || l.target)}</span>
+          <span class="schema-type-meta">${l.isBroken ? "broken" : "ok"}</span>
+        </li>`,
+      )
+      .join("");
+    root.innerHTML = `
+      <p>Backlinks on <strong>${escapeAttr(data.pageB?.title ?? "B")}</strong> · index-only.</p>
+      <ul class="schema-type-list" data-harness="inspector-backlinks-list" style="margin-top:0.75rem">
+        ${rows || "<li class='schema-type-row'>Empty</li>"}
+      </ul>
+      <p class="vault-kicker" style="margin-top:0.75rem">Outgoing</p>
+      <ul class="schema-type-list" data-harness="inspector-outgoing-list">${
+        outgoing || "<li>none</li>"
+      }</ul>
+      <p class="inspector-hint" style="margin-top:0.75rem">${escapeAttr(
+        data.note ?? "Tap navigates via Navigating.open in the app.",
+      )}</p>
+    `;
+  } catch {
+    root.innerHTML = `<p>Missing links fixture. Run <code>./scripts/demo-links.sh</code>.</p>`;
   }
 }
 

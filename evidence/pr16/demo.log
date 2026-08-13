@@ -1,0 +1,8 @@
+==> loci-links-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-links-demo' complete! (0.27s)
+a→b backlinks=1 broken=1 resolved=1 indexOutsideVault=True
+==> wrote /agent/DevHarness/public/demo-links/links.json
+==> demo-links complete
