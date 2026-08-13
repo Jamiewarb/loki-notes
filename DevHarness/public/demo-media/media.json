@@ -12,42 +12,54 @@
     "relativePath" : "media\/images\/hero.png"
   },
   "imageObject" : {
-    "bodyMarkdown" : "![Hero Object](..\/..\/media\/images\/loci-demo-hero-6c548cd1-6120-4ecb-a581-c99008aa6.png)",
-    "id" : "acfbb012-2c46-4013-949c-b4bf49e22312",
-    "mediaPath" : "media\/images\/loci-demo-hero-6c548cd1-6120-4ecb-a581-c99008aa6.png",
+    "bodyMarkdown" : "![Hero Object](..\/..\/media\/images\/loci-demo-hero-9baf0ae6-219b-41d1-8dec-72be570a1.png)",
+    "id" : "de1d82a2-a50b-4b2f-aac5-9c648fa8398d",
+    "mediaPath" : "media\/images\/loci-demo-hero-9baf0ae6-219b-41d1-8dec-72be570a1.png",
     "relativePath" : "objects\/image\/hero-object.md",
     "title" : "Hero Object",
     "type" : "image"
   },
   "indexInsideVault" : false,
-  "indexModuleVersion" : "0.2.0-pr20",
-  "indexPath" : "\/tmp\/loci-media-demo-db-2026-08-13T12-16-44Z\/v329d687d4d5c322c\/index.sqlite",
-  "markdownModuleVersion" : "0.2.0-pr20",
+  "indexModuleVersion" : "0.2.0-pr30",
+  "indexPath" : "\/tmp\/loci-media-demo-db-2026-08-13T20-43-02Z\/v306bbc8dbd709bc5\/index.sqlite",
+  "markdownModuleVersion" : "0.2.0-pr30",
   "mediaListing" : {
     "files" : [
       "notes.txt"
     ],
     "images" : [
       "hero.png",
-      "loci-demo-hero-6c548cd1-6120-4ecb-a581-c99008aa6.png"
+      "loci-demo-hero-9baf0ae6-219b-41d1-8dec-72be570a1.png"
     ]
   },
-  "moduleVersion" : "0.20.0-pr20",
-  "note" : "PR20: Attach copies into media\/; notes use ![alt](..\/media\/…); Image objects store path in frontmatter — never blobs in SQLite.",
+  "moduleVersion" : "0.35.0-pr35",
+  "note" : "PR35: PhotosPicker (iOS) + drop (macOS) copy via MediaServing; Linux uses attach(fileURL:). Notes keep vault-relative media\/ paths — never absolute disk paths or SQLite blobs.",
   "page" : {
     "bodyMarkdown" : "Image in note syncs via vault folder.\n\n![Hero](..\/..\/media\/images\/hero.png)",
-    "id" : "1d0ab438-71cb-4a0b-a7e8-d67482e5643f",
+    "id" : "bf89fdb2-24c9-4b4f-baf5-0824a11398b3",
     "relativePath" : "objects\/page\/media-note.md",
     "title" : "Media Note",
     "type" : "page"
   },
+  "picker" : {
+    "attachedViaFileURL" : true,
+    "dragDropWired" : true,
+    "linuxAttachPath" : "MediaServing.attach(fileURL:)",
+    "photosPickerWired" : true,
+    "photosUIStaysInApp" : true
+  },
   "proof" : {
+    "attachedViaFileURL" : true,
     "blobNotInIndex" : true,
+    "dragDropWired" : true,
     "fileInMediaFiles" : true,
     "imageInMediaImages" : true,
     "imageObjectCreated" : true,
     "indexOutsideVault" : true,
-    "pageHasMarkdownImage" : true
+    "markdownRelativePathStartsWithMedia" : true,
+    "noteBodyHasAbsolutePath" : false,
+    "pageHasMarkdownImage" : true,
+    "photosPickerWired" : true
   },
-  "vaultRoot" : "\/tmp\/loci-media-demo-vault-2026-08-13T12-16-44Z\/LociVault"
+  "vaultRoot" : "\/tmp\/loci-media-demo-vault-2026-08-13T20-43-02Z\/LociVault"
 }

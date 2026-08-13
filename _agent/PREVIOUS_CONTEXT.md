@@ -8,7 +8,8 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr35-media-pickers-d2c1`  
 **Based on:** `cursor/pr34-pins-d2c1`  
-**Vault module:** `0.35.0-pr35`
+**Vault module:** `0.35.0-pr35`  
+**Swift tests:** **315** green (was 311). **Playwright:** **79** green (was 78). Evidence: `evidence/pr35/`
 
 ### Feature design
 - Domain folder: `App/Features/Media/`
