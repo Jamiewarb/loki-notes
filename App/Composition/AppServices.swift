@@ -12,21 +12,23 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public var selectedRoute: Route
     /// Concrete vault I/O (local Documents fallback always available).
     public let vault: VaultService
+    /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).
+    public let schema: SchemaStore
 
     public init(
         spaceName: String = "Loci",
         selectedRoute: Route = .daily,
-        vault: VaultService? = nil
+        vault: VaultService? = nil,
+        schema: SchemaStore? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
-        if let vault {
-            self.vault = vault
-        } else {
-            self.vault =
-                (try? VaultService(forceLocal: false))
-                ?? (try! VaultService(forceLocal: true))
-        }
+        let resolvedVault =
+            vault
+            ?? (try? VaultService(forceLocal: false))
+            ?? (try! VaultService(forceLocal: true))
+        self.vault = resolvedVault
+        self.schema = schema ?? SchemaStore(vault: resolvedVault)
     }
 
     public func open(route: Route) async {
@@ -48,8 +50,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         }
     }
 
-    /// Settings “Create vault” — ensures skeleton + bootstrap `space.json`.
+    /// Settings “Create vault” — skeleton + bootstrap built-in Page type.
     public func createVaultIfNeeded() async throws {
-        try await vault.ensureSkeleton(spaceName: spaceName)
+        try await schema.bootstrapSchema(spaceName: spaceName)
     }
 }

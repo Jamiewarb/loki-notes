@@ -64,8 +64,8 @@ export const PANELS: Record<PanelId, Panel> = {
   types: {
     id: "types",
     title: "Types",
-    body: "Object type dashboards placeholder (PR12). Schema lives under .loci/types/.",
-    inspector: "Type metadata and property defs (PR13).",
+    body: "Object type list (PR05). Built-in Page under .loci/types/page.json — merge-friendly per-type schema.",
+    inspector: "Type metadata from SchemaStore; property editors arrive in PR13.",
   },
   settings: {
     id: "settings",

@@ -17,18 +17,23 @@ enum LociVaultDemo {
         }
 
         let service = try VaultService(preferredLocalDirectory: parent, forceLocal: true)
-        try await service.ensureSkeleton(spaceName: "Loci Demo")
+        let schema = SchemaStore(vault: service)
+        try await schema.bootstrapSchema(spaceName: "Loci Demo")
         let sample = Data("---\nid: demo\ntitle: Hello\n---\n\nFrom loci-vault-demo.\n".utf8)
         try await service.writeFile(sample, atRelativePath: "daily/2026-08-13.md")
 
         let root = try await service.vaultRootURL
         let kind = await service.rootKind
         let space = try await service.readFile(atRelativePath: VaultLayout.spaceJSON)
+        let page = try await schema.loadType(.page)
+        let typeIDs = try await schema.knownTypeIDs()
 
         print("LociVault demo \(LociVaultModule.version)")
         print("rootKind: \(kind.rawValue)")
         print("vaultRoot: \(root.path)")
         print("space.json: \(String(data: space, encoding: .utf8) ?? "")")
+        print("types: \(typeIDs.map(\.rawValue).joined(separator: ", "))")
+        print("page: \(page.name) builtIn=\(page.isBuiltIn)")
         print("skeleton:")
         for dir in VaultLayout.requiredDirectories {
             let url = try await service.absoluteURL(forRelativePath: dir)

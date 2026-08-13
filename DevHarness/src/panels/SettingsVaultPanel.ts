@@ -36,8 +36,9 @@ export function renderSettingsVault(root: HTMLElement): void {
           </div>
         </dl>
         <ol class="vault-steps">
-          <li>Run package tests: <code>./scripts/test.sh</code> (VaultService round-trip + trash).</li>
-          <li>Optional CLI: <code>./scripts/demo-vault.sh</code> → prints vault path + writes sample daily note.</li>
+          <li>Run package tests: <code>./scripts/test.sh</code> (VaultService + SchemaStore).</li>
+          <li>Schema demo: <code>./scripts/demo-schema.sh</code> → writes Page type + harness fixtures.</li>
+          <li>Optional CLI: <code>./scripts/demo-vault.sh</code> → prints vault path + sample daily note.</li>
           <li>macOS/iOS: open Settings and tap Create vault when iCloud or local sandbox is available.</li>
         </ol>
         <p class="vault-note">

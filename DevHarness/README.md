@@ -17,7 +17,8 @@ Browser-runnable **visual test shell** for Loci Cloud agents (no Xcode / Simulat
 - Sidebar: Design, Daily, Search, Types, Settings
 - Detail + inspector placeholders for AppShell (PR03)
 - **Settings** vault status panel (PR04) — localDocuments copy + Create vault instructions (`?panel=settings`)
-- CLI proof: `./scripts/demo-vault.sh` (Swift `loci-vault-demo`)
+- **Types** schema panel (PR05) — loads `public/demo-schema/` fixtures (`?panel=types`); generate with `./scripts/demo-schema.sh`
+- CLI proof: `./scripts/demo-vault.sh` / `./scripts/demo-schema.sh` (Swift `loci-vault-demo` + fixture copy)
 
 ## Adding a panel in a later PR
 
