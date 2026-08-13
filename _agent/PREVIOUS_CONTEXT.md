@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR36 — EventKit
+
+**Branch:** `cursor/pr36-eventkit-d2c1`  
+**Based on:** `cursor/pr35-media-pickers-d2c1`  
+**Vault module:** `0.36.0-pr36`  
+**Swift tests:** **325** green (was 315). **Playwright:** **79** green (integrations + architecture: 12). Evidence: `evidence/pr36/`
+
+### Feature design
+- Domain folder: `App/Features/AppleIntegrations/` (existing)
+- Writes vault? listing events: **no**. Meeting create: `objects/meeting/` via ObjectServing. Reminders pull: today’s daily only when settings enabled + Sync.
+- Reads index? Meeting idempotency via `event-id`; reminders push via `IndexQuerying.tasks`
+- Protocols: `AppleCalendarServing` / `AppleRemindersServing` are now injectable store protocols (`calendarAuthorizationStatus`, `requestCalendarAccess`, events / reminders / upsert). `AppleIntegrationService` takes `any` store.
+- Apple: `EventKitCalendarStore` / `EventKitRemindersStore` behind `#if canImport(EventKit)` in Vault. Maps `EKEvent` fields through `AppleCalendarEventMapper` (Core, no EventKit types).
+- Linux / tests: `FakeAppleCalendarStore` / `FakeAppleRemindersStore`. Denied → empty list, daily.md unchanged, no crash.
+- Info.plist: `NSCalendarsUsageDescription`, `NSCalendarsFullAccessUsageDescription`, `NSRemindersUsageDescription`, `NSRemindersFullAccessUsageDescription`.
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-apple.sh
+./scripts/e2e.sh
+./scripts/run-harness.sh   # ?panel=apple — eventKitWired / linuxUsesFakes / dailyUnchanged
+```
+
+### Pitfalls
+- Do not put EventKit types in LociCore. Mapper tests must not `import EventKit`.
+- Listing events is chrome — never rewrite daily.md. Meeting create is the vault write.
+- Reminders pull/push still require settings enabled **and** an explicit Sync tap.
+- Denied EventKit → empty list + permission copy, not a fake fallback of sample events.
+- `eventKitWired` / `linuxUsesFakes` are compile-time proof flags (`canImport(EventKit)`). Linux demo always uses injected fakes.
+- `requestFullAccessToEvents` / `requestFullAccessToReminders` need the iOS 17 full-access Info.plist keys.
+- Linux SPM tests stay green without EventKit.
+
+### Next
+
+Stacked after PR35. Parent opens the GitHub PR.
+
+---
+
 ## PR35 — Media pickers
 
 **Branch:** `cursor/pr35-media-pickers-d2c1`  

@@ -1,0 +1,21 @@
+
+Running 12 tests using 2 workers
+
+(node:39884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39883) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/architecture.spec.ts:41:1 › demo fixtures never store the index inside the vault (117ms)
+  ✓   2 [chromium] › e2e/architecture.spec.ts:132:1 › daily panel shows the index is never in the vault (388ms)
+  ✓   3 [chromium] › e2e/architecture.spec.ts:140:1 › ai panel shows upload refused without opt-in (420ms)
+  ✓   4 [chromium] › e2e/integrations.spec.ts:4:1 › upload is refused without opt-in (461ms)
+  ✓   5 [chromium] › e2e/integrations.spec.ts:12:1 › credentials live outside the vault (495ms)
+  ✓   6 [chromium] › e2e/integrations.spec.ts:20:1 › event chrome does not rewrite daily.md (529ms)
+  ✓   8 [chromium] › e2e/integrations.spec.ts:43:1 › apple index is never stored in the vault (271ms)
+  ✓   9 [chromium] › e2e/integrations.spec.ts:51:1 › safari clipper uses the same Capture inbox (513ms)
+  ✓  10 [chromium] › e2e/integrations.spec.ts:58:1 › weblink url property is rendered (530ms)
+  ✓  11 [chromium] › e2e/integrations.spec.ts:66:1 › safari inbox is empty after drain (375ms)
+  ✓   7 [chromium] › e2e/integrations.spec.ts:35:1 › meetings are created via ObjectServing (2.2s)
+  ✓  12 [chromium] › e2e/integrations.spec.ts:74:1 › safari index is never from the extension (339ms)
+
+  12 passed (4.2s)
