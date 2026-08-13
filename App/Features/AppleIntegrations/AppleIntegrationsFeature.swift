@@ -1,10 +1,11 @@
 import SwiftUI
 import LociCore
 
-/// Public entry for Apple Calendar / Reminders integrations (PR31).
+/// Public entry for Apple Calendar / Reminders integrations (PR31 / PR36).
 ///
 /// Event list is inspector chrome (never rewrites daily markdown). Meeting create
 /// and Reminders sync go through `AppleIntegrationServing` + ObjectServing.
+/// EventKit is requested in the panel; Linux / tests keep fake stores.
 enum AppleIntegrationsFeature {
     @MainActor
     static func destination(services: AppServices) -> some View {

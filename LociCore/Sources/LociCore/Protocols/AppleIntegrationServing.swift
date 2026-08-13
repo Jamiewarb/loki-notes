@@ -1,19 +1,25 @@
 import Foundation
 
-/// Read Apple Calendar (or fake) events for a day — no vault writes (PR31).
+/// Read Apple Calendar (or fake) events for a day — no vault writes (PR31 / PR36).
+///
+/// Injected into `AppleIntegrationService`. Default is EventKit when
+/// `canImport(EventKit)`, otherwise `FakeAppleCalendarStore`.
 public protocol AppleCalendarServing: Sendable {
-    func authorizationStatus() -> AppleAuthStatus
+    func calendarAuthorizationStatus() -> AppleAuthStatus
+    /// Prompt (or no-op if already decided). Denied stays denied — never crashes.
+    func requestCalendarAccess() async -> AppleAuthStatus
     func events(on day: Date, calendar: Calendar) async throws -> [AppleCalendarEvent]
 }
 
-/// Read/write Apple Reminders (or fake) — optional task sync (PR31).
+/// Read/write Apple Reminders (or fake) — optional task sync (PR31 / PR36).
 public protocol AppleRemindersServing: Sendable {
-    func authorizationStatus() -> AppleAuthStatus
+    func remindersAuthorizationStatus() -> AppleAuthStatus
+    func requestRemindersAccess() async -> AppleAuthStatus
     func reminders(dueOn day: Date?, calendar: Calendar) async throws -> [AppleReminderItem]
     func upsert(_ item: AppleReminderItem) async throws
 }
 
-/// Calendar events on daily + Meeting create + optional Reminders sync (PR31).
+/// Calendar events on daily + Meeting create + optional Reminders sync (PR31 / PR36).
 ///
 /// Event list is **UI chrome only** — listing events must never rewrite daily markdown.
 /// Creating a Meeting is a vault write via `ObjectServing` under `objects/meeting/`.

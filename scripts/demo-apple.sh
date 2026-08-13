@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/demo-apple.sh — Apple Calendar / Reminders fixtures for DevHarness (PR31).
+# scripts/demo-apple.sh — Apple Calendar / Reminders fixtures for DevHarness (PR31 / PR36).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -32,7 +32,12 @@ assert proof.get("dailyUnchanged") is True, proof
 assert proof.get("reminderSynced") is True, proof
 assert proof.get("indexOutsideVault") is True, proof
 assert proof.get("settingsOutsideVault") is True, proof
+assert proof.get("eventKitWired") is True, proof
+assert proof.get("linuxUsesFakes") is True, proof
 assert data.get("dailyUnchangedAfterEvents") is True
+assert data.get("eventKitWired") is True
+assert data.get("linuxUsesFakes") is True
+assert data.get("dailyUnchanged") is True
 assert data.get("reminderSynced") is True
 meeting = data.get("meeting") or {}
 assert str(meeting.get("path", "")).startswith("objects/meeting/"), meeting

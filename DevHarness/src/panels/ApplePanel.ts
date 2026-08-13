@@ -32,6 +32,9 @@ export async function renderApplePanel(root: HTMLElement): Promise<void> {
       proof: Record<string, boolean>;
       note: string;
       dailyBodyAfterSync?: string;
+      eventKitWired?: boolean;
+      linuxUsesFakes?: boolean;
+      dailyUnchanged?: boolean;
     };
 
     const events = data.events || [];
@@ -65,7 +68,7 @@ export async function renderApplePanel(root: HTMLElement): Promise<void> {
         </p>
 
         <section class="vault-card" data-harness="apple-events" aria-label="Events">
-          <p class="vault-kicker">PR31 · Event list is UI chrome</p>
+          <p class="vault-kicker">PR36 · EventKit on Apple · fakes on Linux · chrome only</p>
           <h3 class="vault-card-title">Events for day</h3>
           <ul class="vault-list">${eventRows || "<li>None</li>"}</ul>
         </section>

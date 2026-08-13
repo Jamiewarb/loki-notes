@@ -57,6 +57,16 @@ public enum AppleAuthStatus: String, Codable, Sendable, Hashable, Equatable {
     case denied
     case authorized
     case unavailable
+
+    /// Short status for Settings / Apple panel copy (PR36).
+    public var permissionLabel: String {
+        switch self {
+        case .notDetermined: return "Not determined"
+        case .denied: return "Denied"
+        case .authorized: return "Authorized"
+        case .unavailable: return "Unavailable"
+        }
+    }
 }
 
 /// Settings for Apple Calendar / Reminders integrations (Application Support JSON — never vault).
@@ -185,5 +195,22 @@ public enum ReminderTaskMapper: Sendable {
 
     public static func dayKey(for date: Date, calendar: Calendar = .current) -> String {
         DailyNoteIdentity.title(for: date, calendar: calendar)
+    }
+
+    /// Parse `YYYY-MM-DD` back to a local calendar date (EventKit due components).
+    public static func date(fromDayKey key: String, calendar: Calendar = .current) -> Date? {
+        let parts = key.split(separator: "-")
+        guard parts.count == 3,
+            let year = Int(parts[0]),
+            let month = Int(parts[1]),
+            let day = Int(parts[2])
+        else {
+            return nil
+        }
+        var comps = DateComponents()
+        comps.year = year
+        comps.month = month
+        comps.day = day
+        return calendar.date(from: comps)
     }
 }

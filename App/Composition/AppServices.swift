@@ -52,7 +52,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let ai: AIService
     /// BYOK credential store (Application Support / Keychain) — never vault.
     public let aiCredentials: AICredentialStore
-    /// Apple Calendar / Reminders (PR31) — always available; settings outside vault.
+    /// Apple Calendar / Reminders (PR31 / PR36) — EventKit on Apple, fakes on Linux.
     public let apple: AppleIntegrationService
     /// Safari web clipper (PR32). Nil until CaptureServing + ObjectServing are ready.
     public private(set) var safariClipper: SafariClipService?
@@ -162,7 +162,13 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
                     isDirectory: true
                 )
         }()
-        self.apple = apple ?? AppleIntegrationService(settingsDirectory: appleDir)
+        self.apple =
+            apple
+            ?? AppleIntegrationService(
+                settingsDirectory: appleDir,
+                calendarStore: AppleStoreFactory.makeCalendarStore(),
+                remindersStore: AppleStoreFactory.makeRemindersStore()
+            )
         if let safariClipper {
             self.safariClipper = safariClipper
         } else if let capture = self.capture, let objects = self.objects {
@@ -380,7 +386,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         ai
     }
 
-    /// Apple integrations are always wired (fake stores on Linux).
+    /// Apple integrations are always wired (EventKit on Apple; fakes on Linux).
     @discardableResult
     public func ensureAppleService() -> AppleIntegrationService {
         apple

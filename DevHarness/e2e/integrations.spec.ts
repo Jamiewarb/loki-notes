@@ -26,6 +26,10 @@ test("event chrome does not rewrite daily.md", async ({ page }) => {
   await expect(harness(page, "apple-proof-dailyUnchanged")).toHaveText("yes ✓");
   await expect(harness(page, "apple-daily-body")).toBeVisible();
   await expect(harness(page, "apple-daily-body")).not.toContainText("Design review");
+  await expect(harness(page, "apple-proof-eventKitWired")).toBeVisible();
+  await expect(harness(page, "apple-proof-eventKitWired")).toHaveText("yes ✓");
+  await expect(harness(page, "apple-proof-linuxUsesFakes")).toBeVisible();
+  await expect(harness(page, "apple-proof-linuxUsesFakes")).toHaveText("yes ✓");
 });
 
 test("meetings are created via ObjectServing", async ({ page }) => {

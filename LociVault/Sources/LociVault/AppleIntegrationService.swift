@@ -1,30 +1,30 @@
 import Foundation
 import LociCore
 
-/// Concrete Apple Calendar / Reminders integration (PR31).
+/// Concrete Apple Calendar / Reminders integration (PR31 / PR36).
 ///
 /// Settings live under Application Support `Loci/apple/` — **never** the vault.
-/// On Linux (and when EventKit is unavailable) uses in-memory fake stores.
+/// Injected stores: EventKit when `canImport(EventKit)`, else in-memory fakes.
 /// Listing events never writes daily markdown; Meeting create goes through ObjectServing.
 public final class AppleIntegrationService: AppleIntegrationServing, @unchecked Sendable {
     private let settingsDirectory: URL
     private let settingsURL: URL
     private let lock = NSLock()
-    public let calendarStore: FakeAppleCalendarStore
-    public let remindersStore: FakeAppleRemindersStore
+    public let calendarStore: any AppleCalendarServing
+    public let remindersStore: any AppleRemindersServing
 
     public init(
         settingsDirectory: URL,
-        calendarStore: FakeAppleCalendarStore = FakeAppleCalendarStore(),
-        remindersStore: FakeAppleRemindersStore = FakeAppleRemindersStore()
+        calendarStore: (any AppleCalendarServing)? = nil,
+        remindersStore: (any AppleRemindersServing)? = nil
     ) {
         self.settingsDirectory = settingsDirectory
         self.settingsURL = settingsDirectory.appendingPathComponent(
             "settings.json",
             isDirectory: false
         )
-        self.calendarStore = calendarStore
-        self.remindersStore = remindersStore
+        self.calendarStore = calendarStore ?? AppleStoreFactory.makeCalendarStore()
+        self.remindersStore = remindersStore ?? AppleStoreFactory.makeRemindersStore()
     }
 
     /// Application Support `Loci/apple/` on Apple; temp `Loci/apple/` on Linux.
@@ -44,7 +44,11 @@ public final class AppleIntegrationService: AppleIntegrationServing, @unchecked 
     }
 
     public static func makeDefault() throws -> AppleIntegrationService {
-        AppleIntegrationService(settingsDirectory: try defaultDirectory())
+        AppleIntegrationService(
+            settingsDirectory: try defaultDirectory(),
+            calendarStore: AppleStoreFactory.makeCalendarStore(),
+            remindersStore: AppleStoreFactory.makeRemindersStore()
+        )
     }
 
     public var settingsFileURL: URL { settingsURL }
@@ -61,17 +65,16 @@ public final class AppleIntegrationService: AppleIntegrationServing, @unchecked 
 
     // MARK: - Calendar
 
-    public func authorizationStatus() -> AppleAuthStatus {
-        #if canImport(EventKit)
-        // EventKit wiring is Apple-only; Linux and tests always use the fake store.
-        return calendarStore.authorizationStatus()
-        #else
-        return calendarStore.authorizationStatus()
-        #endif
+    public func calendarAuthorizationStatus() -> AppleAuthStatus {
+        calendarStore.calendarAuthorizationStatus()
+    }
+
+    public func requestCalendarAccess() async -> AppleAuthStatus {
+        await calendarStore.requestCalendarAccess()
     }
 
     public func events(on day: Date, calendar: Calendar) async throws -> [AppleCalendarEvent] {
-        calendarStore.events(on: day, calendar: calendar)
+        try await calendarStore.events(on: day, calendar: calendar)
     }
 
     public func eventsForDaily(day: Date, calendar: Calendar) async throws -> [AppleCalendarEvent] {
@@ -80,15 +83,23 @@ public final class AppleIntegrationService: AppleIntegrationServing, @unchecked 
 
     // MARK: - Reminders
 
+    public func remindersAuthorizationStatus() -> AppleAuthStatus {
+        remindersStore.remindersAuthorizationStatus()
+    }
+
+    public func requestRemindersAccess() async -> AppleAuthStatus {
+        await remindersStore.requestRemindersAccess()
+    }
+
     public func reminders(
         dueOn day: Date?,
         calendar: Calendar
     ) async throws -> [AppleReminderItem] {
-        remindersStore.reminders(dueOn: day, calendar: calendar)
+        try await remindersStore.reminders(dueOn: day, calendar: calendar)
     }
 
     public func upsert(_ item: AppleReminderItem) async throws {
-        remindersStore.upsert(item)
+        try await remindersStore.upsert(item)
     }
 
     // MARK: - Meeting create
@@ -173,8 +184,8 @@ public final class AppleIntegrationService: AppleIntegrationServing, @unchecked 
         let open = tasks.filter { !$0.isCompleted }
         let dayKey = ReminderTaskMapper.dayKey(for: day, calendar: calendar)
         var pushed = 0
+        let existing = try await remindersStore.reminders(dueOn: day, calendar: calendar)
         for task in open {
-            let existing = remindersStore.reminders(dueOn: day, calendar: calendar)
             if existing.contains(where: {
                 $0.title.caseInsensitiveCompare(task.text) == .orderedSame
             }) {

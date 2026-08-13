@@ -4,7 +4,8 @@ import LociVault
 import LociIndex
 import LociMarkdown
 
-/// CLI: Apple Calendar / Reminders fixtures for DevHarness (PR31).
+/// CLI: Apple Calendar / Reminders fixtures for DevHarness (PR31 / PR36).
+/// Linux always injects fakes; proof flags record EventKit wiring + linuxUsesFakes.
 @main
 struct LociAppleDemo {
     static func main() async throws {
@@ -162,9 +163,14 @@ struct LociAppleDemo {
                 "indexOutsideVault": !sqliteInVault,
                 "settingsOutsideVault": settingsOutside && !settingsInVault,
                 "meetingTypeSeeded": meetingType.isBuiltIn,
+                "eventKitWired": EventKitNotes.eventKitWired,
+                "linuxUsesFakes": EventKitNotes.linuxUsesFakes,
             ],
+            "eventKitWired": EventKitNotes.eventKitWired,
+            "linuxUsesFakes": EventKitNotes.linuxUsesFakes,
+            "dailyUnchanged": dailyUnchanged,
             "note":
-                "PR31: Event list is UI chrome (daily .md unchanged). Meeting via ObjectServing. Reminders sync explicit + settings outside vault.",
+                "PR36: EventKit on Apple (mapped to AppleCalendarEvent). Linux uses fakes. Event list is UI chrome (daily .md unchanged). Meeting via ObjectServing. Reminders sync explicit + settings outside vault.",
         ]
 
         let data = try JSONSerialization.data(

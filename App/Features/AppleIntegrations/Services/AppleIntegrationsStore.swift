@@ -10,6 +10,22 @@ final class AppleIntegrationsStore {
         self.apple = apple
     }
 
+    func calendarAuthorizationStatus() -> AppleAuthStatus {
+        apple.calendarAuthorizationStatus()
+    }
+
+    func requestCalendarAccess() async -> AppleAuthStatus {
+        await apple.requestCalendarAccess()
+    }
+
+    func remindersAuthorizationStatus() -> AppleAuthStatus {
+        apple.remindersAuthorizationStatus()
+    }
+
+    func requestRemindersAccess() async -> AppleAuthStatus {
+        await apple.requestRemindersAccess()
+    }
+
     func loadSettings() async throws -> AppleIntegrationSettings {
         try await apple.loadSettings()
     }

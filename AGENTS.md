@@ -190,6 +190,15 @@ Media pickers (PR35) extras:
 
 iOS `PhotosPicker` and macOS `.onDrop` copy bytes via `MediaServing` into vault `media/`, then insert `![alt](relative)`. Linux uses `attach(fileURL:)`. Never persist absolute disk paths or store blobs in SQLite. Proof flags `photosPickerWired` / `dragDropWired` mean “code present”.
 
+EventKit (PR36) extras:
+
+```bash
+./scripts/demo-apple.sh
+# harness: http://127.0.0.1:5173/?panel=apple
+```
+
+On Apple, Calendar/Reminders use EventKit (`requestFullAccessToEvents` / reminders). Linux and tests inject `FakeAppleCalendarStore` / `FakeAppleRemindersStore`. EventKit types stay out of LociCore. Listing events never writes daily.md. Proof flags `eventKitWired` / `linuxUsesFakes` / `dailyUnchanged`.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

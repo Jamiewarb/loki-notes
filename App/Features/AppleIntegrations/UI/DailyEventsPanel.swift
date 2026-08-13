@@ -2,13 +2,14 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Daily inspector chrome: Apple Calendar / fake events for the inspected day (PR31).
+/// Daily inspector chrome: Apple Calendar / EventKit / fake events for the inspected day (PR31 / PR36).
 ///
 /// Listing events never rewrites daily markdown. “Create Meeting” writes via ObjectServing.
 struct DailyEventsPanel: View {
     var services: AppServices
     var day: Date
     @State private var events: [AppleCalendarEvent] = []
+    @State private var authStatus: AppleAuthStatus = .notDetermined
     @State private var status = "Events are UI chrome — daily .md stays untouched."
     @State private var lastMeetingPath: String?
 
@@ -23,13 +24,30 @@ struct DailyEventsPanel: View {
                 .tracking(0.08)
                 .foregroundStyle(LociColors.inkSoft)
 
-            Text("Apple Calendar / fake store · Create Meeting → objects/meeting/")
+            Text("Apple Calendar · Create Meeting → objects/meeting/")
                 .font(LociTypography.font(.callout))
                 .foregroundStyle(LociColors.inkSoft)
                 .fixedSize(horizontal: false, vertical: true)
 
+            Text("Calendar access: \(authStatus.permissionLabel)")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+
+            if authStatus != .authorized {
+                Text(EventKitNotes.permissionCopyCalendar)
+                    .font(LociTypography.font(.caption))
+                    .foregroundStyle(LociColors.inkSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if authStatus == .notDetermined {
+                    LociButton("Grant Calendar access", style: .secondary) {
+                        Task { await requestAccessAndReload() }
+                    }
+                }
+            }
+
             if events.isEmpty {
-                Text("No events for this day.")
+                Text(authStatus == .denied ? "No events — Calendar access denied." : "No events for this day.")
                     .font(LociTypography.font(.callout))
                     .foregroundStyle(LociColors.inkSoft)
             } else {
@@ -64,13 +82,27 @@ struct DailyEventsPanel: View {
         .task(id: day) { await reload() }
     }
 
+    private func requestAccessAndReload() async {
+        authStatus = await store.requestCalendarAccess()
+        await reload()
+    }
+
     private func reload() async {
+        authStatus = store.calendarAuthorizationStatus()
+        if authStatus == .notDetermined {
+            authStatus = await store.requestCalendarAccess()
+        }
         do {
             events = try await store.eventsForDaily(day: day)
-            status = events.isEmpty
-                ? "No events — daily markdown unchanged."
-                : "\(events.count) event(s) · chrome only."
+            if authStatus == .denied {
+                status = "Calendar access denied — empty list. Daily markdown unchanged."
+            } else if events.isEmpty {
+                status = "No events — daily markdown unchanged."
+            } else {
+                status = "\(events.count) event(s) · chrome only."
+            }
         } catch {
+            events = []
             status = "Events failed: \(error.localizedDescription)"
         }
     }

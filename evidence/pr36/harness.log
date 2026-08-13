@@ -1,0 +1,19 @@
+==> loci-apple-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-apple-demo' complete! (0.53s)
+events=1 meeting=objects/meeting/design-review.md dailyUnchanged=True reminderSynced=True module=0.36.0-pr36
+wrote DevHarness/public/demo-apple/apple.json
+
+==> GET /?panel=apple
+HTTP/1.1 200 OK
+Vary: Origin
+Content-Type: text/html
+Cache-Control: no-cache
+Etag: W/"2bc-lpp3VPhwopJUMyF6+OXZep6DkBQ"
+Date: Thu, 13 Aug 2026 20:52:15 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 700
+

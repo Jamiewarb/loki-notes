@@ -112,6 +112,12 @@ test("demo fixtures never store the index inside the vault", async ({
     if (proof && "dragDropWired" in proof) {
       expect.soft(proof.dragDropWired, `${url} proof.dragDropWired`).toBe(true);
     }
+    if (proof && "eventKitWired" in proof) {
+      expect.soft(proof.eventKitWired, `${url} proof.eventKitWired`).toBe(true);
+    }
+    if (proof && "linuxUsesFakes" in proof) {
+      expect.soft(proof.linuxUsesFakes, `${url} proof.linuxUsesFakes`).toBe(true);
+    }
     if (proof && "noteBodyHasAbsolutePath" in proof) {
       expect
         .soft(
