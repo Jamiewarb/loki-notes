@@ -16,7 +16,7 @@ Next stack: **PR29 Richer editor**.
 
 **Branch:** `cursor/pr28-type-convert-d2c1`  
 **Based on:** `cursor/pr27-import-d2c1` tip `34e3c2dda0`  
-**Tip:** 
+**Tip:** `720000ad23e2e13ec2f5ff3a0931ed0779534983`
 
 ### What landed
 
