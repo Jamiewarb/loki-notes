@@ -61,6 +61,10 @@ targets:
       properties:
         CFBundleDisplayName: Loci
         UILaunchScreen: {}
+        NSCalendarsUsageDescription: Loci shows your Calendar events on the daily note. Events are display-only and do not rewrite daily markdown.
+        NSCalendarsFullAccessUsageDescription: Loci shows your Calendar events on the daily note. Events are display-only and do not rewrite daily markdown.
+        NSRemindersUsageDescription: Loci can sync Reminders with daily note tasks when you enable Reminders sync and tap Sync.
+        NSRemindersFullAccessUsageDescription: Loci can sync Reminders with daily note tasks when you enable Reminders sync and tap Sync.
         NSUbiquitousContainers:
           iCloud.app.loci.Loci:
             NSUbiquitousContainerIsDocumentScopePublic: true

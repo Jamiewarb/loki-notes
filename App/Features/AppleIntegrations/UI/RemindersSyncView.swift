@@ -2,13 +2,14 @@ import SwiftUI
 import LociCore
 import LociDesignSystem
 
-/// Reminders sync toggle + explicit Sync action (PR31).
+/// Reminders sync toggle + explicit Sync action (PR31 / PR36).
 ///
 /// Settings live outside the vault. Sync never runs on the typing path.
 struct RemindersSyncView: View {
     var services: AppServices
     var compact: Bool = false
     @State private var syncEnabled = false
+    @State private var authStatus: AppleAuthStatus = .notDetermined
     @State private var status = "Reminders sync is off by default. Explicit Sync only."
 
     private var store: AppleIntegrationsStore {
@@ -39,6 +40,23 @@ struct RemindersSyncView: View {
             .foregroundStyle(LociColors.inkSoft)
             .fixedSize(horizontal: false, vertical: true)
 
+            Text("Reminders access: \(authStatus.permissionLabel)")
+                .font(LociTypography.font(.caption))
+                .foregroundStyle(LociColors.inkSoft)
+
+            if authStatus != .authorized {
+                Text(EventKitNotes.permissionCopyReminders)
+                    .font(LociTypography.font(.caption))
+                    .foregroundStyle(LociColors.inkSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if authStatus == .notDetermined {
+                    LociButton("Grant Reminders access", style: .secondary) {
+                        Task { await requestAccess() }
+                    }
+                }
+            }
+
             Toggle("Enable Reminders sync", isOn: $syncEnabled)
                 .onChange(of: syncEnabled) { _, value in
                     Task { await saveToggle(value) }
@@ -62,7 +80,15 @@ struct RemindersSyncView: View {
         .task { await reload() }
     }
 
+    private func requestAccess() async {
+        authStatus = await store.requestRemindersAccess()
+        if authStatus == .denied {
+            status = "Reminders access denied — sync will no-op until granted in System Settings."
+        }
+    }
+
     private func reload() async {
+        authStatus = store.remindersAuthorizationStatus()
         do {
             let s = try await store.loadSettings()
             syncEnabled = s.remindersSyncEnabled
@@ -74,7 +100,14 @@ struct RemindersSyncView: View {
     private func saveToggle(_ enabled: Bool) async {
         do {
             try await store.saveSettings(AppleIntegrationSettings(remindersSyncEnabled: enabled))
-            status = enabled ? "Sync enabled." : "Sync disabled."
+            if enabled {
+                authStatus = await store.requestRemindersAccess()
+            }
+            if enabled, authStatus == .denied {
+                status = "Sync enabled, but Reminders access is denied."
+            } else {
+                status = enabled ? "Sync enabled." : "Sync disabled."
+            }
         } catch {
             status = "Save failed: \(error.localizedDescription)"
         }
@@ -82,6 +115,9 @@ struct RemindersSyncView: View {
 
     private func sync() async {
         do {
+            if authStatus != .authorized {
+                authStatus = await store.requestRemindersAccess()
+            }
             let objects = try await services.ensureObjectService()
             let daily = try await services.ensureDailyNoteService()
             let index = try await services.ensureIndex()

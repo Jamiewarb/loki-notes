@@ -16,6 +16,14 @@
 			<string>Any</string>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Loci shows your Calendar events on the daily note. Events are display-only and do not rewrite daily markdown.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Loci shows your Calendar events on the daily note. Events are display-only and do not rewrite daily markdown.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Loci can sync Reminders with daily note tasks when you enable Reminders sync and tap Sync.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Loci can sync Reminders with daily note tasks when you enable Reminders sync and tap Sync.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>

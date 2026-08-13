@@ -168,6 +168,42 @@ final class AppleIntegrationServiceTests: XCTestCase {
             }
         }
         XCTAssertFalse(sqliteInVault)
-        XCTAssertTrue(LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35"))
+        XCTAssertTrue(
+            LociVaultModule.version.contains("pr31") || LociVaultModule.version.contains("pr32")
+                || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35")
+                || LociVaultModule.version.contains("pr36")
+        )
+    }
+
+    func testDeniedCalendarReturnsEmptyWithoutWritingDaily() async throws {
+        let pair = day20260813()
+        try await boot()
+        apple = AppleIntegrationService(
+            settingsDirectory: appleParent,
+            calendarStore: FakeAppleCalendarStore(events: [pair.event], authStatus: .denied),
+            remindersStore: FakeAppleRemindersStore()
+        )
+        var opened = try await daily.ensure(for: pair.day, calendar: utc)
+        let before = opened.bodyMarkdown
+        let listed = try await apple.eventsForDaily(day: pair.day, calendar: utc)
+        XCTAssertTrue(listed.isEmpty)
+        XCTAssertEqual(apple.calendarAuthorizationStatus(), .denied)
+        opened = try await daily.open(date: pair.day, calendar: utc)
+        XCTAssertEqual(opened.bodyMarkdown, before)
+        let proof = EventKitProof.evaluate(dailyUnchanged: before == opened.bodyMarkdown, indexInsideVault: false)
+        XCTAssertTrue(proof.dailyUnchanged)
+        XCTAssertTrue(proof.eventKitWired)
+    }
+
+    func testDefaultFactoryUsesFakesOnLinux() {
+        XCTAssertTrue(EventKitNotes.eventKitWired)
+        #if canImport(EventKit)
+        XCTAssertTrue(AppleStoreFactory.usesEventKit)
+        #else
+        XCTAssertFalse(AppleStoreFactory.usesEventKit)
+        XCTAssertTrue(EventKitNotes.linuxUsesFakes)
+        XCTAssertTrue(AppleStoreFactory.makeCalendarStore() is FakeAppleCalendarStore)
+        XCTAssertTrue(AppleStoreFactory.makeRemindersStore() is FakeAppleRemindersStore)
+        #endif
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// In-memory calendar store for Linux tests and demos (PR31). No EventKit.
-public final class FakeAppleCalendarStore: @unchecked Sendable {
+public final class FakeAppleCalendarStore: AppleCalendarServing, @unchecked Sendable {
     private let lock = NSLock()
     private var events: [AppleCalendarEvent] = []
     public private(set) var authStatus: AppleAuthStatus = .authorized
@@ -21,14 +21,28 @@ public final class FakeAppleCalendarStore: @unchecked Sendable {
         authStatus
     }
 
+    public func calendarAuthorizationStatus() -> AppleAuthStatus {
+        authStatus
+    }
+
+    public func requestCalendarAccess() async -> AppleAuthStatus {
+        if authStatus == .notDetermined {
+            authStatus = .authorized
+        }
+        return authStatus
+    }
+
     public func setAuthStatusForTesting(_ status: AppleAuthStatus) {
         authStatus = status
     }
 
     public func events(on day: Date, calendar: Calendar) -> [AppleCalendarEvent] {
-        lock.lock()
-        defer { lock.unlock() }
-        return AppleEventDayFilter.events(events, on: day, calendar: calendar)
+        filteredEvents(on: day, calendar: calendar)
+    }
+
+    public func events(on day: Date, calendar: Calendar) async throws -> [AppleCalendarEvent] {
+        guard calendarAuthorizationStatus() == .authorized else { return [] }
+        return filteredEvents(on: day, calendar: calendar)
     }
 
     public func allEventsForTesting() -> [AppleCalendarEvent] {
@@ -36,10 +50,16 @@ public final class FakeAppleCalendarStore: @unchecked Sendable {
         defer { lock.unlock() }
         return events
     }
+
+    private func filteredEvents(on day: Date, calendar: Calendar) -> [AppleCalendarEvent] {
+        lock.lock()
+        defer { lock.unlock() }
+        return AppleEventDayFilter.events(events, on: day, calendar: calendar)
+    }
 }
 
 /// In-memory Reminders store for Linux tests and demos (PR31). No EventKit.
-public final class FakeAppleRemindersStore: @unchecked Sendable {
+public final class FakeAppleRemindersStore: AppleRemindersServing, @unchecked Sendable {
     private let lock = NSLock()
     private var items: [String: AppleReminderItem] = [:]
     public private(set) var authStatus: AppleAuthStatus = .authorized
@@ -61,11 +81,46 @@ public final class FakeAppleRemindersStore: @unchecked Sendable {
         authStatus
     }
 
+    public func remindersAuthorizationStatus() -> AppleAuthStatus {
+        authStatus
+    }
+
+    public func requestRemindersAccess() async -> AppleAuthStatus {
+        if authStatus == .notDetermined {
+            authStatus = .authorized
+        }
+        return authStatus
+    }
+
     public func setAuthStatusForTesting(_ status: AppleAuthStatus) {
         authStatus = status
     }
 
     public func reminders(dueOn day: Date?, calendar: Calendar) -> [AppleReminderItem] {
+        filteredReminders(dueOn: day, calendar: calendar)
+    }
+
+    public func reminders(dueOn day: Date?, calendar: Calendar) async throws -> [AppleReminderItem] {
+        guard remindersAuthorizationStatus() == .authorized else { return [] }
+        return filteredReminders(dueOn: day, calendar: calendar)
+    }
+
+    public func upsert(_ item: AppleReminderItem) {
+        storeItem(item)
+    }
+
+    public func upsert(_ item: AppleReminderItem) async throws {
+        guard remindersAuthorizationStatus() == .authorized else { return }
+        storeItem(item)
+    }
+
+    public func allItemsForTesting() -> [AppleReminderItem] {
+        lock.lock()
+        defer { lock.unlock() }
+        return Array(items.values)
+    }
+
+    private func filteredReminders(dueOn day: Date?, calendar: Calendar) -> [AppleReminderItem] {
         lock.lock()
         defer { lock.unlock() }
         let all = Array(items.values)
@@ -78,15 +133,9 @@ public final class FakeAppleRemindersStore: @unchecked Sendable {
             .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
     }
 
-    public func upsert(_ item: AppleReminderItem) {
+    private func storeItem(_ item: AppleReminderItem) {
         lock.lock()
         defer { lock.unlock() }
         items[item.id] = item
-    }
-
-    public func allItemsForTesting() -> [AppleReminderItem] {
-        lock.lock()
-        defer { lock.unlock() }
-        return Array(items.values)
     }
 }
