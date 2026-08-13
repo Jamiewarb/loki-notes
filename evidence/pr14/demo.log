@@ -1,0 +1,10 @@
+==> loci-templates-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-templates-demo' complete! (0.25s)
+bookPrefill=True dailyPrefill=True bookTpl=book.default dailyTpl=daily.default
+wrote DevHarness/public/demo-types/types.json (with templates)
+wrote DevHarness/public/demo-schema/manifest.json
+==> wrote /agent/DevHarness/public/demo-templates/templates.json
+==> demo-templates complete

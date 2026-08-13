@@ -1,0 +1,325 @@
+==> swift --version
+Swift version 6.2 (swift-6.2-RELEASE)
+Target: x86_64-unknown-linux-gnu
+==> swift test
+[0/1] Planning build
+Building for debugging...
+[0/12] Write swift-version--166437D737243488.txt
+Build complete! (0.28s)
+Test Suite 'All tests' started at 2026-08-13 11:23:39.404
+Test Suite 'debug.xctest' started at 2026-08-13 11:23:39.405
+Test Suite 'IndexServiceTests' started at 2026-08-13 11:23:39.405
+Test Case 'IndexServiceTests.testCreatedOnUsesCalendarDayUTC' started at 2026-08-13 11:23:39.405
+Test Case 'IndexServiceTests.testCreatedOnUsesCalendarDayUTC' passed (0.026 seconds)
+Test Case 'IndexServiceTests.testDailyNoteIsIndexed' started at 2026-08-13 11:23:39.430
+Test Case 'IndexServiceTests.testDailyNoteIsIndexed' passed (0.011 seconds)
+Test Case 'IndexServiceTests.testFullRebuildIndexesVaultMarkdown' started at 2026-08-13 11:23:39.441
+Test Case 'IndexServiceTests.testFullRebuildIndexesVaultMarkdown' passed (0.009 seconds)
+Test Case 'IndexServiceTests.testIgnoresMarkdownOutsideObjectsAndDaily' started at 2026-08-13 11:23:39.450
+Test Case 'IndexServiceTests.testIgnoresMarkdownOutsideObjectsAndDaily' passed (0.007 seconds)
+Test Case 'IndexServiceTests.testIncrementalCreateModifyDelete' started at 2026-08-13 11:23:39.457
+Test Case 'IndexServiceTests.testIncrementalCreateModifyDelete' passed (0.016 seconds)
+Test Case 'IndexServiceTests.testIndexDatabaseAPIEncodesVaultIDAndDirectory' started at 2026-08-13 11:23:39.473
+Test Case 'IndexServiceTests.testIndexDatabaseAPIEncodesVaultIDAndDirectory' passed (0.0 seconds)
+Test Case 'IndexServiceTests.testIndexDatabasePathIsOutsideVault' started at 2026-08-13 11:23:39.473
+Test Case 'IndexServiceTests.testIndexDatabasePathIsOutsideVault' passed (0.007 seconds)
+Test Case 'IndexServiceTests.testNoIndexSqliteInsideVaultAfterIndexing' started at 2026-08-13 11:23:39.480
+Test Case 'IndexServiceTests.testNoIndexSqliteInsideVaultAfterIndexing' passed (0.009 seconds)
+Test Case 'IndexServiceTests.testSearchEmptyQueryReturnsEmpty' started at 2026-08-13 11:23:39.489
+Test Case 'IndexServiceTests.testSearchEmptyQueryReturnsEmpty' passed (0.005 seconds)
+Test Suite 'IndexServiceTests' passed at 2026-08-13 11:23:39.493
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.088 (0.088) seconds
+Test Suite 'EditorSessionTests' started at 2026-08-13 11:23:39.493
+Test Case 'EditorSessionTests.testApplyEditsAndSerializeRoundTrip' started at 2026-08-13 11:23:39.493
+Test Case 'EditorSessionTests.testApplyEditsAndSerializeRoundTrip' passed (0.101 seconds)
+Test Case 'EditorSessionTests.testHTMLRenderIncludesTasksAndHeadings' started at 2026-08-13 11:23:39.594
+Test Case 'EditorSessionTests.testHTMLRenderIncludesTasksAndHeadings' passed (0.001 seconds)
+Test Case 'EditorSessionTests.testProposeRemoteReloadRespectsDirty' started at 2026-08-13 11:23:39.595
+Test Case 'EditorSessionTests.testProposeRemoteReloadRespectsDirty' passed (0.0 seconds)
+Test Case 'EditorSessionTests.testSlashKindFiltering' started at 2026-08-13 11:23:39.595
+Test Case 'EditorSessionTests.testSlashKindFiltering' passed (0.0 seconds)
+Test Case 'EditorSessionTests.testSplitAndSlashConvert' started at 2026-08-13 11:23:39.595
+Test Case 'EditorSessionTests.testSplitAndSlashConvert' passed (0.0 seconds)
+Test Case 'EditorSessionTests.testToggleTaskAndPasteMarkdown' started at 2026-08-13 11:23:39.595
+Test Case 'EditorSessionTests.testToggleTaskAndPasteMarkdown' passed (0.0 seconds)
+Test Suite 'EditorSessionTests' passed at 2026-08-13 11:23:39.595
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.102 (0.102) seconds
+Test Suite 'FrontMatterCodecTests' started at 2026-08-13 11:23:39.595
+Test Case 'FrontMatterCodecTests.testAcceptsTypeIDAlias' started at 2026-08-13 11:23:39.595
+Test Case 'FrontMatterCodecTests.testAcceptsTypeIDAlias' passed (0.0 seconds)
+Test Case 'FrontMatterCodecTests.testBarePropertyPrimitives' started at 2026-08-13 11:23:39.596
+Test Case 'FrontMatterCodecTests.testBarePropertyPrimitives' passed (0.001 seconds)
+Test Case 'FrontMatterCodecTests.testDailyDateKeyRoundTrip' started at 2026-08-13 11:23:39.596
+Test Case 'FrontMatterCodecTests.testDailyDateKeyRoundTrip' passed (0.001 seconds)
+Test Case 'FrontMatterCodecTests.testEncodeDecodeRoundTrip' started at 2026-08-13 11:23:39.597
+Test Case 'FrontMatterCodecTests.testEncodeDecodeRoundTrip' passed (0.001 seconds)
+Test Case 'FrontMatterCodecTests.testMetaBridge' started at 2026-08-13 11:23:39.598
+Test Case 'FrontMatterCodecTests.testMetaBridge' passed (0.0 seconds)
+Test Case 'FrontMatterCodecTests.testMissingIdThrows' started at 2026-08-13 11:23:39.599
+Test Case 'FrontMatterCodecTests.testMissingIdThrows' passed (0.001 seconds)
+Test Suite 'FrontMatterCodecTests' passed at 2026-08-13 11:23:39.599
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'MarkdownParserEdgeTests' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownParserEdgeTests.testHeadingLevelsAboveFourBecomeParagraph' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownParserEdgeTests.testHeadingLevelsAboveFourBecomeParagraph' passed (0.0 seconds)
+Test Case 'MarkdownParserEdgeTests.testModuleRoundTripHelper' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownParserEdgeTests.testModuleRoundTripHelper' passed (0.0 seconds)
+Test Case 'MarkdownParserEdgeTests.testUnbalancedFenceThrows' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownParserEdgeTests.testUnbalancedFenceThrows' passed (0.0 seconds)
+Test Suite 'MarkdownParserEdgeTests' passed at 2026-08-13 11:23:39.599
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'MarkdownRoundTripTests' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownRoundTripTests.testBodyWithoutFrontMatter' started at 2026-08-13 11:23:39.599
+Test Case 'MarkdownRoundTripTests.testBodyWithoutFrontMatter' passed (0.0 seconds)
+Test Case 'MarkdownRoundTripTests.testDeepWorkFrontMatterFields' started at 2026-08-13 11:23:39.600
+Test Case 'MarkdownRoundTripTests.testDeepWorkFrontMatterFields' passed (0.001 seconds)
+Test Case 'MarkdownRoundTripTests.testFixtureRoundTripsStructural' started at 2026-08-13 11:23:39.600
+Test Case 'MarkdownRoundTripTests.testFixtureRoundTripsStructural' passed (0.005 seconds)
+Test Case 'MarkdownRoundTripTests.testFullFlavorBlockInventory' started at 2026-08-13 11:23:39.605
+Test Case 'MarkdownRoundTripTests.testFullFlavorBlockInventory' passed (0.001 seconds)
+Test Case 'MarkdownRoundTripTests.testProgrammaticDocumentRoundTrip' started at 2026-08-13 11:23:39.607
+Test Case 'MarkdownRoundTripTests.testProgrammaticDocumentRoundTrip' passed (0.001 seconds)
+Test Suite 'MarkdownRoundTripTests' passed at 2026-08-13 11:23:39.608
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.009 (0.009) seconds
+Test Suite 'SimpleYAMLTests' started at 2026-08-13 11:23:39.608
+Test Case 'SimpleYAMLTests.testFlowArrayAndScalars' started at 2026-08-13 11:23:39.608
+Test Case 'SimpleYAMLTests.testFlowArrayAndScalars' passed (0.0 seconds)
+Test Case 'SimpleYAMLTests.testNestedMapRoundTripStringify' started at 2026-08-13 11:23:39.608
+Test Case 'SimpleYAMLTests.testNestedMapRoundTripStringify' passed (0.0 seconds)
+Test Suite 'SimpleYAMLTests' passed at 2026-08-13 11:23:39.608
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'TemplateCodecTests' started at 2026-08-13 11:23:39.608
+Test Case 'TemplateCodecTests.testEncodeDecodeRoundTrip' started at 2026-08-13 11:23:39.608
+Test Case 'TemplateCodecTests.testEncodeDecodeRoundTrip' passed (0.0 seconds)
+Test Case 'TemplateCodecTests.testTemplateIDHelpers' started at 2026-08-13 11:23:39.609
+Test Case 'TemplateCodecTests.testTemplateIDHelpers' passed (0.1 seconds)
+Test Suite 'TemplateCodecTests' passed at 2026-08-13 11:23:39.709
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.101 (0.101) seconds
+Test Suite 'WikiLinkAndTagTests' started at 2026-08-13 11:23:39.709
+Test Case 'WikiLinkAndTagTests.testInlineParserWikiAndTag' started at 2026-08-13 11:23:39.709
+Test Case 'WikiLinkAndTagTests.testInlineParserWikiAndTag' passed (0.0 seconds)
+Test Case 'WikiLinkAndTagTests.testTagExtractAndNormalize' started at 2026-08-13 11:23:39.709
+Test Case 'WikiLinkAndTagTests.testTagExtractAndNormalize' passed (0.0 seconds)
+Test Case 'WikiLinkAndTagTests.testWikiLinkExtract' started at 2026-08-13 11:23:39.709
+Test Case 'WikiLinkAndTagTests.testWikiLinkExtract' passed (0.0 seconds)
+Test Case 'WikiLinkAndTagTests.testWikiLinkParseAndMarkdown' started at 2026-08-13 11:23:39.709
+Test Case 'WikiLinkAndTagTests.testWikiLinkParseAndMarkdown' passed (0.0 seconds)
+Test Suite 'WikiLinkAndTagTests' passed at 2026-08-13 11:23:39.710
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'DesignTokenTests' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testAccentRGBInMossRange' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testAccentRGBInMossRange' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testBrandIdentity' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testBrandIdentity' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testColorHexConstants' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testColorHexConstants' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testRadiusAndElevationTokens' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testRadiusAndElevationTokens' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testSpacingScaleIsAscending' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testSpacingScaleIsAscending' passed (0.0 seconds)
+Test Case 'DesignTokenTests.testTypographyFamiliesAndSizes' started at 2026-08-13 11:23:39.710
+Test Case 'DesignTokenTests.testTypographyFamiliesAndSizes' passed (0.0 seconds)
+Test Suite 'DesignTokenTests' passed at 2026-08-13 11:23:39.710
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'ConflictedCopyDetectorTests' started at 2026-08-13 11:23:39.710
+Test Case 'ConflictedCopyDetectorTests.testDetectsConflictedCopyPhrase' started at 2026-08-13 11:23:39.710
+Test Case 'ConflictedCopyDetectorTests.testDetectsConflictedCopyPhrase' passed (0.0 seconds)
+Test Case 'ConflictedCopyDetectorTests.testDetectsNumberedConflict' started at 2026-08-13 11:23:39.710
+Test Case 'ConflictedCopyDetectorTests.testDetectsNumberedConflict' passed (0.101 seconds)
+Test Suite 'ConflictedCopyDetectorTests' passed at 2026-08-13 11:23:39.811
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.101 (0.101) seconds
+Test Suite 'CreatedTodayNonMutationTests' started at 2026-08-13 11:23:39.811
+Test Case 'CreatedTodayNonMutationTests.testCreatePageDoesNotMutateDailyMarkdownBytes' started at 2026-08-13 11:23:39.811
+Test Case 'CreatedTodayNonMutationTests.testCreatePageDoesNotMutateDailyMarkdownBytes' passed (0.022 seconds)
+Test Case 'CreatedTodayNonMutationTests.testCreatedOnQueryIncludesPageAndDailySeparately' started at 2026-08-13 11:23:39.833
+Test Case 'CreatedTodayNonMutationTests.testCreatedOnQueryIncludesPageAndDailySeparately' passed (0.013 seconds)
+Test Suite 'CreatedTodayNonMutationTests' passed at 2026-08-13 11:23:39.846
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.035 (0.035) seconds
+Test Suite 'DailyNoteServiceTests' started at 2026-08-13 11:23:39.846
+Test Case 'DailyNoteServiceTests.testEnsureIsIdempotentDoesNotRewriteBody' started at 2026-08-13 11:23:39.846
+Test Case 'DailyNoteServiceTests.testEnsureIsIdempotentDoesNotRewriteBody' passed (0.015 seconds)
+Test Case 'DailyNoteServiceTests.testEnsureTodayCreatesDeterministicPathAndId' started at 2026-08-13 11:23:39.861
+Test Case 'DailyNoteServiceTests.testEnsureTodayCreatesDeterministicPathAndId' passed (0.011 seconds)
+Test Case 'DailyNoteServiceTests.testIndexNeverInsideVaultForDaily' started at 2026-08-13 11:23:39.872
+Test Case 'DailyNoteServiceTests.testIndexNeverInsideVaultForDaily' passed (0.009 seconds)
+Test Case 'DailyNoteServiceTests.testNavigateYesterdayCreatesSeparateFile' started at 2026-08-13 11:23:39.881
+Test Case 'DailyNoteServiceTests.testNavigateYesterdayCreatesSeparateFile' passed (0.009 seconds)
+Test Case 'DailyNoteServiceTests.testOpenMissingThrows' started at 2026-08-13 11:23:39.890
+Test Case 'DailyNoteServiceTests.testOpenMissingThrows' passed (0.005 seconds)
+Test Case 'DailyNoteServiceTests.testSelectAndNextDayAPI' started at 2026-08-13 11:23:39.895
+Test Case 'DailyNoteServiceTests.testSelectAndNextDayAPI' passed (0.004 seconds)
+Test Suite 'DailyNoteServiceTests' passed at 2026-08-13 11:23:39.899
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.053 (0.053) seconds
+Test Suite 'MetadataMonitorTests' started at 2026-08-13 11:23:39.899
+Test Case 'MetadataMonitorTests.testNoteLocalWriteEmitsEvent' started at 2026-08-13 11:23:39.899
+Test Case 'MetadataMonitorTests.testNoteLocalWriteEmitsEvent' passed (0.0 seconds)
+Test Case 'MetadataMonitorTests.testPollNowDetectsNewFile' started at 2026-08-13 11:23:39.899
+Test Case 'MetadataMonitorTests.testPollNowDetectsNewFile' passed (0.001 seconds)
+Test Suite 'MetadataMonitorTests' passed at 2026-08-13 11:23:39.900
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ModuleVersionTests' started at 2026-08-13 11:23:39.900
+Test Case 'ModuleVersionTests.testVersionPresent' started at 2026-08-13 11:23:39.900
+Test Case 'ModuleVersionTests.testVersionPresent' passed (0.0 seconds)
+Test Suite 'ModuleVersionTests' passed at 2026-08-13 11:23:39.900
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'ObjectServiceTests' started at 2026-08-13 11:23:39.900
+Test Case 'ObjectServiceTests.testCreateIndexListOpenSaveDeleteLoop' started at 2026-08-13 11:23:39.900
+Test Case 'ObjectServiceTests.testCreateIndexListOpenSaveDeleteLoop' passed (0.016 seconds)
+Test Case 'ObjectServiceTests.testCreateObjectOfCustomTypeAppearsOnlyUnderThatType' started at 2026-08-13 11:23:39.916
+Test Case 'ObjectServiceTests.testCreateObjectOfCustomTypeAppearsOnlyUnderThatType' passed (0.012 seconds)
+Test Case 'ObjectServiceTests.testOpenMissingObjectThrows' started at 2026-08-13 11:23:39.928
+Test Case 'ObjectServiceTests.testOpenMissingObjectThrows' passed (0.007 seconds)
+Test Case 'ObjectServiceTests.testPathAllocatorSlugify' started at 2026-08-13 11:23:39.935
+Test Case 'ObjectServiceTests.testPathAllocatorSlugify' passed (0.101 seconds)
+Test Case 'ObjectServiceTests.testSlugCollisionFallsBackToUniquePath' started at 2026-08-13 11:23:40.036
+Test Case 'ObjectServiceTests.testSlugCollisionFallsBackToUniquePath' passed (0.017 seconds)
+Test Suite 'ObjectServiceTests' passed at 2026-08-13 11:23:40.054
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.153 (0.153) seconds
+Test Suite 'PropertiesSystemTests' started at 2026-08-13 11:23:40.054
+Test Case 'PropertiesSystemTests.testModuleVersionIsPR13' started at 2026-08-13 11:23:40.054
+Test Case 'PropertiesSystemTests.testModuleVersionIsPR13' passed (0.0 seconds)
+Test Case 'PropertiesSystemTests.testPropertyKeyAndFormatting' started at 2026-08-13 11:23:40.054
+Test Case 'PropertiesSystemTests.testPropertyKeyAndFormatting' passed (0.0 seconds)
+Test Case 'PropertiesSystemTests.testPropertyValuesSurviveReloadAndIndexColumns' started at 2026-08-13 11:23:40.054
+Test Case 'PropertiesSystemTests.testPropertyValuesSurviveReloadAndIndexColumns' passed (0.018 seconds)
+Test Case 'PropertiesSystemTests.testRemovePropertyDef' started at 2026-08-13 11:23:40.072
+Test Case 'PropertiesSystemTests.testRemovePropertyDef' passed (0.008 seconds)
+Test Case 'PropertiesSystemTests.testUpsertPropertyDefsOnBookType' started at 2026-08-13 11:23:40.080
+Test Case 'PropertiesSystemTests.testUpsertPropertyDefsOnBookType' passed (0.006 seconds)
+Test Suite 'PropertiesSystemTests' passed at 2026-08-13 11:23:40.086
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.032 (0.032) seconds
+Test Suite 'SchemaStoreTests' started at 2026-08-13 11:23:40.086
+Test Case 'SchemaStoreTests.testAddCustomTypeThenReload' started at 2026-08-13 11:23:40.086
+Test Case 'SchemaStoreTests.testAddCustomTypeThenReload' passed (0.003 seconds)
+Test Case 'SchemaStoreTests.testAllTypesIncludesPageAndCustom' started at 2026-08-13 11:23:40.088
+Test Case 'SchemaStoreTests.testAllTypesIncludesPageAndCustom' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testBootstrapIsIdempotentAndPreservesSpacePins' started at 2026-08-13 11:23:40.091
+Test Case 'SchemaStoreTests.testBootstrapIsIdempotentAndPreservesSpacePins' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testBootstrapSeedsPageType' started at 2026-08-13 11:23:40.093
+Test Case 'SchemaStoreTests.testBootstrapSeedsPageType' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testCreateCustomTypeDuplicateThrows' started at 2026-08-13 11:23:40.095
+Test Case 'SchemaStoreTests.testCreateCustomTypeDuplicateThrows' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testCreateCustomTypeWritesJSONAndObjectsFolder' started at 2026-08-13 11:23:40.097
+Test Case 'SchemaStoreTests.testCreateCustomTypeWritesJSONAndObjectsFolder' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testCreateReservedSlugThrows' started at 2026-08-13 11:23:40.099
+Test Case 'SchemaStoreTests.testCreateReservedSlugThrows' passed (0.105 seconds)
+Test Case 'SchemaStoreTests.testDeleteBuiltInPageThrows' started at 2026-08-13 11:23:40.204
+Test Case 'SchemaStoreTests.testDeleteBuiltInPageThrows' passed (0.002 seconds)
+Test Case 'SchemaStoreTests.testDeleteTypeWithObjectsRequiresForce' started at 2026-08-13 11:23:40.206
+Test Case 'SchemaStoreTests.testDeleteTypeWithObjectsRequiresForce' passed (0.003 seconds)
+Test Case 'SchemaStoreTests.testEnsureSkeletonAlsoSeedsPage' started at 2026-08-13 11:23:40.209
+Test Case 'SchemaStoreTests.testEnsureSkeletonAlsoSeedsPage' passed (0.104 seconds)
+Test Case 'SchemaStoreTests.testLoadMissingTypeThrowsSchemaNotFound' started at 2026-08-13 11:23:40.313
+Test Case 'SchemaStoreTests.testLoadMissingTypeThrowsSchemaNotFound' passed (0.004 seconds)
+Test Case 'SchemaStoreTests.testModuleVersionIsPR13' started at 2026-08-13 11:23:40.318
+Test Case 'SchemaStoreTests.testModuleVersionIsPR13' passed (0.001 seconds)
+Test Case 'SchemaStoreTests.testPageJSONIsPrettyPrintedOnDisk' started at 2026-08-13 11:23:40.318
+Test Case 'SchemaStoreTests.testPageJSONIsPrettyPrintedOnDisk' passed (0.004 seconds)
+Test Case 'SchemaStoreTests.testRenameAndDeleteCustomType' started at 2026-08-13 11:23:40.322
+Test Case 'SchemaStoreTests.testRenameAndDeleteCustomType' passed (0.005 seconds)
+Test Case 'SchemaStoreTests.testTypeRelativePathShape' started at 2026-08-13 11:23:40.327
+Test Case 'SchemaStoreTests.testTypeRelativePathShape' passed (0.0 seconds)
+Test Suite 'SchemaStoreTests' passed at 2026-08-13 11:23:40.327
+	 Executed 15 tests, with 0 failures (0 unexpected) in 0.242 (0.242) seconds
+Test Suite 'TemplatesSystemTests' started at 2026-08-13 11:23:40.327
+Test Case 'TemplatesSystemTests.testApplyTemplateIfEmptyOnlyWhenBlank' started at 2026-08-13 11:23:40.327
+Test Case 'TemplatesSystemTests.testApplyTemplateIfEmptyOnlyWhenBlank' passed (0.02 seconds)
+Test Case 'TemplatesSystemTests.testCreateObjectAppliesBookDefaultTemplate' started at 2026-08-13 11:23:40.347
+Test Case 'TemplatesSystemTests.testCreateObjectAppliesBookDefaultTemplate' passed (0.026 seconds)
+Test Case 'TemplatesSystemTests.testDailyUsesDailyTemplate' started at 2026-08-13 11:23:40.373
+Test Case 'TemplatesSystemTests.testDailyUsesDailyTemplate' passed (0.012 seconds)
+Test Case 'TemplatesSystemTests.testDeleteTemplateClearsDefault' started at 2026-08-13 11:23:40.385
+Test Case 'TemplatesSystemTests.testDeleteTemplateClearsDefault' passed (0.012 seconds)
+Test Case 'TemplatesSystemTests.testModuleVersionIsPR14' started at 2026-08-13 11:23:40.398
+Test Case 'TemplatesSystemTests.testModuleVersionIsPR14' passed (0.0 seconds)
+Test Case 'TemplatesSystemTests.testTemplateCRUDAndStarDefault' started at 2026-08-13 11:23:40.398
+Test Case 'TemplatesSystemTests.testTemplateCRUDAndStarDefault' passed (0.008 seconds)
+Test Suite 'TemplatesSystemTests' passed at 2026-08-13 11:23:40.406
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.079 (0.079) seconds
+Test Suite 'VaultServiceTests' started at 2026-08-13 11:23:40.406
+Test Case 'VaultServiceTests.testCoordinatedWriteAndReadRoundTrip' started at 2026-08-13 11:23:40.406
+Test Case 'VaultServiceTests.testCoordinatedWriteAndReadRoundTrip' passed (0.002 seconds)
+Test Case 'VaultServiceTests.testEnsureSkeletonCreatesExpectedLayoutAndSpaceJSON' started at 2026-08-13 11:23:40.408
+Test Case 'VaultServiceTests.testEnsureSkeletonCreatesExpectedLayoutAndSpaceJSON' passed (0.002 seconds)
+Test Case 'VaultServiceTests.testIndexMustNotLiveInVaultConvention' started at 2026-08-13 11:23:40.410
+Test Case 'VaultServiceTests.testIndexMustNotLiveInVaultConvention' passed (0.102 seconds)
+Test Case 'VaultServiceTests.testRejectsPathTraversal' started at 2026-08-13 11:23:40.512
+Test Case 'VaultServiceTests.testRejectsPathTraversal' passed (0.005 seconds)
+Test Case 'VaultServiceTests.testResolveLocalRootCreatesLociVaultDirectory' started at 2026-08-13 11:23:40.517
+Test Case 'VaultServiceTests.testResolveLocalRootCreatesLociVaultDirectory' passed (0.0 seconds)
+Test Case 'VaultServiceTests.testRootKindIsLocalOnForcedLocal' started at 2026-08-13 11:23:40.517
+Test Case 'VaultServiceTests.testRootKindIsLocalOnForcedLocal' passed (0.0 seconds)
+Test Case 'VaultServiceTests.testTrashMovesFileAndWritesTombstone' started at 2026-08-13 11:23:40.517
+Test Case 'VaultServiceTests.testTrashMovesFileAndWritesTombstone' passed (0.006 seconds)
+Test Suite 'VaultServiceTests' passed at 2026-08-13 11:23:40.523
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.117 (0.117) seconds
+Test Suite 'DomainModelTests' started at 2026-08-13 11:23:40.523
+Test Case 'DomainModelTests.testLociObjectMetaWithTagsAndProperties' started at 2026-08-13 11:23:40.523
+Test Case 'DomainModelTests.testLociObjectMetaWithTagsAndProperties' passed (0.101 seconds)
+Test Case 'DomainModelTests.testObjectTemplateCodableAndTemplateID' started at 2026-08-13 11:23:40.624
+Test Case 'DomainModelTests.testObjectTemplateCodableAndTemplateID' passed (0.0 seconds)
+Test Case 'DomainModelTests.testObjectTypeDailyFlag' started at 2026-08-13 11:23:40.624
+Test Case 'DomainModelTests.testObjectTypeDailyFlag' passed (0.0 seconds)
+Test Case 'DomainModelTests.testObjectTypePageBuiltInCodableRoundTrip' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testObjectTypePageBuiltInCodableRoundTrip' passed (0.0 seconds)
+Test Case 'DomainModelTests.testOpenedObjectCodable' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testOpenedObjectCodable' passed (0.0 seconds)
+Test Case 'DomainModelTests.testPropertyDefAndKindRoundTrip' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testPropertyDefAndKindRoundTrip' passed (0.0 seconds)
+Test Case 'DomainModelTests.testPropertyValueBareJSONPrimitives' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testPropertyValueBareJSONPrimitives' passed (0.0 seconds)
+Test Case 'DomainModelTests.testPropertyValueFormattingAndKeys' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testPropertyValueFormattingAndKeys' passed (0.0 seconds)
+Test Case 'DomainModelTests.testPropertyValueTaggedRoundTrip' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testPropertyValueTaggedRoundTrip' passed (0.0 seconds)
+Test Case 'DomainModelTests.testSpaceSettingsDecodesWithoutPinsKey' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testSpaceSettingsDecodesWithoutPinsKey' passed (0.0 seconds)
+Test Case 'DomainModelTests.testSpaceSettingsPinsRoundTrip' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testSpaceSettingsPinsRoundTrip' passed (0.0 seconds)
+Test Case 'DomainModelTests.testTypeDashboardConfigDefaults' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testTypeDashboardConfigDefaults' passed (0.0 seconds)
+Test Case 'DomainModelTests.testTypeSlugFromName' started at 2026-08-13 11:23:40.625
+Test Case 'DomainModelTests.testTypeSlugFromName' passed (0.0 seconds)
+Test Suite 'DomainModelTests' passed at 2026-08-13 11:23:40.625
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.102 (0.102) seconds
+Test Suite 'ObjectIDTests' started at 2026-08-13 11:23:40.625
+Test Case 'ObjectIDTests.testCodableRoundTrip' started at 2026-08-13 11:23:40.625
+Test Case 'ObjectIDTests.testCodableRoundTrip' passed (0.0 seconds)
+Test Case 'ObjectIDTests.testDailyDateKeyFormat' started at 2026-08-13 11:23:40.626
+Test Case 'ObjectIDTests.testDailyDateKeyFormat' passed (0.1 seconds)
+Test Case 'ObjectIDTests.testDailyNoteIdentityPathAndNavigation' started at 2026-08-13 11:23:40.726
+Test Case 'ObjectIDTests.testDailyNoteIdentityPathAndNavigation' passed (0.001 seconds)
+Test Case 'ObjectIDTests.testDailyObjectIDIsDeterministicAndStableAcrossCalls' started at 2026-08-13 11:23:40.727
+Test Case 'ObjectIDTests.testDailyObjectIDIsDeterministicAndStableAcrossCalls' passed (0.001 seconds)
+Test Case 'ObjectIDTests.testDifferentDaysHaveDifferentIDs' started at 2026-08-13 11:23:40.727
+Test Case 'ObjectIDTests.testDifferentDaysHaveDifferentIDs' passed (0.0 seconds)
+Test Case 'ObjectIDTests.testInvalidUUIDStringReturnsNil' started at 2026-08-13 11:23:40.727
+Test Case 'ObjectIDTests.testInvalidUUIDStringReturnsNil' passed (0.0 seconds)
+Test Case 'ObjectIDTests.testParsingDailyDateKeyYieldsSameID' started at 2026-08-13 11:23:40.727
+Test Case 'ObjectIDTests.testParsingDailyDateKeyYieldsSameID' passed (0.101 seconds)
+Test Case 'ObjectIDTests.testRoundTripUUIDString' started at 2026-08-13 11:23:40.828
+Test Case 'ObjectIDTests.testRoundTripUUIDString' passed (0.0 seconds)
+Test Suite 'ObjectIDTests' passed at 2026-08-13 11:23:40.828
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.203 (0.203) seconds
+Test Suite 'RouteTests' started at 2026-08-13 11:23:40.828
+Test Case 'RouteTests.testCodableRoundTripObject' started at 2026-08-13 11:23:40.828
+Test Case 'RouteTests.testCodableRoundTripObject' passed (0.0 seconds)
+Test Case 'RouteTests.testCodableRoundTripPrimary' started at 2026-08-13 11:23:40.829
+Test Case 'RouteTests.testCodableRoundTripPrimary' passed (0.0 seconds)
+Test Case 'RouteTests.testPrimaryDestinationsOrder' started at 2026-08-13 11:23:40.829
+Test Case 'RouteTests.testPrimaryDestinationsOrder' passed (0.0 seconds)
+Test Case 'RouteTests.testPrimaryFlags' started at 2026-08-13 11:23:40.829
+Test Case 'RouteTests.testPrimaryFlags' passed (0.0 seconds)
+Test Case 'RouteTests.testTitlesAndIcons' started at 2026-08-13 11:23:40.829
+Test Case 'RouteTests.testTitlesAndIcons' passed (0.0 seconds)
+Test Suite 'RouteTests' passed at 2026-08-13 11:23:40.829
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'debug.xctest' passed at 2026-08-13 11:23:40.829
+	 Executed 120 tests, with 0 failures (0 unexpected) in 1.423 (1.423) seconds
+Test Suite 'All tests' passed at 2026-08-13 11:23:40.829
+	 Executed 120 tests, with 0 failures (0 unexpected) in 1.423 (1.423) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2 (3fdabe5392108d8)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+==> tests passed

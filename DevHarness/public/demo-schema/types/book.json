@@ -13,29 +13,17 @@
         "To Read",
         "Reading",
         "Done"
-      ],
-      "required": false
+      ]
     },
     {
       "id": "rating",
       "kind": "number",
       "name": "Rating",
-      "options": [],
-      "required": false
-    },
-    {
-      "id": "url",
-      "kind": "url",
-      "name": "URL",
-      "options": [],
-      "required": false
-    },
-    {
-      "id": "finished",
-      "kind": "checkbox",
-      "name": "Finished",
-      "options": [],
-      "required": false
+      "options": []
     }
+  ],
+  "defaultTemplateID": "book.default",
+  "templateIDs": [
+    "book.default"
   ]
 }

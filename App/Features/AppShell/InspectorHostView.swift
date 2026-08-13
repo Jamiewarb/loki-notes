@@ -27,8 +27,11 @@ struct InspectorHostView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             } else if case .types = route, let typeID = services.focusedTypeID {
                 ScrollView {
-                    PropertiesFeature.defsEditor(services: services, typeID: typeID)
-                        .padding(LociSpacing.stack(.lg))
+                    VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
+                        PropertiesFeature.defsEditor(services: services, typeID: typeID)
+                        TemplatesFeature.picker(services: services, typeID: typeID)
+                    }
+                    .padding(LociSpacing.stack(.lg))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .background(LociColors.panel.opacity(0.55))
@@ -87,7 +90,7 @@ struct InspectorHostView: View {
         case .search:
             return "Recent queries and filter chips will appear here (PR18)."
         case .types:
-            return "Open a type dashboard to edit property defs (PR13)."
+            return "Open a type dashboard to edit property defs and templates."
         case .settings:
             return "iCloud vs local Documents — index never stored in the vault."
         case .designGallery:

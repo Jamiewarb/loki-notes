@@ -1,0 +1,83 @@
+{
+  "bookObject" : {
+    "bodyMarkdown" : "## Summary\n\n## Quotes\n\n## Notes",
+    "id" : "9832999a-3ef8-4add-ad7d-f01116225d89",
+    "prefilledHeadings" : true,
+    "properties" : {
+      "rating" : "0",
+      "status" : "To Read"
+    },
+    "relativePath" : "objects\/book\/deep-work.md",
+    "title" : "Deep Work"
+  },
+  "bookPrefill" : true,
+  "bookTemplate" : {
+    "bodyPreview" : "## Summary\n\n## Quotes\n\n## Notes",
+    "defaultProperties" : {
+      "rating" : "0",
+      "status" : "To Read"
+    },
+    "exists" : true,
+    "id" : "book.default",
+    "name" : "Default Book",
+    "path" : ".loci\/templates\/book.default.md"
+  },
+  "bookType" : {
+    "defaultTemplateID" : "book.default",
+    "id" : "book",
+    "name" : "Books",
+    "properties" : [
+      {
+        "id" : "status",
+        "kind" : "select",
+        "name" : "Status",
+        "options" : [
+          "To Read",
+          "Reading",
+          "Done"
+        ]
+      },
+      {
+        "id" : "rating",
+        "kind" : "number",
+        "name" : "Rating",
+        "options" : [
+
+        ]
+      }
+    ],
+    "templateIDs" : [
+      "book.default"
+    ]
+  },
+  "dailyFrontmatterSnippet" : "id: daily-2026-08-13\ntype: daily\ntitle: 2026-08-13\ncreated: \"2026-08-13T00:00:00Z\"\nupdated: \"2026-08-13T11:23:18Z\"\ntemplate: daily.default",
+  "dailyObject" : {
+    "bodyMarkdown" : "## Morning\n\n## Evening",
+    "id" : "daily-2026-08-13",
+    "prefilledHeadings" : true,
+    "relativePath" : "daily\/2026-08-13.md",
+    "title" : "2026-08-13"
+  },
+  "dailyPrefill" : true,
+  "dailyTemplate" : {
+    "bodyPreview" : "## Morning\n\n## Evening",
+    "exists" : true,
+    "id" : "daily.default",
+    "name" : "Daily Default",
+    "path" : ".loci\/templates\/daily.default.md"
+  },
+  "dailyType" : {
+    "defaultTemplateID" : "daily.default",
+    "id" : "daily",
+    "templateIDs" : [
+      "daily.default"
+    ]
+  },
+  "frontmatterSnippet" : "id: 9832999a-3ef8-4add-ad7d-f01116225d89\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T11:23:18Z\"\nupdated: \"2026-08-13T11:23:18Z\"\nproperties:\n  rating: 0\n  status:\n    kind: select\n    value: To Read\ntemplate: book.default",
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr14",
+  "indexPath" : "\/tmp\/loci-templates-demo-db-2026-08-13T11-23-18Z\/v3e5925f93cf79bd9\/index.sqlite",
+  "moduleVersion" : "0.14.0-pr14",
+  "note" : "Default Book template prefills headings + status; new daily uses daily template (PR14).",
+  "vaultRoot" : "\/tmp\/loci-templates-demo-vault-2026-08-13T11-23-18Z\/LociVault"
+}

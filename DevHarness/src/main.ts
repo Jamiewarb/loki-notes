@@ -235,26 +235,36 @@ async function renderCreatedTodayInspector(root: HTMLElement): Promise<void> {
   }
 }
 
-/** Types inspector: Book property defs + Deep Work values (PR13). */
+/** Types inspector: Book templates + property values (PR14). */
 async function renderPropertiesInspector(root: HTMLElement): Promise<void> {
-  root.innerHTML = `<p data-harness="inspector-props-loading">Loading properties…</p>`;
+  root.innerHTML = `<p data-harness="inspector-props-loading">Loading templates…</p>`;
   try {
-    const res = await fetch("/demo-properties/properties.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch("/demo-templates/templates.json", { cache: "no-store" });
+    if (!res.ok) {
+      // Fall back to properties fixture if templates not generated yet.
+      const propsRes = await fetch("/demo-properties/properties.json", { cache: "no-store" });
+      if (!propsRes.ok) throw new Error(`HTTP ${res.status}`);
+      await renderLegacyPropertiesInspector(root, await propsRes.json());
+      return;
+    }
     const data = (await res.json()) as {
-      bookType?: {
-        properties?: Array<{ id?: string; name?: string; kind?: string }>;
-      };
-      object?: {
+      bookTemplate?: { id?: string; name?: string };
+      dailyTemplate?: { id?: string; name?: string };
+      bookObject?: {
         title?: string;
         properties?: Record<string, string | number | boolean>;
+        bodyMarkdown?: string;
       };
-      survivedReload?: boolean;
-      statusIndexed?: boolean;
-      ratingIndexed?: boolean;
+      dailyObject?: { bodyMarkdown?: string };
+      bookPrefill?: boolean;
+      dailyPrefill?: boolean;
+      bookType?: {
+        properties?: Array<{ id?: string; name?: string; kind?: string }>;
+        defaultTemplateID?: string;
+      };
     };
     const defs = data.bookType?.properties ?? [];
-    const values = data.object?.properties ?? {};
+    const values = data.bookObject?.properties ?? {};
     const defRows = defs
       .map(
         (d) =>
@@ -276,25 +286,74 @@ async function renderPropertiesInspector(root: HTMLElement): Promise<void> {
       )
       .join("");
     root.innerHTML = `
-      <p>Book defs → object values (YAML). Reload ${
-        data.survivedReload ? "✓" : "?"
-      } · idx status/rating ${
-        data.statusIndexed && data.ratingIndexed ? "✓" : "?"
+      <p>Templates · book ${data.bookPrefill ? "✓" : "?"} · daily ${
+        data.dailyPrefill ? "✓" : "?"
       }</p>
+      <p class="vault-kicker" style="margin-top:0.75rem">Defaults</p>
+      <ul class="schema-type-list" data-harness="inspector-templates">
+        <li class="schema-type-row"><span class="schema-type-name">${escapeAttr(
+          data.bookTemplate?.name ?? "Book",
+        )}</span><span class="schema-type-meta">${escapeAttr(
+          data.bookTemplate?.id ?? "?",
+        )}</span></li>
+        <li class="schema-type-row"><span class="schema-type-name">${escapeAttr(
+          data.dailyTemplate?.name ?? "Daily",
+        )}</span><span class="schema-type-meta">${escapeAttr(
+          data.dailyTemplate?.id ?? "?",
+        )}</span></li>
+      </ul>
       <p class="vault-kicker" style="margin-top:0.75rem">Defs</p>
       <ul class="schema-type-list" data-harness="inspector-prop-defs">${
         defRows || "<li>none</li>"
       }</ul>
       <p class="vault-kicker" style="margin-top:0.75rem">${escapeAttr(
-        data.object?.title ?? "Object",
+        data.bookObject?.title ?? "Object",
       )}</p>
       <ul class="schema-type-list" data-harness="inspector-prop-values">${
         valueRows || "<li>none</li>"
       }</ul>
     `;
   } catch {
-    root.innerHTML = `<p>Missing properties fixture. Run <code>./scripts/demo-properties.sh</code>.</p>`;
+    root.innerHTML = `<p>Missing templates fixture. Run <code>./scripts/demo-templates.sh</code>.</p>`;
   }
+}
+
+async function renderLegacyPropertiesInspector(root: HTMLElement, data: unknown): Promise<void> {
+  const d = data as {
+    bookType?: {
+      properties?: Array<{ id?: string; name?: string; kind?: string }>;
+    };
+    object?: {
+      title?: string;
+      properties?: Record<string, string | number | boolean>;
+    };
+    survivedReload?: boolean;
+    statusIndexed?: boolean;
+    ratingIndexed?: boolean;
+  };
+  const defs = d.bookType?.properties ?? [];
+  const values = d.object?.properties ?? {};
+  const defRows = defs
+    .map(
+      (x) =>
+        `<li class="schema-type-row"><span class="schema-type-name">${escapeAttr(
+          x.name ?? x.id ?? "?",
+        )}</span><span class="schema-type-meta">${escapeAttr(x.kind ?? "")}</span></li>`,
+    )
+    .join("");
+  const valueRows = Object.entries(values)
+    .map(
+      ([k, v]) =>
+        `<li class="schema-type-row"><span class="schema-type-name">${escapeAttr(
+          k,
+        )}</span><span class="schema-type-meta">${escapeAttr(String(v))}</span></li>`,
+    )
+    .join("");
+  root.innerHTML = `
+    <p>Book defs → object values (YAML). Reload ${d.survivedReload ? "✓" : "?"}</p>
+    <ul class="schema-type-list">${defRows || "<li>none</li>"}</ul>
+    <ul class="schema-type-list">${valueRows || "<li>none</li>"}</ul>
+  `;
 }
 
 function escapeAttr(value: string): string {
@@ -312,7 +371,7 @@ function inspectorTitle(id: PanelId): string {
     case "search":
       return "Filters";
     case "types":
-      return "Property defs · object values";
+      return "Templates · property defs";
     case "settings":
       return "Sync status";
     case "gallery":

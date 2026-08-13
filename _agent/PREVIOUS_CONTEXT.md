@@ -4,23 +4,24 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR13 — Properties system
+## PR14 — Templates
 
-**Branch:** `cursor/pr13-properties-d2c1`  
-**Based on:** `cursor/pr12-custom-types-d2c1` @ `311da09`
+**Branch:** `cursor/pr14-templates-d2c1`  
+**Based on:** `cursor/pr13-properties-d2c1` @ `e451afe`
 
 ### What landed
 
-- **Property defs on types:** `SchemaServing.setProperties` / `upsertProperty` / `removeProperty` → `.loci/types/<slug>.json`
-- **Kinds:** text, number, date, select, multiSelect, checkbox, url; object-select stub (comma-separated ids)
-- **Object inspector:** `Features/Properties/PropertyEditorView` — values → YAML frontmatter via `ObjectServing.save`
-- **Type defs UI:** `PropertyDefsEditorView` on type dashboard + types inspector
-- **Index:** `properties_idx` written on save; `objects(typeID:propertyKey:equalsText:)` + `propertyIndex(objectID:)`
-- **Demo:** `loci-properties-demo` / `scripts/demo-properties.sh` → `DevHarness/public/demo-properties/`
-- **Harness:** Types panel shows Book defs + Deep Work property detail + inspector values
-- **Tests:** **111** package tests (was 105)
-- Evidence: `evidence/pr13/`
-- Version: `LociVaultModule` / `LociIndexModule` → `*-pr13`
+- **Templates on disk:** `.loci/templates/<type>.<slug>.md` (YAML frontmatter + body) via `TemplateCodec`
+- **Schema APIs:** `createTemplate` / `saveTemplate` / `listTemplates` / `deleteTemplate` / `setDefaultTemplate` / `defaultTemplate(for:)`
+- **Star default:** `ObjectType.defaultTemplateID` + `templateIDs`
+- **Apply on create:** `ObjectService` + `DailyNoteService` (when schema wired) prefills body + `meta.properties`; records `template:` in frontmatter
+- **Re-apply empty:** `ObjectServing.applyTemplateIfEmpty`
+- **UI:** `Features/Templates/` — editor on type dashboard, picker in inspector
+- **Demo:** `loci-templates-demo` / `scripts/demo-templates.sh` → `DevHarness/public/demo-templates/`
+- **Harness:** Types panel shows Book headings prefill + daily template body
+- **Tests:** **120** package tests (was 111)
+- Evidence: `evidence/pr14/`
+- Version: `LociVaultModule` / `LociIndexModule` → `*-pr14`
 
 ### How to run checks
 
@@ -28,36 +29,37 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-properties.sh
+./scripts/demo-templates.sh
 ./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
 ```
 
-### Pitfalls for PR14 (Templates)
+### Pitfalls for PR15 (PARA)
 
-- Property values belong in frontmatter — template defaults should merge into `meta.properties` on create
-- Empty `properties: []` on types remains valid
-- Select values encode as tagged YAML `{kind: select, value: …}` for lossless round-trip
-- Object-select is still a stub (no link picker until PR16)
+- Starter pack should create Project/Area types with properties **and** default templates via existing SchemaServing APIs
+- Archive is tag/status filter — not a filesystem folder move
+- Resource may be a type or `#resource` guidance (PLAN)
 - Do not put SQLite / index inside the vault
+- Template ids are `<type>.<slug>` (e.g. `project.default`)
 
-### Next: PR14 — Templates
+### Next: PR15 — PARA starter pack
 
-- Branch: `cursor/pr14-templates-d2c1`
-- Template CRUD per type (body markdown + default property values); star default; apply on create
+- Branch: `cursor/pr15-para-d2c1`
+- Onboarding or “Apply PARA pack”: Project, Area (+ Resource/Archive guidance); starter properties/templates; sidebar filters hiding archived
 
 ---
 
-## PR12 — Custom object types + dashboards
+## PR13 — Properties system
 
-**Branch:** `cursor/pr12-custom-types-d2c1`
+**Branch:** `cursor/pr13-properties-d2c1`
 
-`SchemaServing` create/rename/delete; TypeList/TypeEditor/TypeDashboard; Books + Deep Work demo. See `evidence/pr12/`.
+Property defs on types; inspector values → YAML; `properties_idx`. See `evidence/pr13/`.
 
 ### Still relevant
 
-- Type id/slug stays stable on rename
-- Built-in Page/Daily refuse casual delete
+- Select values encode as tagged YAML `{kind: select, value: …}`
+- Object-select still a stub until PR16
+- Empty `properties: []` on types remains valid
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR13 done · next PR14
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR14 done · next PR15

@@ -43,4 +43,37 @@ public protocol SchemaServing: Sendable {
     /// Remove a property definition by id. No-op id → `propertyNotFound`.
     @discardableResult
     func removeProperty(_ typeID: ObjectTypeID, propertyID: String) async throws -> ObjectType
+
+    // MARK: - Templates (PR14)
+
+    /// All templates for a type (from disk + type.templateIDs reconciliation).
+    func listTemplates(typeID: ObjectTypeID) async throws -> [ObjectTemplate]
+
+    /// Load one template by id (`book.default`).
+    func loadTemplate(_ id: String) async throws -> ObjectTemplate
+
+    /// Create or replace a template file and register it on the type.
+    @discardableResult
+    func saveTemplate(_ template: ObjectTemplate) async throws -> ObjectTemplate
+
+    /// Create a new template (generates `<type>.<slug>` id). Optionally star as default.
+    @discardableResult
+    func createTemplate(
+        typeID: ObjectTypeID,
+        name: String,
+        bodyMarkdown: String,
+        defaultProperties: [String: PropertyValue],
+        slug: String?,
+        makeDefault: Bool
+    ) async throws -> ObjectTemplate
+
+    /// Delete template file and unregister from type (clears default if matched).
+    func deleteTemplate(_ id: String) async throws
+
+    /// Star (or clear) the default template for a type. Applied on object/daily create.
+    @discardableResult
+    func setDefaultTemplate(typeID: ObjectTypeID, templateID: String?) async throws -> ObjectType
+
+    /// Resolve the starred default template for a type, if any.
+    func defaultTemplate(for typeID: ObjectTypeID) async throws -> ObjectTemplate?
 }

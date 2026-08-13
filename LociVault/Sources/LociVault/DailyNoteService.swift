@@ -7,29 +7,35 @@ import LociMarkdown
 /// Identity: logical key `daily-YYYY-MM-DD` → `ObjectID.daily(...)`. Two devices
 /// ensuring the same day write the same path and id (no fork). Local vault fallback works.
 ///
+/// When `schema` is provided, new dailies apply the Daily type's default template (PR14).
+///
 /// **Does not** rewrite the daily body when other objects are created (Created-today = PR11).
 public final class DailyNoteService: DailyNoteServing, @unchecked Sendable {
     private let vault: any VaultServing
     private let query: any IndexQuerying
     private let update: any IndexUpdating
+    private let schema: (any SchemaServing)?
     private let parser = MarkdownParser()
     private let serializer = MarkdownSerializer()
 
     public init(
         vault: any VaultServing,
         query: any IndexQuerying,
-        update: any IndexUpdating
+        update: any IndexUpdating,
+        schema: (any SchemaServing)? = nil
     ) {
         self.vault = vault
         self.query = query
         self.update = update
+        self.schema = schema
     }
 
     public convenience init(
         vault: any VaultServing,
-        index: some IndexQuerying & IndexUpdating
+        index: some IndexQuerying & IndexUpdating,
+        schema: (any SchemaServing)? = nil
     ) {
-        self.init(vault: vault, query: index, update: index)
+        self.init(vault: vault, query: index, update: index, schema: schema)
     }
 
     // MARK: - DailyNoteServing
@@ -79,7 +85,7 @@ public final class DailyNoteService: DailyNoteServing, @unchecked Sendable {
         let now = Date()
         // Prefer the day's start for `created` so created(on:) aligns with the note day.
         let created = day
-        let meta = LociObjectMeta(
+        var meta = LociObjectMeta(
             id: id,
             typeID: .daily,
             title: title,
@@ -87,10 +93,16 @@ public final class DailyNoteService: DailyNoteServing, @unchecked Sendable {
             updated: now,
             relativePath: path
         )
-        // Empty/default body — templates land in PR14.
-        try await writeDocument(meta: meta, bodyMarkdown: "")
+        var bodyMarkdown = ""
+        var templateID: String?
+        if let schema, let template = try await schema.defaultTemplate(for: .daily) {
+            bodyMarkdown = template.bodyMarkdown
+            meta.properties = template.defaultProperties
+            templateID = template.id
+        }
+        try await writeDocument(meta: meta, bodyMarkdown: bodyMarkdown, templateID: templateID)
         try await update.applyVaultEvent(relativePath: path, kind: .created)
-        return OpenedObject(meta: meta, bodyMarkdown: "")
+        return OpenedObject(meta: meta, bodyMarkdown: bodyMarkdown)
     }
 
     private func openExisting(
@@ -143,10 +155,14 @@ public final class DailyNoteService: DailyNoteServing, @unchecked Sendable {
         return OpenedObject(meta: meta, bodyMarkdown: bodyMarkdown)
     }
 
-    private func writeDocument(meta: LociObjectMeta, bodyMarkdown: String) async throws {
+    private func writeDocument(
+        meta: LociObjectMeta,
+        bodyMarkdown: String,
+        templateID: String? = nil
+    ) async throws {
         let bodyDoc = try parser.parse(bodyMarkdown)
         let document = LociDocument(
-            frontMatter: FrontMatter(meta: meta),
+            frontMatter: FrontMatter(meta: meta, template: templateID),
             blocks: bodyDoc.blocks
         )
         let text = serializer.serialize(document)

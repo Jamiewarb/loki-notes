@@ -1,7 +1,7 @@
 {
-  "moduleVersion": "0.13.0-pr13",
+  "moduleVersion": "0.14.0-pr14",
   "space": {
-    "name": "Demo Properties",
+    "name": "Demo Templates",
     "schemaVersion": 1,
     "pins": []
   },
@@ -21,30 +21,18 @@
             "To Read",
             "Reading",
             "Done"
-          ],
-          "required": false
+          ]
         },
         {
           "id": "rating",
           "kind": "number",
           "name": "Rating",
-          "options": [],
-          "required": false
-        },
-        {
-          "id": "url",
-          "kind": "url",
-          "name": "URL",
-          "options": [],
-          "required": false
-        },
-        {
-          "id": "finished",
-          "kind": "checkbox",
-          "name": "Finished",
-          "options": [],
-          "required": false
+          "options": []
         }
+      ],
+      "defaultTemplateID": "book.default",
+      "templateIDs": [
+        "book.default"
       ]
     },
     {
@@ -53,7 +41,11 @@
       "icon": "sun.max",
       "color": "#3D6B5C",
       "isBuiltIn": true,
-      "properties": []
+      "properties": [],
+      "defaultTemplateID": "daily.default",
+      "templateIDs": [
+        "daily.default"
+      ]
     },
     {
       "id": "page",
@@ -65,18 +57,44 @@
     }
   ],
   "bookObject": {
-    "id": "b531657c-42ce-4847-8085-ed5f03de78ba",
+    "id": "9832999a-3ef8-4add-ad7d-f01116225d89",
     "type": "book",
     "title": "Deep Work",
     "relativePath": "objects/book/deep-work.md",
-    "tags": [],
     "properties": {
-      "finished": "false",
-      "rating": "5",
-      "status": "Reading",
-      "url": "https://www.calnewport.com/books/deep-work/"
-    }
+      "rating": "0",
+      "status": "To Read"
+    },
+    "bodyMarkdown": "## Summary\n\n## Quotes\n\n## Notes",
+    "prefilledHeadings": true
   },
+  "dailyObject": {
+    "bodyMarkdown": "## Morning\n\n## Evening",
+    "id": "daily-2026-08-13",
+    "prefilledHeadings": true,
+    "relativePath": "daily/2026-08-13.md",
+    "title": "2026-08-13"
+  },
+  "bookTemplate": {
+    "bodyPreview": "## Summary\n\n## Quotes\n\n## Notes",
+    "defaultProperties": {
+      "rating": "0",
+      "status": "To Read"
+    },
+    "exists": true,
+    "id": "book.default",
+    "name": "Default Book",
+    "path": ".loci/templates/book.default.md"
+  },
+  "dailyTemplate": {
+    "bodyPreview": "## Morning\n\n## Evening",
+    "exists": true,
+    "id": "daily.default",
+    "name": "Daily Default",
+    "path": ".loci/templates/daily.default.md"
+  },
+  "bookPrefill": true,
+  "dailyPrefill": true,
   "booksCount": 1,
   "pagesCount": 0,
   "appearsOnlyUnderBooks": true,
@@ -84,28 +102,6 @@
   "objectsFolderExists": true,
   "pageDeleteBlocked": true,
   "survivedReload": true,
-  "statusIndexed": true,
-  "ratingIndexed": true,
-  "propertiesIdx": [
-    {
-      "key": "finished",
-      "valueBool": false,
-      "valueText": "false"
-    },
-    {
-      "key": "rating",
-      "valueNumber": 5,
-      "valueText": "5.0"
-    },
-    {
-      "key": "status",
-      "valueText": "Reading"
-    },
-    {
-      "key": "url",
-      "valueText": "https://www.calnewport.com/books/deep-work/"
-    }
-  ],
-  "frontmatterSnippet": "id: b531657c-42ce-4847-8085-ed5f03de78ba\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T11:15:01Z\"\nupdated: \"2026-08-13T11:15:01Z\"\nproperties:\n  finished: false\n  rating: 5\n  status:\n    kind: select\n    value: Reading\n  url:\n    kind: url\n    value: \"https://www.calnewport.com/books/deep-work/\"",
-  "note": "Book type gets status + rating; values in YAML frontmatter; properties_idx updated on save (PR13)."
+  "frontmatterSnippet": "id: 9832999a-3ef8-4add-ad7d-f01116225d89\ntype: book\ntitle: Deep Work\ncreated: \"2026-08-13T11:23:18Z\"\nupdated: \"2026-08-13T11:23:18Z\"\nproperties:\n  rating: 0\n  status:\n    kind: select\n    value: To Read\ntemplate: book.default",
+  "note": "Default Book template prefills headings + status; new daily uses daily template (PR14)."
 }
