@@ -114,6 +114,15 @@ Capture (PR26) extras:
 
 Extensions write staging JSON under `.loci/inbox/`; main app drains on foreground into today’s daily or a typed object. Index updates via ObjectServing — never from the extension process.
 
+Import (PR27) extras:
+
+```bash
+./scripts/demo-import.sh
+# harness: http://127.0.0.1:5173/?panel=import
+```
+
+Dry-run summary then apply: generic markdown folder, Obsidian vault (wiki-links best-effort), Capacities-style export. Writes real vault files; preserves ObjectID / `daily/YYYY-MM-DD.md` when detectable.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

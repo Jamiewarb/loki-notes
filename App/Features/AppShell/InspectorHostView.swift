@@ -61,6 +61,8 @@ struct InspectorHostView: View {
                 CalendarFeature.inspector(services: services)
             } else if case .capture = route {
                 CaptureFeature.inspector(services: services)
+            } else if case .importExport = route {
+                ImportExportFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -138,6 +140,7 @@ struct InspectorHostView: View {
         case .graph: return "Caps · navigation"
         case .calendar: return "Dots · daily jump"
         case .capture: return "Inbox · surfaces"
+        case .importExport: return "Dry-run · apply"
         case .object: return "Properties"
         }
     }
@@ -164,6 +167,8 @@ struct InspectorHostView: View {
             return "Calendar dots are index-derived; day select opens daily/YYYY-MM-DD.md."
         case .capture:
             return "Share / widget / menu bar enqueue .loci/inbox/; drain lands in today or a typed object."
+        case .importExport:
+            return "Markdown folder · Obsidian · Capacities — dry-run summary, then vault writes + index."
         case .object:
             return "Properties, object tags, and backlinks from the local index."
         }

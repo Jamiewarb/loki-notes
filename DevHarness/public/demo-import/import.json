@@ -1,0 +1,120 @@
+{
+  "importers" : [
+    {
+      "id" : "markdownFolder",
+      "label" : "Generic markdown folder"
+    },
+    {
+      "id" : "obsidianVault",
+      "label" : "Obsidian vault (wiki-links best-effort)"
+    },
+    {
+      "id" : "capacitiesExport",
+      "label" : "Capacities-style export"
+    }
+  ],
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr27",
+  "markdownModuleVersion" : "see LociMarkdown",
+  "moduleVersion" : "0.27.0-pr27",
+  "note" : "PR27: Dry-run summary → apply writes objects\/daily\/media; preserves ObjectID + daily\/YYYY-MM-DD when detectable. Index never in vault.",
+  "proof" : {
+    "capacitiesBookType" : true,
+    "capacitiesDetected" : true,
+    "capacitiesPreservedID" : true,
+    "capacitiesWrote" : true,
+    "conflictSkip" : true,
+    "dryRunBeforeApply" : true,
+    "indexOutsideVault" : true,
+    "markdownDetected" : true,
+    "markdownMediaCopied" : true,
+    "markdownWrote" : true,
+    "obsidianDailyID" : true,
+    "obsidianDailyPath" : true,
+    "obsidianDetected" : true,
+    "obsidianWrote" : true
+  },
+  "runs" : [
+    {
+      "apply" : {
+        "mediaCopied" : 1,
+        "preservedIDs" : 0,
+        "skipped" : 0,
+        "written" : 2
+      },
+      "detected" : "markdownFolder",
+      "dryRun" : {
+        "create" : 2,
+        "daily" : 0,
+        "items" : 2,
+        "media" : 1,
+        "preservedIDs" : 0,
+        "skip" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "kind" : "markdownFolder",
+      "name" : "markdown",
+      "samplePaths" : [
+        "objects\/page\/hello-world.md",
+        "objects\/page\/second-note.md"
+      ]
+    },
+    {
+      "apply" : {
+        "mediaCopied" : 1,
+        "preservedIDs" : 1,
+        "skipped" : 0,
+        "written" : 3
+      },
+      "dailyID" : "daily-2026-08-01",
+      "dailyPath" : "daily\/2026-08-01.md",
+      "detected" : "obsidianVault",
+      "dryRun" : {
+        "create" : 3,
+        "daily" : 1,
+        "items" : 3,
+        "media" : 1,
+        "preservedIDs" : 1,
+        "skip" : 0,
+        "warnings" : [
+          "Welcome.md: unresolved [[…]] → sketch.png"
+        ]
+      },
+      "kind" : "obsidianVault",
+      "name" : "obsidian",
+      "samplePaths" : [
+        "daily\/2026-08-01.md",
+        "objects\/page\/alpha-project.md",
+        "objects\/page\/welcome.md"
+      ]
+    },
+    {
+      "apply" : {
+        "mediaCopied" : 1,
+        "preservedIDs" : 2,
+        "skipped" : 0,
+        "written" : 2
+      },
+      "detected" : "capacitiesExport",
+      "dryRun" : {
+        "create" : 2,
+        "daily" : 0,
+        "items" : 2,
+        "media" : 1,
+        "preservedIDs" : 2,
+        "skip" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "kind" : "capacitiesExport",
+      "name" : "capacities",
+      "samplePaths" : [
+        "objects\/book\/deep-work.md",
+        "objects\/page\/my-page.md"
+      ]
+    }
+  ]
+}

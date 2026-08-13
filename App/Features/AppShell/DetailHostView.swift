@@ -93,6 +93,15 @@ struct DetailHostView: View {
                         message: "Quick capture (PR26). Extensions enqueue .loci/inbox/; app drains → today / typed object."
                     )
                 }
+            case .importExport:
+                if let services {
+                    ImportExportFeature.destination(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .importExport,
+                        message: "Import (PR27). Markdown folder · Obsidian · Capacities — dry-run then apply into the vault."
+                    )
+                }
             case .object(let id):
                 if let services {
                     ObjectEditorFeature.editor(services: services, objectID: id)
@@ -123,6 +132,7 @@ struct DetailHostView: View {
         case .graph: return "graph"
         case .calendar: return "calendar"
         case .capture: return "capture"
+        case .importExport: return "importExport"
         case .object(let id): return "object-\(id.uuidString)"
         }
     }

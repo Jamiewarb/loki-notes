@@ -89,7 +89,7 @@ todos:
     status: completed
   - id: pr27-import
     content: 'PR27: Import Capacities/Obsidian/markdown folder'
-    status: pending
+    status: completed
   - id: pr28-type-convert
     content: 'PR28: Type conversion with property mapping'
     status: pending

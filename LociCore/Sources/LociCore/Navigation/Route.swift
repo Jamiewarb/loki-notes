@@ -17,9 +17,11 @@ public enum Route: Hashable, Sendable, Codable {
     case calendar
     /// Quick capture / inbox drain (PR26) — Studio / tooling destination.
     case capture
+    /// Import markdown / Obsidian / Capacities (PR27) — Studio / tooling destination.
+    case importExport
     case object(ObjectID)
 
-    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture).
+    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph, calendar, capture, import).
     public static let primaryDestinations: [Route] = [
         .daily, .tasks, .search, .types, .settings,
     ]
@@ -36,6 +38,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .graph: return "Graph"
         case .calendar: return "Calendar"
         case .capture: return "Capture"
+        case .importExport: return "Import"
         case .object: return "Object"
         }
     }
@@ -52,6 +55,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .graph: return "point.3.connected.trianglepath.dotted"
         case .calendar: return "calendar"
         case .capture: return "tray.and.arrow.down"
+        case .importExport: return "square.and.arrow.down.on.square"
         case .object: return "doc.text"
         }
     }
@@ -68,6 +72,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .graph: return "Wiki-link network"
         case .calendar: return "Daily notes · dots"
         case .capture: return "Share · widget · menu bar"
+        case .importExport: return "Markdown · Obsidian · Capacities"
         case .object: return "Open object"
         }
     }

@@ -121,6 +121,11 @@ if [[ -d "$ROOT/App/Features/Capture" ]]; then
 else
   fail "App/Features/Capture missing"
 fi
+if [[ -d "$ROOT/App/Features/ImportExport" ]]; then
+  pass "App/Features/ImportExport present"
+else
+  fail "App/Features/ImportExport missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

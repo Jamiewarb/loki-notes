@@ -46,6 +46,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let sync: SyncStatusService
     /// Quick capture / inbox drain (PR26). Nil until ObjectServing + DailyNoteServing are ready.
     public private(set) var capture: CaptureService?
+    /// Import markdown / Obsidian / Capacities (PR27). Nil until index is ready.
+    public private(set) var importer: ImportService?
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
 
@@ -63,7 +65,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         dailyNotes: DailyNoteService? = nil,
         media: MediaService? = nil,
         sync: SyncStatusService? = nil,
-        capture: CaptureService? = nil
+        capture: CaptureService? = nil,
+        importer: ImportService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -108,10 +111,22 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         } else {
             self.capture = nil
         }
+        if let importer {
+            self.importer = importer
+        } else if let index {
+            self.importer = ImportService(
+                vault: resolvedVault,
+                index: index,
+                schema: self.schema,
+                media: self.media
+            )
+        } else {
+            self.importer = nil
+        }
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
-    /// then wire `ObjectService` + `DailyNoteService` + `CaptureService`.
+    /// then wire `ObjectService` + `DailyNoteService` + `CaptureService` + `ImportService`.
     @discardableResult
     public func ensureIndex() async throws -> IndexService {
         if let index {
@@ -122,6 +137,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
                 dailyNotes = DailyNoteService(vault: vault, index: index, schema: schema)
             }
             wireCaptureIfPossible()
+            wireImporterIfPossible()
             return index
         }
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -135,6 +151,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.objects = ObjectService(vault: vault, index: service, schema: schema)
         self.dailyNotes = DailyNoteService(vault: vault, index: service, schema: schema)
         wireCaptureIfPossible()
+        wireImporterIfPossible()
         return service
     }
 
@@ -292,6 +309,14 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         return capture
     }
 
+    public func ensureImportService() async throws -> ImportService {
+        if let importer { return importer }
+        _ = try await ensureIndex()
+        wireImporterIfPossible()
+        guard let importer else { throw LociError.indexUnavailable }
+        return importer
+    }
+
     /// Drain extension inbox staging files into today / typed objects (PR26).
     @discardableResult
     public func drainCaptureInbox(calendar: Calendar = .current) async throws -> [CaptureResult] {
@@ -302,6 +327,11 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     private func wireCaptureIfPossible() {
         guard capture == nil, let objects, let dailyNotes else { return }
         capture = CaptureService(vault: vault, objects: objects, dailyNotes: dailyNotes)
+    }
+
+    private func wireImporterIfPossible() {
+        guard importer == nil, let index else { return }
+        importer = ImportService(vault: vault, index: index, schema: schema, media: media)
     }
 
     /// Ensure today’s daily note exists (auto-create). Used on Daily open / iOS launch path.

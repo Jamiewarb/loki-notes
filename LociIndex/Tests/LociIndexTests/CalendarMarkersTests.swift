@@ -139,7 +139,7 @@ final class CalendarMarkersTests: XCTestCase {
         XCTAssertEqual(m14.creationCount, 1)
         XCTAssertTrue(m14.showsDot)
 
-        XCTAssertTrue(LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27"))
     }
 
     func testCalendarChromeDoesNotRequireVaultRewrite() async throws {

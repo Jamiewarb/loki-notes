@@ -46,4 +46,8 @@ public enum LociError: Error, Sendable, Equatable {
     case coordinationFailed(String)
     /// Ubiquity download / ensure-local failed (Apple).
     case downloadFailed(String)
+    /// Import source root missing or not a directory.
+    case importSourceNotFound(String)
+    /// Import produced no markdown candidates.
+    case importEmpty(String)
 }
