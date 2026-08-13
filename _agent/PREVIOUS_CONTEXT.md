@@ -10,7 +10,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 **Based on:** `cursor/pr44-unlinked-mentions-d2c1`  
 **Vault module:** `0.45.0-pr45`  
 **MARKETING_VERSION:** `0.45.0`  
-**Swift tests:** pending evidence. **Playwright:** pending evidence. Evidence: `evidence/pr45/`  
+**Swift tests:** **436** green (was 427). **Playwright:** **99** green (was 97). Evidence: `evidence/pr45/`  
 **Wave F (PR40–PR45) complete.**
 
 ### Feature design

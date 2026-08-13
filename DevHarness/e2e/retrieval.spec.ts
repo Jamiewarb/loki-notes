@@ -19,7 +19,7 @@ test("clicking a graph node updates selection text", async ({ page }) => {
   await node.click();
   await expect(harness(page, "graph-selection")).toContainText("Open Deep Work");
   await expect(harness(page, "graph-selection")).toContainText(
-    "4dc2795d-2bd7-462a-84ab-c16d50eea5c9",
+    "d7aeb185-1128-43f9-b653-cdc7b800c41f",
   );
 });
 
