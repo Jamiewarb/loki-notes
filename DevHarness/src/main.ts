@@ -15,8 +15,15 @@ if (!app) {
   throw new Error("#app missing");
 }
 
+function panelFromQuery(): PanelId {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get("panel");
+  if (raw && raw in PANELS) return raw as PanelId;
+  return "daily";
+}
+
 /** Default to Daily — primary shell destination (matches AppServices). */
-let active: PanelId = "daily";
+let active: PanelId = panelFromQuery();
 
 const DESTINATION_ICONS: Record<PanelId, string> = {
   daily: "☀",
