@@ -4,6 +4,48 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
+## PR38 — Menu bar + Safari clipper
+
+**Branch:** `cursor/pr38-menubar-safari-d2c1`  
+**Based on:** `cursor/pr37-share-widget-d2c1`  
+**Vault module:** `0.38.0-pr38`  
+**Swift tests:** **346** green (was 336). **Playwright:** **80** green (integrations 10 + full suite). Evidence: `evidence/pr38/`
+
+### Feature design
+- Domain folder: `App/Platform/macOS/MenuBarCapture`, `App/Platform/macOS/SafariExtension` (no feature→feature imports)
+- Writes vault? yes — `.loci/inbox/*.json` only from the extension / vault-only menu bar. Main app `appendToToday` when CaptureServing is ready.
+- Reads index? **no** — Safari and vault-only menu bar must not open SQLite.
+- Protocols: `CaptureServing.appendToToday`; `VaultServing` via `CaptureInboxWriter` / `SafariClipInbox`; `Navigating` / `loci://daily/today`.
+- Pure helpers in LociCore: `SafariClipFactory.clip(fromUserInfo:)` (`url` / `title` / `selection`), `MenuBarCaptureFactory`, `MenuBarSafariProof`.
+- Apple: `MenuBarCaptureController.install()` from `LociApp` (`#if os(macOS)`). Safari `messageReceived` maps JS payload then enqueues. Linux stubs stay.
+- Missing vault → no crash (`SafariClipInbox.enqueueFromUserInfo` returns nil).
+
+### How to run checks
+
+```bash
+export PATH=/opt/swift/usr/bin:$PATH
+./scripts/lint.sh
+./scripts/test.sh
+./scripts/demo-safari.sh
+./scripts/demo-menubar.sh
+cd DevHarness && npx playwright test e2e/integrations.spec.ts
+./scripts/run-harness.sh   # ?panel=safari — menuBarWired / safariExtractsPage / inboxNotIndex
+```
+
+### Pitfalls
+- Reuse `.loci/inbox/` — do not invent a second inbox.
+- Extension process must never import LociIndex or open `index.sqlite`.
+- No EventKit / SafariServices types in LociCore. Mapper tests pass `[String: Any]` userInfo only.
+- Menu bar prefers `appendToToday`; vault-only (capture nil) enqueues. Missing vault is a no-op.
+- `menuBarWired` / `safariExtractsPage` are factory + URL proofs on Linux (“code present” + mapping), not a live status-item / Safari run.
+- Linux SPM tests stay green without AppKit / SafariServices.
+
+### Next
+
+Stacked after PR37. Parent opens the GitHub PR.
+
+---
+
 ## PR37 — Share extension + Widget
 
 **Branch:** `cursor/pr37-share-widget-d2c1`  

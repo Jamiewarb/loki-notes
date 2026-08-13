@@ -190,7 +190,8 @@ public final class CaptureService: CaptureServing, @unchecked Sendable {
 
 /// Extension-only helper: enqueue into vault without ObjectServing / index (PR26).
 ///
-/// Share extension / widget / menu bar use this when the main app stack is unavailable.
+/// Share extension / widget / menu bar / Safari clipper use this when the main
+/// app stack is unavailable. Never opens SQLite.
 public enum CaptureInboxWriter: Sendable {
     /// Write a staging JSON file. Returns vault-relative path.
     @discardableResult
@@ -211,5 +212,27 @@ public enum CaptureInboxWriter: Sendable {
         let data = try CaptureInboxCodec.encode(item)
         try await vault.writeFile(data, atRelativePath: path)
         return path
+    }
+}
+
+/// Safari extension enqueue — `userInfo` → inbox. Missing vault is a no-op (PR38).
+///
+/// Lives in Vault (not Core) so it can call `CaptureInboxWriter`. No SafariServices.
+public enum SafariClipInbox: Sendable {
+    /// Map JS payload keys `url` / `title` / `selection` and write `.loci/inbox/*.json`.
+    /// Returns `nil` when vault is missing or the page URL is empty — never crashes.
+    @discardableResult
+    public static func enqueueFromUserInfo(
+        _ userInfo: [String: Any]?,
+        vault: (any VaultServing)?
+    ) async -> String? {
+        let clip = SafariClipFactory.clip(fromUserInfo: userInfo)
+        let url = clip.pageURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !url.isEmpty else { return nil }
+        guard let vault else { return nil }
+        return try? await CaptureInboxWriter.enqueue(
+            SafariClipFactory.inboxItem(from: clip),
+            vault: vault
+        )
     }
 }

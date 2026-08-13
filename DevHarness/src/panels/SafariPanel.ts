@@ -53,7 +53,7 @@ export async function renderSafariPanel(root: HTMLElement): Promise<void> {
         </p>
 
         <section class="vault-card" data-harness="safari-daily" aria-label="Daily clip">
-          <p class="vault-kicker">PR32 · Inbox → daily / Weblink</p>
+          <p class="vault-kicker">PR38 · Inbox → daily / Weblink · menu bar</p>
           <h3 class="vault-card-title">Daily line</h3>
           <pre class="capture-body" data-harness="safari-daily-line">${escapeAttr(
             data.dailyLine || "",

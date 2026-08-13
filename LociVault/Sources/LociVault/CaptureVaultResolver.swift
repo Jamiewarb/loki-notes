@@ -1,7 +1,7 @@
 import Foundation
 import LociCore
 
-/// Resolve a vault for Share / Widget / Safari extension processes (PR37).
+/// Resolve a vault for Share / Widget / Safari / menu-bar processes (PR37 / PR38).
 ///
 /// Same policy as `AppServices`: prefer ubiquity, then local Documents.
 /// Never crashes — returns `nil` when both roots fail so the extension can

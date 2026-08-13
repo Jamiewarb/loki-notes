@@ -181,7 +181,7 @@ export const PANELS: Record<PanelId, Panel> = {
   safari: {
     id: "safari",
     title: "Safari",
-    body: "Safari web clipper (PR32). Extension enqueues .loci/inbox/*.json · drain → today (`· safari`) or Weblink with url property.",
+    body: "Safari web clipper (PR38). Extension JS payload url/title/selection → .loci/inbox/*.json · drain → today (`· safari`) or Weblink. Menu bar install() + loci://daily/today.",
     inspector: "Same Capture inbox · Weblink type · index never from extension.",
   },
   tags: {

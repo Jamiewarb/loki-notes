@@ -129,6 +129,14 @@ test("demo fixtures never store the index inside the vault", async ({
     if (proof && "inboxNotIndex" in proof) {
       expect.soft(proof.inboxNotIndex, `${url} proof.inboxNotIndex`).toBe(true);
     }
+    if (proof && "menuBarWired" in proof) {
+      expect.soft(proof.menuBarWired, `${url} proof.menuBarWired`).toBe(true);
+    }
+    if (proof && "safariExtractsPage" in proof) {
+      expect
+        .soft(proof.safariExtractsPage, `${url} proof.safariExtractsPage`)
+        .toBe(true);
+    }
     if (proof && "noteBodyHasAbsolutePath" in proof) {
       expect
         .soft(

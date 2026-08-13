@@ -87,7 +87,7 @@ export async function renderCapturePanel(root: HTMLElement): Promise<void> {
         </p>
 
         <section class="vault-card" data-harness="capture-proof" aria-label="Capture proof">
-          <p class="vault-kicker">PR37 · .loci/inbox · daily/${escapeAttr(data.dayKey)}.md</p>
+          <p class="vault-kicker">PR38 · .loci/inbox · daily/${escapeAttr(data.dayKey)}.md</p>
           <h3 class="vault-card-title">Drain proof</h3>
           <dl class="vault-meta">
             <div>

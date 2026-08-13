@@ -11,6 +11,9 @@ import LociDesignSystem
 struct LociApp: App {
     @State private var services = AppServices()
     @Environment(\.scenePhase) private var scenePhase
+    #if os(macOS)
+    @State private var menuBar = MenuBarCaptureController()
+    #endif
 
     var body: some Scene {
         WindowGroup {
@@ -23,6 +26,15 @@ struct LociApp: App {
                     if services.selectedRoute == .daily {
                         _ = try? await services.ensureTodayDailyNote()
                     }
+                    #if os(macOS)
+                    menuBar.install(
+                        capture: { services.capture },
+                        vault: { services.vault },
+                        onOpenToday: {
+                            Task { await services.handleOpenURL(LociDeepLink.dailyTodayURL) }
+                        }
+                    )
+                    #endif
                 }
                 .onOpenURL { url in
                     Task { await services.handleOpenURL(url) }

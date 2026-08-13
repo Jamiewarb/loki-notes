@@ -2,10 +2,9 @@
 # Generate on a Mac: brew install xcodegen && xcodegen generate
 # Cloud Linux agents do not use this file — they run SPM tests + DevHarness.
 #
-# PR26/PR37: Share extension + Widget + (sources for) menu bar capture.
+# PR26/PR37/PR38: Share + Widget + menu bar + Safari clipper.
 # They write `.loci/inbox/` staging files; the main app drains on foreground.
-# PR32: Safari App Extension stub (macOS) — same inbox path.
-# PR37: Share extracts text/URL; widget Open today is loci://daily/today.
+# PR38: menu bar install() + Safari messageReceived (url/title/selection).
 
 name: Loci
 options:
@@ -17,7 +16,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "0.37.0"
+    MARKETING_VERSION: "0.38.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
   Loci:
@@ -122,7 +121,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: App/Platform/iOS/Widget/Widget.entitlements
         SKIP_INSTALL: true
 
-  # PR32 — macOS Safari App Extension stub (enqueue .loci/inbox/*.json)
+  # PR38 — macOS Safari App Extension (userInfo → .loci/inbox/*.json)
   LociSafariExtension:
     type: app-extension
     platform: macOS

@@ -1,0 +1,19 @@
+
+Running 10 tests using 2 workers
+
+(node:49386) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › e2e/integrations.spec.ts:12:1 › credentials live outside the vault (569ms)
+  ✓   1 [chromium] › e2e/integrations.spec.ts:4:1 › upload is refused without opt-in (633ms)
+  ✓   4 [chromium] › e2e/integrations.spec.ts:35:1 › meetings are created via ObjectServing (407ms)
+  ✓   3 [chromium] › e2e/integrations.spec.ts:20:1 › event chrome does not rewrite daily.md (563ms)
+  ✓   5 [chromium] › e2e/integrations.spec.ts:43:1 › apple index is never stored in the vault (613ms)
+  ✓   6 [chromium] › e2e/integrations.spec.ts:51:1 › safari clipper uses the same Capture inbox (571ms)
+  ✓   7 [chromium] › e2e/integrations.spec.ts:58:1 › weblink url property is rendered (604ms)
+  ✓   8 [chromium] › e2e/integrations.spec.ts:66:1 › safari inbox is empty after drain (1.5s)
+  ✓  10 [chromium] › e2e/integrations.spec.ts:83:1 › safari extracts page payload and menu bar is wired (494ms)
+  ✓   9 [chromium] › e2e/integrations.spec.ts:74:1 › safari index is never from the extension (1.6s)
+
+  10 passed (4.6s)
