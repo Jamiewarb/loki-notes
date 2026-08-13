@@ -9,7 +9,8 @@ public enum FrontMatterCodec {
         guard let idRaw = stringValue(map["id"]) else {
             throw MarkdownError.missingRequiredField("id")
         }
-        guard let id = ObjectID(uuidString: idRaw) else {
+        // UUID or deterministic daily key `daily-YYYY-MM-DD` (PR10).
+        guard let id = ObjectID(parsing: idRaw) else {
             throw MarkdownError.invalidObjectID(idRaw)
         }
         guard let typeRaw = stringValue(map["type"]) ?? stringValue(map["typeID"]) else {
@@ -61,7 +62,8 @@ public enum FrontMatterCodec {
     /// Encode frontmatter YAML (without `---` fences). Keys sorted for stable round-trips.
     public static func encode(_ matter: FrontMatter) -> String {
         var map: [String: SimpleYAML.Value] = [
-            "id": .string(matter.id.uuidString.lowercased()),
+            // Daily notes persist as `daily-YYYY-MM-DD`; others as lowercase UUID.
+            "id": .string(matter.id.frontMatterIDString),
             "type": .string(matter.typeID.rawValue),
             "title": .string(matter.title),
             "created": .string(FrontMatterDates.format(matter.created)),

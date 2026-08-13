@@ -50,7 +50,7 @@ struct InspectorHostView: View {
     private var blurb: String {
         switch route {
         case .daily:
-            return "Outline and “created that day” panels land with DailyNotes / CreatedToday."
+            return "Outline stays light. “Created today” (PR11) is an inspector panel from the index — never rewritten into this daily .md."
         case .search:
             return "Recent queries and filter chips will appear here (PR18)."
         case .types:

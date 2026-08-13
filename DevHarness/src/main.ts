@@ -8,6 +8,7 @@ import {
   type PanelId,
 } from "./shell";
 import { renderDesignGallery } from "./panels/DesignGalleryPanel";
+import { renderDailyPanel } from "./panels/DailyPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
 import { renderEditorPanel } from "./panels/EditorPanel";
 import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
@@ -75,6 +76,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   const panel = PANELS[panelId];
   if (panelId === "gallery") {
     renderDesignGallery(detail);
+    return;
+  }
+  if (panelId === "daily") {
+    void renderDailyPanel(detail);
     return;
   }
   if (panelId === "settings") {

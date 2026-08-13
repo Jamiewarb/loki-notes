@@ -28,10 +28,16 @@ final class SchemaStoreTests: XCTestCase {
 
         let ids = try await store.knownTypeIDs()
         XCTAssertTrue(ids.contains(.page))
+        XCTAssertTrue(ids.contains(.daily))
         let page = try await store.loadType(.page)
         XCTAssertEqual(page.name, "Page")
         XCTAssertTrue(page.isBuiltIn)
         XCTAssertEqual(page.id, .page)
+
+        let daily = try await store.loadType(.daily)
+        XCTAssertEqual(daily.name, "Daily")
+        XCTAssertTrue(daily.isDaily)
+        XCTAssertTrue(daily.isBuiltIn)
 
         let settings = try await store.loadSpaceSettings()
         XCTAssertEqual(settings.name, "Schema Lab")
@@ -87,7 +93,7 @@ final class SchemaStoreTests: XCTestCase {
         // Fresh store against the same vault root — proves disk persistence.
         let store2 = SchemaStore(vault: vault)
         let ids = try await store2.knownTypeIDs()
-        XCTAssertEqual(ids.map(\.rawValue), ["book", "page"])
+        XCTAssertEqual(ids.map(\.rawValue), ["book", "daily", "page"])
         let loaded = try await store2.loadType(ObjectTypeID("book"))
         XCTAssertEqual(loaded.name, "Book")
         XCTAssertEqual(loaded.properties.count, 2)
@@ -101,8 +107,8 @@ final class SchemaStoreTests: XCTestCase {
             ObjectType(id: ObjectTypeID("project"), name: "Project", icon: "folder")
         )
         let all = try await store.allTypes()
-        XCTAssertEqual(all.count, 2)
-        XCTAssertEqual(Set(all.map(\.id.rawValue)), Set(["page", "project"]))
+        XCTAssertEqual(all.count, 3)
+        XCTAssertEqual(Set(all.map(\.id.rawValue)), Set(["page", "daily", "project"]))
     }
 
     func testLoadMissingTypeThrowsSchemaNotFound() async throws {
@@ -140,7 +146,7 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertTrue(text.contains("\n"), "expected pretty-printed JSON")
     }
 
-    func testModuleVersionIsPR08() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr08"))
+    func testModuleVersionIsPR10() {
+        XCTAssertTrue(LociVaultModule.version.contains("pr10"))
     }
 }

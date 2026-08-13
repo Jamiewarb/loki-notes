@@ -65,10 +65,11 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         return result
     }
 
-    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** if missing.
+    /// Ensure vault skeleton directories + `space.json`, then seed built-in **Page** + **Daily**.
     public func bootstrapSchema(spaceName: String = "Loci") async throws {
         try await vault.ensureSkeleton(spaceName: spaceName)
         try await seedBuiltInPageIfNeeded()
+        try await seedBuiltInDailyIfNeeded()
     }
 
     /// Write `page.json` when absent (idempotent). Safe to call after `ensureSkeleton`.
@@ -78,6 +79,15 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
             return
         }
         try await saveType(.builtInPage)
+    }
+
+    /// Write `daily.json` when absent (idempotent). Daily notes use `daily/YYYY-MM-DD.md`.
+    public func seedBuiltInDailyIfNeeded() async throws {
+        let path = Self.typeRelativePath(for: .daily)
+        if try await vault.fileExists(atRelativePath: path) {
+            return
+        }
+        try await saveType(.builtInDaily)
     }
 
     // MARK: - Paths
