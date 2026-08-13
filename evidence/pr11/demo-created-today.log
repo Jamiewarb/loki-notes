@@ -1,0 +1,9 @@
+==> loci-created-today-demo
+[0/1] Planning build
+Building for debugging...
+[0/3] Write swift-version--166437D737243488.txt
+Build of product 'loci-created-today-demo' complete! (0.22s)
+dailyUnchanged=True createdToday=2 hash=len=240;hex=…
+==> wrote /agent/DevHarness/public/demo-created-today/created-today.json
+==> wrote /agent/DevHarness/public/demo-created-today/today.md
+==> demo-created-today complete

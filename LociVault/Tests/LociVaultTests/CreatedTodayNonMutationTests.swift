@@ -1,6 +1,5 @@
 import XCTest
 import Foundation
-import CryptoKit
 import LociCore
 import LociMarkdown
 import LociIndex
@@ -51,8 +50,9 @@ final class CreatedTodayNonMutationTests: XCTestCase {
         calendar.date(from: DateComponents(year: y, month: m, day: d))!
     }
 
-    private func sha256Hex(_ data: Data) -> String {
-        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    /// Deterministic content fingerprint (CryptoKit unavailable on Linux CI).
+    private func contentFingerprint(_ data: Data) -> String {
+        "len=\(data.count);hex=\(data.map { String(format: "%02x", $0) }.joined())"
     }
 
     func testCreatePageDoesNotMutateDailyMarkdownBytes() async throws {
@@ -70,7 +70,7 @@ final class CreatedTodayNonMutationTests: XCTestCase {
 
         let beforeData = try await vault.readFile(atRelativePath: dailyPath)
         let beforeText = String(data: beforeData, encoding: .utf8) ?? ""
-        let beforeHash = sha256Hex(beforeData)
+        let beforeHash = contentFingerprint(beforeData)
         let beforeMod = try await modificationDate(forRelativePath: dailyPath)
 
         // Critical: ObjectService.create must only write the new Page path.
@@ -78,11 +78,12 @@ final class CreatedTodayNonMutationTests: XCTestCase {
 
         let afterData = try await vault.readFile(atRelativePath: dailyPath)
         let afterText = String(data: afterData, encoding: .utf8) ?? ""
-        let afterHash = sha256Hex(afterData)
+        let afterHash = contentFingerprint(afterData)
         let afterMod = try await modificationDate(forRelativePath: dailyPath)
 
         XCTAssertEqual(beforeHash, afterHash, "daily .md content hash must be unchanged")
-        XCTAssertEqual(beforeText, afterText, "daily .md bytes must be identical")
+        XCTAssertEqual(beforeData, afterData, "daily .md Data bytes must be identical")
+        XCTAssertEqual(beforeText, afterText, "daily .md UTF-8 must be identical")
         XCTAssertEqual(beforeMod, afterMod, "daily .md mtime must be unchanged")
 
         // Page is indexed under created(on:) for that calendar day.

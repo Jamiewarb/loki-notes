@@ -1,5 +1,4 @@
 import Foundation
-import CryptoKit
 import LociCore
 import LociVault
 import LociMarkdown
@@ -46,7 +45,7 @@ struct LociCreatedTodayDemo {
 
         let dailyPath = todayNote.meta.relativePath
         let beforeData = try await vault.readFile(atRelativePath: dailyPath)
-        let beforeHash = sha256Hex(beforeData)
+        let beforeHash = contentFingerprint(beforeData)
         let beforeMod = try await modificationDate(vault: vault, relativePath: dailyPath)
 
         let page = try await objects.create(typeID: .page, title: "Deep Work Notes")
@@ -59,7 +58,7 @@ struct LociCreatedTodayDemo {
         let page2 = try await objects.create(typeID: .page, title: "Second Capture")
 
         let afterData = try await vault.readFile(atRelativePath: dailyPath)
-        let afterHash = sha256Hex(afterData)
+        let afterHash = contentFingerprint(afterData)
         let afterMod = try await modificationDate(vault: vault, relativePath: dailyPath)
         let dailyUnchanged = beforeHash == afterHash && beforeData == afterData && beforeMod == afterMod
 
@@ -99,7 +98,7 @@ struct LociCreatedTodayDemo {
                 "beforeMtime": ISO8601DateFormatter().string(from: beforeMod),
                 "afterMtime": ISO8601DateFormatter().string(from: afterMod),
                 "note":
-                    "ObjectService.create Page does not rewrite daily .md (hash + mtime + bytes).",
+                    "ObjectService.create Page does not rewrite daily .md (fingerprint + mtime + bytes).",
             ],
             "createdToday": panelItems.map { metaJSON($0) },
             "createdTodayRawCount": createdRaw.count,
@@ -132,8 +131,9 @@ struct LociCreatedTodayDemo {
         ]
     }
 
-    private static func sha256Hex(_ data: Data) -> String {
-        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    /// Deterministic fingerprint without CryptoKit (Linux CI).
+    private static func contentFingerprint(_ data: Data) -> String {
+        "len=\(data.count);hex=\(data.map { String(format: "%02x", $0) }.joined())"
     }
 
     private static func modificationDate(vault: VaultService, relativePath: String) async throws -> Date {

@@ -4,22 +4,21 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR10 — Daily notes
+## PR11 — Created-today auto links
 
-**Branch:** `cursor/pr10-daily-notes-d2c1`  
-**Based on:** `cursor/pr09-block-editor-d2c1` @ `c23060f`
+**Branch:** `cursor/pr11-created-today-d2c1`  
+**Based on:** `cursor/pr10-daily-notes-d2c1` @ `a92d6cd`
 
 ### What landed
 
-- **`DailyNoteService`** in `LociVault` (Linux-testable): `ensure` / `ensureToday` / `open` + prev/next/select
-- **Identity:** path `daily/YYYY-MM-DD.md`; frontmatter id `daily-YYYY-MM-DD`; deterministic UUID `d01aYYYY-MMDD-4000-8000-6461696c7900`
-- **`DailyNoteIdentity` + `DailyNoteServing` + `ObjectID.daily` / `parsing:`** in `LociCore`; FrontMatter + Index accept date keys
-- **Schema:** built-in Daily type seeded with Page on `ensureSkeleton` / bootstrap
-- **App:** `Features/DailyNotes/{DailyNoteFeature,DailyNoteView,DaySwitcher}` — BlockEditor body; Daily destination live
-- **Launch:** `AppServices` defaults `.daily`; `LociApp` bootstraps vault + ensure today; iOS Daily tab first
-- **DevHarness:** Daily panel (`?panel=daily`) via `scripts/demo-daily.sh` / `loci-daily-demo`
-- **Tests:** **95** package tests (was 84)
-- Evidence: `evidence/pr10/`
+- **`CreatedTodayPanel`** under `Features/DailyNotes/UI/` — feeds from `IndexQuerying.created(on:)`
+- **UX:** Excludes Daily-type rows (already on that note); Pages/future types show as links
+- **Inspector:** `InspectorHostView` Daily route hosts the panel; `AppServices.inspectedDailyDay` tracks day switcher
+- **CRITICAL invariant:** `ObjectService.create` does **not** rewrite daily `.md` — unit test asserts fingerprint + mtime + bytes
+- **Demo:** `loci-created-today-demo` / `scripts/demo-created-today.sh` → `DevHarness/public/demo-created-today/`
+- **Harness:** Daily panel + inspector list created-today; tap → detail placeholder (`Navigating.open` in app)
+- **Tests:** **97** package tests (was 95)
+- Evidence: `evidence/pr11/`
 
 ### How to run checks
 
@@ -27,34 +26,34 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-daily.sh
+./scripts/demo-created-today.sh
 ./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=daily
 ```
 
-### Pitfalls for PR11 (Created today)
+### Pitfalls for PR12 (Custom types)
 
-- Panel only: `IndexQuerying.created(on:)` → inspector links — **never** rewrite daily `.md` on object create
-- Co-locate as `Features/DailyNotes/CreatedTodayPanel.swift` (or inspector module registered centrally)
-- Daily note bytes must stay stable when creating Pages elsewhere
-- Reuse existing `created(on:)` index query (PR07); wire publishers later if needed
+- Created-today already surfaces non-daily types from the index — custom Books etc. appear without daily.md writes
+- Add type CRUD + `types/<slug>/` + sidebar/dashboard; do not teach ObjectService to touch daily notes
+- Schema remains merge-friendly per-type JSON
 
-### Next: PR11 — Created-today auto links
+### Next: PR12 — Custom object types + dashboards
 
-- Branch: `cursor/pr11-created-today-d2c1`
+- Branch: `cursor/pr12-custom-types-d2c1`
 
 ---
 
-## PR09 — Block editor MVP
+## PR10 — Daily notes
 
-**Branch:** `cursor/pr09-block-editor-d2c1`
+**Branch:** `cursor/pr10-daily-notes-d2c1`
 
-`EditorSession` + Apple BlockEditor; ObjectEditor uses BlockAST. See `evidence/pr09/`.
+`DailyNoteService` + Daily destination + DaySwitcher. See `evidence/pr10/`.
 
 ### Still relevant
 
-- Debounced save via `EditorSessionBridge` → `ObjectServing.save`
-- DailyNoteView reuses the same bridge — do not reintroduce TextEditor
+- Deterministic `daily/YYYY-MM-DD.md` + `daily-YYYY-MM-DD` id
+- DailyNoteView uses BlockEditor / EditorSessionBridge — do not reintroduce TextEditor
+- Created-today must stay inspector-only (done in PR11)
 
 ---
 
-## Wave A (PR01–PR08) — complete · Wave B: PR09–PR10 done · next PR11
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR11 done · next PR12
