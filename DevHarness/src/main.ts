@@ -19,6 +19,7 @@ import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 import { renderTasksPanel } from "./panels/TasksPanel";
 import { renderMediaPanel } from "./panels/MediaPanel";
+import { renderGraphPanel } from "./panels/GraphPanel";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -47,6 +48,7 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   links: "⇉",
   tags: "#",
   media: "▣",
+  graph: "⬡",
 };
 
 function renderNavSection(
@@ -124,6 +126,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "media") {
     void renderMediaPanel(detail);
+    return;
+  }
+  if (panelId === "graph") {
+    void renderGraphPanel(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
@@ -486,6 +492,8 @@ function inspectorTitle(id: PanelId): string {
       return "Slash · keymap";
     case "links":
       return "Backlinks";
+    case "graph":
+      return "Caps · Navigating";
     case "tags":
       return "Object tags · aliases";
     case "media":

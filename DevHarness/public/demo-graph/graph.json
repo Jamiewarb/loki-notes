@@ -1,0 +1,92 @@
+{
+  "booksFilter" : {
+    "edgeCount" : 1,
+    "nodeCount" : 2,
+    "titles" : [
+      "Deep Work",
+      "Range"
+    ],
+    "type" : "book"
+  },
+  "capProof" : {
+    "edgeCount" : 1,
+    "maxEdges" : 1,
+    "maxNodes" : 2,
+    "nodeCount" : 2,
+    "truncated" : true
+  },
+  "graph" : {
+    "edgeCount" : 4,
+    "edges" : [
+      {
+        "from" : "d8c39901-0625-4a4d-bd6a-d194cb09ab6a",
+        "label" : "Deep Work",
+        "to" : "4dc2795d-2bd7-462a-84ab-c16d50eea5c9"
+      },
+      {
+        "from" : "004aba44-6602-4469-8c03-06730a8a67bc",
+        "label" : "Deep Work",
+        "to" : "4dc2795d-2bd7-462a-84ab-c16d50eea5c9"
+      },
+      {
+        "from" : "082a0223-614c-4ef8-92de-f79ff7bf5377",
+        "label" : "Deep Work",
+        "to" : "4dc2795d-2bd7-462a-84ab-c16d50eea5c9"
+      },
+      {
+        "from" : "082a0223-614c-4ef8-92de-f79ff7bf5377",
+        "label" : "Range",
+        "to" : "d8c39901-0625-4a4d-bd6a-d194cb09ab6a"
+      }
+    ],
+    "nodeCount" : 4,
+    "nodes" : [
+      {
+        "id" : "4dc2795d-2bd7-462a-84ab-c16d50eea5c9",
+        "title" : "Deep Work",
+        "type" : "book",
+        "x" : 410.2311564450538,
+        "y" : 48
+      },
+      {
+        "id" : "004aba44-6602-4469-8c03-06730a8a67bc",
+        "title" : "Focus Notes",
+        "type" : "page",
+        "x" : 672.0000000000001,
+        "y" : 302.11955486554865
+      },
+      {
+        "id" : "d8c39901-0625-4a4d-bd6a-d194cb09ab6a",
+        "title" : "Range",
+        "type" : "book",
+        "x" : 242.9927896691381,
+        "y" : 403.2539820676859
+      },
+      {
+        "id" : "082a0223-614c-4ef8-92de-f79ff7bf5377",
+        "title" : "Reading List",
+        "type" : "page",
+        "x" : 48,
+        "y" : 80.38467871818432
+      }
+    ],
+    "resolvedEdgeCount" : 4,
+    "truncated" : false,
+    "unresolvedLinkCount" : 1
+  },
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr24",
+  "layout" : {
+    "height" : 480,
+    "width" : 720
+  },
+  "moduleVersion" : "0.24.0-pr24",
+  "note" : "PR24: Graph from IndexQuerying.graph (links table). Type filter + caps. Node tap → Navigating.open.",
+  "proof" : {
+    "booksLinkInternally" : true,
+    "hubLinksToBooks" : true,
+    "layoutDeterministic" : true,
+    "opensViaNavigating" : true,
+    "unresolvedCounted" : true
+  }
+}

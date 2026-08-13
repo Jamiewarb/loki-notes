@@ -55,6 +55,8 @@ struct InspectorHostView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             } else if case .search = route {
                 SearchInspectorView(services: services)
+            } else if case .graph = route {
+                GraphFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -129,6 +131,7 @@ struct InspectorHostView: View {
         case .settings: return "Sync status"
         case .designGallery: return "Tokens"
         case .tags: return "Aliases"
+        case .graph: return "Caps · navigation"
         case .object: return "Properties"
         }
     }
@@ -149,6 +152,8 @@ struct InspectorHostView: View {
             return "editorial-sage · Fraunces + Source Sans 3 · moss-teal accent."
         case .tags:
             return "Tag aliases in space.json expand queries across spellings."
+        case .graph:
+            return "Graph reads the links table via IndexQuerying; node tap opens via Navigating."
         case .object:
             return "Properties, object tags, and backlinks from the local index."
         }

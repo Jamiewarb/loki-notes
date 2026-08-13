@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head><meta charset='utf-8'><title>PR24 harness graph evidence</title>
+<style>
+body{font-family:system-ui;margin:1.5rem;background:#fafcfa;color:#1a2421}
+.graph-edge{stroke:#3d4a45;stroke-width:1.5;opacity:.55}
+circle{fill:#1a2421;stroke:#f7fbf9;stroke-width:2}
+text{fill:#3d4a45;font-size:11px}
+.vault-meta div{display:inline-block;margin:0 .75rem .5rem 0}
+</style></head>
+<body>
+<div data-harness='destination' data-destination='graph'>
+  <h2>Graph (PR24)</h2>
+  <section data-harness='graph-proof'>
+    <p class='vault-kicker'>PR24 · links table → nodes/edges</p>
+    <dl class='vault-meta'>
+      <div><dt>Nodes</dt><dd data-harness='graph-node-count'>4</dd></div>
+      <div><dt>Edges</dt><dd data-harness='graph-edge-count'>4</dd></div>
+      <div><dt>Unresolved</dt><dd data-harness='graph-unresolved'>1</dd></div>
+      <div><dt>Books filter</dt><dd data-harness='graph-books-filter'>2 / 1</dd></div>
+      <div><dt>Cap proof</dt><dd data-harness='graph-cap'>2/1 truncated=true</dd></div>
+      <div><dt>Index in vault</dt><dd>no ✓</dd></div>
+    </dl>
+  </section>
+  <svg data-harness='graph-svg' viewBox='0 0 720 480' width='100%' height='420'><line x1="242.9927896691381" y1="403.2539820676859" x2="410.2311564450538" y2="48" class="graph-edge" /><line x1="672.0000000000001" y1="302.11955486554865" x2="410.2311564450538" y2="48" class="graph-edge" /><line x1="48" y1="80.38467871818432" x2="410.2311564450538" y2="48" class="graph-edge" /><line x1="48" y1="80.38467871818432" x2="242.9927896691381" y2="403.2539820676859" class="graph-edge" /><g data-harness="graph-node" data-object-id="4dc2795d-2bd7-462a-84ab-c16d50eea5c9" data-type="book"><circle cx="410.2311564450538" cy="48" r="12"/><text x="410.2311564450538" y="72" text-anchor="middle">Deep Work</text></g><g data-harness="graph-node" data-object-id="004aba44-6602-4469-8c03-06730a8a67bc" data-type="page"><circle cx="672.0000000000001" cy="302.11955486554865" r="12"/><text x="672.0000000000001" y="326.11955486554865" text-anchor="middle">Focus Notes</text></g><g data-harness="graph-node" data-object-id="d8c39901-0625-4a4d-bd6a-d194cb09ab6a" data-type="book"><circle cx="242.9927896691381" cy="403.2539820676859" r="12"/><text x="242.9927896691381" y="427.2539820676859" text-anchor="middle">Range</text></g><g data-harness="graph-node" data-object-id="082a0223-614c-4ef8-92de-f79ff7bf5377" data-type="page"><circle cx="48" cy="80.38467871818432" r="12"/><text x="48" y="104.38467871818432" text-anchor="middle">Reading List</text></g></svg>
+  <p data-harness='graph-selection'>Click a node — Navigating.open in the app.</p>
+  <p>PR24: Graph from IndexQuerying.graph (links table). Type filter + caps. Node tap → Navigating.open.</p>
+</div>
+</body></html>

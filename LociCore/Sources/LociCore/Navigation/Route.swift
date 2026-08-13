@@ -11,9 +11,11 @@ public enum Route: Hashable, Sendable, Codable {
     case designGallery
     /// Cross-type tag browse (PR17) — Studio / tooling destination.
     case tags
+    /// Link graph from the local index (PR24) — Studio / tooling destination.
+    case graph
     case object(ObjectID)
 
-    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags).
+    /// Sidebar primary destinations (excludes object deep-links, design gallery, tags, graph).
     public static let primaryDestinations: [Route] = [
         .daily, .tasks, .search, .types, .settings,
     ]
@@ -27,6 +29,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .settings: return "Settings"
         case .designGallery: return "Design"
         case .tags: return "Tags"
+        case .graph: return "Graph"
         case .object: return "Object"
         }
     }
@@ -40,6 +43,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .settings: return "gearshape"
         case .designGallery: return "paintpalette"
         case .tags: return "number"
+        case .graph: return "point.3.connected.trianglepath.dotted"
         case .object: return "doc.text"
         }
     }
@@ -53,6 +57,7 @@ public enum Route: Hashable, Sendable, Codable {
         case .settings: return "Vault & sync"
         case .designGallery: return "Tokens & primitives"
         case .tags: return "Cross-type #tags"
+        case .graph: return "Wiki-link network"
         case .object: return "Open object"
         }
     }

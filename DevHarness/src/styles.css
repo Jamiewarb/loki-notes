@@ -962,3 +962,52 @@ button.sync-chip:focus-visible {
 .sync-chip[data-status="offline"] {
   color: var(--loci-ink-soft);
 }
+
+/* PR24 — Graph panel */
+.graph-canvas-wrap {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--loci-line);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 20% 10%, color-mix(in srgb, var(--loci-mist) 35%, transparent), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, color-mix(in srgb, var(--loci-meadow) 40%, transparent), transparent 50%),
+    var(--loci-panel);
+}
+
+.graph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+
+.graph-edge {
+  stroke: color-mix(in srgb, var(--loci-ink-soft) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+.graph-node circle {
+  fill: var(--loci-ink);
+  stroke: var(--loci-paper);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 160ms ease, r 160ms ease;
+}
+
+.graph-node text {
+  fill: var(--loci-ink-soft);
+  font-family: var(--loci-font-body);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.graph-node:hover circle,
+.graph-node.is-selected circle {
+  fill: var(--loci-accent);
+}
+
+.graph-node:focus-visible circle {
+  outline: 2px solid var(--loci-accent);
+  outline-offset: 3px;
+}

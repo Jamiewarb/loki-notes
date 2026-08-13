@@ -71,6 +71,12 @@ public protocol IndexQuerying: Sendable {
     /// Execute a filter DSL against the index. Results are derived — callers must
     /// not write them into vault markdown unless the user explicitly inserts an embed.
     func execute(_ definition: QueryDefinition) async throws -> [LociObjectMeta]
+
+    // MARK: - Graph (PR24)
+
+    /// Build a capped link graph from the disposable `links` table (resolved edges only).
+    /// Features must not scrape markdown for graph topology.
+    func graph(options: GraphBuildOptions) async throws -> GraphSnapshot
 }
 
 /// One row from the disposable `properties_idx` projection.

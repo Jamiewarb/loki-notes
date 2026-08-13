@@ -1,0 +1,7 @@
+==> loci-graph-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-graph-demo' complete! (0.38s)
+nodes=4 edges=4 books=2/1 capped=2/1 unresolved=1
+wrote DevHarness/public/demo-graph/graph.json

@@ -18,7 +18,8 @@ export type PanelId =
   | "editor"
   | "links"
   | "tags"
-  | "media";
+  | "media"
+  | "graph";
 
 export interface NavItem {
   id: PanelId;
@@ -58,6 +59,7 @@ export const STUDIO_NAV: NavItem[] = [
   { id: "markdown", label: "Markdown", subtitle: "AST round-trip", section: "studio" },
   { id: "editor", label: "Editor", subtitle: "Block session + slash", section: "studio" },
   { id: "links", label: "Links", subtitle: "Wiki-links + backlinks", section: "studio" },
+  { id: "graph", label: "Graph", subtitle: "Wiki-link network", section: "studio" },
   { id: "tags", label: "Tags", subtitle: "Cross-type #tags", section: "studio" },
   { id: "media", label: "Media", subtitle: "Attach + image objects", section: "studio" },
 ];
@@ -119,6 +121,12 @@ export const PANELS: Record<PanelId, Panel> = {
     title: "Links",
     body: "Wiki-links [[id|title]] + @ picker (PR16). LinkResolver prefers ObjectID; backlinks from links table.",
     inspector: "Backlinks panel · broken-link styling (is-broken) · index never in vault.",
+  },
+  graph: {
+    id: "graph",
+    title: "Graph",
+    body: "Force-directed link graph (PR24). IndexQuerying.graph from links table · type filter · node/edge caps · open on tap.",
+    inspector: "Caps · Navigating.open · index never in vault.",
   },
   tags: {
     id: "tags",

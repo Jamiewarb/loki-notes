@@ -6,32 +6,29 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ## Wave C (PR22–)
 
-**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph…
+**Milestone:** Wave B MVP complete (PR09–PR21). Wave C depth: Collections → Queries → Graph → Calendar…
 
-Next stack: **PR24 Graph view**.
+Next stack: **PR25 Calendar UI**.
 
 ---
 
-## PR23 — Saved queries + embeds
+## PR24 — Graph view
 
-**Branch:** `cursor/pr23-queries-d2c1`  
-**Based on:** `cursor/pr22-collections-d2c1` @ `d680d01`  
-**Tip:** `dd4f13ed692f15c831fd04eac7ede99452bf1a34`
+**Branch:** `cursor/pr24-graph-d2c1`  
+**Based on:** `cursor/pr23-queries-d2c1` @ `a2ad141`  
+**Tip:** `886b5aa7144ca8704853ff39011f8669f3f44c20`
 
 ### What landed
 
-- **QueryEngine** (`LociIndex/Queries/QueryEngine.swift`): DSL over index — type, tags (all/any), property ops (equals/contains/gt/…/exists), created/updated ranges, sort, limit
-- **Core:** `QueryDefinition`, `SavedQuery`, `QueryID`; `IndexQuerying.execute`; `SchemaServing` query CRUD + pin; `LociError` query cases
-- **Vault:** `.loci/queries/` in `VaultLayout`; `SchemaStore` definition JSON (`<slug>.json`) — **no live results in vault files**
-- **Markdown:** `BlockNode.queryEmbed`; fence ```` ```query ```` round-trip; `/query` slash; HTML placeholder
-- **Features/Queries/:** `QueriesFeature`, `QueryStore`, `PinnedQueriesView`, `QueryEmbedView`
-- **Type dashboard:** pinned queries section (alongside collections)
-- **Block editor:** live embed row (slug editable + results from index)
-- **Demo:** `loci-queries-demo` / `scripts/demo-queries.sh` → `DevHarness/public/demo-queries/`
-- **Harness:** Types panel Pinned queries + Editor `/query` embed section
-- **Tests:** QueryEngine filters, vault CRUD, query fence/slash (+8 → **202** total)
-- Evidence: `evidence/pr23/`
-- Version: Index / Markdown → `*-pr23`; Vault → `0.23.0-pr23`
+- **Core:** `GraphNode` / `GraphEdge` / `GraphSnapshot` / `GraphBuildOptions`; `GraphAssembly` (type filter + degree caps); `GraphLayoutEngine` (deterministic force-directed, Linux-testable)
+- **Index:** `IndexQuerying.graph`; `GraphBuilder` over `links` table + `LinkResolver` (broken links counted, not drawn)
+- **Route.graph** + AppShell Studio wiring (sidebar / iOS Settings stack / inspector)
+- **Features/Graph/:** `GraphFeature`, `GraphStore`, `GraphView` (Canvas), `GraphInspectorView` — node tap → `Navigating.open`
+- **Demo:** `loci-graph-demo` / `scripts/demo-graph.sh` → `DevHarness/public/demo-graph/`
+- **Harness:** Studio **Graph** panel (SVG) at `?panel=graph`
+- **Tests:** GraphAssembly caps/filter + layout determinism + GraphBuilder index tests (+9 → **211** total)
+- Evidence: `evidence/pr24/`
+- Version: Index / Markdown → `*-pr24`; Vault → `0.24.0-pr24`
 
 ### How to run checks
 
@@ -39,37 +36,42 @@ Next stack: **PR24 Graph view**.
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-queries.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
-                           # http://127.0.0.1:5173/?panel=editor
+./scripts/demo-graph.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=graph
 ```
 
-### Pitfalls for PR24 (Graph)
+### Pitfalls for PR25 (Calendar)
 
-- Graph reads **links table** via IndexQuerying — do not scrape markdown in the feature
-- Performance cap required (node/edge limit); avoid O(n²) force layout on full vault
-- No feature→feature imports; Graph talks Index + Navigating protocols only
-- Collections/Queries dashboard chrome already share TypeDashboard — leave alone unless graph needs a type filter control of its own
+- Calendar must use **deterministic daily paths** (`daily/YYYY-MM-DD.md`) + `IndexQuerying.created(on:)` / daily identity — do not invent parallel date indexes in the vault
+- Dots for “has content / creations” are **index-derived UI only**; never rewrite daily markdown for calendar chrome
+- No feature→feature imports; Calendar talks DailyNoteServing / Index / Navigating protocols
+- Graph Studio destination already occupies tooling nav — leave alone unless calendar needs its own route
 
-### Next: PR24 — Graph view
+### Next: PR25 — Calendar UI
 
-- Branch: `cursor/pr24-graph-d2c1`
-- Force-directed (or simple adjacency) graph from links table; filter by type; open object on node tap; basic performance cap
-- Depends on: PR16
+- Branch: `cursor/pr25-calendar-d2c1`
+- Month/week calendar anchored to daily notes; dots for days with content/creations; jump to daily
+- Depends on: PR10, PR11
+
+---
+
+## PR23 — Saved queries + embeds
+
+**Branch:** `cursor/pr23-queries-d2c1`
+
+QueryEngine DSL; `.loci/queries/`; `/query` embeds. See `evidence/pr23/`.
+
+### Still relevant
+
+- Graph must not scrape markdown — links table only (done in PR24)
+- Query results remain derived; do not confuse with graph topology
 
 ---
 
 ## PR22 — Collections
 
-**Branch:** `cursor/pr22-collections-d2c1`
-
 Manual collections per type; membership vault JSON. See `evidence/pr22/`.
-
-### Still relevant
-
-- Queries are rule-based / dynamic — do not confuse with manual collection membership files
-- Query results are derived (index); `/query` embed stores slug only
 
 ---
 
-## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR23 done · next PR24
+## Wave A (PR01–PR08) · Wave B (PR09–PR21) **MVP complete** · Wave C PR22–PR24 done · next PR25

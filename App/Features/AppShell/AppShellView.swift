@@ -108,6 +108,15 @@ struct AppShellView: View {
                     Label("Tags", systemImage: Route.tags.systemImage)
                 }
                 NavigationLink {
+                    GraphFeature.destination(services: services)
+                        .navigationTitle("Graph")
+                        .onAppear {
+                            Task { await services.open(route: .graph) }
+                        }
+                } label: {
+                    Label("Graph", systemImage: Route.graph.systemImage)
+                }
+                NavigationLink {
                     DesignGalleryView()
                         .navigationTitle("Design")
                         .onAppear {
@@ -151,7 +160,9 @@ struct AppShellView: View {
         Binding(
             get: {
                 let mapped = AppRoute(route: services.selectedRoute)
-                if mapped == .designGallery || mapped == .tags { return .settings }
+                if mapped == .designGallery || mapped == .tags || mapped == .graph {
+                    return .settings
+                }
                 return mapped ?? .daily
             },
             set: { route in
