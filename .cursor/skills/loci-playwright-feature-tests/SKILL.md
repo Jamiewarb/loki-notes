@@ -138,7 +138,7 @@ Playwright config sketch:
 2. **Vite HMR websocket.** `networkidle` may never fire. Use default `load` + element assertions.
 3. **Inspector loads in parallel with detail** (daily created-today inspector). Assert inspector nodes separately; do not assume they exist at the same tick as the daily body.
 4. **Strict-mode collisions.** Many `[data-harness=destination]` must not exist; after nav, only one. Graph nodes are many — filter by `data-object-id` or title text.
-5. **Pinned Inbox stub is `disabled`.** Do not click it.
+5. **Pinned rows are enabled** (`data-harness="pin-row"`). Clicking one must not leave the shell.
 6. **Date drift.** Fixtures are frozen; “today” in JSON may not equal CI’s calendar day. Read `dayNav.today` from the fixture or the rendered `daily-today` node.
 7. **Parametrized panel smoke.** Keep assertions to “destination appeared / not stuck on Loading”. Panel-specific proofs live in domain specs.
 8. **Playwright 1.62 has no `test.each`.** Use `for...of` at module scope to register isolated tests.

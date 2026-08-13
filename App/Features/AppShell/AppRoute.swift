@@ -76,14 +76,3 @@ enum AppRoute: Hashable, Sendable, CaseIterable, Identifiable {
         }
     }
 }
-
-/// Pin section stub — real pinned objects arrive with Object CRUD / collections.
-struct PinnedItemStub: Identifiable, Hashable, Sendable {
-    let id: String
-    let title: String
-    let subtitle: String
-
-    static let placeholders: [PinnedItemStub] = [
-        PinnedItemStub(id: "pin-inbox", title: "Inbox", subtitle: "Pinned · coming later"),
-    ]
-}

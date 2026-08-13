@@ -20,6 +20,7 @@ const DEMO_JSON_WITH_INDEX_FLAG = [
   "/demo-media/media.json",
   "/demo-objects/pages.json",
   "/demo-para/para.json",
+  "/demo-pins/pins.json",
   "/demo-properties/properties.json",
   "/demo-queries/queries.json",
   "/demo-safari/safari.json",

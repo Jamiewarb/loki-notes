@@ -2,7 +2,6 @@ import "./styles.css";
 import {
   NAV_ITEMS,
   PANELS,
-  PINNED_STUB,
   PRIMARY_NAV,
   STUDIO_NAV,
   type PanelId,
@@ -64,6 +63,92 @@ const DESTINATION_ICONS: Record<PanelId, string> = {
   apple: "▦",
   safari: "◎",
 };
+
+interface PinRow {
+  id: string;
+  title: string;
+  type?: string | null;
+  path?: string | null;
+  isMissing?: boolean;
+}
+
+interface PinsFixture {
+  pins?: PinRow[];
+  proof?: Record<string, boolean>;
+  indexInsideVault?: boolean;
+  note?: string;
+}
+
+async function loadPinsFixture(): Promise<PinsFixture | null> {
+  try {
+    const res = await fetch("/demo-pins/pins.json", { cache: "no-store" });
+    if (!res.ok) return null;
+    return (await res.json()) as PinsFixture;
+  } catch {
+    return null;
+  }
+}
+
+function renderPinnedSection(): string {
+  return `
+    <div class="nav-section" data-harness="pinned-section">
+      <p class="nav-section-label">Pinned</p>
+      <nav class="nav" aria-label="Pinned" data-harness="pinned-nav">
+        <p class="nav-btn-sub" data-harness="pins-status">Loading pins…</p>
+      </nav>
+      <p class="nav-btn-sub" data-harness="pin-open" hidden></p>
+    </div>
+  `;
+}
+
+function pinButtonHTML(pin: PinRow): string {
+  const subtitle = pin.isMissing
+    ? "Missing pin"
+    : [pin.type, pin.path].filter(Boolean).join(" · ") || "Pinned";
+  return `
+    <button
+      type="button"
+      class="nav-btn${pin.isMissing ? " is-missing-pin" : ""}"
+      data-harness="pin-row"
+      data-object-id="${escapeAttr(pin.id)}"
+      data-missing="${pin.isMissing ? "true" : "false"}"
+    >
+      <span class="nav-btn-label">${escapeAttr(pin.title)}</span>
+      <span class="nav-btn-sub">${escapeAttr(subtitle)}</span>
+    </button>
+  `;
+}
+
+async function hydratePins(): Promise<void> {
+  const nav = app.querySelector<HTMLElement>("[data-harness='pinned-nav']");
+  if (!nav) return;
+  const fixture = await loadPinsFixture();
+  const pins = fixture?.pins ?? [];
+  if (!fixture) {
+    nav.innerHTML = `<p class="nav-btn-sub" data-harness="pins-status">Run <code>./scripts/demo-pins.sh</code></p>`;
+    return;
+  }
+  if (pins.length === 0) {
+    nav.innerHTML = `<p class="nav-btn-sub" data-harness="pins-status">No pins yet</p>`;
+    return;
+  }
+  nav.innerHTML = pins.map(pinButtonHTML).join("");
+  const openEl = app.querySelector<HTMLElement>("[data-harness='pin-open']");
+  nav.querySelectorAll<HTMLButtonElement>("[data-harness='pin-row']").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.objectId ?? "";
+      const pin = pins.find((p) => p.id === id);
+      const title = pin?.title ?? id;
+      if (!openEl) return;
+      openEl.hidden = false;
+      if (pin?.isMissing) {
+        openEl.textContent = `Missing pin ${id}`;
+      } else {
+        openEl.textContent = `Open ${title} → Navigating.open(objectID: ${id})`;
+      }
+    });
+  });
+}
 
 function renderNavSection(
   label: string,
@@ -192,13 +277,7 @@ function render(): void {
       </header>
       <aside class="sidebar" aria-label="Primary" data-harness="sidebar">
         ${renderNavSection("Navigate", PRIMARY_NAV)}
-        ${renderNavSection("Pinned", [
-          {
-            id: PINNED_STUB.id,
-            label: PINNED_STUB.label,
-            subtitle: PINNED_STUB.subtitle,
-          },
-        ], { stub: true })}
+        ${renderPinnedSection()}
         ${renderNavSection("Studio", STUDIO_NAV)}
         <p class="harness-note">Add panels in <code>src/panels/</code> and register in <code>shell.ts</code>.</p>
       </aside>
@@ -217,9 +296,9 @@ function render(): void {
   `;
 
   const detail = app.querySelector<HTMLElement>("[data-detail-root]");
-  if (!detail) return;
-
-  renderDetail(active, detail);
+  if (detail) {
+    renderDetail(active, detail);
+  }
 
   const inspectorRoot = app.querySelector<HTMLElement>("[data-inspector-root]");
   if (inspectorRoot && active === "daily") {
@@ -250,6 +329,8 @@ function render(): void {
       }
     });
   });
+
+  void hydratePins();
 }
 
 /** Daily inspector: live Created today links from demo-created-today fixture (PR11). */

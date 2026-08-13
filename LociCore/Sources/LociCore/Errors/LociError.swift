@@ -58,4 +58,6 @@ public enum LociError: Error, Sendable, Equatable {
     case aiProviderUnavailable(String)
     /// BYOK API key missing from credential store (Application Support / Keychain).
     case aiCredentialsMissing
+    /// Pin list is already at `PinLimits.maxCount` (PR34).
+    case pinLimitReached(Int)
 }

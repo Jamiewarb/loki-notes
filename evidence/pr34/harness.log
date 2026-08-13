@@ -1,0 +1,7 @@
+==> loci-pins-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-pins-demo' complete! (0.52s)
+pins=3 spacePins=['3d114fcc-2dc1-4b84-bdc8-76fc4a14fa49', 'daily-2026-08-13', '41a03305-25f5-4014-880a-74cbdf9619b8'] indexInsideVault=False module=0.34.0-pr34
+wrote DevHarness/public/demo-pins/pins.json

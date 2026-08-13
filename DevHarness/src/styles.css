@@ -205,6 +205,10 @@ body {
   cursor: default;
 }
 
+.nav-btn.is-missing-pin {
+  opacity: 0.72;
+}
+
 .detail {
   padding: 1.5rem 1.75rem;
   animation: panel-fade var(--loci-motion-panel) ease both;

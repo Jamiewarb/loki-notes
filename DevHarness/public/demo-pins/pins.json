@@ -1,0 +1,44 @@
+{
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "moduleVersion" : "0.34.0-pr34",
+  "note" : "PR34: Pins live in .loci\/space.json (ObjectID strings). Index resolves title\/type only — never stored in the vault. Sidebar pin-row click → Navigating.open.",
+  "pins" : [
+    {
+      "id" : "3d114fcc-2dc1-4b84-bdc8-76fc4a14fa49",
+      "isMissing" : false,
+      "path" : "objects\/page\/inbox.md",
+      "title" : "Inbox",
+      "type" : "page"
+    },
+    {
+      "id" : "daily-2026-08-13",
+      "isMissing" : false,
+      "path" : "daily\/2026-08-13.md",
+      "title" : "2026-08-13",
+      "type" : "daily"
+    },
+    {
+      "id" : "41a03305-25f5-4014-880a-74cbdf9619b8",
+      "isMissing" : true,
+      "path" : null,
+      "title" : "Missing pin",
+      "type" : null
+    }
+  ],
+  "proof" : {
+    "clickOpenInHarness" : true,
+    "dailyPinAllowed" : true,
+    "idempotentPin" : true,
+    "indexInsideVault" : true,
+    "missingPinShown" : true,
+    "orderPreserved" : true,
+    "pinsInSpaceJSON" : true,
+    "unpinWorked" : true
+  },
+  "spacePins" : [
+    "3d114fcc-2dc1-4b84-bdc8-76fc4a14fa49",
+    "daily-2026-08-13",
+    "41a03305-25f5-4014-880a-74cbdf9619b8"
+  ]
+}
