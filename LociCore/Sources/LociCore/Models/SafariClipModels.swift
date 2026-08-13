@@ -29,7 +29,22 @@ public struct SafariClip: Hashable, Sendable, Codable, Equatable {
 }
 
 /// Pure helpers mapping Safari clips → Capture inbox / Weblink body + properties.
+///
+/// Safari App Extension JS payload (`messageReceived` `userInfo` keys — no SafariServices):
+/// ```
+/// safari.extension.dispatchMessage("clip", {
+///   url: document.URL,
+///   title: document.title,
+///   selection: window.getSelection().toString(),
+///   destination: "appendToToday" | "weblinkObject"   // optional
+/// });
+/// ```
 public enum SafariClipFactory: Sendable {
+    public static let userInfoURLKey = "url"
+    public static let userInfoTitleKey = "title"
+    public static let userInfoSelectionKey = "selection"
+    public static let userInfoDestinationKey = "destination"
+
     /// Map a clip to a staging `CaptureInboxItem` (extension path — vault JSON only).
     public static func inboxItem(from clip: SafariClip) -> CaptureInboxItem {
         let url = clip.pageURL.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -56,6 +71,35 @@ public enum SafariClipFactory: Sendable {
                 sourceURL: url
             )
         }
+    }
+
+    /// Map Safari `userInfo` (`url` / `title` / `selection`) → `SafariClip`.
+    ///
+    /// Accepts `[String: Any]` so the extension can pass `SFSafariPage` userInfo
+    /// without importing SafariServices here. Missing keys become empty strings;
+    /// `destination` defaults to `.appendToToday`.
+    public static func clip(fromUserInfo userInfo: [String: Any]?) -> SafariClip {
+        let url = stringValue(userInfo, key: userInfoURLKey) ?? ""
+        let title = stringValue(userInfo, key: userInfoTitleKey)
+        let selection = stringValue(userInfo, key: userInfoSelectionKey) ?? ""
+        let destRaw = stringValue(userInfo, key: userInfoDestinationKey)
+        let destination = destRaw.flatMap(SafariClipDestination.init(rawValue:)) ?? .appendToToday
+        let resolvedTitle: String? = {
+            guard let title else { return nil }
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? nil : trimmed
+        }()
+        return SafariClip(
+            pageURL: url,
+            pageTitle: resolvedTitle,
+            selection: selection,
+            destination: destination
+        )
+    }
+
+    /// Map Safari `userInfo` → staging inbox item (same `.loci/inbox/` as Share).
+    public static func inboxItem(fromUserInfo userInfo: [String: Any]?) -> CaptureInboxItem {
+        inboxItem(from: clip(fromUserInfo: userInfo))
     }
 
     /// Markdown body for a Weblink object — quoted selection + source URL.
@@ -94,5 +138,20 @@ public enum SafariClipFactory: Sendable {
             props["clipped-from"] = .text(title)
         }
         return props
+    }
+
+    /// Coerce a userInfo value to a trimmed string (`String`, `URL`, or description).
+    public static func stringValue(_ userInfo: [String: Any]?, key: String) -> String? {
+        guard let raw = userInfo?[key] else { return nil }
+        let text: String
+        if let string = raw as? String {
+            text = string
+        } else if let url = raw as? URL {
+            text = url.absoluteString
+        } else {
+            text = String(describing: raw)
+        }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 }

@@ -11,7 +11,7 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.32.0</string>
+	<string>0.38.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSExtension</key>
@@ -20,8 +20,20 @@
 		<string>com.apple.Safari.extension</string>
 		<key>NSExtensionPrincipalClass</key>
 		<string>$(PRODUCT_MODULE_NAME).SafariClipperExtension</string>
+		<key>SFSafariToolbarItem</key>
+		<dict>
+			<key>Label</key>
+			<string>Clip to Loci</string>
+			<key>Identifier</key>
+			<string>LociClip</string>
+		</dict>
+		<key>SFSafariWebsiteAccess</key>
+		<dict>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
 	</dict>
 	<key>LociSafariNote</key>
-	<string>PR32 stub — enqueue .loci/inbox/*.json via CaptureInboxWriter; main app drains on foreground.</string>
+	<string>PR38 — JS payload keys url/title/selection → SafariClipFactory → .loci/inbox/*.json; main app drains on foreground. Index never from the extension.</string>
 </dict>
 </plist>

@@ -86,6 +86,19 @@ struct LociCaptureDemo {
             openTodayURL: LociDeepLink.dailyTodayAbsoluteString,
             indexInsideVault: sqliteInVault
         )
+        let menuBarItem = MenuBarCaptureFactory.inboxItem(text: "Menu bar quick add")
+        let safariUserInfo = SafariClipFactory.inboxItem(fromUserInfo: [
+            "url": "https://example.com/clip",
+            "title": "Clip",
+            "selection": "From Safari",
+        ])
+        let menuSafariProof = MenuBarSafariProof.evaluate(
+            menuBarItem: menuBarItem,
+            safariItem: safariUserInfo,
+            inboxPath: appendPath,
+            openTodayURL: LociDeepLink.dailyTodayAbsoluteString,
+            indexInsideVault: sqliteInVault
+        )
 
         func resultJSON(_ r: CaptureResult) -> [String: Any] {
             var d: [String: Any] = [
@@ -133,7 +146,11 @@ struct LociCaptureDemo {
                     "label": "Home Screen widget",
                     "action": "Open today \(LociDeepLink.dailyTodayAbsoluteString) / Quick add",
                 ],
-                ["id": "menubar", "label": "macOS menu bar", "action": "direct appendToToday"],
+                [
+                    "id": "menubar",
+                    "label": "macOS menu bar",
+                    "action": "install() · appendToToday / inbox · \(LociDeepLink.dailyTodayAbsoluteString)",
+                ],
             ],
             "openTodayURL": LociDeepLink.dailyTodayAbsoluteString,
             "share": [
@@ -156,9 +173,11 @@ struct LociCaptureDemo {
                 "widgetOpenToday": shareProof.widgetOpenToday,
                 "inboxNotIndex": shareProof.inboxNotIndex,
                 "indexInsideVault": shareProof.indexInsideVault,
+                "menuBarWired": menuSafariProof.menuBarWired,
+                "safariExtractsPage": menuSafariProof.safariExtractsPage,
             ],
             "note":
-                "PR37: Share extracts text/URL via ShareInboxFactory → .loci/inbox/*.json. Widget Open today is loci://daily/today. Index on foreground only.",
+                "PR38: Share + widget + menu bar install() + Safari url/title/selection → .loci/inbox/*.json. Open today is loci://daily/today. Index on foreground only.",
         ]
 
         let data = try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])

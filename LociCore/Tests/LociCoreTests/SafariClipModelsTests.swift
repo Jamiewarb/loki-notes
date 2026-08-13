@@ -80,4 +80,57 @@ final class SafariClipModelsTests: XCTestCase {
         let decoded = try JSONDecoder().decode(SafariClip.self, from: data)
         XCTAssertEqual(decoded, clip)
     }
+
+    func testUserInfoMapsToAppendClip() {
+        let userInfo: [String: Any] = [
+            SafariClipFactory.userInfoURLKey: "https://example.com/page",
+            SafariClipFactory.userInfoTitleKey: "  Page Title  ",
+            SafariClipFactory.userInfoSelectionKey: "Quoted selection",
+        ]
+        let clip = SafariClipFactory.clip(fromUserInfo: userInfo)
+        XCTAssertEqual(clip.pageURL, "https://example.com/page")
+        XCTAssertEqual(clip.pageTitle, "Page Title")
+        XCTAssertEqual(clip.selection, "Quoted selection")
+        XCTAssertEqual(clip.destination, .appendToToday)
+
+        let item = SafariClipFactory.inboxItem(fromUserInfo: userInfo)
+        XCTAssertEqual(item.kind, .appendToToday)
+        XCTAssertEqual(item.text, "Quoted selection")
+        XCTAssertEqual(item.source, .safari)
+        XCTAssertEqual(item.sourceURL, "https://example.com/page")
+        let path = CaptureInbox.relativePath(forID: item.id)
+        XCTAssertTrue(MenuBarSafariNotes.isInboxNotIndex(path))
+        XCTAssertFalse(path.contains("index.sqlite"))
+    }
+
+    func testUserInfoMapsToWeblinkInboxItem() {
+        let userInfo: [String: Any] = [
+            "url": "https://example.com/weblink",
+            "title": "Weblink Title",
+            "selection": "Save this quote",
+            "destination": "weblinkObject",
+        ]
+        let item = SafariClipFactory.inboxItem(fromUserInfo: userInfo)
+        XCTAssertEqual(item.kind, .createObject)
+        XCTAssertEqual(item.typeID, .weblink)
+        XCTAssertEqual(item.title, "Weblink Title")
+        XCTAssertEqual(item.source, .safari)
+        XCTAssertEqual(item.sourceURL, "https://example.com/weblink")
+        XCTAssertTrue(item.text.contains("> Save this quote"))
+    }
+
+    func testUserInfoURLObjectAndMissingKeys() {
+        let userInfo: [String: Any] = [
+            "url": URL(string: "https://loci.app/docs")!,
+        ]
+        let clip = SafariClipFactory.clip(fromUserInfo: userInfo)
+        XCTAssertEqual(clip.pageURL, "https://loci.app/docs")
+        XCTAssertNil(clip.pageTitle)
+        XCTAssertEqual(clip.selection, "")
+        XCTAssertEqual(clip.destination, .appendToToday)
+        let item = SafariClipFactory.inboxItem(from: clip)
+        XCTAssertEqual(item.text, "https://loci.app/docs")
+        XCTAssertNil(SafariClipFactory.clip(fromUserInfo: nil).pageTitle)
+        XCTAssertEqual(SafariClipFactory.clip(fromUserInfo: [:]).pageURL, "")
+    }
 }

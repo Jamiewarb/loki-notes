@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/demo-safari.sh — Safari web clipper fixtures for DevHarness (PR32).
+# scripts/demo-safari.sh — Safari web clipper fixtures for DevHarness (PR32 / PR38).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -30,6 +30,11 @@ assert proof.get("weblinkURLProperty") is True, proof
 assert proof.get("inboxEmpty") is True, proof
 assert proof.get("indexOutsideVault") is True, proof
 assert proof.get("directClip") is True, proof
+assert proof.get("menuBarWired") is True, proof
+assert proof.get("safariExtractsPage") is True, proof
+assert proof.get("inboxNotIndex") is True, proof
+assert proof.get("indexInsideVault") is False, proof
+assert data.get("indexInsideVault") is False, data
 assert data.get("pendingAfterDrain") == 0, data
 assert str(data.get("weblinkPath", "")).startswith("objects/weblink/"), data
 assert "· safari" in str(data.get("dailyLine", "")), data

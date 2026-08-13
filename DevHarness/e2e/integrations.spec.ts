@@ -79,3 +79,15 @@ test("safari index is never from the extension", async ({ page }) => {
   await expect(harness(page, "safari-proof-indexOutsideVault")).toHaveText("yes ✓");
   await expect(harness(page, "inspector")).toContainText("index never from extension");
 });
+
+test("safari extracts page payload and menu bar is wired", async ({ page }) => {
+  await gotoPanel(page, "safari");
+  await expect(harness(page, "safari-proof-safariExtractsPage")).toBeVisible();
+  await expect(harness(page, "safari-proof-safariExtractsPage")).toHaveText("yes ✓");
+  await expect(harness(page, "safari-proof-menuBarWired")).toBeVisible();
+  await expect(harness(page, "safari-proof-menuBarWired")).toHaveText("yes ✓");
+  await expect(harness(page, "safari-proof-inboxNotIndex")).toBeVisible();
+  await expect(harness(page, "safari-proof-inboxNotIndex")).toHaveText("yes ✓");
+  await expect(harness(page, "safari-proof-indexInsideVault")).toBeVisible();
+  await expect(harness(page, "safari-proof-indexInsideVault")).toHaveText("NO");
+});

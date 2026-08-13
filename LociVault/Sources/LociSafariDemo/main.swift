@@ -44,8 +44,15 @@ struct LociSafariDemo {
             selection: "Save this as a Weblink object.",
             destination: .weblinkObject
         )
+        // PR38: same path as Safari messageReceived (userInfo → factory → inbox).
         let appendInbox = try await safari.enqueue(appendClip)
         let weblinkInbox = try await safari.enqueue(weblinkClip)
+        let userInfoInbox = SafariClipFactory.inboxItem(fromUserInfo: [
+            "url": "https://example.com/safari-clip",
+            "title": "Safari Clip Article",
+            "selection": "Quoted selection from the page.",
+        ])
+        let menuBarItem = MenuBarCaptureFactory.inboxItem(text: "Menu bar quick add")
         let pendingBefore = try await capture.listPendingInbox()
 
         let drained = try await safari.drain(calendar: calendar)
@@ -94,6 +101,14 @@ struct LociSafariDemo {
             }
         }
 
+        let pr38 = MenuBarSafariProof.evaluate(
+            menuBarItem: menuBarItem,
+            safariItem: userInfoInbox,
+            inboxPath: appendInbox,
+            openTodayURL: LociDeepLink.dailyTodayAbsoluteString,
+            indexInsideVault: sqliteInVault
+        )
+
         let payload: [String: Any] = [
             "moduleVersion": LociVaultModule.version,
             "indexModuleVersion": LociIndexModule.version,
@@ -101,6 +116,7 @@ struct LociSafariDemo {
             "indexInsideVault": sqliteInVault,
             "appendInboxPath": appendInbox,
             "weblinkInboxPath": weblinkInbox,
+            "openTodayURL": LociDeepLink.dailyTodayAbsoluteString,
             "pendingBeforeDrain": pendingBefore.count,
             "pendingAfterDrain": pendingAfter.count,
             "dailyPath": opened.meta.relativePath,
@@ -120,9 +136,13 @@ struct LociSafariDemo {
                 "indexOutsideVault": !sqliteInVault,
                 "directClip": (direct.appendedLine ?? "").contains("· safari"),
                 "weblinkTypeSeeded": weblinkType.isBuiltIn,
+                "menuBarWired": pr38.menuBarWired,
+                "safariExtractsPage": pr38.safariExtractsPage,
+                "inboxNotIndex": pr38.inboxNotIndex,
+                "indexInsideVault": pr38.indexInsideVault,
             ],
             "note":
-                "PR32: Safari extension enqueues .loci/inbox/; drain → today (`· safari`) or Weblink with url property. Index never from extension.",
+                "PR38: Safari JS payload url/title/selection → SafariClipFactory → .loci/inbox/; menu bar install() + loci://daily/today. Index never from extension.",
         ]
 
         let data = try JSONSerialization.data(

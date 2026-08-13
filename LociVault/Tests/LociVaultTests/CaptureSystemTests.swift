@@ -166,6 +166,17 @@ final class CaptureSystemTests: XCTestCase {
         XCTAssertNotNil(CaptureVaultResolver.resolve(preferredLocalDirectory: vaultParent))
     }
 
+    func testMenuBarFactoryEnqueueDoesNotCreateIndex() async throws {
+        try await boot(calendar: utcCalendar)
+        let item = MenuBarCaptureFactory.inboxItem(text: "From menu bar")
+        XCTAssertEqual(item.source, .menuBar)
+        XCTAssertEqual(item.kind, .appendToToday)
+        let path = try await CaptureInboxWriter.enqueue(item, vault: vault)
+        XCTAssertTrue(MenuBarSafariNotes.isInboxNotIndex(path))
+        XCTAssertEqual(MenuBarCaptureFactory.route(hasCapture: false, hasVault: true), .enqueueInbox)
+        XCTAssertEqual(MenuBarCaptureFactory.route(hasCapture: true, hasVault: true), .appendToToday)
+    }
+
     func testSkeletonIncludesInboxDirectory() async throws {
         try await boot(calendar: utcCalendar)
         let root = try await vault.vaultRootURL

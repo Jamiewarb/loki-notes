@@ -142,6 +142,37 @@ final class SafariClipSystemTests: XCTestCase {
         let root = try await vault.vaultRootURL
         let folder = root.appendingPathComponent("objects/weblink", isDirectory: true)
         XCTAssertTrue(FileManager.default.fileExists(atPath: folder.path))
-        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr32") || LociVaultModule.version.contains("pr34") || LociVaultModule.version.contains("pr35") || LociVaultModule.version.contains("pr36") || LociVaultModule.version.contains("pr37") || LociVaultModule.version.contains("pr38"))
+    }
+
+    func testUserInfoEnqueueWritesInboxWithoutIndex() async throws {
+        try await boot()
+        let path = await SafariClipInbox.enqueueFromUserInfo(
+            [
+                "url": "https://example.com/from-js",
+                "title": "From JS",
+                "selection": "Selected",
+            ],
+            vault: vault
+        )
+        let inboxPath = try XCTUnwrap(path)
+        XCTAssertTrue(inboxPath.hasPrefix(".loci/inbox/"))
+        XCTAssertTrue(MenuBarSafariNotes.isInboxNotIndex(inboxPath))
+        let data = try await vault.readFile(atRelativePath: inboxPath)
+        let item = try CaptureInboxCodec.decode(data)
+        XCTAssertEqual(item.source, .safari)
+        XCTAssertEqual(item.text, "Selected")
+        XCTAssertEqual(item.sourceURL, "https://example.com/from-js")
+    }
+
+    func testMissingVaultDoesNotCrash() async throws {
+        let path = await SafariClipInbox.enqueueFromUserInfo(
+            ["url": "https://example.com", "title": "T", "selection": "S"],
+            vault: nil
+        )
+        XCTAssertNil(path)
+        try await boot()
+        let empty = await SafariClipInbox.enqueueFromUserInfo([:], vault: vault)
+        XCTAssertNil(empty)
     }
 }
