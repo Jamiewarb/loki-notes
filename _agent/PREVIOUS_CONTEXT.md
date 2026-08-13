@@ -30,7 +30,8 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 ## PR30 — AI assist
 
 **Branch:** `cursor/pr30-ai-d2c1`  
-**Based on:** `cursor/pr29-editor-rich-d2c1`
+**Based on:** `cursor/pr29-editor-rich-d2c1`  
+**Tip:** `3535848cd78e4915a7bbc1187e16adf5780fc632` (**281** tests)
 
 ### What landed
 
