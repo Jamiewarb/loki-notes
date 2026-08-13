@@ -14,7 +14,7 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr29-editor-rich-d2c1`  
 **Based on:** `cursor/pr28-type-convert-d2c1` tip `d74c90491b188c9404ed08143121f25b5cf2ad6c`  
-**Tip:** `b1c8836b6b6b6517a7ba11c3a87f19bb615caed6`
+**Tip:** 
 
 ### What landed
 
@@ -55,7 +55,7 @@ export PATH=/opt/swift/usr/bin:$PATH
 ## PR28 — Type conversion
 
 **Branch:** `cursor/pr28-type-convert-d2c1`  
-**Tip:** `d74c90491b188c9404ed08143121f25b5cf2ad6c`
+**Tip:** 
 
 Type convert with property mapping; ObjectID stable; daily notes cannot convert. See `evidence/pr28/`.
 
