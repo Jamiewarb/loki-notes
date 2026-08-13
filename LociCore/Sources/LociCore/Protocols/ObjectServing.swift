@@ -6,7 +6,8 @@ import Foundation
 /// → async `IndexUpdating.applyVaultEvent` (never block typing on index).
 ///
 /// **Debounced save:** The editor owns dirty state and debounce timing (e.g. 500ms idle
-/// + 5s max). `save` itself is immediate once invoked — see `ObjectEditorSession`.
+/// + 5s max). `save` itself is immediate once invoked — see `EditorSession` /
+/// Apple `EditorSessionBridge` (PR09).
 public protocol ObjectServing: Sendable {
     /// Create a new object file under `objects/<type>/`, index it, return metadata.
     func create(typeID: ObjectTypeID, title: String) async throws -> LociObjectMeta
