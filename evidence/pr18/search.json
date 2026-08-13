@@ -1,0 +1,136 @@
+{
+  "bodyHits" : [
+    {
+      "id" : "ee70c3f8-6078-4ab0-8c23-3d0521a0b893",
+      "relativePath" : "objects\/book\/deep-work.md",
+      "tags" : [
+
+      ],
+      "title" : "Deep Work",
+      "titleMatch" : false,
+      "type" : "book"
+    },
+    {
+      "id" : "7dd7ea05-46dd-4314-a411-4b50c1553e96",
+      "relativePath" : "objects\/page\/weekend-notes.md",
+      "tags" : [
+
+      ],
+      "title" : "Weekend Notes",
+      "titleMatch" : false,
+      "type" : "page"
+    }
+  ],
+  "bulkSeeded" : 0,
+  "ftsMatch" : "\"focus\"*",
+  "grouped" : [
+    {
+      "items" : [
+        {
+          "id" : "51dc4e9b-8b23-4e17-ba4d-96ae94775c0b",
+          "relativePath" : "objects\/page\/focus-rituals.md",
+          "tags" : [
+
+          ],
+          "title" : "Focus Rituals",
+          "titleMatch" : true,
+          "type" : "page"
+        },
+        {
+          "id" : "7dd7ea05-46dd-4314-a411-4b50c1553e96",
+          "relativePath" : "objects\/page\/weekend-notes.md",
+          "tags" : [
+
+          ],
+          "title" : "Weekend Notes",
+          "titleMatch" : false,
+          "type" : "page"
+        }
+      ],
+      "title" : "Page",
+      "type" : "page"
+    },
+    {
+      "items" : [
+        {
+          "id" : "ee70c3f8-6078-4ab0-8c23-3d0521a0b893",
+          "relativePath" : "objects\/book\/deep-work.md",
+          "tags" : [
+
+          ],
+          "title" : "Deep Work",
+          "titleMatch" : false,
+          "type" : "book"
+        }
+      ],
+      "title" : "Book",
+      "type" : "book"
+    }
+  ],
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-search-demo-db-2026-08-13T11-57-46Z\/vec6313eda956be28\/index.sqlite",
+  "markdownModuleVersion" : "0.2.0-pr18",
+  "moduleVersion" : "0.2.0-pr18",
+  "note" : "PR18: IndexQuerying.search FTS5 — title + body hits, grouped by type. ⌘K \/ SearchView reads index only.",
+  "objectCount" : 4,
+  "proof" : {
+    "bodyHit" : true,
+    "bookBodyHit" : true,
+    "groupCount" : 2,
+    "groupedByType" : true,
+    "hitCount" : 3,
+    "indexOutsideVault" : true,
+    "objectCount" : 4,
+    "titleFirst" : true,
+    "titleHit" : true
+  },
+  "searchHits" : [
+    {
+      "id" : "51dc4e9b-8b23-4e17-ba4d-96ae94775c0b",
+      "relativePath" : "objects\/page\/focus-rituals.md",
+      "tags" : [
+
+      ],
+      "title" : "Focus Rituals",
+      "titleMatch" : true,
+      "type" : "page"
+    },
+    {
+      "id" : "ee70c3f8-6078-4ab0-8c23-3d0521a0b893",
+      "relativePath" : "objects\/book\/deep-work.md",
+      "tags" : [
+
+      ],
+      "title" : "Deep Work",
+      "titleMatch" : false,
+      "type" : "book"
+    },
+    {
+      "id" : "7dd7ea05-46dd-4314-a411-4b50c1553e96",
+      "relativePath" : "objects\/page\/weekend-notes.md",
+      "tags" : [
+
+      ],
+      "title" : "Weekend Notes",
+      "titleMatch" : false,
+      "type" : "page"
+    }
+  ],
+  "searchQuery" : "focus",
+  "sqliteEngine" : "GRDB",
+  "titleHits" : [
+    {
+      "id" : "51dc4e9b-8b23-4e17-ba4d-96ae94775c0b",
+      "relativePath" : "objects\/page\/focus-rituals.md",
+      "tags" : [
+
+      ],
+      "title" : "Focus Rituals",
+      "titleMatch" : true,
+      "type" : "page"
+    }
+  ],
+  "vaultID" : "vec6313eda956be28",
+  "vaultModuleVersion" : "0.18.0-pr18",
+  "vaultRoot" : "\/tmp\/loci-search-demo-vault-2026-08-13T11-57-46Z\/LociVault"
+}

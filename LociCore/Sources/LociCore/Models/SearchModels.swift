@@ -97,8 +97,9 @@ public struct RecentSearchStore: Hashable, Sendable, Equatable {
     public mutating func record(_ raw: String) {
         let q = SearchRanking.normalizeQuery(raw)
         guard !q.isEmpty else { return }
+        let preserved = queries.first { $0.caseInsensitiveCompare(q) == .orderedSame } ?? q
         queries.removeAll { $0.caseInsensitiveCompare(q) == .orderedSame }
-        queries.insert(q, at: 0)
+        queries.insert(preserved, at: 0)
         if queries.count > limit {
             queries = Array(queries.prefix(limit))
         }

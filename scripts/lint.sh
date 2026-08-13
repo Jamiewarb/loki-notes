@@ -76,6 +76,11 @@ else
   fail "App/Features/AppShell missing"
 fi
 
+if [[ -d "$ROOT/App/Features/Search" ]]; then
+  pass "App/Features/Search present"
+else
+  fail "App/Features/Search missing"
+fi
 if [[ "$failures" -ne 0 ]]; then
   echo "==> lint failed ($failures)" >&2
   exit 1

@@ -1,0 +1,8 @@
+==> loci-search-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-search-demo' complete! (0.29s)
+hits=3 groups=2 objects=4 bulk=0 titleFirst=True indexOutsideVault=True
+==> wrote /agent/DevHarness/public/demo-search/search.json
+==> demo-search complete

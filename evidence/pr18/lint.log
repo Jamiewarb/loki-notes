@@ -7,98 +7,8 @@ OK: index/vault boundary docs present (Application Support convention)
 ==> lint: swift build
 [0/1] Planning build
 Building for debugging...
-[0/24] Write sources
-[5/53] Write swift-version--166437D737243488.txt
-[7/54] Compiling LociCore SearchModels.swift
-[8/54] Emitting module LociCore
-[9/55] Wrapping AST for LociCore for debugging
-[11/63] Emitting module LociMarkdown
-[12/65] Compiling LociMarkdown MarkdownParser.swift
-[13/65] Compiling LociMarkdown MarkdownSerializer.swift
-[14/65] Compiling LociMarkdown EditorSession.swift
-[15/65] Compiling LociMarkdown FrontMatter.swift
-[16/65] Compiling LociMarkdown FrontMatterCodec.swift
-[17/65] Compiling LociMarkdown LociDocument.swift
-[18/65] Compiling LociMarkdown LociMarkdownModule.swift
-[19/65] Compiling LociMarkdown PropertyValueYAML.swift
-[20/65] Compiling LociMarkdown TemplateCodec.swift
-[22/81] Emitting module loci_editor_demo
-[23/88] Compiling loci_markdown_demo main.swift
-[24/88] Emitting module loci_markdown_demo
-[25/89] Compiling loci_editor_demo main.swift
-[27/88] Wrapping AST for LociMarkdown for debugging
-[28/88] Write Objects.LinkFileList
-[31/88] Compiling LociIndex IndexService.swift
-[32/88] Compiling LociIndex LinkIndexer.swift
-[33/90] Compiling LociIndex LinkResolver.swift
-[34/90] Compiling LociIndex LinksQuery.swift
-[35/90] Compiling LociIndex LociIndexModule.swift
-[36/90] Compiling LociIndex CreatedOnQuery.swift
-[39/90] Compiling LociVault VaultRoot.swift
-[40/90] Compiling LociVault VaultService.swift
-[40/93] Linking loci-editor-demo
-[42/93] Emitting module LociIndex
-[45/93] Compiling LociIndex ObjectIndexer.swift
-[49/93] Emitting module LociVault
-[49/93] Linking loci-markdown-demo
-[53/94] Wrapping AST for LociVault for debugging
-[55/96] Compiling LociIndex IndexDatabase.swift
-[56/96] Compiling LociIndex SearchQuery.swift
-[57/96] Compiling LociIndex TagsQuery.swift
-[58/97] Emitting module loci_vault_demo
-[59/97] Compiling loci_vault_demo LociVaultDemo.swift
-[62/105] Emitting module loci_search_demo
-[63/105] Compiling loci_types_demo main.swift
-[64/105] Emitting module loci_types_demo
-[66/105] Emitting module loci_templates_demo
-[67/105] Compiling loci_templates_demo main.swift
-[68/106] Emitting module loci_tags_demo
-[69/106] Compiling loci_tags_demo main.swift
-[72/107] Emitting module loci_properties_demo
-[73/111] Compiling loci_objects_demo main.swift
-[74/111] Emitting module loci_objects_demo
-[75/112] Compiling loci_properties_demo main.swift
-[78/111] Emitting module loci_para_demo
-[79/111] Compiling loci_para_demo main.swift
-[81/117] Emitting module loci_daily_demo
-[82/117] Compiling loci_search_demo main.swift
-[84/118] Compiling loci_index_demo main.swift
-[85/118] Emitting module loci_index_demo
-[87/118] Compiling loci_daily_demo main.swift
-/agent/LociVault/Sources/LociDailyDemo/main.swift:39:13: warning: variable 'meta' was never mutated; consider changing to 'let' constant
- 37 | 
- 38 |         let objects = ObjectService(vault: vault, index: index)
- 39 |         var meta = todayNote.meta
-    |             `- warning: variable 'meta' was never mutated; consider changing to 'let' constant
- 40 |         try await objects.save(
- 41 |             meta: meta,
-[87/119] Wrapping AST for loci-search-demo for debugging
-[88/119] Write Objects.LinkFileList
-[91/120] Emitting module loci_created_today_demo
-[91/120] Wrapping AST for LociIndex for debugging
-[92/120] Write Objects.LinkFileList
-[93/120] Linking loci-vault-demo
-[94/120] Write Objects.LinkFileList
-[96/120] Compiling loci_created_today_demo main.swift
-[97/120] Write Objects.LinkFileList
-[99/120] Compiling loci_links_demo main.swift
-[100/120] Emitting module loci_links_demo
-[101/120] Write Objects.LinkFileList
-[103/120] Linking loci-types-demo
-[104/120] Linking loci-templates-demo
-[105/120] Write Objects.LinkFileList
-[106/120] Linking loci-tags-demo
-[107/120] Write Objects.LinkFileList
-[108/120] Linking loci-search-demo
-[108/120] Linking loci-properties-demo
-[110/120] Write Objects.LinkFileList
-[114/120] Linking loci-para-demo
-[115/120] Linking loci-objects-demo
-[116/120] Linking loci-links-demo
-[117/120] Linking loci-index-demo
-[118/120] Linking loci-daily-demo
-[119/120] Linking loci-created-today-demo
-Build complete! (3.28s)
+[0/15] Write swift-version--166437D737243488.txt
+Build complete! (0.58s)
 OK: swift build
 ==> lint: swift-format lint
 LociCore/Sources/LociCore/Models/PARAPack.swift:242:12: warning: [UseExplicitNilCheckInConditions] compare this value using `!= nil` instead of binding and discarding it
@@ -755,4 +665,5 @@ LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:76:1: warn
 LociDesignSystem/Sources/LociDesignSystem/Components/LociButton.swift:77:1: warning: [Indentation] replace leading whitespace with 4 spaces
 OK: swift-format
 OK: App/Features/AppShell present
+OK: App/Features/Search present
 ==> lint passed
