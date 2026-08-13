@@ -1,0 +1,71 @@
+{
+  "createdObject" : {
+    "id" : "f9bacf2b-a909-4565-a67f-27d05d809739",
+    "path" : "objects\/page\/shared-page.md"
+  },
+  "dailyBody" : "- Quick capture from share sheet — https:\/\/example.com\/clip · share\n- Menu bar quick add · menuBar",
+  "dailyPath" : "daily\/2026-08-13.md",
+  "dayKey" : "2026-08-13",
+  "direct" : {
+    "appendedLine" : "- Menu bar quick add · menuBar",
+    "kind" : "appendToToday",
+    "relativePath" : "daily\/2026-08-13.md"
+  },
+  "drain" : [
+    {
+      "inboxPath" : ".loci\/inbox\/7db5ca79-e38d-4b04-b3e1-427a7aad63a7.json",
+      "kind" : "createObject",
+      "objectId" : "f9bacf2b-a909-4565-a67f-27d05d809739",
+      "relativePath" : "objects\/page\/shared-page.md"
+    },
+    {
+      "appendedLine" : "- Quick capture from share sheet — https:\/\/example.com\/clip · share",
+      "inboxPath" : ".loci\/inbox\/ac80eacd-0eab-489c-9b98-c8317b997981.json",
+      "kind" : "appendToToday",
+      "objectId" : "daily-2026-08-13",
+      "relativePath" : "daily\/2026-08-13.md"
+    }
+  ],
+  "enqueue" : {
+    "appendPath" : ".loci\/inbox\/ac80eacd-0eab-489c-9b98-c8317b997981.json",
+    "createPath" : ".loci\/inbox\/7db5ca79-e38d-4b04-b3e1-427a7aad63a7.json"
+  },
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr26",
+  "moduleVersion" : "0.26.0-pr26",
+  "note" : "PR26: Extensions write .loci\/inbox\/*.json; main app drains → daily\/YYYY-MM-DD.md or typed object. Index on foreground only.",
+  "pendingAfter" : [
+
+  ],
+  "pendingBefore" : [
+    ".loci\/inbox\/7db5ca79-e38d-4b04-b3e1-427a7aad63a7.json",
+    ".loci\/inbox\/ac80eacd-0eab-489c-9b98-c8317b997981.json"
+  ],
+  "proof" : {
+    "appendLandedInDaily" : true,
+    "appendResultPresent" : true,
+    "createdTypedObject" : true,
+    "dailyPathDeterministic" : true,
+    "directMenuBarInDaily" : true,
+    "inboxStagingRemoved" : true,
+    "inboxThenDrain" : true,
+    "indexOutsideVault" : true
+  },
+  "surfaces" : [
+    {
+      "action" : "enqueue → drain",
+      "id" : "share",
+      "label" : "iOS Share extension"
+    },
+    {
+      "action" : "Open today \/ Quick add",
+      "id" : "widget",
+      "label" : "Home Screen widget"
+    },
+    {
+      "action" : "direct appendToToday",
+      "id" : "menubar",
+      "label" : "macOS menu bar"
+    }
+  ]
+}

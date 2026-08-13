@@ -44,6 +44,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let media: MediaService
     /// Sync status derivation + conflict scan (PR21).
     public let sync: SyncStatusService
+    /// Quick capture / inbox drain (PR26). Nil until ObjectServing + DailyNoteServing are ready.
+    public private(set) var capture: CaptureService?
     /// Bumped when sync UI should refresh (rebuild / simulation / conflict scan).
     public var syncRefreshNonce: Int = 0
 
@@ -60,7 +62,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         objects: ObjectService? = nil,
         dailyNotes: DailyNoteService? = nil,
         media: MediaService? = nil,
-        sync: SyncStatusService? = nil
+        sync: SyncStatusService? = nil,
+        capture: CaptureService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -94,10 +97,21 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         } else {
             self.dailyNotes = nil
         }
+        if let capture {
+            self.capture = capture
+        } else if let objects = self.objects, let dailyNotes = self.dailyNotes {
+            self.capture = CaptureService(
+                vault: resolvedVault,
+                objects: objects,
+                dailyNotes: dailyNotes
+            )
+        } else {
+            self.capture = nil
+        }
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
-    /// then wire `ObjectService` + `DailyNoteService`.
+    /// then wire `ObjectService` + `DailyNoteService` + `CaptureService`.
     @discardableResult
     public func ensureIndex() async throws -> IndexService {
         if let index {
@@ -107,6 +121,7 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
             if dailyNotes == nil {
                 dailyNotes = DailyNoteService(vault: vault, index: index, schema: schema)
             }
+            wireCaptureIfPossible()
             return index
         }
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -119,11 +134,12 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.index = service
         self.objects = ObjectService(vault: vault, index: service, schema: schema)
         self.dailyNotes = DailyNoteService(vault: vault, index: service, schema: schema)
+        wireCaptureIfPossible()
         return service
     }
 
     /// Ensure vault skeleton + Page/Daily schema + local index (rebuild if empty).
-    /// Call on vault create/open (onboarding / Settings).
+    /// Call on vault create/open (onboarding / Settings). Drains capture inbox on foreground.
     public func openVaultPipeline(rebuildIfNeeded: Bool = true) async throws {
         try await schema.bootstrapSchema(spaceName: spaceName)
         let index = try await ensureIndex()
@@ -138,6 +154,8 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         if let settings = try? await schema.loadSpaceSettings() {
             spaceName = settings.name
         }
+        // PR26: extensions write inbox files; main app drains on foreground.
+        _ = try? await drainCaptureInbox()
     }
 
     public func open(route: Route) async {
@@ -264,6 +282,26 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         _ = try await ensureIndex()
         guard let dailyNotes else { throw LociError.indexUnavailable }
         return dailyNotes
+    }
+
+    public func ensureCaptureService() async throws -> CaptureService {
+        if let capture { return capture }
+        _ = try await ensureIndex()
+        wireCaptureIfPossible()
+        guard let capture else { throw LociError.indexUnavailable }
+        return capture
+    }
+
+    /// Drain extension inbox staging files into today / typed objects (PR26).
+    @discardableResult
+    public func drainCaptureInbox(calendar: Calendar = .current) async throws -> [CaptureResult] {
+        let service = try await ensureCaptureService()
+        return try await service.drainInbox(calendar: calendar)
+    }
+
+    private func wireCaptureIfPossible() {
+        guard capture == nil, let objects, let dailyNotes else { return }
+        capture = CaptureService(vault: vault, objects: objects, dailyNotes: dailyNotes)
     }
 
     /// Ensure today’s daily note exists (auto-create). Used on Daily open / iOS launch path.

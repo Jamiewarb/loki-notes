@@ -1135,3 +1135,46 @@ button.sync-chip:focus-visible {
 .cal-week-day.is-selected .cal-dot {
   background: var(--loci-paper);
 }
+
+/* Capture (PR26) */
+.capture-surfaces,
+.capture-drain {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.capture-surface,
+.capture-drain li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--loci-panel) 75%, transparent);
+  color: var(--loci-ink);
+}
+
+.capture-surface span,
+.capture-line {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
+.capture-body {
+  margin: 0.5rem 0 0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--loci-ink) 6%, transparent);
+  color: var(--loci-ink);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.capture-proof-grid {
+  margin-top: 0.75rem;
+}

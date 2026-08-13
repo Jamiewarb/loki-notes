@@ -105,6 +105,15 @@ Calendar (PR25) extras:
 
 Calendar dots come from `IndexQuerying.calendarMarkers` (daily presence / FTS content / creations). Day select opens `daily/YYYY-MM-DD.md` via `DailyNoteServing.ensure` — never rewrite vault for chrome.
 
+Capture (PR26) extras:
+
+```bash
+./scripts/demo-capture.sh
+# harness: http://127.0.0.1:5173/?panel=capture
+```
+
+Extensions write staging JSON under `.loci/inbox/`; main app drains on foreground into today’s daily or a typed object. Index updates via ObjectServing — never from the extension process.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

@@ -59,6 +59,8 @@ struct InspectorHostView: View {
                 GraphFeature.inspector(services: services)
             } else if case .calendar = route {
                 CalendarFeature.inspector(services: services)
+            } else if case .capture = route {
+                CaptureFeature.inspector(services: services)
             } else if case .tags = route {
                 ScrollView {
                     VStack(alignment: .leading, spacing: LociSpacing.stack(.md)) {
@@ -135,6 +137,7 @@ struct InspectorHostView: View {
         case .tags: return "Aliases"
         case .graph: return "Caps · navigation"
         case .calendar: return "Dots · daily jump"
+        case .capture: return "Inbox · surfaces"
         case .object: return "Properties"
         }
     }
@@ -159,6 +162,8 @@ struct InspectorHostView: View {
             return "Graph reads the links table via IndexQuerying; node tap opens via Navigating."
         case .calendar:
             return "Calendar dots are index-derived; day select opens daily/YYYY-MM-DD.md."
+        case .capture:
+            return "Share / widget / menu bar enqueue .loci/inbox/; drain lands in today or a typed object."
         case .object:
             return "Properties, object tags, and backlinks from the local index."
         }

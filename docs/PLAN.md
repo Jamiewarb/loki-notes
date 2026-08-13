@@ -83,10 +83,10 @@ todos:
     status: completed
   - id: pr25-calendar
     content: 'PR25: Calendar UI around daily notes'
-    status: pending
+    status: completed
   - id: pr26-share-widget
     content: 'PR26: Share extension + iOS widget + macOS menu bar capture'
-    status: pending
+    status: completed
   - id: pr27-import
     content: 'PR27: Import Capacities/Obsidian/markdown folder'
     status: pending
