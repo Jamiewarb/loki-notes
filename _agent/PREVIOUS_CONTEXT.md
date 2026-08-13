@@ -16,7 +16,7 @@ Next stack: **PR28 Type conversion**.
 
 **Branch:** `cursor/pr27-import-d2c1`  
 **Based on:** `cursor/pr26-share-widget-d2c1`  
-**Tip:** *(see `git rev-parse HEAD` on branch after final commit)*
+**Tip:** `cd5cc0834f9eeb76645f67fc046c08c40d830840`
 
 ### What landed
 
