@@ -10,6 +10,7 @@ import {
 import { renderDesignGallery } from "./panels/DesignGalleryPanel";
 import { renderDestinationPlaceholder } from "./panels/DestinationPanel";
 import { renderMarkdownDebug } from "./panels/MarkdownDebugPanel";
+import { renderSearchIndex } from "./panels/SearchIndexPanel";
 import { renderSettingsVault } from "./panels/SettingsVaultPanel";
 import { renderTypesSchema } from "./panels/TypesSchemaPanel";
 
@@ -84,6 +85,10 @@ function renderDetail(panelId: PanelId, detail: HTMLElement): void {
   }
   if (panelId === "markdown") {
     void renderMarkdownDebug(detail);
+    return;
+  }
+  if (panelId === "search") {
+    void renderSearchIndex(detail);
     return;
   }
   renderDestinationPlaceholder(detail, {
