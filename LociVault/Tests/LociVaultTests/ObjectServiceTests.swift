@@ -108,6 +108,27 @@ final class ObjectServiceTests: XCTestCase {
         XCTAssertEqual(ObjectPathAllocator.slugify(""), "")
     }
 
+    func testCreateObjectOfCustomTypeAppearsOnlyUnderThatType() async throws {
+        try await boot()
+        let schema = SchemaStore(vault: vault)
+        let bookType = try await schema.createType(
+            name: "Books",
+            icon: "book",
+            color: "#8B5A2B",
+            slug: "book"
+        )
+        let deepWork = try await objects.create(typeID: bookType.id, title: "Deep Work")
+        XCTAssertEqual(deepWork.typeID.rawValue, "book")
+        XCTAssertTrue(deepWork.relativePath.hasPrefix("objects/book/"))
+
+        let books = try await index.objects(typeID: bookType.id)
+        XCTAssertEqual(books.count, 1)
+        XCTAssertEqual(books.first?.title, "Deep Work")
+
+        let pages = try await index.objects(typeID: .page)
+        XCTAssertTrue(pages.isEmpty)
+    }
+
     func testOpenMissingObjectThrows() async throws {
         try await boot()
         do {

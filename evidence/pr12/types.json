@@ -1,0 +1,72 @@
+{
+  "appearsOnlyUnderBooks" : true,
+  "bookObject" : {
+    "id" : "076e7094-2f95-453a-bdea-3ed550eeeb55",
+    "relativePath" : "objects\/book\/deep-work.md",
+    "tags" : [
+      "books"
+    ],
+    "title" : "Deep Work",
+    "type" : "book"
+  },
+  "booksCount" : 1,
+  "createdType" : {
+    "color" : "#8B5A2B",
+    "icon" : "book",
+    "id" : "book",
+    "isBuiltIn" : false,
+    "isDaily" : false,
+    "name" : "Books",
+    "properties" : [
+
+    ]
+  },
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-types-demo-db-2026-08-13T11-07-36Z\/v157bde405a8ed921\/index.sqlite",
+  "moduleVersion" : "0.12.0-pr12",
+  "note" : "Create Books → Deep Work under objects\/book\/. Appears only under Books index query. Built-in Page delete guarded.",
+  "objectsFolder" : "objects\/book",
+  "objectsFolderExists" : true,
+  "pageDeleteBlocked" : true,
+  "pagesCount" : 0,
+  "space" : {
+    "name" : "Demo Custom Types"
+  },
+  "typeJSONPreview" : "{\n  \"color\" : \"#8B5A2B\",\n  \"dashboard\" : {\n    \"cardPreviewPropertyIDs\" : [\n\n    ]\n  },\n  \"icon\" : \"book\",\n  \"id\" : \"book\",\n  \"isBuiltIn\" : false,\n  \"isDaily\" : false,\n  \"name\" : \"Books\",\n  \"properties\" : [\n\n  ],\n  \"templateIDs\" : [\n\n  ]\n}",
+  "types" : [
+    {
+      "color" : "#8B5A2B",
+      "icon" : "book",
+      "id" : "book",
+      "isBuiltIn" : false,
+      "isDaily" : false,
+      "name" : "Books",
+      "properties" : [
+
+      ]
+    },
+    {
+      "color" : "#3D6B5C",
+      "icon" : "sun.max",
+      "id" : "daily",
+      "isBuiltIn" : true,
+      "isDaily" : true,
+      "name" : "Daily",
+      "properties" : [
+
+      ]
+    },
+    {
+      "color" : "#0F6B5C",
+      "icon" : "doc.text",
+      "id" : "page",
+      "isBuiltIn" : true,
+      "isDaily" : false,
+      "name" : "Page",
+      "properties" : [
+
+      ]
+    }
+  ],
+  "vaultRoot" : "\/tmp\/loci-types-demo-vault-2026-08-13T11-07-36Z\/LociVault"
+}

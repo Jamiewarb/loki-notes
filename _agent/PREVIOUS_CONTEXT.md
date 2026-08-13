@@ -4,21 +4,23 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR11 — Created-today auto links
+## PR12 — Custom object types + dashboards
 
-**Branch:** `cursor/pr11-created-today-d2c1`  
-**Based on:** `cursor/pr10-daily-notes-d2c1` @ `a92d6cd`
+**Branch:** `cursor/pr12-custom-types-d2c1`  
+**Based on:** `cursor/pr11-created-today-d2c1` @ `8bf3480`
 
 ### What landed
 
-- **`CreatedTodayPanel`** under `Features/DailyNotes/UI/` — feeds from `IndexQuerying.created(on:)`
-- **UX:** Excludes Daily-type rows (already on that note); Pages/future types show as links
-- **Inspector:** `InspectorHostView` Daily route hosts the panel; `AppServices.inspectedDailyDay` tracks day switcher
-- **CRITICAL invariant:** `ObjectService.create` does **not** rewrite daily `.md` — unit test asserts fingerprint + mtime + bytes
-- **Demo:** `loci-created-today-demo` / `scripts/demo-created-today.sh` → `DevHarness/public/demo-created-today/`
-- **Harness:** Daily panel + inspector list created-today; tap → detail placeholder (`Navigating.open` in app)
-- **Tests:** **97** package tests (was 95)
-- Evidence: `evidence/pr11/`
+- **`SchemaServing` CRUD:** `createType` / `renameType` / `deleteType` → `.loci/types/<slug>.json` + `objects/<slug>/`
+- **`TypeSlug`:** name→slug, reserved `page`/`daily`, validation errors
+- **Guards:** built-in Page/Daily refuse delete; non-empty custom types need `force`
+- **UI:** `Features/ObjectTypes/{ObjectTypesFeature,UI/TypeList,TypeEditor,TypeDashboard}`
+- **Sidebar:** Types section lists all schema types → opens dashboard
+- **Demo:** `loci-types-demo` / `scripts/demo-types.sh` → `DevHarness/public/demo-types/`
+- **Harness:** Types panel shows Books + Deep Work + delete guard
+- **Tests:** **105** package tests (was 97)
+- Evidence: `evidence/pr12/`
+- Version: `LociVaultModule` → `0.12.0-pr12`
 
 ### How to run checks
 
@@ -26,34 +28,35 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-created-today.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=daily
+./scripts/demo-types.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
 ```
 
-### Pitfalls for PR12 (Custom types)
+### Pitfalls for PR13 (Properties)
 
-- Created-today already surfaces non-daily types from the index — custom Books etc. appear without daily.md writes
-- Add type CRUD + `types/<slug>/` + sidebar/dashboard; do not teach ObjectService to touch daily notes
-- Schema remains merge-friendly per-type JSON
+- Types already have `properties: [PropertyDef]` — keep empty-array compatible
+- Property values belong in YAML frontmatter via ObjectServing.save — not schema JSON
+- Index needs property columns for filter/sort (extend IndexService carefully)
+- Type dashboards currently list All from `objects(typeID:)` — property filters come next
+- Do not rewrite type id/slug when renaming display name
 
-### Next: PR12 — Custom object types + dashboards
+### Next: PR13 — Properties system
 
-- Branch: `cursor/pr12-custom-types-d2c1`
+- Branch: `cursor/pr13-properties-d2c1`
 
 ---
 
-## PR10 — Daily notes
+## PR11 — Created-today auto links
 
-**Branch:** `cursor/pr10-daily-notes-d2c1`
+**Branch:** `cursor/pr11-created-today-d2c1`
 
-`DailyNoteService` + Daily destination + DaySwitcher. See `evidence/pr10/`.
+`CreatedTodayPanel` from index; daily.md never rewritten on Page create. See `evidence/pr11/`.
 
 ### Still relevant
 
-- Deterministic `daily/YYYY-MM-DD.md` + `daily-YYYY-MM-DD` id
-- DailyNoteView uses BlockEditor / EditorSessionBridge — do not reintroduce TextEditor
-- Created-today must stay inspector-only (done in PR11)
+- Created-today already surfaces non-daily custom types automatically
+- ObjectService must not touch daily notes on create
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR11 done · next PR12
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR12 done · next PR13

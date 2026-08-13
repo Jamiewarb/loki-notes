@@ -1,0 +1,10 @@
+==> loci-types-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-types-demo' complete! (0.22s)
+types=3 books=1 pages=0 onlyUnderBooks=True pageDeleteBlocked=True
+wrote DevHarness/public/demo-schema/manifest.json
+==> wrote /agent/DevHarness/public/demo-types/types.json
+==> refreshed DevHarness/public/demo-schema/manifest.json
+==> demo-types complete

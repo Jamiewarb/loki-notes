@@ -90,10 +90,101 @@ public final class SchemaStore: SchemaServing, @unchecked Sendable {
         try await saveType(.builtInDaily)
     }
 
+    // MARK: - Custom types (PR12)
+
+    public func createType(
+        name: String,
+        icon: String = "square.grid.2x2",
+        color: String = "#0F6B5C",
+        slug: String? = nil
+    ) async throws -> ObjectType {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw LociError.invalidTypeSlug("(empty name)")
+        }
+        let resolved = try TypeSlug.resolve(explicit: slug, fromName: trimmed)
+        let id = ObjectTypeID(resolved)
+        if TypeSlug.isProtected(id) {
+            throw LociError.typeProtected(resolved)
+        }
+        let path = Self.typeRelativePath(for: id)
+        if try await vault.fileExists(atRelativePath: path) {
+            throw LociError.typeAlreadyExists(resolved)
+        }
+        let type = ObjectType(
+            id: id,
+            name: trimmed,
+            icon: icon.isEmpty ? "square.grid.2x2" : icon,
+            color: color.isEmpty ? "#0F6B5C" : color,
+            properties: [],
+            isBuiltIn: false,
+            isDaily: false
+        )
+        try await saveType(type)
+        try await ensureObjectsFolder(for: id)
+        return type
+    }
+
+    public func renameType(_ id: ObjectTypeID, name: String) async throws -> ObjectType {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw LociError.invalidTypeSlug("(empty name)")
+        }
+        var type = try await loadType(id)
+        type.name = trimmed
+        try await saveType(type)
+        return type
+    }
+
+    public func deleteType(_ id: ObjectTypeID, force: Bool = false) async throws {
+        let type = try await loadType(id)
+        if type.isBuiltIn || TypeSlug.isProtected(id) {
+            throw LociError.typeProtected(id.rawValue)
+        }
+        let markdownCount = try await countObjectMarkdown(for: id)
+        if markdownCount > 0 && !force {
+            throw LociError.typeNotEmpty(id.rawValue)
+        }
+        try await vault.deleteFile(atRelativePath: Self.typeRelativePath(for: id))
+    }
+
     // MARK: - Paths
 
     public static func typeRelativePath(for id: ObjectTypeID) -> String {
         "\(VaultLayout.typesDirectory)/\(id.rawValue).json"
+    }
+
+    public static func objectsFolderRelativePath(for id: ObjectTypeID) -> String {
+        "\(VaultLayout.objectsDirectory)/\(id.rawValue)"
+    }
+
+    public func ensureObjectsFolder(for id: ObjectTypeID) async throws {
+        let root = try await vault.vaultRootURL
+        let url = root.appendingPathComponent(
+            Self.objectsFolderRelativePath(for: id),
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    }
+
+    private func countObjectMarkdown(for id: ObjectTypeID) async throws -> Int {
+        let root = try await vault.vaultRootURL
+        let folder = root.appendingPathComponent(
+            Self.objectsFolderRelativePath(for: id),
+            isDirectory: true
+        )
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir),
+            isDir.boolValue
+        else {
+            return 0
+        }
+        let urls = try FileManager.default.contentsOfDirectory(
+            at: folder,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        return urls.filter { $0.pathExtension.lowercased() == "md" }.count
     }
 
     private func listTypeFileSlugs() async throws -> [String] {

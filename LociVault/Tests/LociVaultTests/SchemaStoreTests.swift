@@ -73,22 +73,23 @@ final class SchemaStoreTests: XCTestCase {
         let (vault, store) = try makeStore()
         try await store.bootstrapSchema(spaceName: "Custom")
 
-        let book = ObjectType(
-            id: ObjectTypeID("book"),
+        let book = try await store.createType(
             name: "Book",
             icon: "book",
             color: "#8B5A2B",
-            properties: [
-                PropertyDef(id: "author", name: "Author", kind: .text),
-                PropertyDef(
-                    id: "status",
-                    name: "Status",
-                    kind: .select,
-                    options: ["To Read", "Reading", "Done"]
-                ),
-            ]
+            slug: "book"
         )
-        try await store.saveType(book)
+        var withProps = book
+        withProps.properties = [
+            PropertyDef(id: "author", name: "Author", kind: .text),
+            PropertyDef(
+                id: "status",
+                name: "Status",
+                kind: .select,
+                options: ["To Read", "Reading", "Done"]
+            ),
+        ]
+        try await store.saveType(withProps)
 
         // Fresh store against the same vault root — proves disk persistence.
         let store2 = SchemaStore(vault: vault)
@@ -146,7 +147,118 @@ final class SchemaStoreTests: XCTestCase {
         XCTAssertTrue(text.contains("\n"), "expected pretty-printed JSON")
     }
 
-    func testModuleVersionIsPR10() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr11"))
+    func testCreateCustomTypeWritesJSONAndObjectsFolder() async throws {
+        let (vault, store) = try makeStore()
+        try await store.bootstrapSchema(spaceName: "Books Lab")
+
+        let book = try await store.createType(
+            name: "Books",
+            icon: "book",
+            color: "#8B5A2B",
+            slug: nil
+        )
+        XCTAssertEqual(book.id.rawValue, "books")
+        XCTAssertEqual(book.name, "Books")
+        XCTAssertTrue(book.properties.isEmpty)
+        XCTAssertFalse(book.isBuiltIn)
+
+        let typePath = SchemaStore.typeRelativePath(for: book.id)
+        let typeExists = try await vault.fileExists(atRelativePath: typePath)
+        XCTAssertTrue(typeExists)
+
+        let root = try await vault.vaultRootURL
+        let folder = root.appendingPathComponent(
+            SchemaStore.objectsFolderRelativePath(for: book.id),
+            isDirectory: true
+        )
+        var isDir: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir))
+        XCTAssertTrue(isDir.boolValue)
+    }
+
+    func testCreateCustomTypeDuplicateThrows() async throws {
+        let (_, store) = try makeStore()
+        try await store.bootstrapSchema()
+        _ = try await store.createType(name: "Books", icon: "book", color: "#8B5A2B", slug: nil)
+        do {
+            _ = try await store.createType(name: "Books", icon: "book", color: "#8B5A2B", slug: nil)
+            XCTFail("expected typeAlreadyExists")
+        } catch let error as LociError {
+            guard case .typeAlreadyExists("books") = error else {
+                return XCTFail("wrong error \(error)")
+            }
+        }
+    }
+
+    func testCreateReservedSlugThrows() async throws {
+        let (_, store) = try makeStore()
+        try await store.bootstrapSchema()
+        do {
+            _ = try await store.createType(name: "Page Clone", icon: "doc", color: "#000", slug: "page")
+            XCTFail("expected invalidTypeSlug")
+        } catch let error as LociError {
+            guard case .invalidTypeSlug("page") = error else {
+                return XCTFail("wrong error \(error)")
+            }
+        }
+    }
+
+    func testRenameAndDeleteCustomType() async throws {
+        let (_, store) = try makeStore()
+        try await store.bootstrapSchema()
+        let book = try await store.createType(name: "Books", icon: "book", color: "#8B5A2B", slug: "book")
+        let renamed = try await store.renameType(book.id, name: "Library")
+        XCTAssertEqual(renamed.name, "Library")
+        XCTAssertEqual(renamed.id.rawValue, "book")
+
+        try await store.deleteType(book.id, force: false)
+        let ids = try await store.knownTypeIDs()
+        XCTAssertFalse(ids.contains(book.id))
+    }
+
+    func testDeleteBuiltInPageThrows() async throws {
+        let (_, store) = try makeStore()
+        try await store.bootstrapSchema()
+        do {
+            try await store.deleteType(.page, force: true)
+            XCTFail("expected typeProtected")
+        } catch let error as LociError {
+            guard case .typeProtected("page") = error else {
+                return XCTFail("wrong error \(error)")
+            }
+        }
+        do {
+            try await store.deleteType(.daily, force: true)
+            XCTFail("expected typeProtected")
+        } catch let error as LociError {
+            guard case .typeProtected("daily") = error else {
+                return XCTFail("wrong error \(error)")
+            }
+        }
+    }
+
+    func testDeleteTypeWithObjectsRequiresForce() async throws {
+        let (vault, store) = try makeStore()
+        try await store.bootstrapSchema()
+        let book = try await store.createType(name: "Books", icon: "book", color: "#8B5A2B", slug: "book")
+        try await vault.writeFile(
+            Data("# Deep Work\n".utf8),
+            atRelativePath: "objects/book/deep-work.md"
+        )
+        do {
+            try await store.deleteType(book.id, force: false)
+            XCTFail("expected typeNotEmpty")
+        } catch let error as LociError {
+            guard case .typeNotEmpty("book") = error else {
+                return XCTFail("wrong error \(error)")
+            }
+        }
+        try await store.deleteType(book.id, force: true)
+        let ids = try await store.knownTypeIDs()
+        XCTAssertFalse(ids.contains(book.id))
+    }
+
+    func testModuleVersionIsPR12() {
+        XCTAssertTrue(LociVaultModule.version.contains("pr12"))
     }
 }

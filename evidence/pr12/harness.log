@@ -1,0 +1,36 @@
+==> harness types panel
+Thu Aug 13 11:07:43 AM UTC 2026
+[28333:28354:0813/110743.448874:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28354:0813/110743.452708:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28354:0813/110743.469574:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28354:0813/110743.478992:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.505002:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28333:0813/110743.505104:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28354:0813/110743.505244:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.506081:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28333:0813/110743.515450:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28354:0813/110743.515791:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.519424:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28333:0813/110743.530050:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28354:0813/110743.530288:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.530717:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[28333:28333:0813/110743.535899:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28354:0813/110743.538178:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.540188:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[28333:28354:0813/110743.541169:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[28333:28333:0813/110743.543240:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+389007 bytes written to file evidence/pr12/harness-types.png
+   700 evidence/pr12/harness.html
+389007 evidence/pr12/harness-types.png
+ 28926 evidence/pr12/harness-types-dom.html
+418633 total
+        <p class="vault-kicker">PR12 · SchemaServing</p>
+            <span class="schema-type-name">Books</span>
+        <p class="vault-note" data-harness="types-note" data-page-present="true" data-book-present="true">Page seeded · Books custom type present · Page delete guarded ✓ · Deep Work only under Books ✓</p>
+      <section class="vault-card" data-harness="books-dashboard" aria-label="Books dashboard">
+        <p class="vault-kicker">PR12 · Type dashboard</p>
+        <h3 class="vault-card-title">Books</h3>
+        <p class="vault-card-body" data-harness="books-loading">All · 1 book(s) · folder objects/book exists=true · 0.12.0-pr12</p>
+          <span class="schema-type-name">Deep Work</span>
+          <span class="schema-type-meta">objects/book/deep-work.md</span>
+        <p class="vault-note" data-harness="books-note" data-appears-only-under-books="true" data-page-delete-blocked="true">Create Books → Deep Work under objects/book/. Appears only under Books index query. Built-in Page delete guarded.</p>
