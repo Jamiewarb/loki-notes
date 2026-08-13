@@ -8,7 +8,8 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 **Branch:** `cursor/pr38-menubar-safari-d2c1`  
 **Based on:** `cursor/pr37-share-widget-d2c1`  
-**Vault module:** `0.38.0-pr38`
+**Vault module:** `0.38.0-pr38`  
+**Swift tests:** **346** green (was 336). **Playwright:** **80** green (integrations 10 + full suite). Evidence: `evidence/pr38/`
 
 ### Feature design
 - Domain folder: `App/Platform/macOS/MenuBarCapture`, `App/Platform/macOS/SafariExtension` (no feature→feature imports)
