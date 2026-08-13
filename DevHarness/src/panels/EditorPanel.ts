@@ -1,5 +1,5 @@
 /**
- * Editor panel — EditorSession slash simulation + BlockAST HTML preview (PR09).
+ * Editor panel — EditorSession slash simulation + BlockAST HTML preview (PR09 + PR29).
  * Loads `/demo-editor/editor.json` from `scripts/demo-editor.sh`.
  */
 export async function renderEditorPanel(root: HTMLElement): Promise<void> {
@@ -10,7 +10,7 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
         <h2 class="destination-title">Editor</h2>
       </header>
       <p class="destination-lead">
-        Block editor MVP — EditorSession owns BlockAST; slash inserts serialize via LociMarkdown.
+        Richer block editor — tables, toggles, callouts, code highlight; EditorSession owns BlockAST.
       </p>
       <p class="vault-note" data-harness="editor-status">Loading editor demo…</p>
     </div>
@@ -29,6 +29,12 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
       roundTripStable: boolean;
       isDirty: boolean;
       slashSimulated: string[];
+      richBlocks?: string[];
+      blockToObject?: {
+        title?: string;
+        typeID?: string;
+        wikiLink?: string;
+      };
       note: string;
       queryEmbed?: {
         serialized?: string;
@@ -74,6 +80,31 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
         </section>`
       : "";
 
+    const b2o = data.blockToObject;
+    const richSection = `
+        <section class="vault-card" data-harness="editor-rich-demo" aria-label="Richer blocks">
+          <p class="vault-kicker">PR29 · Richer editor</p>
+          <h3 class="vault-card-title">Tables · toggles · callouts · highlight</h3>
+          <dl class="vault-meta">
+            <div>
+              <dt>Rich kinds</dt>
+              <dd data-harness="editor-rich-kinds">${escapeHtml((data.richBlocks ?? []).join(" · "))}</dd>
+            </div>
+            <div>
+              <dt>Turn into object</dt>
+              <dd data-harness="editor-block-to-object">${escapeHtml(
+                b2o
+                  ? `${b2o.typeID ?? "?"} ← ${b2o.title ?? "?"} → ${b2o.wikiLink ?? "?"}`
+                  : "n/a",
+              )}</dd>
+            </div>
+          </dl>
+          <p class="vault-note">
+            Block→object uses <code>ObjectServing.create</code> + wiki-link insert (not feature imports).
+            Mermaid is a code fence; Apple may WebKit-render later — harness shows a stub.
+          </p>
+        </section>`;
+
     root.innerHTML = `
       <div class="destination editor-panel" data-harness="destination" data-destination="editor">
         <header class="destination-header">
@@ -82,7 +113,7 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
         </header>
         <p class="destination-lead">
           Slash-style inserts via <code>EditorSession</code> (${escapeHtml(data.moduleVersion)}).
-          Typing never awaits the index. <code>/query</code> embeds store a slug only.
+          Typing never awaits the index. PR29 adds table / toggle / callout / mermaid.
         </p>
 
         <section class="vault-card" data-harness="editor-meta" aria-label="Editor session status">
@@ -111,6 +142,8 @@ export async function renderEditorPanel(root: HTMLElement): Promise<void> {
             </div>
           </dl>
         </section>
+
+        ${richSection}
 
         <section class="md-columns" aria-label="Serialized markdown and AST HTML">
           <div class="md-pane">

@@ -60,6 +60,9 @@ final class MarkdownRoundTripTests: XCTestCase {
                     walk(children)
                 case .codeBlock: kinds.insert("codeBlock")
                 case .queryEmbed: kinds.insert("queryEmbed")
+                case .table: kinds.insert("table")
+                case .toggle: kinds.insert("toggle")
+                case .callout: kinds.insert("callout")
                 case .image: kinds.insert("image")
                 case .thematicBreak: kinds.insert("thematicBreak")
                 }

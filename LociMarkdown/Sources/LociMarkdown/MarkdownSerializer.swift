@@ -44,22 +44,74 @@ public struct MarkdownSerializer: Sendable {
                 serializeListItem(item, ordered: true, index: start + offset)
             }.joined(separator: "\n")
         case .blockQuote(let children):
-            let inner = serializeBlocks(children)
-            if inner.isEmpty { return ">" }
-            return inner.split(separator: "\n", omittingEmptySubsequences: false).map { line in
-                line.isEmpty ? ">" : "> \(line)"
-            }.joined(separator: "\n")
+            return quotePrefix(serializeBlocks(children))
         case .codeBlock(let language, let code):
             let info = language ?? ""
             return "```\(info)\n\(code)\n```"
         case .queryEmbed(let queryID):
             // Fence language `query`; body is the saved-query slug only (no result rows).
             return "```query\n\(queryID)\n```"
+        case .table(let headers, let alignments, let rows):
+            return serializeTable(headers: headers, alignments: alignments, rows: rows)
+        case .toggle(let summary, let children, _):
+            let summaryText = serializeInlines(summary)
+            let inner = serializeBlocks(children)
+            var parts = ["<details>", "<summary>\(summaryText)</summary>", ""]
+            if !inner.isEmpty {
+                parts.append(inner)
+                parts.append("")
+            }
+            parts.append("</details>")
+            return parts.joined(separator: "\n")
+        case .callout(let kind, let title, let children):
+            let titleText = serializeInlines(title)
+            let marker =
+                titleText.isEmpty
+                ? "> [!\(kind.rawValue)]"
+                : "> [!\(kind.rawValue)] \(titleText)"
+            let inner = serializeBlocks(children)
+            if inner.isEmpty { return marker }
+            let body = inner.split(separator: "\n", omittingEmptySubsequences: false).map { line in
+                line.isEmpty ? ">" : "> \(line)"
+            }.joined(separator: "\n")
+            return "\(marker)\n\(body)"
         case .image(let alt, let url, let title):
             return serializeImage(alt: alt, url: url, title: title)
         case .thematicBreak:
             return "---"
         }
+    }
+
+    private func quotePrefix(_ inner: String) -> String {
+        if inner.isEmpty { return ">" }
+        return inner.split(separator: "\n", omittingEmptySubsequences: false).map { line in
+            line.isEmpty ? ">" : "> \(line)"
+        }.joined(separator: "\n")
+    }
+
+    private func serializeTable(
+        headers: [String],
+        alignments: [TableAlignment],
+        rows: [[String]]
+    ) -> String {
+        let colCount = max(headers.count, alignments.count, rows.map(\.count).max() ?? 0)
+        func pad(_ cells: [String]) -> [String] {
+            var next = cells
+            while next.count < colCount { next.append("") }
+            return Array(next.prefix(colCount))
+        }
+        func rowLine(_ cells: [String]) -> String {
+            "| " + pad(cells).joined(separator: " | ") + " |"
+        }
+        var aligns = alignments
+        while aligns.count < colCount { aligns.append(.none) }
+        aligns = Array(aligns.prefix(colCount))
+        var lines: [String] = [rowLine(headers)]
+        lines.append("| " + aligns.map(\.separatorCell).joined(separator: " | ") + " |")
+        for row in rows {
+            lines.append(rowLine(row))
+        }
+        return lines.joined(separator: "\n")
     }
 
     private func serializeListItem(_ item: ListItem, ordered: Bool, index: Int) -> String {

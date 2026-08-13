@@ -106,7 +106,7 @@ struct ObjectEditorView: View {
                 }
 
                 Text(
-                    "Block editor · / slash · @ / [[ link · # tags · media attach · autosave 500ms."
+                    "Block editor · / slash (table · toggle · callout · mermaid) · Turn into… · @ / [[ link · # tags · media · autosave 500ms."
                 )
                 .font(LociTypography.font(.caption))
                 .foregroundStyle(LociColors.inkSoft)

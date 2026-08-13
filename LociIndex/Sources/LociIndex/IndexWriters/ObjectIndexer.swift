@@ -99,6 +99,25 @@ private struct ASTWalker {
             // Slug only — do not invent result titles into the indexed body.
             plainText.append(queryID)
             plainText.append("\n")
+        case .table(let headers, _, let rows):
+            plainText.append(headers.joined(separator: " "))
+            plainText.append("\n")
+            for row in rows {
+                plainText.append(row.joined(separator: " "))
+                plainText.append("\n")
+            }
+        case .toggle(let summary, let nested, _):
+            visitInlines(summary)
+            plainText.append("\n")
+            for b in nested {
+                visit(b)
+            }
+        case .callout(_, let title, let nested):
+            visitInlines(title)
+            plainText.append("\n")
+            for b in nested {
+                visit(b)
+            }
         case .image(let alt, _, _):
             plainText.append(alt)
             plainText.append("\n")

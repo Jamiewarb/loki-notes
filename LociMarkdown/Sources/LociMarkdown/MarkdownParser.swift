@@ -92,6 +92,11 @@ public struct MarkdownParser: Sendable {
             return (.thematicBreak, index + 1)
         }
 
+        // HTML <details> toggle (PR29)
+        if trimmed.lowercased().hasPrefix("<details") {
+            return try parseToggle(lines: lines, at: index)
+        }
+
         // Fenced code
         if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") {
             return try parseCodeFence(lines: lines, at: index)
@@ -102,9 +107,14 @@ public struct MarkdownParser: Sendable {
             return (heading, index + 1)
         }
 
-        // Block quote
+        // GFM table (PR29)
+        if let table = parseTable(lines: lines, at: index) {
+            return table
+        }
+
+        // Block quote or callout (PR29)
         if trimmed.hasPrefix(">") {
-            return try parseBlockQuote(lines: lines, at: index)
+            return try parseBlockQuoteOrCallout(lines: lines, at: index)
         }
 
         // List (bullet / task / numbered)
@@ -171,7 +181,7 @@ public struct MarkdownParser: Sendable {
         throw MarkdownError.unbalancedFence
     }
 
-    private func parseBlockQuote(lines: [String], at index: Int) throws -> (BlockNode, Int) {
+    private func parseBlockQuoteOrCallout(lines: [String], at index: Int) throws -> (BlockNode, Int) {
         var quoteLines: [String] = []
         var i = index
         while i < lines.count {
@@ -188,8 +198,153 @@ public struct MarkdownParser: Sendable {
                 break
             }
         }
+        if let callout = try parseCallout(from: quoteLines) {
+            return (callout, i)
+        }
         let inner = try parseBlocks(quoteLines.joined(separator: "\n"))
         return (.blockQuote(inner.isEmpty ? [.paragraph([])] : inner), i)
+    }
+
+    /// `> [!note] Title` / `> [!WARNING]` callout convention (PR29).
+    private func parseCallout(from quoteLines: [String]) throws -> BlockNode? {
+        guard let first = quoteLines.first else { return nil }
+        let trimmed = first.trimmingCharacters(in: .whitespaces)
+        guard trimmed.hasPrefix("[!") else { return nil }
+        guard let close = trimmed.firstIndex(of: "]") else { return nil }
+        let kindRaw = String(trimmed[trimmed.index(trimmed.startIndex, offsetBy: 2)..<close])
+        // Optional fold marker `-` after `]` (Obsidian) — ignored for callout (toggles use <details>).
+        var after = String(trimmed[trimmed.index(after: close)...])
+        if after.hasPrefix("-") {
+            after = String(after.dropFirst())
+        }
+        after = after.trimmingCharacters(in: .whitespaces)
+        let kind = CalloutKind.parse(kindRaw)
+        let title: [InlineNode] =
+            after.isEmpty ? [.text(kind.title)] : InlineParser.parse(after)
+        let bodyLines = Array(quoteLines.dropFirst())
+        let children = try parseBlocks(bodyLines.joined(separator: "\n"))
+        return .callout(
+            kind: kind,
+            title: title,
+            children: children.isEmpty ? [.paragraph([])] : children
+        )
+    }
+
+    private func parseToggle(lines: [String], at index: Int) throws -> (BlockNode, Int) {
+        var i = index + 1
+        var summaryInlines: [InlineNode] = [.text("Toggle")]
+        var bodyLines: [String] = []
+        var sawClose = false
+        while i < lines.count {
+            let trimmed = lines[i].trimmingCharacters(in: .whitespaces)
+            let lower = trimmed.lowercased()
+            if lower.hasPrefix("<summary>") {
+                var text = String(trimmed.dropFirst("<summary>".count))
+                if let end = text.range(of: "</summary>", options: .caseInsensitive) {
+                    text = String(text[..<end.lowerBound])
+                    i += 1
+                } else {
+                    // Multi-line summary until </summary>
+                    i += 1
+                    while i < lines.count {
+                        let t = lines[i]
+                        if let end = t.range(of: "</summary>", options: .caseInsensitive) {
+                            text += String(t[..<end.lowerBound])
+                            i += 1
+                            break
+                        }
+                        text += "\n" + t
+                        i += 1
+                    }
+                }
+                summaryInlines = InlineParser.parse(text.trimmingCharacters(in: .whitespacesAndNewlines))
+                continue
+            }
+            if lower == "</details>" || lower.hasPrefix("</details>") {
+                sawClose = true
+                i += 1
+                break
+            }
+            bodyLines.append(lines[i])
+            i += 1
+        }
+        if !sawClose {
+            throw MarkdownError.unbalancedFence
+        }
+        // Drop leading/trailing blank lines in body
+        while bodyLines.first?.trimmingCharacters(in: .whitespaces).isEmpty == true {
+            bodyLines.removeFirst()
+        }
+        while bodyLines.last?.trimmingCharacters(in: .whitespaces).isEmpty == true {
+            bodyLines.removeLast()
+        }
+        let children = try parseBlocks(bodyLines.joined(separator: "\n"))
+        return (
+            .toggle(
+                summary: summaryInlines.isEmpty ? [.text("Toggle")] : summaryInlines,
+                children: children.isEmpty ? [.paragraph([])] : children,
+                collapsed: true
+            ),
+            i
+        )
+    }
+
+    private func parseTable(lines: [String], at index: Int) -> (BlockNode, Int)? {
+        guard index + 1 < lines.count else { return nil }
+        let headerLine = lines[index].trimmingCharacters(in: .whitespaces)
+        let sepLine = lines[index + 1].trimmingCharacters(in: .whitespaces)
+        guard headerLine.contains("|"), sepLine.contains("|") else { return nil }
+        guard let headers = splitTableRow(headerLine), headers.count >= 1 else { return nil }
+        guard let sepCells = splitTableRow(sepLine), sepCells.count >= 1 else { return nil }
+        let alignments = sepCells.map { TableAlignment.parseSeparatorCell($0) ?? .none }
+        // Require at least one real separator cell
+        guard sepCells.contains(where: { TableAlignment.parseSeparatorCell($0) != nil }) else {
+            return nil
+        }
+
+        var rows: [[String]] = []
+        var i = index + 2
+        while i < lines.count {
+            let trimmed = lines[i].trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty { break }
+            if !trimmed.contains("|") { break }
+            if isThematicBreak(trimmed) { break }
+            if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") { break }
+            if trimmed.hasPrefix(">") { break }
+            if parseHeading(trimmed) != nil { break }
+            if matchListMarker(lines[i]) != nil { break }
+            guard let cells = splitTableRow(trimmed) else { break }
+            rows.append(cells)
+            i += 1
+        }
+
+        let colCount = max(headers.count, alignments.count, rows.map(\.count).max() ?? 0)
+        func pad(_ cells: [String], to count: Int) -> [String] {
+            var next = cells
+            while next.count < count { next.append("") }
+            return Array(next.prefix(count))
+        }
+        var aligns = alignments
+        while aligns.count < colCount { aligns.append(.none) }
+        return (
+            .table(
+                headers: pad(headers, to: colCount),
+                alignments: Array(aligns.prefix(colCount)),
+                rows: rows.map { pad($0, to: colCount) }
+            ),
+            i
+        )
+    }
+
+    private func splitTableRow(_ line: String) -> [String]? {
+        var s = line.trimmingCharacters(in: .whitespaces)
+        guard s.contains("|") else { return nil }
+        if s.hasPrefix("|") { s = String(s.dropFirst()) }
+        if s.hasSuffix("|") { s = String(s.dropLast()) }
+        let cells = s.split(separator: "|", omittingEmptySubsequences: false).map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+        return cells.isEmpty ? nil : cells
     }
 
     private func parseList(lines: [String], at index: Int) throws -> (BlockNode, Int)? {
@@ -284,9 +439,12 @@ public struct MarkdownParser: Sendable {
             if trimmed.isEmpty { break }
             if isThematicBreak(trimmed) { break }
             if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") { break }
+            if trimmed.lowercased().hasPrefix("<details") { break }
             if trimmed.hasPrefix(">") { break }
             if matchListMarker(line) != nil { break }
             if parseHeading(trimmed) != nil { break }
+            // Stop before a GFM table that starts on this line
+            if i + 1 < lines.count, parseTable(lines: lines, at: i) != nil { break }
             parts.append(trimmed)
             i += 1
         }

@@ -1,12 +1,13 @@
 import Foundation
+import LociCore
 import LociMarkdown
 
-/// CLI: EditorSession slash-insert simulation + BlockAST HTML for DevHarness (PR09).
+/// CLI: EditorSession slash-insert simulation + BlockAST HTML for DevHarness (PR09 + PR29).
 @main
 struct LociEditorDemo {
     static func main() throws {
         let fixture = """
-            ## Editor MVP
+            ## Editor rich
 
             Paragraph before slash inserts.
 
@@ -33,7 +34,32 @@ struct LociEditorDemo {
             .insertBlock(at: session.blocks.count, kind: .bulletList, text: "Bullet from /bullet")
         )
         session.applyLocalEdit(
-            .insertBlock(at: session.blocks.count, kind: .code, text: "print(\"slash\")")
+            .insertBlock(at: session.blocks.count, kind: .code, text: "let x = 1 // highlight")
+        )
+        session.applyLocalEdit(
+            .insertBlock(at: session.blocks.count, kind: .table, text: "Title")
+        )
+        session.applyLocalEdit(
+            .insertBlock(at: session.blocks.count, kind: .toggle, text: "Details")
+        )
+        session.applyLocalEdit(
+            .insertBlock(at: session.blocks.count, kind: .callout, text: "Heads up")
+        )
+        session.applyLocalEdit(
+            .insertBlock(at: session.blocks.count, kind: .mermaid, text: "")
+        )
+
+        // Block → object conversion (wiki-link only; ObjectServing.create happens in UI host).
+        session.applyLocalEdit(
+            .insertBlock(at: session.blocks.count, kind: .paragraph, text: "Deep Work")
+        )
+        let bookIndex = session.blocks.count - 1
+        let bookTitle = session.objectTitleCandidate(at: bookIndex)
+        let fakeBookID = ObjectID(uuidString: "bbbbbbbb-1111-4111-8111-bbbbbbbbbbbb")!
+        _ = session.replaceBlockWithObjectLink(
+            blockIndex: bookIndex,
+            objectID: fakeBookID,
+            title: bookTitle
         )
 
         let serialized = session.serializeBody()
@@ -46,18 +72,30 @@ struct LociEditorDemo {
         let html = BlockASTHTML.render(session.blocks)
         let blockSummary = session.blocks.map(describeBlock)
 
+        let richKinds = ["table", "toggle", "callout", "mermaid", "codeHighlight"]
         let payload: [String: Any] = [
             "moduleVersion": LociMarkdownModule.version,
-            "editorSession": "PR09",
+            "editorSession": "PR29",
             "blockCount": session.blocks.count,
             "blocks": blockSummary,
             "serialized": serialized,
             "html": html,
             "roundTripStable": stable,
             "isDirty": session.isDirty,
-            "slashSimulated": ["h3", "task", "bullet", "code"],
+            "slashSimulated": [
+                "h3", "task", "bullet", "code", "table", "toggle", "callout", "mermaid",
+            ],
+            "richBlocks": richKinds,
+            "blockToObject": [
+                "title": bookTitle,
+                "typeID": "book",
+                "wikiLink": WikiLink(
+                    target: fakeBookID.frontMatterIDString,
+                    label: bookTitle
+                ).markdown,
+            ],
             "note":
-                "EditorSession owns BlockAST; serialize via LociMarkdown; typing never awaits index.",
+                "EditorSession owns BlockAST; serialize via LociMarkdown; typing never awaits index. PR29: tables/toggles/callouts + block→object wiki-link.",
         ]
 
         let data = try JSONSerialization.data(
@@ -80,6 +118,10 @@ struct LociEditorDemo {
         case .blockQuote: return "blockQuote"
         case .codeBlock(let lang, _): return "codeBlock(\(lang ?? "-"))"
         case .queryEmbed(let id): return "queryEmbed(\(id))"
+        case .table(let headers, _, let rows):
+            return "table(\(headers.count)x\(rows.count))"
+        case .toggle: return "toggle"
+        case .callout(let kind, _, _): return "callout(\(kind.rawValue))"
         case .image: return "image"
         case .thematicBreak: return "thematicBreak"
         }

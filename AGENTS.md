@@ -132,6 +132,15 @@ Type conversion (PR28) extras:
 
 Change object type with property mapping; move file under `objects/<type>/`; ObjectID stays stable; index via ObjectServing / IndexUpdating. Daily notes cannot convert.
 
+Richer editor (PR29) extras:
+
+```bash
+./scripts/demo-editor.sh
+# harness: http://127.0.0.1:5173/?panel=editor
+```
+
+Tables / toggles / callouts / mermaid fences round-trip in LociMarkdown; slash menu + “Turn into…” uses ObjectServing.create + wiki-link. Syntax highlight is harness/CSS on Linux.
+
 Save proof under `evidence/prNN/`:
 
 | Artifact | Example |

@@ -181,6 +181,37 @@ public final class EditorSession: @unchecked Sendable {
         return true
     }
 
+    /// Replace a block with a wiki-link paragraph pointing at a created object (PR29).
+    /// Caller performs `ObjectServing.create`; this only mutates the local BlockAST.
+    @discardableResult
+    public func replaceBlockWithObjectLink(
+        blockIndex: Int,
+        objectID: ObjectID,
+        title: String
+    ) -> Bool {
+        guard blocks.indices.contains(blockIndex) else { return false }
+        let label = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let link = WikiLink(
+            target: objectID.frontMatterIDString,
+            label: label.isEmpty ? nil : label
+        )
+        blocks[blockIndex] = .paragraph([.wikiLink(link)])
+        markDirty()
+        return true
+    }
+
+    /// Title candidate for “turn into object” — focused block plain text.
+    public func objectTitleCandidate(at blockIndex: Int) -> String {
+        let plain = Self.plainText(of: blocks[blockIndex])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if plain.isEmpty { return "Untitled" }
+        // First line only; strip leading slash queries.
+        let first = plain.split(whereSeparator: \.isNewline).first.map(String.init) ?? plain
+        let trimmed = first.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("/") { return "Untitled" }
+        return trimmed.isEmpty ? "Untitled" : trimmed
+    }
+
     public func markSaved(revision: UInt64? = nil) {
         isDirty = false
         if let revision {
@@ -221,6 +252,25 @@ public final class EditorSession: @unchecked Sendable {
             return code
         case .queryEmbed(let queryID):
             return queryID
+        case .table(let headers, _, let rows):
+            let headerLine = headers.joined(separator: " | ")
+            let firstRow = rows.first?.joined(separator: " | ") ?? ""
+            if firstRow.isEmpty { return headerLine }
+            return headerLine.isEmpty ? firstRow : "\(headerLine)\n\(firstRow)"
+        case .toggle(let summary, let children, _):
+            let title = serializer.serializeInlines(summary)
+            if let first = children.first {
+                let body = plainText(of: first)
+                return body.isEmpty ? title : "\(title)\n\(body)"
+            }
+            return title
+        case .callout(_, let title, let children):
+            let head = serializer.serializeInlines(title)
+            if let first = children.first {
+                let body = plainText(of: first)
+                return body.isEmpty ? head : "\(head)\n\(body)"
+            }
+            return head
         case .image(let alt, _, _):
             return alt
         case .thematicBreak:
@@ -260,6 +310,31 @@ public final class EditorSession: @unchecked Sendable {
         case .queryEmbed:
             let slug = TypeSlug.normalize(text)
             return .queryEmbed(queryID: slug.isEmpty ? "query" : slug)
+        case .table(_, let alignments, _):
+            // Edit updates first header cell; keep a minimal 2-col starter shape.
+            let cell = text.isEmpty ? "A" : text
+            let cols = max(alignments.count, 2)
+            var headers = [cell]
+            while headers.count < cols { headers.append(String(UnicodeScalar(64 + headers.count)!)) }
+            var aligns = alignments
+            while aligns.count < cols { aligns.append(.none) }
+            return .table(
+                headers: Array(headers.prefix(cols)),
+                alignments: Array(aligns.prefix(cols)),
+                rows: [Array(repeating: "", count: cols)]
+            )
+        case .toggle(_, let children, let collapsed):
+            return .toggle(
+                summary: inlines.isEmpty ? [.text("Toggle")] : inlines,
+                children: children.isEmpty ? [.paragraph([])] : children,
+                collapsed: collapsed
+            )
+        case .callout(let kind, _, let children):
+            return .callout(
+                kind: kind,
+                title: inlines.isEmpty ? [.text(kind.title)] : inlines,
+                children: children.isEmpty ? [.paragraph([])] : children
+            )
         case .image(_, let url, let title):
             return .image(alt: text, url: url, title: title)
         case .thematicBreak:

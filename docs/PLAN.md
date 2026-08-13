@@ -95,7 +95,7 @@ todos:
     status: completed
   - id: pr29-editor-rich
     content: 'PR29: Richer editor (tables, toggles, code highlight)'
-    status: pending
+    status: completed
   - id: pr30-ai
     content: 'PR30: AI assist (BYOK / Apple Intelligence)'
     status: pending

@@ -125,6 +125,34 @@ final class EditorSessionBridge {
         scheduleSave()
     }
 
+    /// Turn the focused block into a new typed object via `ObjectServing.create`, then
+    /// replace the block with a wiki-link (PR29). Explicit user action — not on the typing path.
+    @discardableResult
+    func turnFocusedBlockIntoObject(typeID: ObjectTypeID) async -> LociObjectMeta? {
+        let index = focusedBlockIndex
+        guard editor.blocks.indices.contains(index) else { return nil }
+        let title = editor.objectTitleCandidate(at: index)
+        do {
+            let meta = try await objects.create(typeID: typeID, title: title)
+            _ = editor.replaceBlockWithObjectLink(
+                blockIndex: index,
+                objectID: meta.id,
+                title: meta.title.isEmpty ? title : meta.title
+            )
+            slashQuery = nil
+            linkTrigger = nil
+            tagTrigger = nil
+            editEpoch &+= 1
+            noteDirtyClock()
+            scheduleSave()
+            lastError = nil
+            return meta
+        } catch {
+            lastError = error.localizedDescription
+            return nil
+        }
+    }
+
     /// Insert `#tag` replacing the active `#` trigger.
     func insertTag(_ summary: TagSummary) {
         _ = editor.insertTag(

@@ -156,6 +156,6 @@ final class GraphBuilderTests: XCTestCase {
         let snap = try await index.graph(options: .default)
         let layout = GraphLayoutEngine.layout(snap)
         XCTAssertEqual(layout.positions.count, 2)
-        XCTAssertTrue(LociIndexModule.version.contains("pr24") || LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27") || LociIndexModule.version.contains("pr28"))
+        XCTAssertTrue(LociIndexModule.version.contains("pr24") || LociIndexModule.version.contains("pr25") || LociIndexModule.version.contains("pr26") || LociIndexModule.version.contains("pr27") || LociIndexModule.version.contains("pr28") || LociIndexModule.version.contains("pr29"))
     }
 }
