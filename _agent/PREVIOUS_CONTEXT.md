@@ -4,22 +4,23 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR18 — Global FTS search
+## PR19 — Tasks
 
-**Branch:** `cursor/pr18-search-d2c1`  
-**Based on:** `cursor/pr17-tags-d2c1` @ `3fb51ef`
+**Branch:** `cursor/pr19-tasks-d2c1`  
+**Based on:** `cursor/pr18-search-d2c1` @ `3b1cda6`
 
 ### What landed
 
-- **`Features/Search/`:** `SearchFeature`, `SearchView` (destination + ⌘K), `SearchInspectorView` (recent queries)
-- **Core:** `SearchGrouping` / `SearchRanking` / `RecentSearchStore` (`SearchModels.swift`) — Linux-tested
-- **Index:** `SearchQuery.ftsMatchQuery` public; title+body FTS tests
-- **App shell:** Search destination wired; macOS ⌘K → `openSearch()`; iOS Search tab focuses field
-- **Demo:** `loci-search-demo` / `scripts/demo-search.sh` → `DevHarness/public/demo-search/`
-- **Harness:** Search panel loads grouped FTS fixture (`?panel=search`)
-- **Tests:** **159** package tests (was 152)
-- Evidence: `evidence/pr18/`
-- Version: Index / Markdown → `*-pr18`; Vault → `0.18.0-pr18`
+- **`Features/Tasks/`:** `TasksFeature`, `TasksView` (Today / Open), `OpenTasksPanel` (daily inspector)
+- **Core:** `IndexedTask`, `TaskAggregation`, `Route.tasks` (primary nav), `IndexQuerying` task APIs
+- **Index:** `tasks` table (migration `v2-tasks`), ObjectIndexer extracts GFM checkboxes, `TasksQuery`
+- **Markdown:** `TaskBodyEdits.toggle` for aggregation-view checkbox → `ObjectServing.save`
+- **Editor:** existing `/task` + checkbox still debounce-save via `EditorSessionBridge` (unchanged path)
+- **Demo:** `loci-tasks-demo` / `scripts/demo-tasks.sh` → `DevHarness/public/demo-tasks/`
+- **Harness:** Tasks panel (`?panel=tasks`); daily inspector also shows open tasks from fixture
+- **Tests:** **163** package tests (was 159)
+- Evidence: `evidence/pr19/`
+- Version: Index / Markdown → `*-pr19`; Vault → `0.19.0-pr19`
 
 ### How to run checks
 
@@ -27,37 +28,36 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-search.sh
-# optional stress: LOCI_SEARCH_BULK=1000 ./scripts/demo-search.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=search
+./scripts/demo-tasks.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=tasks
 ```
 
-### Pitfalls for PR19 (tasks)
+### Pitfalls for PR20 (media)
 
-- Task list blocks already exist in markdown/editor AST — PR19 is aggregation + Today view
-- Do not block typing on index; task toggles persist via ObjectServing.save
-- Search reads `IndexQuerying` only; Tasks will need index projection for open tasks (may extend schema)
+- Task rows key off `blockIndex|itemIndex` — fine for aggregation; renames/reorders can orphan UI toggles until reload
+- Do not put media binaries or thumbnails in the SQLite index; vault `media/` is truth
 - Index never inside the vault
+- Features must not import each other (Media ↔ Tasks via protocols only)
 
-### Next: PR19 — Tasks
+### Next: PR20 — Media
 
-- Branch: `cursor/pr19-tasks-d2c1`
-- Task completion toggles persist; Today / Open tasks from index; daily note side panel
-- Depends on: PR09, PR07
+- Branch: `cursor/pr20-media-d2c1`
+- Attach image/file → `media/`; markdown image syntax; Image object type; drag-drop / photos picker
+- Depends on: PR08, PR09
 
 ---
 
-## PR17 — Tags
+## PR18 — Global FTS search
 
-**Branch:** `cursor/pr17-tags-d2c1`
+**Branch:** `cursor/pr18-search-d2c1`
 
-Object-level + body `#tags`, aliases, TagBrowseView. See `evidence/pr17/`.
+Global FTS SearchView + grouping. See `evidence/pr18/`.
 
 ### Still relevant
 
-- Alias expansion on queries, not rewritten into markdown
-- Tag browse is Studio (`Route.tags`); Search is primary for FTS
+- Search reads `IndexQuerying` only; never blocks typing
+- FTS lives in Application Support
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR18 done · next PR19
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR19 done · next PR20
