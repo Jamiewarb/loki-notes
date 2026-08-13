@@ -24,6 +24,20 @@ final class UnlinkedMentionProofTests: XCTestCase {
         XCTAssertEqual(UnlinkedMentionNotes.resultLimit, 50)
     }
 
+    func testTrailingNewlineDoesNotCountAsRewrite() {
+        let proof = UnlinkedMentionProof.evaluate(
+            plainBody: "I read Deep Work yesterday\n",
+            wikiLinkedBody: "[[Deep Work]] yesterday",
+            wordBoundaryBody: "deep working",
+            title: "Deep Work",
+            bodyBefore: "I read Deep Work yesterday\n",
+            bodyAfterScan: "I read Deep Work yesterday",
+            indexInsideVault: false
+        )
+        XCTAssertTrue(proof.doesNotRewriteBody)
+        XCTAssertTrue(proof.detectsPlainTitle)
+    }
+
     func testFailsWhenWikiLinkCountsAsMention() {
         let proof = UnlinkedMentionProof.evaluate(
             plainBody: "nope",
