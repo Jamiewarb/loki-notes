@@ -4,25 +4,24 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR07 — Indexer (current)
+## PR08 — Object CRUD end-to-end (Wave A complete)
 
-**Branch:** `cursor/pr07-indexer-d2c1`  
-**Based on:** `cursor/pr06-markdown-kit-d2c1` @ `95472f9`
+**Branch:** `cursor/pr08-object-crud-d2c1`  
+**Based on:** `cursor/pr07-indexer-d2c1` @ `57d5c4c`
 
 ### What landed
 
-- **`LociIndex` (real):**
-  - **GRDB** SQLite (Linux + Apple); FTS5 `blocks_fts`
-  - `IndexDatabase(vaultID:directory:)` → `<directory>/<vaultID>/index.sqlite` (**never vault**)
-  - Tables: `objects`, `links`, `tags`, `blocks_fts`, `properties_idx`
-  - `IndexService`: `IndexQuerying` + `IndexUpdating` (full `rebuild` + incremental vault events)
-  - Writers: `ObjectIndexer` (MarkdownParser AST walk), `LinkIndexer`
-  - Queries: `SearchQuery`, `CreatedOnQuery`
-- **CLI:** `loci-index-demo` + `scripts/demo-index.sh` → `DevHarness/public/demo-index/search.json`
-- **DevHarness:** Search panel (`?panel=search`) shows FTS hits + created(on:) + “index inside vault? no”
-- **App:** `AppServices.ensureIndex()` wires Application Support index (ready for PR08)
-- **Tests:** **73** package tests (was 66)
-- Evidence: `evidence/pr07/` — NOTES confirm no `index.sqlite` under vault
+- **`ObjectService` (`ObjectServing`)** in `LociVault`:
+  - `create` → `objects/<type>/<slug-or-id>.md` via `ObjectPathAllocator` + `MarkdownSerializer` / frontmatter
+  - `open` → index lookup → vault read → parse → `OpenedObject` (meta + bodyMarkdown)
+  - `save` → vault write → `IndexUpdating.applyVaultEvent(.modified)`
+  - `delete` → `trashFile` + tombstone (with objectID) → index `.deleted`
+- **`AppServices`:** `objects`, `ensureIndex()`, `openVaultPipeline()` (skeleton + bootstrapSchema + ensureIndex/rebuild), `createPage()`
+- **Apple UI:** `Features/ObjectEditor/` (session + TextEditor host + PageListView), Types → Page list, sidebar **New Page**, `Features/Onboarding/`
+- **Debounced save:** `ObjectEditorSession` documents 500ms debounce; service save is immediate once invoked
+- **CLI / harness:** `loci-objects-demo` + `scripts/demo-objects.sh` → `DevHarness/public/demo-objects/pages.json`; Types panel lists Pages + detail placeholder
+- **Tests:** **78** package tests (was 73) — create→index→list→open→save→delete loop
+- Evidence: `evidence/pr08/` — `indexInsideVault: false`
 
 ### How to run checks
 
@@ -30,56 +29,41 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-index.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=search
+./scripts/demo-objects.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=types
 ```
 
-### Pitfalls for PR08 (Object CRUD)
+### Pitfalls for PR09 (Block Editor)
 
-- `ObjectServing` should: allocate path under `objects/<type>/`, write markdown via `MarkdownSerializer` + `VaultServing`, then `IndexUpdating.applyVaultEvent` (async — do not block typing)
-- List Pages via `IndexQuerying.objects(typeID: .page)` (not directory scrape alone)
-- Delete = `VaultServing.trashFile` + index `.deleted` event; respect tombstones
-- Open by id: `IndexQuerying.object(id:)` → `relativePath` → vault read → parse
-- Debounced save: editor owns dirty state; index is stale-while-revalidate
-- `AppServices.index` may be nil until `ensureIndex()` — call after vault create/open
-- Frontmatter `type` maps to `ObjectTypeID`; path is **not** in frontmatter — ObjectService supplies it
-- Do **not** put SQLite in the vault; use `IndexDatabase` / `ensureIndex()` only
+- Replace plain `TextEditor` body with BlockAST editor; keep `ObjectEditorSession` as host or migrate to full `EditorSession` (PLAN 13.5)
+- Typing must never await index; keep debounce on UI side; `ObjectServing.save` after idle
+- `open` returns body markdown string today — parse to BlockAST in editor; save should serialize blocks → bodyMarkdown (or extend `save` later)
+- Slash menu / enter-split / paste markdown are PR09 scope — do not regress ObjectService paths
+- Wiki-link picker is PR16; only insert raw `[[…]]` text if needed for fixtures
+- Daily notes automation is PR10 — do not special-case `daily/` create here beyond existing type path rules
 
-### Next: PR08 — Object CRUD end-to-end
+### Next: PR09 — Block editor MVP
 
-- `ObjectService`; Create Page → `objects/page/` → open → edit title → debounced save
-- List Pages; delete → trash+tombstone; AppShell “New Page”
-- Branch: `cursor/pr08-object-crud-d2c1` (or plan name)
+- `Features/BlockEditor/{BlockEditorView,SlashMenu,EditorSession,Keymap}`
+- Bind to BlockAST; autosave debounce to ObjectServing; macOS shortcuts
+- Branch: `cursor/pr09-block-editor-d2c1`
 
 ---
 
-## PR06 — MarkdownKit
+## PR07 — Indexer
 
-**Branch:** `cursor/pr06-markdown-kit-d2c1`  
-**Based on:** `cursor/pr05-schema-domain-d2c1` @ `c3b85c9`
+**Branch:** `cursor/pr07-indexer-d2c1`
 
-### What landed
+GRDB SQLite in Application Support; `IndexService` query/update; FTS5; never in vault. See evidence/pr07.
 
-- **`LociMarkdown`:** BlockAST, FrontMatter, parser/serializer, SimpleYAML, wiki-links/tags
-- Fixtures + `loci-markdown-demo` + Markdown harness panel
-- **66** tests at merge tip used by PR07
+### Still relevant
 
-### Pitfalls (still relevant)
-
-- Prefer AST walk for links/tags (Indexer does this)
-- Bare property arrays of `[[slug]]` decode as `.objectSelect`
-- `.select` / `.url` serialize as tagged YAML maps
+- List Pages via `IndexQuerying.objects(typeID: .page)`
+- Index DB only via `ensureIndex()` / `IndexDatabase`
+- Frontmatter `type` maps to `ObjectTypeID`; path is locator from ObjectService
 
 ---
 
-## PR05 — Domain models + schema store
+## Wave A (PR01–PR08) — complete
 
-**Branch:** `cursor/pr05-schema-domain-d2c1`
-
-See prior handoff for SchemaStore / per-type `.loci/types/*.json`.
-
----
-
-## PR04 / PR03 / PR02 / PR01
-
-VaultIO, app shell, design system, SPM scaffold. Swift **6.2** at `/opt/swift`.
+Scaffold → design system → shell → vault I/O → schema → markdown → index → **object CRUD**. Unblocks Wave B product features.

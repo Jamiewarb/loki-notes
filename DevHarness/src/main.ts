@@ -154,7 +154,7 @@ function inspectorTitle(id: PanelId): string {
     case "search":
       return "Filters";
     case "types":
-      return "Type metadata";
+      return "Pages · type metadata";
     case "settings":
       return "Sync status";
     case "gallery":

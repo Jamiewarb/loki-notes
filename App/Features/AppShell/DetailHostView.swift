@@ -41,10 +41,14 @@ struct DetailHostView: View {
             case .designGallery:
                 DesignGalleryView()
             case .object(let id):
-                DestinationPlaceholderView(
-                    route: .object(id),
-                    message: "Object editor host (PR08+). id \(id.uuidString)"
-                )
+                if let services {
+                    ObjectEditorFeature.editor(services: services, objectID: id)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .object(id),
+                        message: "Object editor host (PR08+). id \(id.uuidString)"
+                    )
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

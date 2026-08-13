@@ -1,0 +1,7 @@
+==> loci-objects-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-objects-demo' complete! (0.20s)
+==> wrote /agent/DevHarness/public/demo-objects/pages.json
+==> demo-objects complete

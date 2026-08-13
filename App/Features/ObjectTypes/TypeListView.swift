@@ -3,15 +3,36 @@ import LociCore
 import LociDesignSystem
 import LociVault
 
-/// Read-only object-type list (PR05). Full type dashboards arrive in PR12.
+/// Object-type list (PR05) + Page list entry (PR08). Full type dashboards arrive in PR12.
 struct TypeListView: View {
     var services: AppServices
     @State private var types: [ObjectType] = []
     @State private var spaceName: String = "…"
     @State private var errorMessage: String?
     @State private var isBusy = false
+    @State private var showPages = false
 
     var body: some View {
+        Group {
+            if showPages {
+                PageListView(services: services)
+                    .safeAreaInset(edge: .top, spacing: 0) {
+                        HStack {
+                            LociButton("← Types", style: .secondary) {
+                                showPages = false
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.horizontal, LociSpacing.stack(.xl))
+                        .padding(.top, LociSpacing.stack(.md))
+                    }
+            } else {
+                typesBody
+            }
+        }
+    }
+
+    private var typesBody: some View {
         VStack(alignment: .leading, spacing: LociSpacing.stack(.lg)) {
             HStack(spacing: LociSpacing.stack(.md)) {
                 LociIcon(Route.types.systemImage, size: 22)
@@ -19,6 +40,11 @@ struct TypeListView: View {
                 Text(Route.types.title)
                     .font(LociTypography.font(.display))
                     .foregroundStyle(LociColors.ink)
+                Spacer(minLength: 0)
+                LociButton("New Page", style: .primary) {
+                    Task { await createPage() }
+                }
+                .disabled(isBusy)
             }
             .lociAppear(.soft)
 
@@ -64,20 +90,32 @@ struct TypeListView: View {
 
     @ViewBuilder
     private func typeRow(_ type: ObjectType) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
-            LociIcon(type.icon, size: 18)
-                .foregroundStyle(LociColors.accent)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(type.name)
-                    .font(LociTypography.font(.headline))
-                    .foregroundStyle(LociColors.ink)
-                Text(".\(type.id.rawValue) · \(type.properties.count) properties\(type.isBuiltIn ? " · built-in" : "")")
-                    .font(LociTypography.font(.caption))
-                    .foregroundStyle(LociColors.inkSoft)
+        Button {
+            if type.id == .page {
+                showPages = true
             }
-            Spacer(minLength: 0)
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: LociSpacing.stack(.md)) {
+                LociIcon(type.icon, size: 18)
+                    .foregroundStyle(LociColors.accent)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(type.name)
+                        .font(LociTypography.font(.headline))
+                        .foregroundStyle(LociColors.ink)
+                    Text(".\(type.id.rawValue) · \(type.properties.count) properties\(type.isBuiltIn ? " · built-in" : "")")
+                        .font(LociTypography.font(.caption))
+                        .foregroundStyle(LociColors.inkSoft)
+                    if type.id == .page {
+                        Text("Tap to list pages")
+                            .font(LociTypography.font(.caption))
+                            .foregroundStyle(LociColors.accent)
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.vertical, LociSpacing.stack(.sm))
         }
-        .padding(.vertical, LociSpacing.stack(.sm))
+        .buttonStyle(.plain)
         .accessibilityIdentifier("type-row-\(type.id.rawValue)")
     }
 
@@ -85,15 +123,30 @@ struct TypeListView: View {
         isBusy = true
         defer { isBusy = false }
         do {
-            // Ensure Page exists when vault already has skeleton.
             if try await services.vault.fileExists(atRelativePath: VaultLayout.spaceJSON) {
                 try await services.schema.seedBuiltInPageIfNeeded()
+                try? await services.openVaultPipeline(rebuildIfNeeded: true)
             }
             types = try await services.schema.allTypes()
             if let settings = try? await services.schema.loadSpaceSettings() {
                 spaceName = settings.name
             }
             errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func createPage() async {
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            if try await services.vault.fileExists(atRelativePath: VaultLayout.spaceJSON) == false {
+                try await OnboardingFeature.completeVaultOpen(services: services)
+            } else {
+                _ = try await services.ensureIndex()
+            }
+            _ = try await services.createPage(title: "Untitled")
         } catch {
             errorMessage = error.localizedDescription
         }

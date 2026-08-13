@@ -16,6 +16,7 @@ let package = Package(
         .executable(name: "loci-vault-demo", targets: ["loci-vault-demo"]),
         .executable(name: "loci-markdown-demo", targets: ["loci-markdown-demo"]),
         .executable(name: "loci-index-demo", targets: ["loci-index-demo"]),
+        .executable(name: "loci-objects-demo", targets: ["loci-objects-demo"]),
     ],
     dependencies: [
         // GRDB builds on Swift 6.2 Linux (confirmed PR07) and Apple platforms.
@@ -33,10 +34,10 @@ let package = Package(
             path: "LociCore/Tests/LociCoreTests"
         ),
 
-        // Vault: ubiquity/local roots, coordinated I/O, trash/tombstones (PR04)
+        // Vault: ubiquity/local roots, coordinated I/O, trash/tombstones (PR04) + ObjectService (PR08)
         .target(
             name: "LociVault",
-            dependencies: ["LociCore"],
+            dependencies: ["LociCore", "LociMarkdown"],
             path: "LociVault/Sources/LociVault"
         ),
         .executableTarget(
@@ -44,9 +45,14 @@ let package = Package(
             dependencies: ["LociVault", "LociCore"],
             path: "LociVault/Sources/LociVaultDemo"
         ),
+        .executableTarget(
+            name: "loci-objects-demo",
+            dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
+            path: "LociVault/Sources/LociObjectsDemo"
+        ),
         .testTarget(
             name: "LociVaultTests",
-            dependencies: ["LociVault"],
+            dependencies: ["LociVault", "LociIndex", "LociMarkdown", "LociCore"],
             path: "LociVault/Tests/LociVaultTests"
         ),
 
