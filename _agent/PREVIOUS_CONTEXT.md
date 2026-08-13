@@ -16,7 +16,7 @@ Next stack: **PR27 Import**.
 
 **Branch:** `cursor/pr26-share-widget-d2c1`  
 **Based on:** `cursor/pr25-calendar-d2c1`  
-**Tip:** `a94f6a5960c189005b0ea2a2b59138eec6f3d6fe`
+**Tip:** `e5ab551b4667ad502c5ab1e3e9ddfb499fcd70c8`
 
 ### What landed
 
