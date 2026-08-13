@@ -116,7 +116,7 @@ final class MediaSystemTests: XCTestCase {
 
     func testAppendImageIntoPageNote() async throws {
         try await boot()
-        var page = try await objects.create(typeID: .page, title: "With Image")
+        let page = try await objects.create(typeID: .page, title: "With Image")
         let attachment = try await media.attach(
             data: Data("pic".utf8),
             kind: .image,

@@ -4,23 +4,23 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR19 — Tasks
+## PR20 — Media
 
-**Branch:** `cursor/pr19-tasks-d2c1`  
-**Based on:** `cursor/pr18-search-d2c1` @ `3b1cda6`
+**Branch:** `cursor/pr20-media-d2c1`  
+**Based on:** `cursor/pr19-tasks-d2c1` @ `00bfae6`
 
 ### What landed
 
-- **`Features/Tasks/`:** `TasksFeature`, `TasksView` (Today / Open), `OpenTasksPanel` (daily inspector)
-- **Core:** `IndexedTask`, `TaskAggregation`, `Route.tasks` (primary nav), `IndexQuerying` task APIs
-- **Index:** `tasks` table (migration `v2-tasks`), ObjectIndexer extracts GFM checkboxes, `TasksQuery`
-- **Markdown:** `TaskBodyEdits.toggle` for aggregation-view checkbox → `ObjectServing.save`
-- **Editor:** existing `/task` + checkbox still debounce-save via `EditorSessionBridge` (unchanged path)
-- **Demo:** `loci-tasks-demo` / `scripts/demo-tasks.sh` → `DevHarness/public/demo-tasks/`
-- **Harness:** Tasks panel (`?panel=tasks`); daily inspector also shows open tasks from fixture
-- **Tests:** **163** package tests (was 159)
-- Evidence: `evidence/pr19/`
-- Version: Index / Markdown → `*-pr19`; Vault → `0.19.0-pr19`
+- **`Features/Media/`:** `MediaFeature`, `MediaInserter`, `ImageObjectFactory`, `MediaAttachControls` (Photos/drop stubs)
+- **Core:** `MediaServing`, `MediaKind` / `MediaAttachment` / `MediaPath`, `MediaInserter`, `ObjectType.builtInImage`, `VaultServing.putMedia`
+- **Vault:** `MediaService`, `MediaStore`, `ImageObjectFactory` — coordinated copy into `media/images|files`
+- **Markdown:** `/image` slash kind → placeholder image block
+- **Editor:** attach controls on `ObjectEditorView`; insert markdown image via bridge
+- **Demo:** `loci-media-demo` / `scripts/demo-media.sh` → `DevHarness/public/demo-media/`
+- **Harness:** Media panel (`?panel=media`)
+- **Tests:** **175** package tests (was 163)
+- Evidence: `evidence/pr20/`
+- Version: Index / Markdown → `*-pr20`; Vault → `0.20.0-pr20`
 
 ### How to run checks
 
@@ -28,36 +28,38 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-tasks.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=tasks
+./scripts/demo-media.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=media
 ```
 
-### Pitfalls for PR20 (media)
+### Pitfalls for PR21 (Sync UX)
 
-- Task rows key off `blockIndex|itemIndex` — fine for aggregation; renames/reorders can orphan UI toggles until reload
-- Do not put media binaries or thumbnails in the SQLite index; vault `media/` is truth
-- Index never inside the vault
-- Features must not import each other (Media ↔ Tasks via protocols only)
+- Media blobs are vault-only; Sync UX must never suggest putting binaries in the index
+- iCloud download-on-demand: opening a note with `![](../media/…)` may need ensure-downloaded for the media file (PR21 surface)
+- Conflicted media copies: surface in Sync conflict list like markdown conflicts
+- Photos picker / macOS drag-drop are stubs — wire real pickers when polishing Apple UI
+- Features must not import each other (Media ↔ Sync via protocols only)
 
-### Next: PR20 — Media
+### Next: PR21 — Sync UX and resilience
 
-- Branch: `cursor/pr20-media-d2c1`
-- Attach image/file → `media/`; markdown image syntax; Image object type; drag-drop / photos picker
-- Depends on: PR08, PR09
+- Branch: `cursor/pr21-sync-ux-d2c1`
+- Sync status chip; ensure downloaded; conflict list; rebuild index; reveal vault path
+- Depends on: PR04, PR08
+- Milestone: **MVP complete**
 
 ---
 
-## PR18 — Global FTS search
+## PR19 — Tasks
 
-**Branch:** `cursor/pr18-search-d2c1`
+**Branch:** `cursor/pr19-tasks-d2c1`
 
-Global FTS SearchView + grouping. See `evidence/pr18/`.
+Today/Open tasks aggregation. See `evidence/pr19/`.
 
 ### Still relevant
 
-- Search reads `IndexQuerying` only; never blocks typing
-- FTS lives in Application Support
+- Task rows key off `blockIndex|itemIndex`
+- Index never inside the vault
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR19 done · next PR20
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR20 done · next PR21 (MVP)
