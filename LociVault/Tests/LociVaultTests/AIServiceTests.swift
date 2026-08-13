@@ -88,14 +88,12 @@ final class AIServiceTests: XCTestCase {
             // expected
         }
 
-        // BYOK preferred without allowRemoteUpload still refuses when privacy gate fails.
+        // BYOK preferred without allowRemoteUpload stays on-device (local assist never blocked).
         req.allowRemoteUpload = false
-        do {
-            _ = try await ai.run(req)
-            XCTFail("expected aiUploadNotAllowed")
-        } catch LociError.aiUploadNotAllowed {
-            // expected
-        }
+        let local = try await ai.run(req)
+        XCTAssertEqual(local.provider, .onDeviceHeuristics)
+        XCTAssertFalse(local.uploaded)
+        XCTAssertNotNil(local.summary)
     }
 
     func testApplyUsesObjectServing() async throws {

@@ -31,7 +31,7 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 
 **Branch:** `cursor/pr30-ai-d2c1`  
 **Based on:** `cursor/pr29-editor-rich-d2c1`  
-**Tip:** `a0e593a0e54d91d1d5377b711e2818020a53e43b` (**281** tests; evidence under `evidence/pr30/` @ `3535848`)
+**Tests:** **281** green. Evidence: `evidence/pr30/`
 
 ### What landed
 
@@ -40,7 +40,7 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 - **Markdown:** `EditorSession.applyProposedBody` (applies even when dirty, marks dirty)
 - **App:** `Features/AI/` panel + settings; object inspector AI slot; AppServices always wires AI
 - **Harness:** `?panel=ai` + `demo-ai/ai.json`
-- **Privacy:** upload refused unless `uploadVaultOptIn && allowRemoteUpload`; credentials never in vault
+- **Privacy:** upload refused unless `uploadVaultOptIn && allowRemoteUpload`; credentials never in vault. BYOK preferred without a remote-upload request falls back to on-device heuristics (local assist is never blocked).
 - **Versions:** Vault `0.30.0-pr30`; Markdown/Index `0.2.0-pr30`
 - Evidence: `evidence/pr30/`
 

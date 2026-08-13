@@ -5,7 +5,7 @@
       "tags: books",
       "filled 2 properties"
     ],
-    "objectId" : "267ff6fd-01d4-447b-adf0-c160f59c6b5e",
+    "objectId" : "e2ab183d-b9fd-4771-bd82-4ff221f89343",
     "proposedProperties" : {
       "status" : "select(\"Read\")",
       "url" : "url(\"https:\/\/example.com\/patterns\")"
@@ -16,7 +16,7 @@
   "book" : {
     "appliedStatus" : "select(\"Read\")",
     "appliedUrl" : "url(\"https:\/\/example.com\/patterns\")",
-    "id" : "267ff6fd-01d4-447b-adf0-c160f59c6b5e",
+    "id" : "e2ab183d-b9fd-4771-bd82-4ff221f89343",
     "path" : "objects\/book\/design-patterns.md",
     "title" : "Design Patterns"
   },
@@ -28,7 +28,7 @@
   "moduleVersion" : "0.30.0-pr30",
   "note" : "PR30: On-device heuristics + BYOK opt-in. Credentials\/settings in Application Support. Apply via ObjectServing only.",
   "page" : {
-    "id" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "id" : "8f883669-f3b8-4bcd-ac89-a961672f6913",
     "path" : "objects\/page\/hello-world-meeting.md",
     "title" : "hello world meeting"
   },
@@ -47,7 +47,7 @@
     "notes" : [
       "tightened on-device"
     ],
-    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "objectId" : "8f883669-f3b8-4bcd-ac89-a961672f6913",
     "proposedBody" : "Hello world and the book today.\n\nSee https:\/\/example.com\/ai-demo on 2024-08-13. Status is Draft #inbox.\n\nThis is a long note with filler.\n",
     "provider" : "onDeviceHeuristics",
     "uploaded" : false
@@ -58,7 +58,7 @@
     "notes" : [
       "2 sentences"
     ],
-    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "objectId" : "8f883669-f3b8-4bcd-ac89-a961672f6913",
     "provider" : "onDeviceHeuristics",
     "summary" : "Summary: hello world meeting · Hello world and the book today · See https:\/\/example",
     "uploaded" : false
@@ -68,7 +68,7 @@
     "notes" : [
       "glossary:es"
     ],
-    "objectId" : "5e96992f-6e7f-47df-aa12-d9633ece1a97",
+    "objectId" : "8f883669-f3b8-4bcd-ac89-a961672f6913",
     "proposedBody" : "<!-- loci-ai:translated:es -->\nhola mundo y el libro hoy\n",
     "provider" : "onDeviceHeuristics",
     "uploaded" : false

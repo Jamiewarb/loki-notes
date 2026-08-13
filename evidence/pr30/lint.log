@@ -8,7 +8,7 @@ OK: index/vault boundary docs present (Application Support convention)
 [0/1] Planning build
 Building for debugging...
 [0/26] Write swift-version--166437D737243488.txt
-Build complete! (0.72s)
+Build complete! (0.73s)
 OK: swift build
 ==> lint: swift-format lint
 LociCore/Sources/LociCore/Models/PARAPack.swift:242:12: warning: [UseExplicitNilCheckInConditions] compare this value using `!= nil` instead of binding and discarding it
@@ -95,17 +95,17 @@ LociVault/Sources/LociVault/VaultRoot.swift:71:1: warning: [Indentation] indent 
 LociVault/Sources/LociVault/VaultRoot.swift:72:1: warning: [Indentation] indent by 4 spaces
 LociVault/Sources/LociVault/VaultRoot.swift:73:1: warning: [Indentation] indent by 4 spaces
 LociVault/Sources/LociVault/VaultRoot.swift:74:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:116:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:117:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:118:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:119:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:120:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:121:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:123:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:124:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:125:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:126:1: warning: [Indentation] indent by 4 spaces
-LociVault/Sources/LociVault/AIService.swift:127:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:95:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:96:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:97:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:98:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:99:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:100:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:102:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:103:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:104:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:105:1: warning: [Indentation] indent by 4 spaces
+LociVault/Sources/LociVault/AIService.swift:106:1: warning: [Indentation] indent by 4 spaces
 LociVault/Sources/LociVault/ObjectService.swift:124:1: warning: [Indentation] indent by 1 spaces
 LociVault/Sources/LociVault/ObjectService.swift:125:1: warning: [Indentation] indent by 1 spaces
 LociVault/Sources/LociVault/ObjectService.swift:126:1: warning: [Indentation] indent by 1 spaces

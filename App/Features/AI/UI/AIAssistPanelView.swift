@@ -123,19 +123,15 @@ struct AIAssistPanelView: View {
                 return
             }
 
-            if let body = proposal.proposedBody,
-                let bridge = services.activeEditorSession,
-                bridge.objectID == objectID
-            {
-                try bridge.applyProposedBody(body)
-            }
-            if let props = proposal.proposedProperties,
-                let bridge = services.activeEditorSession,
-                bridge.objectID == objectID
-            {
-                var merged = bridge.currentProperties
-                for (k, v) in props { merged[k] = v }
-                bridge.applyProperties(merged)
+            if let bridge = services.activeEditorSession, bridge.objectID == objectID {
+                if let body = proposal.proposedBody {
+                    try bridge.applyProposedBody(body)
+                }
+                if let props = proposal.proposedProperties {
+                    var merged = bridge.currentProperties
+                    for (k, v) in props { merged[k] = v }
+                    bridge.applyProperties(merged)
+                }
             } else {
                 _ = try await store.apply(proposal, using: objects)
             }

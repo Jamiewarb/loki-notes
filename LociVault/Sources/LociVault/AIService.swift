@@ -38,54 +38,33 @@ public final class AIService: AIServing, @unchecked Sendable {
     // MARK: - AIServing
 
     public func loadSettings() async throws -> AISettings {
-        lock.lock()
-        defer { lock.unlock() }
-        guard FileManager.default.fileExists(atPath: settingsURL.path) else {
-            return AISettings()
-        }
-        let data = try Data(contentsOf: settingsURL)
-        return try JSONDecoder().decode(AISettings.self, from: data)
+        try loadSettingsLocked()
     }
 
     public func saveSettings(_ settings: AISettings) async throws {
-        lock.lock()
-        defer { lock.unlock() }
-        try FileManager.default.createDirectory(
-            at: settingsDirectory,
-            withIntermediateDirectories: true
-        )
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(settings)
-        try data.write(to: settingsURL, options: [.atomic])
-        try? FileManager.default.setAttributes(
-            [.posixPermissions: 0o600],
-            ofItemAtPath: settingsURL.path
-        )
+        try saveSettingsLocked(settings)
     }
 
     public func run(_ request: AIRequest) async throws -> AIProposal {
         let settings = try await loadSettings()
-        let wantsRemote =
-            settings.preferredProvider == .byok || request.allowRemoteUpload
+        // Remote BYOK only when this request allows upload. Otherwise stay on-device
+        // even if BYOK is the preferred provider (never block local assist).
+        let wantsBYOK = settings.preferredProvider == .byok && request.allowRemoteUpload
 
-        if wantsRemote {
+        if wantsBYOK {
             guard AIPrivacy.remotePayloadAllowed(settings: settings, request: request) else {
                 throw LociError.aiUploadNotAllowed
             }
-            if settings.preferredProvider == .byok {
-                let providerName = settings.byokProviderName ?? "default"
-                let key = try credentials.apiKey(for: providerName)
-                guard let key, !key.isEmpty else {
-                    throw LociError.aiCredentialsMissing
-                }
-                _ = key
+            let providerName = settings.byokProviderName ?? "default"
+            let key = try credentials.apiKey(for: providerName)
+            guard let key, !key.isEmpty else {
+                throw LociError.aiCredentialsMissing
             }
+            _ = key
             if let remote {
                 let prompt = AIPrivacy.payloadText(request: request)
                 let completion = try await remote.complete(prompt: prompt)
                 var proposal = AIHeuristics.run(request, settings: settings)
-                // Prefer remote body when present; keep action/objectID.
                 if !completion.isEmpty {
                     switch request.action {
                     case .summarize:
@@ -132,7 +111,37 @@ public final class AIService: AIServing, @unchecked Sendable {
         var proposal = AIHeuristics.run(request, settings: settings)
         proposal.provider = .onDeviceHeuristics
         proposal.uploaded = false
+        if settings.preferredProvider == .byok && !request.allowRemoteUpload {
+            proposal.notes.append("BYOK skipped (no remote upload for this action)")
+        }
         return proposal
+    }
+
+    private func loadSettingsLocked() throws -> AISettings {
+        lock.lock()
+        defer { lock.unlock() }
+        guard FileManager.default.fileExists(atPath: settingsURL.path) else {
+            return AISettings()
+        }
+        let data = try Data(contentsOf: settingsURL)
+        return try JSONDecoder().decode(AISettings.self, from: data)
+    }
+
+    private func saveSettingsLocked(_ settings: AISettings) throws {
+        lock.lock()
+        defer { lock.unlock() }
+        try FileManager.default.createDirectory(
+            at: settingsDirectory,
+            withIntermediateDirectories: true
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let data = try encoder.encode(settings)
+        try data.write(to: settingsURL, options: [.atomic])
+        try? FileManager.default.setAttributes(
+            [.posixPermissions: 0o600],
+            ofItemAtPath: settingsURL.path
+        )
     }
 
     @discardableResult
