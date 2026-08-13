@@ -4,22 +4,25 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR15 — PARA starter pack
+## PR16 — Wiki-links and backlinks
 
-**Branch:** `cursor/pr15-para-d2c1`  
-**Based on:** `cursor/pr14-templates-d2c1` @ `39a96e8`
+**Branch:** `cursor/pr16-wikilinks-d2c1`  
+**Based on:** `cursor/pr15-para-d2c1` @ `7a9367c`
 
 ### What landed
 
-- **`PARAPack.apply(to:)`** (idempotent): creates **Project** + **Area** types with starter properties + default templates (`project.default`, `area.default`)
-- **Resource:** `#resource` tag approach (no Resource type) — documented in pack + Settings explainer
-- **Archive:** `#archive` tag and/or `status=Archived`; `ArchiveFilter` + `SpaceSettings.hideArchived` / `TypeDashboardConfig.hideArchived` (no folder move)
-- **UI:** Settings → “Apply PARA pack”; Onboarding hint; type dashboards hide archived
-- **Demo:** `loci-para-demo` / `scripts/demo-para.sh` → `DevHarness/public/demo-para/`
-- **Harness:** Settings PARA card + Types Project/Area section
-- **Tests:** **127** package tests (was 120)
-- Evidence: `evidence/pr15/`
-- Version: `LociVaultModule` / `LociIndexModule` → `*-pr15`
+- **`LinkResolver`** (Index): ObjectID → path/slug → title; `preferredTarget` = ObjectID
+- **`IndexQuerying`:** `resolve`, `backlinks(to:)`, `outgoingLinks(from:)`, `linkCandidates`
+- **`@` / `[[` picker** in BlockEditor → inserts `[[id|title]]`; Linux-testable `EditorSession.insertWikiLink`
+- **`Features/Links/`:** `LinkPickerView`, `BacklinksPanel`, `WikiLinkStatusView`
+- **Inspector:** object route shows Properties + Backlinks
+- **Broken-link styling:** `wiki-link is-broken` (danger + dash) vs `is-resolved` (accent)
+- **Demo:** `loci-links-demo` / `scripts/demo-links.sh` → `DevHarness/public/demo-links/`
+- **Harness:** Studio → Links (`?panel=links`)
+- **Tests:** **139** package tests (was 127)
+- Evidence: `evidence/pr16/`
+- Version: Index / Markdown / Vault → `*-pr16`
+- **Skipped:** Project `area` object-select promotion (optional; avoid scope creep)
 
 ### How to run checks
 
@@ -27,36 +30,37 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-para.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=settings
+./scripts/demo-links.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=links
 ```
 
-### Pitfalls for PR16 (wiki-links)
+### Pitfalls for PR17 (tags)
 
-- Project `area` property is still **text** — upgrade to object-select once LinkResolver exists
-- `[[wiki-links]]` / `@` picker + backlinks panel are next
-- Broken-link styling belongs with LinkResolver
+- `#tag` already in Loci MD AST + `tags` index table — UI/browse/aliases next
+- Object-level tags live in frontmatter; body `#tags` also indexed
+- Do not auto-write derived tag lists into markdown
 - Do not put SQLite / index inside the vault
-- Template ids remain `<type>.<slug>` (e.g. `project.default`)
+- Template ids remain `<type>.<slug>`
 
-### Next: PR16 — Wiki-links and backlinks
+### Next: PR17 — Tags
 
-- Branch: `cursor/pr16-wikilinks-d2c1`
-- Link picker, LinkResolver, write `[[…]]`, backlinks inspector, navigate + broken-link styling
+- Branch: `cursor/pr17-tags-d2c1`
+- `#tag` in editor + object-level tags; tag index browse; aliases; dashboard filter
+- Demo: tag two types with `#health`; tag page lists both
 
 ---
 
-## PR14 — Templates
+## PR15 — PARA starter pack
 
-**Branch:** `cursor/pr14-templates-d2c1`
+**Branch:** `cursor/pr15-para-d2c1`
 
-Templates under `.loci/templates/`; star default; apply on create. See `evidence/pr14/`.
+PARA Project/Area pack, `#resource` / `#archive`, ArchiveFilter. See `evidence/pr15/`.
 
 ### Still relevant
 
-- Template CRUD via `SchemaServing`
-- Apply on create for objects + daily notes
+- Project `area` property remains **text** — can become object-select using LinkResolver
+- Resource = tag approach; Archive = tag/status filter (no folder move)
 
 ---
 
-## Wave A (PR01–PR08) complete · Wave B: PR09–PR15 done · next PR16
+## Wave A (PR01–PR08) complete · Wave B: PR09–PR16 done · next PR17
