@@ -1,0 +1,9 @@
+==> loci-daily-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-daily-demo' complete! (0.19s)
+path=daily/2026-08-13.md id=daily-2026-08-13 idempotent=True
+==> wrote /agent/DevHarness/public/demo-daily/daily.json
+==> wrote /agent/DevHarness/public/demo-daily/today.md
+==> demo-daily complete

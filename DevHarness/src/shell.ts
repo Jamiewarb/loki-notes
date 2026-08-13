@@ -61,8 +61,8 @@ export const PANELS: Record<PanelId, Panel> = {
   daily: {
     id: "daily",
     title: "Daily",
-    body: "Today’s note opens here (PR10). Deterministic path daily/YYYY-MM-DD.md.",
-    inspector: "Created today and outline panels will land here (PR11).",
+    body: "Today’s note — daily/YYYY-MM-DD.md + id daily-YYYY-MM-DD (PR10).",
+    inspector: "Created today panel lands in PR11 (index-only; never rewrites this .md).",
   },
   search: {
     id: "search",

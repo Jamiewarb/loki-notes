@@ -20,14 +20,18 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public private(set) var index: IndexService?
     /// Object CRUD orchestration (`ObjectServing`). Nil until index is ready.
     public private(set) var objects: ObjectService?
+    /// Daily note ensure/open (`DailyNoteServing`). Nil until index is ready.
+    public private(set) var dailyNotes: DailyNoteService?
 
     public init(
         spaceName: String = "Loci",
+        /// iOS / default launch prefers Daily (inbox). Documented preference for PR10.
         selectedRoute: Route = .daily,
         vault: VaultService? = nil,
         schema: SchemaStore? = nil,
         index: IndexService? = nil,
-        objects: ObjectService? = nil
+        objects: ObjectService? = nil,
+        dailyNotes: DailyNoteService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -45,15 +49,25 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         } else {
             self.objects = nil
         }
+        if let dailyNotes {
+            self.dailyNotes = dailyNotes
+        } else if let index {
+            self.dailyNotes = DailyNoteService(vault: resolvedVault, index: index)
+        } else {
+            self.dailyNotes = nil
+        }
     }
 
     /// Open or create the Application Support index for the active vault (never inside vault),
-    /// then wire `ObjectService`.
+    /// then wire `ObjectService` + `DailyNoteService`.
     @discardableResult
     public func ensureIndex() async throws -> IndexService {
         if let index {
             if objects == nil {
                 objects = ObjectService(vault: vault, index: index)
+            }
+            if dailyNotes == nil {
+                dailyNotes = DailyNoteService(vault: vault, index: index)
             }
             return index
         }
@@ -66,18 +80,20 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         let service = try await IndexService(vault: vault, indexDirectory: directory)
         self.index = service
         self.objects = ObjectService(vault: vault, index: service)
+        self.dailyNotes = DailyNoteService(vault: vault, index: service)
         return service
     }
 
-    /// Ensure vault skeleton + Page schema + local index (rebuild if empty).
+    /// Ensure vault skeleton + Page/Daily schema + local index (rebuild if empty).
     /// Call on vault create/open (onboarding / Settings).
     public func openVaultPipeline(rebuildIfNeeded: Bool = true) async throws {
         try await schema.bootstrapSchema(spaceName: spaceName)
         let index = try await ensureIndex()
         if rebuildIfNeeded {
             let pages = try await index.objects(typeID: .page)
+            let dailies = try await index.objects(typeID: .daily)
             // Fresh index after first open — full scan so existing vault files appear.
-            if pages.isEmpty {
+            if pages.isEmpty && dailies.isEmpty {
                 try await index.rebuild()
             }
         }
@@ -124,5 +140,19 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         _ = try await ensureIndex()
         guard let objects else { throw LociError.indexUnavailable }
         return objects
+    }
+
+    public func ensureDailyNoteService() async throws -> DailyNoteService {
+        if let dailyNotes { return dailyNotes }
+        _ = try await ensureIndex()
+        guard let dailyNotes else { throw LociError.indexUnavailable }
+        return dailyNotes
+    }
+
+    /// Ensure today’s daily note exists (auto-create). Used on Daily open / iOS launch path.
+    @discardableResult
+    public func ensureTodayDailyNote(calendar: Calendar = .current) async throws -> OpenedObject {
+        let notes = try await ensureDailyNoteService()
+        return try await notes.ensureToday(calendar: calendar)
     }
 }

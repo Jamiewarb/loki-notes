@@ -11,10 +11,14 @@ struct DetailHostView: View {
         Group {
             switch route {
             case .daily:
-                DestinationPlaceholderView(
-                    route: .daily,
-                    message: "Today’s note opens here (PR10). Deterministic path daily/YYYY-MM-DD.md."
-                )
+                if let services {
+                    DailyNoteFeature.root(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .daily,
+                        message: "Today’s note opens here (PR10). Deterministic path daily/YYYY-MM-DD.md."
+                    )
+                }
             case .search:
                 DestinationPlaceholderView(
                     route: .search,

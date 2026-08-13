@@ -60,15 +60,17 @@ public final class VaultService: VaultServing, @unchecked Sendable {
             monitor.noteLocalWrite(relativePath: VaultLayout.spaceJSON, kind: .created)
         }
 
-        // Seed built-in Page type (merge-friendly per-type file). Idempotent.
-        let pageRelative = SchemaStore.typeRelativePath(for: .page)
-        let pageURL = try absoluteURLSync(forRelativePath: pageRelative)
-        if !coordinator.fileExists(at: pageURL) {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            let data = try encoder.encode(ObjectType.builtInPage)
-            try coordinator.writeData(data, to: pageURL)
-            monitor.noteLocalWrite(relativePath: pageRelative, kind: .created)
+        // Seed built-in Page + Daily types (merge-friendly per-type files). Idempotent.
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        for type in [ObjectType.builtInPage, ObjectType.builtInDaily] {
+            let relative = SchemaStore.typeRelativePath(for: type.id)
+            let url = try absoluteURLSync(forRelativePath: relative)
+            if !coordinator.fileExists(at: url) {
+                let data = try encoder.encode(type)
+                try coordinator.writeData(data, to: url)
+                monitor.noteLocalWrite(relativePath: relative, kind: .created)
+            }
         }
     }
 

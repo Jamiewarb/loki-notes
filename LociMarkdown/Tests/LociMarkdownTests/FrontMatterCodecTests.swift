@@ -91,4 +91,22 @@ final class FrontMatterCodecTests: XCTestCase {
             XCTAssertEqual(error as? MarkdownError, .missingRequiredField("id"))
         }
     }
+
+    func testDailyDateKeyRoundTrip() throws {
+        let id = ObjectID.daily(year: 2026, month: 8, day: 13)
+        let yaml = """
+            id: daily-2026-08-13
+            type: daily
+            title: 2026-08-13
+            created: 2026-08-13T00:00:00Z
+            updated: 2026-08-13T09:00:00Z
+            """
+        let decoded = try FrontMatterCodec.decode(yaml)
+        XCTAssertEqual(decoded.id, id)
+        XCTAssertEqual(decoded.typeID, .daily)
+        let encoded = FrontMatterCodec.encode(decoded)
+        XCTAssertTrue(encoded.contains("id: daily-2026-08-13"))
+        let again = try FrontMatterCodec.decode(encoded)
+        XCTAssertEqual(again.id, id)
+    }
 }

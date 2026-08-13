@@ -6,7 +6,7 @@ import LociCore
 enum ObjectRowDecoder {
     static func decode(_ row: Row) throws -> LociObjectMeta {
         let idString: String = row["id"]
-        guard let objectID = ObjectID(uuidString: idString) else {
+        guard let objectID = ObjectID(parsing: idString) else {
             throw LociError.invalidObjectID(idString)
         }
         let typeID = ObjectTypeID(row["type_id"])
