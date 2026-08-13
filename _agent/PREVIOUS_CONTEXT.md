@@ -31,7 +31,7 @@ Branch naming: `cursor/prNN-<short-name>-d2c1`.
 
 **Branch:** `cursor/pr31-apple-integrations-d2c1`  
 **Based on:** `cursor/pr30-ai-d2c1`  
-**Evidence:** `evidence/pr31/`
+**Tests:** **291** green. Evidence: `evidence/pr31/`
 
 ### What landed
 

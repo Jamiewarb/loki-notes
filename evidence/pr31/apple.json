@@ -1,0 +1,40 @@
+{
+  "dailyBodyAfterSync" : "- [ ] Ship PR31",
+  "dailyUnchangedAfterEvents" : true,
+  "day" : "2026-08-13",
+  "events" : [
+    {
+      "calendar" : "Work",
+      "id" : "evt-design-review-pr31",
+      "location" : "Studio A",
+      "title" : "Design review"
+    }
+  ],
+  "indexInsideVault" : false,
+  "indexModuleVersion" : "0.2.0-pr30",
+  "markdownModuleVersion" : "0.2.0-pr30",
+  "meeting" : {
+    "eventId" : "evt-design-review-pr31",
+    "id" : "929eb1b7-5a9f-47b0-ab4a-baa1d9746d37",
+    "path" : "objects\/meeting\/design-review.md",
+    "title" : "Design review"
+  },
+  "meetingIdempotent" : true,
+  "meetingTypeSeeded" : true,
+  "moduleVersion" : "0.31.0-pr31",
+  "note" : "PR31: Event list is UI chrome (daily .md unchanged). Meeting via ObjectServing. Reminders sync explicit + settings outside vault.",
+  "proof" : {
+    "dailyUnchanged" : true,
+    "eventsListed" : true,
+    "idempotent" : true,
+    "indexOutsideVault" : true,
+    "meetingPath" : true,
+    "meetingTypeSeeded" : true,
+    "reminderSynced" : true,
+    "settingsOutsideVault" : true
+  },
+  "remindersPulled" : 1,
+  "reminderSynced" : true,
+  "settingsInsideVault" : false,
+  "settingsOutsideVault" : true
+}

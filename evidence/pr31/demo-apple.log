@@ -1,0 +1,7 @@
+==> loci-apple-demo
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-apple-demo' complete! (0.47s)
+events=1 meeting=objects/meeting/design-review.md dailyUnchanged=True reminderSynced=True module=0.31.0-pr31
+wrote DevHarness/public/demo-apple/apple.json
