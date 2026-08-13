@@ -57,6 +57,8 @@ struct VaultSettingsView: View {
             }
             .disabled(isBusy)
 
+            OnboardingFeature.settingsHint()
+
             if let statusMessage {
                 Text(statusMessage)
                     .font(LociTypography.font(.caption))
@@ -90,10 +92,11 @@ struct VaultSettingsView: View {
         isBusy = true
         defer { isBusy = false }
         do {
-            try await services.createVaultIfNeeded()
+            try await OnboardingFeature.completeVaultOpen(services: services)
             let typeCount = try await services.schema.knownTypeIDs().count
+            let pageCount = try await services.index?.objects(typeID: .page).count ?? 0
             statusMessage =
-                "Vault ready (.loci/space.json + types/). \(typeCount) type(s) including Page."
+                "Vault ready (.loci/space.json + types/ + index). \(typeCount) type(s), \(pageCount) page(s)."
             await refreshStatus()
         } catch {
             statusMessage = "Create failed: \(error.localizedDescription)"

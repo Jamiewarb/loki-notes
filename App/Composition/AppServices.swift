@@ -15,16 +15,19 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
     public let vault: VaultService
     /// Per-type schema + space.json (merge-friendly `.loci/types/*.json`).
     public let schema: SchemaStore
-    /// Local SQLite projection (Application Support) — wired for PR08 Object CRUD.
+    /// Local SQLite projection (Application Support) — never inside the vault.
     /// Created lazily after vault root is known; nil until `ensureIndex()` succeeds.
     public private(set) var index: IndexService?
+    /// Object CRUD orchestration (`ObjectServing`). Nil until index is ready.
+    public private(set) var objects: ObjectService?
 
     public init(
         spaceName: String = "Loci",
         selectedRoute: Route = .daily,
         vault: VaultService? = nil,
         schema: SchemaStore? = nil,
-        index: IndexService? = nil
+        index: IndexService? = nil,
+        objects: ObjectService? = nil
     ) {
         self.spaceName = spaceName
         self.selectedRoute = selectedRoute
@@ -35,11 +38,25 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         self.vault = resolvedVault
         self.schema = schema ?? SchemaStore(vault: resolvedVault)
         self.index = index
+        if let objects {
+            self.objects = objects
+        } else if let index {
+            self.objects = ObjectService(vault: resolvedVault, index: index)
+        } else {
+            self.objects = nil
+        }
     }
 
-    /// Open or create the Application Support index for the active vault (never inside vault).
+    /// Open or create the Application Support index for the active vault (never inside vault),
+    /// then wire `ObjectService`.
+    @discardableResult
     public func ensureIndex() async throws -> IndexService {
-        if let index { return index }
+        if let index {
+            if objects == nil {
+                objects = ObjectService(vault: vault, index: index)
+            }
+            return index
+        }
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         let directory = try IndexDatabase.defaultApplicationSupportDirectory()
         #else
@@ -48,7 +65,25 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         #endif
         let service = try await IndexService(vault: vault, indexDirectory: directory)
         self.index = service
+        self.objects = ObjectService(vault: vault, index: service)
         return service
+    }
+
+    /// Ensure vault skeleton + Page schema + local index (rebuild if empty).
+    /// Call on vault create/open (onboarding / Settings).
+    public func openVaultPipeline(rebuildIfNeeded: Bool = true) async throws {
+        try await schema.bootstrapSchema(spaceName: spaceName)
+        let index = try await ensureIndex()
+        if rebuildIfNeeded {
+            let pages = try await index.objects(typeID: .page)
+            // Fresh index after first open — full scan so existing vault files appear.
+            if pages.isEmpty {
+                try await index.rebuild()
+            }
+        }
+        if let settings = try? await schema.loadSpaceSettings() {
+            spaceName = settings.name
+        }
     }
 
     public func open(route: Route) async {
@@ -70,8 +105,24 @@ public final class AppServices: Navigating, SyncStatusProviding, @unchecked Send
         }
     }
 
-    /// Settings “Create vault” — skeleton + bootstrap built-in Page type.
+    /// Settings / onboarding “Create vault” — skeleton + bootstrap + index.
     public func createVaultIfNeeded() async throws {
-        try await schema.bootstrapSchema(spaceName: spaceName)
+        try await openVaultPipeline(rebuildIfNeeded: true)
+    }
+
+    /// Create a Page and navigate to the editor.
+    @discardableResult
+    public func createPage(title: String = "Untitled") async throws -> LociObjectMeta {
+        let service = try await ensureObjectService()
+        let meta = try await service.create(typeID: .page, title: title)
+        await open(objectID: meta.id)
+        return meta
+    }
+
+    public func ensureObjectService() async throws -> ObjectService {
+        if let objects { return objects }
+        _ = try await ensureIndex()
+        guard let objects else { throw LociError.indexUnavailable }
+        return objects
     }
 }

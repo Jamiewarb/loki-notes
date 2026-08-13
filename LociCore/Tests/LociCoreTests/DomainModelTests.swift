@@ -110,4 +110,22 @@ final class DomainModelTests: XCTestCase {
         XCTAssertTrue(dash.cardPreviewPropertyIDs.isEmpty)
         XCTAssertNil(dash.defaultSort)
     }
+
+    func testOpenedObjectCodable() throws {
+        let meta = LociObjectMeta(
+            id: ObjectID(),
+            typeID: .page,
+            title: "Hello",
+            relativePath: "objects/page/hello.md"
+        )
+        let opened = OpenedObject(meta: meta, bodyMarkdown: "Body text")
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let data = try encoder.encode(opened)
+        let decoded = try decoder.decode(OpenedObject.self, from: data)
+        XCTAssertEqual(decoded.bodyMarkdown, "Body text")
+        XCTAssertEqual(decoded.meta.title, "Hello")
+    }
 }

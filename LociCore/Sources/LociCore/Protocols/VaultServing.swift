@@ -18,8 +18,9 @@ public protocol VaultServing: Sendable {
     func fileExists(atRelativePath path: String) async throws -> Bool
 
     /// Soft-delete: move into `.loci/trash/` and write a tombstone manifest.
+    /// Pass `objectID` when known so the tombstone can be matched after delete.
     @discardableResult
-    func trashFile(atRelativePath path: String) async throws -> TombstoneRecord
+    func trashFile(atRelativePath path: String, objectID: ObjectID?) async throws -> TombstoneRecord
 
     /// Absolute URL for a vault-relative path (locator only — do not persist as sole identity).
     func absoluteURL(forRelativePath path: String) async throws -> URL

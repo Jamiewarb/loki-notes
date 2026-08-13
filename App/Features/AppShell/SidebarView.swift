@@ -22,6 +22,17 @@ struct SidebarView: View {
                         Task { await services.open(route: destination.route) }
                     }
                 }
+                LociButton("New Page", style: .secondary) {
+                    Task {
+                        do {
+                            _ = try await services.createPage(title: "Untitled")
+                        } catch {
+                            // Surface via Types/Settings if vault not ready.
+                            await services.open(route: .settings)
+                        }
+                    }
+                }
+                .padding(.top, LociSpacing.stack(.xs))
             }
 
             VStack(alignment: .leading, spacing: LociSpacing.stack(.xs)) {

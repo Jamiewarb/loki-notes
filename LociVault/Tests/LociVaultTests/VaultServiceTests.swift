@@ -79,7 +79,7 @@ final class VaultServiceTests: XCTestCase {
         let relative = "objects/page/note.md"
         try await service.writeFile(Data("body".utf8), atRelativePath: relative)
 
-        let record = try await service.trashFile(atRelativePath: relative)
+        let record = try await service.trashFile(atRelativePath: relative, objectID: nil)
         XCTAssertEqual(record.originalRelativePath, relative)
         let gone = try await service.fileExists(atRelativePath: relative)
         XCTAssertFalse(gone)

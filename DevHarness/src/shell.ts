@@ -65,8 +65,8 @@ export const PANELS: Record<PanelId, Panel> = {
   types: {
     id: "types",
     title: "Types",
-    body: "Object type list (PR05). Built-in Page under .loci/types/page.json — merge-friendly per-type schema.",
-    inspector: "Type metadata from SchemaStore; property editors arrive in PR13.",
+    body: "Object types + Page list (PR05/PR08). Create via ObjectService → objects/page/ → index list.",
+    inspector: "Tap a page for detail placeholder. Block editor lands in PR09.",
   },
   settings: {
     id: "settings",

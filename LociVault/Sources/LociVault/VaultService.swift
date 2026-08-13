@@ -105,7 +105,9 @@ public final class VaultService: VaultServing, @unchecked Sendable {
     }
 
     @discardableResult
-    public func trashFile(atRelativePath path: String) async throws -> TombstoneRecord {
+    public func trashFile(atRelativePath path: String, objectID: ObjectID? = nil) async throws
+        -> TombstoneRecord
+    {
         let normalized = normalizeRelativePath(path)
         let source = try absoluteURLSync(forRelativePath: normalized)
         guard coordinator.fileExists(at: source) else {
@@ -123,7 +125,7 @@ public final class VaultService: VaultServing, @unchecked Sendable {
             originalRelativePath: normalized,
             trashedRelativePath: trashedRelative,
             trashedAt: Date(),
-            objectID: nil
+            objectID: objectID?.uuidString.lowercased()
         )
         let store = TombstoneStore(root: root.url, coordinator: coordinator)
         try store.write(record)
