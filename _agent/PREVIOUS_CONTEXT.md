@@ -4,41 +4,25 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 
 ---
 
-## PR06 — MarkdownKit (current)
+## PR07 — Indexer (current)
 
-**Branch:** `cursor/pr06-markdown-kit-d2c1`  
-**Based on:** `cursor/pr05-schema-domain-d2c1` @ `c3b85c9`
+**Branch:** `cursor/pr07-indexer-d2c1`  
+**Based on:** `cursor/pr06-markdown-kit-d2c1` @ `95472f9`
 
 ### What landed
 
-- **`LociMarkdown` (real):**
-  - `BlockNode` / `InlineNode` / `ListItem` / `LociDocument`
-  - `FrontMatter` aligned with `LociObjectMeta` (`id`, `type`↔`typeID`, `title`, `created`, `updated`, `tags`, `properties`, optional `template`)
-  - `MarkdownParser` + `MarkdownSerializer` with structural round-trip
-  - `WikiLink` / `TagSyntax` helpers
-  - **YAML choice:** hand-rolled `SimpleYAML` subset (no SPM YAML dependency; Linux-friendly). Documented on `LociMarkdownModule`.
-  - `PropertyValueYAML` — bare primitives + tagged `{kind,value}` for select/url losslessness
-- **Fixtures:** `LociMarkdown/Tests/LociMarkdownTests/Fixtures/*.md`
-- **CLI:** `loci-markdown-demo` + `scripts/demo-markdown.sh` → `DevHarness/public/demo-markdown/`
-- **DevHarness:** Studio nav **Markdown** panel (`?panel=markdown`) shows input/serialized round-trip
-- **Tests:** **66** package tests (was 48) — 18 new MarkdownKit tests; Vault/Schema unchanged green
-- Evidence: `evidence/pr06/`
-
-### Supported block types
-
-| Block | Notes |
-|---|---|
-| paragraph | inline: text, code, emphasis, strong, link, image, wiki-link, tag |
-| heading 1–4 | `#`…`####` (h5+ stays paragraph text) |
-| bulletList | `-` / `*` / `+` |
-| numberedList | `1.` … |
-| task items | `- [ ]` / `- [x]` on bullet lists |
-| blockQuote | `>` lines |
-| codeBlock | fenced ` ``` ` / `~~~` |
-| image | standalone `![]()` block or inline |
-| thematicBreak | `---` / `***` / `___` |
-| wiki-link | `[[target]]` / `[[target\|label]]` |
-| #tag | `#Focus`, nested `a/b` |
+- **`LociIndex` (real):**
+  - **GRDB** SQLite (Linux + Apple); FTS5 `blocks_fts`
+  - `IndexDatabase(vaultID:directory:)` → `<directory>/<vaultID>/index.sqlite` (**never vault**)
+  - Tables: `objects`, `links`, `tags`, `blocks_fts`, `properties_idx`
+  - `IndexService`: `IndexQuerying` + `IndexUpdating` (full `rebuild` + incremental vault events)
+  - Writers: `ObjectIndexer` (MarkdownParser AST walk), `LinkIndexer`
+  - Queries: `SearchQuery`, `CreatedOnQuery`
+- **CLI:** `loci-index-demo` + `scripts/demo-index.sh` → `DevHarness/public/demo-index/search.json`
+- **DevHarness:** Search panel (`?panel=search`) shows FTS hits + created(on:) + “index inside vault? no”
+- **App:** `AppServices.ensureIndex()` wires Application Support index (ready for PR08)
+- **Tests:** **73** package tests (was 66)
+- Evidence: `evidence/pr07/` — NOTES confirm no `index.sqlite` under vault
 
 ### How to run checks
 
@@ -46,76 +30,56 @@ Handoff notes updated after each stacked PR. Read this before starting the next 
 export PATH=/opt/swift/usr/bin:$PATH
 ./scripts/lint.sh
 ./scripts/test.sh
-./scripts/demo-markdown.sh
-./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=markdown
+./scripts/demo-index.sh
+./scripts/run-harness.sh   # http://127.0.0.1:5173/?panel=search
 ```
 
-### Pitfalls for PR07 (Indexer)
+### Pitfalls for PR08 (Object CRUD)
 
-- Parse vault `.md` with `MarkdownParser` → index `FrontMatter` + walk blocks for wiki-links / tags / task items / FTS text
-- `WikiLinkSyntax.extract` / `TagSyntax.extract` available for flat scans; prefer AST walk for accuracy
-- Frontmatter `type` key maps to `ObjectTypeID`; `relativePath` is **not** in frontmatter — Indexer/ObjectService must supply path
-- Bare property arrays of `[[slug]]` decode as `.objectSelect` (brackets stripped); UUIDs in arrays also → objectSelect
-- `.select` / `.url` serialize as tagged YAML maps so they round-trip; bare strings decode as `.text`
-- **Never** put `index.sqlite` in the vault — Application Support only
-- Indexer should depend on `LociCore` + `LociMarkdown`; apply vault events asynchronously
+- `ObjectServing` should: allocate path under `objects/<type>/`, write markdown via `MarkdownSerializer` + `VaultServing`, then `IndexUpdating.applyVaultEvent` (async — do not block typing)
+- List Pages via `IndexQuerying.objects(typeID: .page)` (not directory scrape alone)
+- Delete = `VaultServing.trashFile` + index `.deleted` event; respect tombstones
+- Open by id: `IndexQuerying.object(id:)` → `relativePath` → vault read → parse
+- Debounced save: editor owns dirty state; index is stale-while-revalidate
+- `AppServices.index` may be nil until `ensureIndex()` — call after vault create/open
+- Frontmatter `type` maps to `ObjectTypeID`; path is **not** in frontmatter — ObjectService supplies it
+- Do **not** put SQLite in the vault; use `IndexDatabase` / `ensureIndex()` only
 
-### Next: PR07 — Indexer (SQLite)
+### Next: PR08 — Object CRUD end-to-end
 
-- GRDB/SQLite in Application Support; schema objects/links/tags/blocks_fts/properties_idx
-- Full scan + incremental Vault events; `IndexQuerying` APIs
-- Branch: `cursor/pr07-indexer-d2c1` (or plan name)
+- `ObjectService`; Create Page → `objects/page/` → open → edit title → debounced save
+- List Pages; delete → trash+tombstone; AppShell “New Page”
+- Branch: `cursor/pr08-object-crud-d2c1` (or plan name)
+
+---
+
+## PR06 — MarkdownKit
+
+**Branch:** `cursor/pr06-markdown-kit-d2c1`  
+**Based on:** `cursor/pr05-schema-domain-d2c1` @ `c3b85c9`
+
+### What landed
+
+- **`LociMarkdown`:** BlockAST, FrontMatter, parser/serializer, SimpleYAML, wiki-links/tags
+- Fixtures + `loci-markdown-demo` + Markdown harness panel
+- **66** tests at merge tip used by PR07
+
+### Pitfalls (still relevant)
+
+- Prefer AST walk for links/tags (Indexer does this)
+- Bare property arrays of `[[slug]]` decode as `.objectSelect`
+- `.select` / `.url` serialize as tagged YAML maps
 
 ---
 
 ## PR05 — Domain models + schema store
 
-**Branch:** `cursor/pr05-schema-domain-d2c1`  
-**Based on:** `cursor/pr04-vault-io-d2c1` @ `944321d`
+**Branch:** `cursor/pr05-schema-domain-d2c1`
 
-### What landed
-
-- **LociCore models:** `ObjectType`, `PropertyDef`, `PropertyKind`, `TypeDashboardConfig`; expanded `PropertyValue` (select / multiSelect / objectSelect / url), `SpaceSettings.pins`, `LociObjectMeta.tags` + `properties`
-- **`SchemaServing`:** load/save space, knownTypeIDs / loadType / saveType / allTypes / `bootstrapSchema`
-- **`SchemaStore` (LociVault):** `.loci/space.json` + per-type `.loci/types/<slug>.json` (not monolithic schema.json); seeds built-in **Page**
-- **`VaultService.ensureSkeleton`:** also writes `page.json` when missing (idempotent)
-- **App:** `AppServices.schema`; `TypeListView` (read-only); Settings create vault → `bootstrapSchema`
-- **CLI / harness:** `scripts/demo-schema.sh` → `DevHarness/public/demo-schema/`; Types panel `?panel=types`
-- **Tests:** **48** package tests (was 30) — domain Codable + SchemaStore bootstrap / custom type reload
-- Evidence: `evidence/pr05/`
-
-### Schema file shapes
-
-**`.loci/space.json`**
-```json
-{ "name": "Loci", "schemaVersion": 1, "pins": [] }
-```
-
-**`.loci/types/page.json`**
-```json
-{
-  "id": "page",
-  "name": "Page",
-  "icon": "doc.text",
-  "color": "#0F6B5C",
-  "properties": [],
-  "templateIDs": [],
-  "dashboard": { "cardPreviewPropertyIDs": [] },
-  "isBuiltIn": true,
-  "isDaily": false
-}
-```
+See prior handoff for SchemaStore / per-type `.loci/types/*.json`.
 
 ---
 
-## PR04 — VaultIO + iCloud Documents
+## PR04 / PR03 / PR02 / PR01
 
-**Branch:** `cursor/pr04-vault-io-d2c1`
-
-See prior handoff for VaultServing API, skeleton layout, trash/tombstones.
-
----
-
-## PR03 / PR02 / PR01
-
-App shell, design system (editorial-sage), SPM scaffold. Swift **6.2** at `/opt/swift`.
+VaultIO, app shell, design system, SPM scaffold. Swift **6.2** at `/opt/swift`.

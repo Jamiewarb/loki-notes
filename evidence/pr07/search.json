@@ -1,0 +1,87 @@
+{
+  "createdHits" : [
+    {
+      "id" : "8f3c2a1e-3333-4333-8333-000000000003",
+      "relativePath" : "daily\/2026-08-13.md",
+      "tags" : [
+        "demo"
+      ],
+      "title" : "Daily seed",
+      "type" : "daily"
+    },
+    {
+      "id" : "8f3c2a1e-1111-4111-8111-000000000001",
+      "relativePath" : "objects\/page\/hello-loci.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Hello Loci",
+      "type" : "page"
+    },
+    {
+      "id" : "8f3c2a1e-2222-4222-8222-000000000002",
+      "relativePath" : "objects\/page\/related-note.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Related Note",
+      "type" : "page"
+    }
+  ],
+  "createdOn" : "2026-08-13T09:12:00Z",
+  "indexInsideVault" : false,
+  "indexPath" : "\/tmp\/loci-index-demo-db-2026-08-13T09-57-20Z\/v68dbf2c252663a89\/index.sqlite",
+  "moduleVersion" : "0.1.0-pr07",
+  "note" : "index.sqlite must never live inside the vault (Application Support \/ temp only).",
+  "objectCount" : 2,
+  "pages" : [
+    {
+      "id" : "8f3c2a1e-1111-4111-8111-000000000001",
+      "relativePath" : "objects\/page\/hello-loci.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Hello Loci",
+      "type" : "page"
+    },
+    {
+      "id" : "8f3c2a1e-2222-4222-8222-000000000002",
+      "relativePath" : "objects\/page\/related-note.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Related Note",
+      "type" : "page"
+    }
+  ],
+  "searchHits" : [
+    {
+      "id" : "8f3c2a1e-2222-4222-8222-000000000002",
+      "relativePath" : "objects\/page\/related-note.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Related Note",
+      "type" : "page"
+    },
+    {
+      "id" : "8f3c2a1e-1111-4111-8111-000000000001",
+      "relativePath" : "objects\/page\/hello-loci.md",
+      "tags" : [
+        "demo",
+        "focus"
+      ],
+      "title" : "Hello Loci",
+      "type" : "page"
+    }
+  ],
+  "searchQuery" : "focus",
+  "sqliteEngine" : "GRDB",
+  "vaultID" : "v68dbf2c252663a89",
+  "vaultRoot" : "\/tmp\/loci-index-demo-vault-2026-08-13T09-57-20Z\/LociVault"
+}

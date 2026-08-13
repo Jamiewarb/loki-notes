@@ -22,8 +22,7 @@ timeline.xctimeline
 playground.xcworkspace
 
 # SwiftPM
-Package.resolved
-# keep Package.resolved if/when we pin deps; none yet
+# Package.resolved is committed now that GRDB is a pinned dependency (PR07).
 
 # Node / DevHarness
 node_modules/

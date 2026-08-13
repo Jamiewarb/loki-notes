@@ -152,8 +152,10 @@ final class IndexServiceTests: XCTestCase {
 
         try await vault.deleteFile(atRelativePath: path)
         try await index.applyVaultEvent(relativePath: path, kind: .deleted)
-        XCTAssertNil(try await index.object(id: ObjectID(id)))
-        XCTAssertTrue(try await index.objects(typeID: .page).isEmpty)
+        let afterDelete = try await index.object(id: ObjectID(id))
+        XCTAssertNil(afterDelete)
+        let pagesAfter = try await index.objects(typeID: .page)
+        XCTAssertTrue(pagesAfter.isEmpty)
     }
 
     func testNoIndexSqliteInsideVaultAfterIndexing() async throws {
@@ -191,7 +193,8 @@ final class IndexServiceTests: XCTestCase {
             atRelativePath: "media/files/readme.md"
         )
         try await index.rebuild()
-        XCTAssertTrue(try await index.objects(typeID: .page).isEmpty)
+        let pages = try await index.objects(typeID: .page)
+        XCTAssertTrue(pages.isEmpty)
     }
 
     func testCreatedOnUsesCalendarDayUTC() async throws {
@@ -211,11 +214,12 @@ final class IndexServiceTests: XCTestCase {
 
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = TimeZone(secondsFromGMT: 0)!
+        let calendar = cal
         let day = ISO8601DateFormatter().date(from: "2026-08-13T12:00:00Z")!
 
         let queue = try DatabaseQueue(path: index.databaseURL.path)
         let hits = try await queue.read { db in
-            try CreatedOnQuery.created(db: db, on: day, calendar: cal)
+            try CreatedOnQuery.created(db: db, on: day, calendar: calendar)
         }
         XCTAssertEqual(Set(hits.map(\.title)), Set(["A", "B"]))
     }
@@ -260,6 +264,7 @@ final class IndexServiceTests: XCTestCase {
 
     func testSearchEmptyQueryReturnsEmpty() async throws {
         try await boot()
-        XCTAssertTrue(try await index.search(query: "   ").isEmpty)
+        let hits = try await index.search(query: "   ")
+        XCTAssertTrue(hits.isEmpty)
     }
 }
