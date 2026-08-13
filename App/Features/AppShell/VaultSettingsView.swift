@@ -91,7 +91,9 @@ struct VaultSettingsView: View {
         defer { isBusy = false }
         do {
             try await services.createVaultIfNeeded()
-            statusMessage = "Vault skeleton ready (.loci/space.json, daily/, objects/, media/…)."
+            let typeCount = try await services.schema.knownTypeIDs().count
+            statusMessage =
+                "Vault ready (.loci/space.json + types/). \(typeCount) type(s) including Page."
             await refreshStatus()
         } catch {
             statusMessage = "Create failed: \(error.localizedDescription)"

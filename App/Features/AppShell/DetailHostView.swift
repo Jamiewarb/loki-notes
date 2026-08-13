@@ -21,10 +21,14 @@ struct DetailHostView: View {
                     message: "Global FTS search (PR18). Reads IndexQuerying only — never blocks typing."
                 )
             case .types:
-                DestinationPlaceholderView(
-                    route: .types,
-                    message: "Object type dashboards (PR12). Schema under .loci/types/."
-                )
+                if let services {
+                    TypeListView(services: services)
+                } else {
+                    DestinationPlaceholderView(
+                        route: .types,
+                        message: "Object type list (PR05). Schema under .loci/types/."
+                    )
+                }
             case .settings:
                 if let services {
                     VaultSettingsView(services: services)

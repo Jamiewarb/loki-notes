@@ -723,6 +723,36 @@ body {
   line-height: 1.45;
 }
 
+.schema-type-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.schema-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--loci-radius);
+  background: color-mix(in srgb, var(--loci-accent-soft) 35%, transparent);
+  border: 1px solid var(--loci-line);
+}
+
+.schema-type-name {
+  font-family: var(--loci-font-display);
+  font-size: 1.15rem;
+  color: var(--loci-ink);
+}
+
+.schema-type-meta {
+  font-size: 0.85rem;
+  color: var(--loci-ink-soft);
+}
+
 @media (max-width: 900px) {
   .shell {
     grid-template-columns: 1fr;

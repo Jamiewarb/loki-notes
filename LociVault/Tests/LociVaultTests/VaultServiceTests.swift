@@ -46,6 +46,11 @@ final class VaultServiceTests: XCTestCase {
         XCTAssertEqual(settings.name, "Test Space")
         XCTAssertEqual(settings.schemaVersion, 1)
 
+        let pageExists = try await service.fileExists(
+            atRelativePath: SchemaStore.typeRelativePath(for: .page)
+        )
+        XCTAssertTrue(pageExists, "ensureSkeleton should seed .loci/types/page.json")
+
         // Idempotent — second call does not wipe space.json
         try await service.ensureSkeleton(spaceName: "Other")
         let again = try await service.readFile(atRelativePath: VaultLayout.spaceJSON)
@@ -186,6 +191,6 @@ final class MetadataMonitorTests: XCTestCase {
 
 final class ModuleVersionTests: XCTestCase {
     func testVersionPresent() {
-        XCTAssertTrue(LociVaultModule.version.contains("pr04"))
+        XCTAssertTrue(LociVaultModule.version.contains("pr05"))
     }
 }

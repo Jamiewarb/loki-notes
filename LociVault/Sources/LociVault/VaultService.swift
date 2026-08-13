@@ -59,6 +59,17 @@ public final class VaultService: VaultServing, @unchecked Sendable {
             try coordinator.writeData(data, to: spaceURL)
             monitor.noteLocalWrite(relativePath: VaultLayout.spaceJSON, kind: .created)
         }
+
+        // Seed built-in Page type (merge-friendly per-type file). Idempotent.
+        let pageRelative = SchemaStore.typeRelativePath(for: .page)
+        let pageURL = try absoluteURLSync(forRelativePath: pageRelative)
+        if !coordinator.fileExists(at: pageURL) {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            let data = try encoder.encode(ObjectType.builtInPage)
+            try coordinator.writeData(data, to: pageURL)
+            monitor.noteLocalWrite(relativePath: pageRelative, kind: .created)
+        }
     }
 
     public func readFile(atRelativePath path: String) async throws -> Data {

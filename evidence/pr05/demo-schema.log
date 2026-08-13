@@ -1,0 +1,34 @@
+==> loci-vault-demo (schema bootstrap; parent: /tmp/loci-schema-demo.R5CDXT)
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--166437D737243488.txt
+Build of product 'loci-vault-demo' complete! (0.11s)
+LociVault demo 0.5.0-pr05
+rootKind: localDocuments
+vaultRoot: /tmp/loci-schema-demo.R5CDXT/LociVault
+space.json: {
+  "name" : "Loci Demo",
+  "pins" : [
+
+  ],
+  "schemaVersion" : 1
+}
+types: page
+page: Page builtIn=true
+skeleton:
+  ✓ .loci → /tmp/loci-schema-demo.R5CDXT/LociVault/.loci
+  ✓ .loci/types → /tmp/loci-schema-demo.R5CDXT/LociVault/.loci/types
+  ✓ .loci/templates → /tmp/loci-schema-demo.R5CDXT/LociVault/.loci/templates
+  ✓ .loci/trash → /tmp/loci-schema-demo.R5CDXT/LociVault/.loci/trash
+  ✓ daily → /tmp/loci-schema-demo.R5CDXT/LociVault/daily
+  ✓ objects → /tmp/loci-schema-demo.R5CDXT/LociVault/objects
+  ✓ media/images → /tmp/loci-schema-demo.R5CDXT/LociVault/media/images
+  ✓ media/files → /tmp/loci-schema-demo.R5CDXT/LociVault/media/files
+sample: daily/2026-08-13.md written
+note: index.sqlite must never live inside this vault (Application Support only).
+wrote /agent/DevHarness/public/demo-schema/manifest.json
+==> fixtures:
+  /agent/DevHarness/public/demo-schema/space.json
+  /agent/DevHarness/public/demo-schema/types/page.json
+  /agent/DevHarness/public/demo-schema/manifest.json
+==> demo-schema complete
